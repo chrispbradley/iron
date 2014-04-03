@@ -42,22 +42,22 @@
 !>
 
 !> This module handles all generated mesh routines.
-MODULE GENERATED_MESH_ROUTINES
+MODULE GeneratedMeshRoutines
 
   USE BASE_ROUTINES
   USE BASIS_ROUTINES
   USE COMP_ENVIRONMENT
-  USE CONSTANTS
+  USE Constants
   USE COORDINATE_ROUTINES
   USE FIELD_ROUTINES
   USE INPUT_OUTPUT
   USE ISO_VARYING_STRING
-  USE KINDS
-  USE MATHS
+  USE Kinds
+  USE Maths
   USE MESH_ROUTINES
   USE NODE_ROUTINES
-  USE STRINGS
-  USE TYPES
+  USE Strings
+  USE Types
 
   IMPLICIT NONE
 
@@ -65,43 +65,43 @@ MODULE GENERATED_MESH_ROUTINES
 
   !Module parameters
 
-  !> \addtogroup GENERATED_MESH_ROUTINES_GeneratedMeshTypes GENERATED_MESH_ROUTINES::GeneratedMeshTypes
+  !> \addtogroup GeneratedMeshRoutines_GeneratedMeshTypes GeneratedMeshRoutines::GeneratedMeshTypes
   !> \brief Generated mesh types.
-  !> \see GENERATED_MESH_ROUTINES,OPENCMISS_GeneratedMeshTypes
+  !> \see GeneratedMeshRoutines,OPENCMISS_GeneratedMeshTypes
   !>@{
-  INTEGER(INTG), PARAMETER :: GENERATED_MESH_REGULAR_MESH_TYPE=1 !<A regular generated mesh. \see GENERATED_MESH_ROUTINES_GeneratedMeshTypes,GENERATED_MESH_ROUTINES
-  INTEGER(INTG), PARAMETER :: GENERATED_MESH_POLAR_MESH_TYPE=2 !<A polar generated mesh. \see GENERATED_MESH_ROUTINES_GeneratedMeshTypes,GENERATED_MESH_ROUTINES
-  INTEGER(INTG), PARAMETER :: GENERATED_MESH_FRACTAL_TREE_MESH_TYPE=3 !<A fractal tree generated mesh. \see GENERATED_MESH_ROUTINES_GeneratedMeshTypes,GENERATED_MESH_ROUTINES
-  INTEGER(INTG), PARAMETER :: GENERATED_MESH_CYLINDER_MESH_TYPE=4 !<A cylinder generated mesh. \see GENERATED_MESH_ROUTINES_GeneratedMeshTypes,GENERATED_MESH_ROUTINES
-  INTEGER(INTG), PARAMETER :: GENERATED_MESH_ELLIPSOID_MESH_TYPE=5 !<An ellipsoid generated mesh. \see GENERATED_MESH_ROUTINES_GeneratedMeshTypes,GENERATED_MESH_ROUTINES
+  INTEGER(INTG), PARAMETER :: GENERATED_MESH_REGULAR_MESH_TYPE=1 !<A regular generated mesh. \see GeneratedMeshRoutines_GeneratedMeshTypes,GeneratedMeshRoutines
+  INTEGER(INTG), PARAMETER :: GENERATED_MESH_POLAR_MESH_TYPE=2 !<A polar generated mesh. \see GeneratedMeshRoutines_GeneratedMeshTypes,GeneratedMeshRoutines
+  INTEGER(INTG), PARAMETER :: GENERATED_MESH_FRACTAL_TREE_MESH_TYPE=3 !<A fractal tree generated mesh. \see GeneratedMeshRoutines_GeneratedMeshTypes,GeneratedMeshRoutines
+  INTEGER(INTG), PARAMETER :: GENERATED_MESH_CYLINDER_MESH_TYPE=4 !<A cylinder generated mesh. \see GeneratedMeshRoutines_GeneratedMeshTypes,GeneratedMeshRoutines
+  INTEGER(INTG), PARAMETER :: GENERATED_MESH_ELLIPSOID_MESH_TYPE=5 !<An ellipsoid generated mesh. \see GeneratedMeshRoutines_GeneratedMeshTypes,GeneratedMeshRoutines
   !>@}
 
-  !> \addtogroup GENERATED_MESH_ROUTINES_GeneratedMeshCylinderSurfaces GENERATED_MESH_ROUTINES::GeneratedMeshCylinderSurfaces
+  !> \addtogroup GeneratedMeshRoutines_GeneratedMeshCylinderSurfaces GeneratedMeshRoutines::GeneratedMeshCylinderSurfaces
   !> \brief Generated mesh cylinder type surface types.
   !>@{
-  INTEGER(INTG), PARAMETER :: GENERATED_MESH_CYLINDER_INNER_SURFACE=1  !<Inner surface of the cylinder. \see GENERATED_MESH_ROUTINES_GeneratedMeshCylinderSurfaces,GENERATED_MESH_ROUTINES
-  INTEGER(INTG), PARAMETER :: GENERATED_MESH_CYLINDER_OUTER_SURFACE=2  !<Outer surface of the cylinder. \see GENERATED_MESH_ROUTINES_GeneratedMeshCylinderSurfaces,GENERATED_MESH_ROUTINES
-  INTEGER(INTG), PARAMETER :: GENERATED_MESH_CYLINDER_TOP_SURFACE=3    !<Top surface of the cylinder. \see GENERATED_MESH_ROUTINES_GeneratedMeshCylinderSurfaces,GENERATED_MESH_ROUTINES
-  INTEGER(INTG), PARAMETER :: GENERATED_MESH_CYLINDER_BOTTOM_SURFACE=4 !<Bottom surface of the cylinder. \see GENERATED_MESH_ROUTINES_GeneratedMeshCylinderSurfaces,GENERATED_MESH_ROUTINES
+  INTEGER(INTG), PARAMETER :: GENERATED_MESH_CYLINDER_INNER_SURFACE=1  !<Inner surface of the cylinder. \see GeneratedMeshRoutines_GeneratedMeshCylinderSurfaces,GeneratedMeshRoutines
+  INTEGER(INTG), PARAMETER :: GENERATED_MESH_CYLINDER_OUTER_SURFACE=2  !<Outer surface of the cylinder. \see GeneratedMeshRoutines_GeneratedMeshCylinderSurfaces,GeneratedMeshRoutines
+  INTEGER(INTG), PARAMETER :: GENERATED_MESH_CYLINDER_TOP_SURFACE=3    !<Top surface of the cylinder. \see GeneratedMeshRoutines_GeneratedMeshCylinderSurfaces,GeneratedMeshRoutines
+  INTEGER(INTG), PARAMETER :: GENERATED_MESH_CYLINDER_BOTTOM_SURFACE=4 !<Bottom surface of the cylinder. \see GeneratedMeshRoutines_GeneratedMeshCylinderSurfaces,GeneratedMeshRoutines
   !>@}
 
-  !> \addtogroup GENERATED_MESH_ROUTINES_GeneratedMeshEllipsoidSurfaces GENERATED_MESH_ROUTINES::GeneratedMeshEllipsoidSurfaces
+  !> \addtogroup GeneratedMeshRoutines_GeneratedMeshEllipsoidSurfaces GeneratedMeshRoutines::GeneratedMeshEllipsoidSurfaces
   !> \brief Generated mesh ellipsoid type surface types.
   !>@{
-  INTEGER(INTG), PARAMETER :: GENERATED_MESH_ELLIPSOID_INNER_SURFACE=5  !<Inner surface of the ellipsoid. \see GENERATED_MESH_ROUTINES_GeneratedMeshEllipsoidSurfaces,GENERATED_MESH_ROUTINES
-  INTEGER(INTG), PARAMETER :: GENERATED_MESH_ELLIPSOID_OUTER_SURFACE=6  !<Outer surface of the ellipsoid. \see GENERATED_MESH_ROUTINES_GeneratedMeshEllipsoidSurfaces,GENERATED_MESH_ROUTINES
-  INTEGER(INTG), PARAMETER :: GENERATED_MESH_ELLIPSOID_TOP_SURFACE=7    !<Top surface of the ellipsoid. \see GENERATED_MESH_ROUTINES_GeneratedMeshEllipsoidSurfaces,GENERATED_MESH_ROUTINES
+  INTEGER(INTG), PARAMETER :: GENERATED_MESH_ELLIPSOID_INNER_SURFACE=5  !<Inner surface of the ellipsoid. \see GeneratedMeshRoutines_GeneratedMeshEllipsoidSurfaces,GeneratedMeshRoutines
+  INTEGER(INTG), PARAMETER :: GENERATED_MESH_ELLIPSOID_OUTER_SURFACE=6  !<Outer surface of the ellipsoid. \see GeneratedMeshRoutines_GeneratedMeshEllipsoidSurfaces,GeneratedMeshRoutines
+  INTEGER(INTG), PARAMETER :: GENERATED_MESH_ELLIPSOID_TOP_SURFACE=7    !<Top surface of the ellipsoid. \see GeneratedMeshRoutines_GeneratedMeshEllipsoidSurfaces,GeneratedMeshRoutines
   !>@}
 
-  !> \addtogroup GENERATED_MESH_ROUTINES_GeneratedMeshRegularSurfaces GENERATED_MESH_ROUTINES::GeneratedMeshRegularSurfaces
+  !> \addtogroup GeneratedMeshRoutines_GeneratedMeshRegularSurfaces GeneratedMeshRoutines::GeneratedMeshRegularSurfaces
   !> \brief Generated mesh regular type surface types.
   !>@{
-  INTEGER(INTG), PARAMETER :: GENERATED_MESH_REGULAR_LEFT_SURFACE=8    !<Left surface of the regular mesh. \see GENERATED_MESH_ROUTINES_GeneratedMeshRegularSurfaces,GENERATED_MESH_ROUTINES
-  INTEGER(INTG), PARAMETER :: GENERATED_MESH_REGULAR_RIGHT_SURFACE=9   !<Right surface of the regular mesh. \see GENERATED_MESH_ROUTINES_GeneratedMeshRegularSurfaces,GENERATED_MESH_ROUTINES
-  INTEGER(INTG), PARAMETER :: GENERATED_MESH_REGULAR_TOP_SURFACE=10    !<Top surface of the regular mesh. \see GENERATED_MESH_ROUTINES_GeneratedMeshRegularSurfaces,GENERATED_MESH_ROUTINES
-  INTEGER(INTG), PARAMETER :: GENERATED_MESH_REGULAR_BOTTOM_SURFACE=11 !<Bottom surface of the regular mesh. \see GENERATED_MESH_ROUTINES_GeneratedMeshRegularSurfaces,GENERATED_MESH_ROUTINES
-  INTEGER(INTG), PARAMETER :: GENERATED_MESH_REGULAR_FRONT_SURFACE=12  !<Front surface of the regular mesh. \see GENERATED_MESH_ROUTINES_GeneratedMeshRegularSurfaces,GENERATED_MESH_ROUTINES
-  INTEGER(INTG), PARAMETER :: GENERATED_MESH_REGULAR_BACK_SURFACE=13   !<Back surface of the regular mesh. \see GENERATED_MESH_ROUTINES_GeneratedMeshRegularSurfaces,GENERATED_MESH_ROUTINES
+  INTEGER(INTG), PARAMETER :: GENERATED_MESH_REGULAR_LEFT_SURFACE=8    !<Left surface of the regular mesh. \see GeneratedMeshRoutines_GeneratedMeshRegularSurfaces,GeneratedMeshRoutines
+  INTEGER(INTG), PARAMETER :: GENERATED_MESH_REGULAR_RIGHT_SURFACE=9   !<Right surface of the regular mesh. \see GeneratedMeshRoutines_GeneratedMeshRegularSurfaces,GeneratedMeshRoutines
+  INTEGER(INTG), PARAMETER :: GENERATED_MESH_REGULAR_TOP_SURFACE=10    !<Top surface of the regular mesh. \see GeneratedMeshRoutines_GeneratedMeshRegularSurfaces,GeneratedMeshRoutines
+  INTEGER(INTG), PARAMETER :: GENERATED_MESH_REGULAR_BOTTOM_SURFACE=11 !<Bottom surface of the regular mesh. \see GeneratedMeshRoutines_GeneratedMeshRegularSurfaces,GeneratedMeshRoutines
+  INTEGER(INTG), PARAMETER :: GENERATED_MESH_REGULAR_FRONT_SURFACE=12  !<Front surface of the regular mesh. \see GeneratedMeshRoutines_GeneratedMeshRegularSurfaces,GeneratedMeshRoutines
+  INTEGER(INTG), PARAMETER :: GENERATED_MESH_REGULAR_BACK_SURFACE=13   !<Back surface of the regular mesh. \see GeneratedMeshRoutines_GeneratedMeshRegularSurfaces,GeneratedMeshRoutines
   !>@}
 
   !Module types
@@ -109,26 +109,27 @@ MODULE GENERATED_MESH_ROUTINES
   !Interfaces
 
   !>Starts the process of creating a generated mesh
-  INTERFACE GENERATED_MESH_CREATE_START
-    MODULE PROCEDURE GENERATED_MESH_CREATE_START_INTERFACE
-    MODULE PROCEDURE GENERATED_MESH_CREATE_START_REGION
-  END INTERFACE !GENERATED_MESH_CREATE_START
+  INTERFACE GeneratedMeshCreateStart
+    MODULE PROCEDURE GeneratedMeshCreateStartInterface
+    MODULE PROCEDURE GeneratedMeshCreateStartRegion
+  END INTERFACE GeneratedMeshCreateStart
 
   !>Initialises the generated meshes for a region or interface.
-  INTERFACE GENERATED_MESHES_INITIALISE
-    MODULE PROCEDURE GENERATED_MESHES_INITIALISE_INTERFACE
-    MODULE PROCEDURE GENERATED_MESHES_INITIALISE_REGION
-  END INTERFACE !GENERATED_MESHES_INITIALISE
+  INTERFACE GeneratedMeshesInitialise
+    MODULE PROCEDURE GeneratedMeshesInitialiseInterface
+    MODULE PROCEDURE GeneratedMeshesInitialiseRegion 
+  END INTERFACE GeneratedMeshesInitialise
 
   !>Finds a generated mesh in a list of generated meshes in a region or interface.
-  INTERFACE GENERATED_MESH_USER_NUMBER_FIND
-    MODULE PROCEDURE GENERATED_MESH_USER_NUMBER_FIND_INTERFACE
-    MODULE PROCEDURE GENERATED_MESH_USER_NUMBER_FIND_REGION
-  END INTERFACE GENERATED_MESH_USER_NUMBER_FIND
+  INTERFACE GeneratedMeshUserNumberFind
+    MODULE PROCEDURE GeneratedMeshUserNumberFindInterface
+    MODULE PROCEDURE GeneratedMeshUserNumberFindRegion 
+  END INTERFACE GeneratedMeshUserNumberFind
 
   PUBLIC GENERATED_MESH_REGULAR_MESH_TYPE,GENERATED_MESH_POLAR_MESH_TYPE
   PUBLIC GENERATED_MESH_FRACTAL_TREE_MESH_TYPE,GENERATED_MESH_CYLINDER_MESH_TYPE
   PUBLIC GENERATED_MESH_ELLIPSOID_MESH_TYPE
+  
   PUBLIC GENERATED_MESH_CYLINDER_INNER_SURFACE,GENERATED_MESH_CYLINDER_OUTER_SURFACE
   PUBLIC GENERATED_MESH_CYLINDER_TOP_SURFACE,GENERATED_MESH_CYLINDER_BOTTOM_SURFACE
   PUBLIC GENERATED_MESH_ELLIPSOID_INNER_SURFACE,GENERATED_MESH_ELLIPSOID_OUTER_SURFACE
@@ -136,25 +137,36 @@ MODULE GENERATED_MESH_ROUTINES
   PUBLIC GENERATED_MESH_REGULAR_LEFT_SURFACE,GENERATED_MESH_REGULAR_RIGHT_SURFACE
   PUBLIC GENERATED_MESH_REGULAR_TOP_SURFACE,GENERATED_MESH_REGULAR_BOTTOM_SURFACE
   PUBLIC GENERATED_MESH_REGULAR_FRONT_SURFACE,GENERATED_MESH_REGULAR_BACK_SURFACE
-  PUBLIC GENERATED_MESHES_INITIALISE,GENERATED_MESHES_FINALISE
+  PUBLIC GENERATED_MESHES_INITIALISE,GeneratedMeshesFinalise
 
-  PUBLIC GENERATED_MESH_BASE_VECTORS_SET
+  PUBLIC GeneratedMeshesInitialise
 
-  PUBLIC GENERATED_MESH_COORDINATE_SYSTEM_GET
+  PUBLIC GeneratedMeshBaseVectorsSet
 
-  PUBLIC GENERATED_MESH_CREATE_START,GENERATED_MESH_CREATE_FINISH
+  PUBLIC GeneratedMeshCoordinateSystemGet
 
-  PUBLIC GENERATED_MESH_DESTROY
+  PUBLIC GeneratedMeshCreateStartGeneratedMeshCreateFinish
 
-  PUBLIC GENERATED_MESH_BASIS_SET,GENERATED_MESH_EXTENT_SET,GENERATED_MESH_NUMBER_OF_ELEMENTS_SET,GENERATED_MESH_ORIGIN_SET, &
-    & GENERATED_MESH_TYPE_SET, GENERATED_MESH_GEOMETRIC_PARAMETERS_CALCULATE
+  PUBLIC GeneratedMeshDestroy
 
-  PUBLIC GENERATED_MESH_BASIS_GET,GENERATED_MESH_EXTENT_GET,GENERATED_MESH_NUMBER_OF_ELEMENTS_GET,GENERATED_MESH_ORIGIN_GET,&
-    & GENERATED_MESH_TYPE_GET
+  PUBLIC GeneratedMeshBasisSet,GeneratedMeshBasisGet
 
-  PUBLIC GENERATED_MESH_REGION_GET
+  PUBLIC GeneratedMeshExtentSet,GeneratedMeshExtentGet
 
-  PUBLIC GENERATED_MESH_USER_NUMBER_FIND
+  PUBLIC GeneratedMeshNumberOfElementsSet,GeneratedMeshNumberOfElementsGet
+
+  PUBLIC GeneratedMeshOriginSet,GeneratedMeshOriginGet
+
+  PUBLIC GeneratedMeshTypeSet,GeneratedMeshTypeGet
+
+  PUBLIC GeneratedMeshGeometricParametersCalculate
+
+  PUBLIC GeneratedMeshRegionGet
+
+  PUBLIC GeneratedMeshUserNumberFind
+
+  PUBLIC GeneratedMeshUserNumberFind
+  
   PUBLIC GENERATED_MESH_SURFACE_GET
 
 CONTAINS
@@ -164,850 +176,991 @@ CONTAINS
   !
 
   !>Gets the basis of a generated mesh. \see OPENCMISS::CMISSGeneratedMeshBasisGet
-  SUBROUTINE GENERATED_MESH_BASIS_GET(GENERATED_MESH,BASES,ERR,ERROR,*)
+  SUBROUTINE GeneratedMeshBasisGet(generatedMesh,bases,err,error,*)
 
     !Argument variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<A pointer to the generated mesh to get the bases of
-    TYPE(BASIS_PTR_TYPE), POINTER :: BASES(:) !<On return, the bases of mesh to generate
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh to get the bases of
+    TYPE(BASIS_PTR_TYPE) :: bases(:) !<BASES(basisIdx). On return, the bases of mesh to generate
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
-    TYPE(VARYING_STRING) :: LOCAL_ERROR
-    INTEGER(INTG) :: basis_idx,NUM_BASES
+    TYPE(VARYING_STRING) :: localError
+    INTEGER(INTG) :: basisIdx,numberOfBases
 
-    CALL ENTERS("GENERATED_MESH_BASIS_GET",ERR,ERROR,*999)
+    CALL Enters("GeneratedMeshBasisGet",err,error,*999)
 
-    IF(ASSOCIATED(GENERATED_MESH)) THEN
-      IF(GENERATED_MESH%GENERATED_MESH_FINISHED) THEN
-        SELECT CASE(GENERATED_MESH%GENERATED_TYPE)
+    IF(ASSOCIATED(generatedMesh)) THEN
+      IF(generatedMesh%generatedMeshFinished) THEN
+        SELECT CASE(generatedMesh%generatedType)
         CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
-          IF(ASSOCIATED(GENERATED_MESH%REGULAR_MESH)) THEN
-            IF(ALLOCATED(GENERATED_MESH%REGULAR_MESH%BASES)) THEN
-              NUM_BASES=SIZE(GENERATED_MESH%REGULAR_MESH%BASES)
-              ALLOCATE(BASES(NUM_BASES),STAT=ERR)
-              IF(ERR/=0) CALL FLAG_ERROR("Could not allocate bases.",ERR,ERROR,*999)
-              DO basis_idx=1,NUM_BASES
-                BASES(basis_idx)%PTR=>GENERATED_MESH%REGULAR_MESH%BASES(basis_idx)%PTR
-              ENDDO
+          IF(ASSOCIATED(generatedMesh%regularMesh)) THEN
+            IF(ALLOCATED(generatedMesh%regularMesh%bases)) THEN
+              IF(SIZE(bases,1)>=SIZE(generatedMesh%regularMesh%bases,1)) THEN
+                DO basisIdx=1,SIZE(generatedMesh%regularMesh%bases,1)
+                  IF(ASSOCIATED(basis(basisIdx)%ptr)) THEN
+                    localError="The pointer at location "//NumberToVString(TRIM(basisIdx,"*",err,error))// &
+                      & " in the specified bases array is associated."
+                    CALL FlagError(localError,err,error,*999)
+                  ELSE                    
+                    bases(basisIdx)%ptr=>generatedMesh%regularMesh%bases(basisIdx)%ptr
+                  ENDIF
+                ENDDO
+              ELSE
+                localError="The size of the specified bases array, "// &
+                  & TRIM(NumberToVString(SIZE(bases,1),"*",err,error))// &
+                  & ", is too small to hold the number of bases in the generated mesh of "// &
+                  & TRIM(NumberToVString(SIZE(generatedMesh%regularMesh%bases,1),"*",err,error))//"."
+                CALL FlagError(localError,err,error,*999)
+              ENDIF
             ELSE
-              CALL FLAG_ERROR("Generated mesh bases are not allocated.",ERR,ERROR,*999)
+              CALL FlagError("Generated mesh bases are not allocated.",err,error,*999)
             ENDIF
           ELSE
-            CALL FLAG_ERROR("Generated mesh regular mesh is not associated.",ERR,ERROR,*999)
+            CALL FlagError("Generated mesh regular mesh is not associated.",err,error,*999)
           ENDIF
         CASE(GENERATED_MESH_POLAR_MESH_TYPE)
-          CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
+          CALL FlagError("Not implemented.",err,error,*999)
         CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
-          CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
+          CALL FlagError("Not implemented.",err,error,*999)
         CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
-          IF(ASSOCIATED(GENERATED_MESH%CYLINDER_MESH)) THEN
-            IF(ALLOCATED(GENERATED_MESH%REGULAR_MESH%BASES)) THEN
-              NUM_BASES=SIZE(GENERATED_MESH%CYLINDER_MESH%BASES)
-              ALLOCATE(BASES(NUM_BASES),STAT=ERR)
-              IF(ERR/=0) CALL FLAG_ERROR("Could not allocate bases.",ERR,ERROR,*999)
-              DO basis_idx=1,NUM_BASES
-                BASES(basis_idx)%PTR=>GENERATED_MESH%CYLINDER_MESH%BASES(basis_idx)%PTR
-              ENDDO
+          IF(ASSOCIATED(generatedMesh%cylinderMesh)) THEN
+            IF(ALLOCATED(generatedMesh%cylinderMesh%bases)) THEN
+              IF(SIZE(bases,1)>=SIZE(generatedMesh%cylinderMesh%bases,1)) THEN
+                DO basisIdx=1,SIZE(generatedMesh%cylinderMesh%bases,1)
+                  IF(ASSOCIATED(basis(basisIdx)%ptr)) THEN
+                    localError="The pointer at location "//NumberToVString(TRIM(basisIdx,"*",err,error))// &
+                      & " in the specified bases array is associated."
+                    CALL FlagError(localError,err,error,*999)
+                  ELSE                    
+                    bases(basisIdx)%ptr=>generatedMesh%cylinderMesh%bases(basisIdx)%ptr
+                  ENDIF
+                ENDDO
+              ELSE
+                localError="The size of the specified bases array, "// &
+                  & TRIM(NumberToVString(SIZE(bases,1),"*",err,error))// &
+                  & ", is too small to hold the number of bases in the generated mesh of "// &
+                  & TRIM(NumberToVString(SIZE(generatedMesh%cylinderMesh%bases,1),"*",err,error))//"."
+                CALL FlagError(localError,err,error,*999)
+              ENDIF
             ELSE
-              CALL FLAG_ERROR("Generated mesh bases are not allocated.",ERR,ERROR,*999)
+              CALL FlagError("Generated mesh bases are not allocated.",err,error,*999)
             ENDIF
           ELSE
-            CALL FLAG_ERROR("Generated mesh cylinder mesh is not associated.",ERR,ERROR,*999)
+            CALL FlagError("Generated mesh cylinder mesh is not associated.",err,error,*999)
           ENDIF
         CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
-          IF(ASSOCIATED(GENERATED_MESH%ELLIPSOID_MESH)) THEN
-            IF(ALLOCATED(GENERATED_MESH%REGULAR_MESH%BASES)) THEN
-              NUM_BASES=SIZE(GENERATED_MESH%ELLIPSOID_MESH%BASES)
-              ALLOCATE(BASES(NUM_BASES),STAT=ERR)
-              IF(ERR/=0) CALL FLAG_ERROR("Could not allocate bases.",ERR,ERROR,*999)
-              DO basis_idx=1,NUM_BASES
-                BASES(basis_idx)%PTR=>GENERATED_MESH%ELLIPSOID_MESH%BASES(basis_idx)%PTR
-              ENDDO
+          IF(ASSOCIATED(generatedMesh%ellipsoidMesh)) THEN
+            IF(ALLOCATED(generatedMesh%ellipsoidMesh%bases)) THEN
+              IF(SIZE(bases,1)>=SIZE(generatedMesh%ellipsoidMesh%bases,1)) THEN
+                DO basisIdx=1,SIZE(generatedMesh%ellipsoidMesh%bases,1)
+                  IF(ASSOCIATED(basis(basisIdx)%ptr)) THEN
+                    localError="The pointer at location "//NumberToVString(TRIM(basisIdx,"*",err,error))// &
+                      & " in the specified bases array is associated."
+                    CALL FlagError(localError,err,error,*999)
+                  ELSE                    
+                    bases(basisIdx)%ptr=>generatedMesh%ellipsoidMesh%bases(basisIdx)%ptr
+                  ENDIF
+                ENDDO
+              ELSE
+                localError="The size of the specified bases array, "// &
+                  & TRIM(NumberToVString(SIZE(bases,1),"*",err,error))// &
+                  & ", is too small to hold the number of bases in the generated mesh of "// &
+                  & TRIM(NumberToVString(SIZE(generatedMesh%ellipsoidMesh%bases,1),"*",err,error))//"."
+                CALL FlagError(localError,err,error,*999)
+              ENDIF
             ELSE
-              CALL FLAG_ERROR("Generated mesh bases are not allocated.",ERR,ERROR,*999)
+              CALL FlagError("Generated mesh bases are not allocated.",err,error,*999)
             ENDIF
           ELSE
-            CALL FLAG_ERROR("Generated mesh ellipsoid mesh is not associated.",ERR,ERROR,*999)
+            CALL FlagError("Generated mesh ellipsoid mesh is not associated.",err,error,*999)
           ENDIF
         CASE DEFAULT
-          LOCAL_ERROR="The generated mesh generated type of "// &
-              & TRIM(NUMBER_TO_VSTRING(GENERATED_MESH%GENERATED_TYPE,"*",ERR,ERROR))//" is invalid."
-          CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+          localError="The generated mesh generated type of "// &
+              & TRIM(NumberToVString(generatedMesh%generatedType,"*",err,error))//" is invalid."
+          CALL FlagError(localError,err,error,*999)
         END SELECT
       ELSE
-        CALL FLAG_ERROR("Generated mesh has not been finished.",ERR,ERROR,*999)
+        CALL FlagError("Generated mesh has not been finished.",err,error,*999)
       ENDIF
     ELSE
-      CALL FLAG_ERROR("Generated mesh is already associated.",ERR,ERROR,*999)
+      CALL FlagError("Generated mesh is already associated.",err,error,*999)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_BASIS_GET")
+    CALL Exits("GeneratedMeshBasisGet")
     RETURN
-999 CALL ERRORS("GENERATED_MESH_BASIS_GET",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_BASIS_GET")
+999 CALL Errors("GeneratedMeshBasisGet",err,error)
+    CALL Exits("GeneratedMeshBasisGet")
     RETURN 1
-  END SUBROUTINE GENERATED_MESH_BASIS_GET
+  END SUBROUTINE GeneratedMeshBasisGet
 
   !
   !================================================================================================================================
   !
 
   !>Sets/changes the basis of a generated mesh. \see OPENCMISS::CMISSGeneratedMeshBasisSet
-  SUBROUTINE GENERATED_MESH_BASIS_SET(GENERATED_MESH,BASES,ERR,ERROR,*)
+  SUBROUTINE GeneratedMeshBasisSet(generatedMesh,bases,err,error,*)
 
     !Argument variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<A pointer to the generated mesh to set the basis of
-    TYPE(BASIS_PTR_TYPE) :: BASES(:) !<An array of pointers to the basis to generate the mesh with
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh to set the basis of
+    TYPE(BASIS_PTR_TYPE) :: bases(:) !<bases(basisIdx). An array of pointers to the bases to generate the mesh with
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
-    INTEGER(INTG) :: COORDINATE_DIMENSION,basis_idx, NUM_BASES, NUM_XI, BASIS_TYPE
-    TYPE(COORDINATE_SYSTEM_TYPE), POINTER :: COORDINATE_SYSTEM
-    TYPE(VARYING_STRING) :: LOCAL_ERROR
+    INTEGER(INTG) :: coordinateDimension,basisIdx,numberOfBases,numberOfXi,basisType
+    TYPE(COORDINATE_SYSTEM_TYPE), POINTER :: coordinateSystem
+    TYPE(VARYING_STRING) :: localError
 
-    CALL ENTERS("GENERATED_MESH_BASIS_SET",ERR,ERROR,*999)
+    NULLIFY(coordinateSystem)
 
-    IF(ASSOCIATED(GENERATED_MESH)) THEN
-      IF(GENERATED_MESH%GENERATED_MESH_FINISHED) THEN
-        CALL FLAG_ERROR("Generated mesh has been finished.",ERR,ERROR,*999)
+    CALL Enters("GeneratedMeshBasisSet",err,error,*999)
+
+    IF(ASSOCIATED(generatedMesh)) THEN
+      IF(generatedMesh%generatedMeshFinished) THEN
+        CALL FlagError("Generated mesh has been finished.",err,error,*999)
       ELSE
-        NULLIFY(COORDINATE_SYSTEM)
-        CALL GENERATED_MESH_COORDINATE_SYSTEM_GET(GENERATED_MESH,COORDINATE_SYSTEM,ERR,ERROR,*999)
-        CALL COORDINATE_SYSTEM_DIMENSION_GET(COORDINATE_SYSTEM,COORDINATE_DIMENSION,ERR,ERROR,*999)
-        NUM_BASES=SIZE(BASES)
-        NUM_XI=BASES(1)%PTR%NUMBER_OF_XI
-        BASIS_TYPE=BASES(1)%PTR%TYPE
-        DO basis_idx=2,NUM_BASES
-          IF(BASES(basis_idx)%PTR%NUMBER_OF_XI /= NUM_XI) THEN
-            CALL FLAG_ERROR("All bases must have the same number of xi.",ERR,ERROR,*999)
-          ENDIF
-          IF(BASES(basis_idx)%PTR%TYPE /= BASIS_TYPE) THEN
-            CALL FLAG_ERROR("Using different basis types is not supported for generated meshes.",ERR,ERROR,*999)
-          ENDIF
-        ENDDO
-        SELECT CASE(GENERATED_MESH%GENERATED_TYPE)
-        CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
-          IF(ASSOCIATED(GENERATED_MESH%REGULAR_MESH)) THEN
-            IF(ALLOCATED(GENERATED_MESH%REGULAR_MESH%BASE_VECTORS)) THEN
-              CALL FLAG_ERROR("Can not reset the basis if base vectors have been specified.",ERR,ERROR,*999)
-            ELSE
-              IF(ALLOCATED(GENERATED_MESH%REGULAR_MESH%BASES)) DEALLOCATE(GENERATED_MESH%REGULAR_MESH%BASES)
-              ALLOCATE(GENERATED_MESH%REGULAR_MESH%BASES(NUM_BASES),STAT=ERR)
-              IF(ERR/=0) CALL FLAG_ERROR("Could not allocate bases.",ERR,ERROR,*999)
-              DO basis_idx=1,NUM_BASES
-                IF(ASSOCIATED(BASES(basis_idx)%PTR)) THEN
-                  IF(BASES(basis_idx)%PTR%NUMBER_OF_XI<=COORDINATE_DIMENSION) THEN
-                    GENERATED_MESH%REGULAR_MESH%BASES(basis_idx)%PTR=>BASES(basis_idx)%PTR
-                  ELSE
-                    LOCAL_ERROR="The basis number of xi dimensions of "// &
-                      & TRIM(NUMBER_TO_VSTRING(BASES(basis_idx)%PTR%NUMBER_OF_XI,"*",ERR,ERROR))// &
-                      & " is invalid. The number of xi dimensions must be <= the number of coordinate dimensions of "// &
-                      & TRIM(NUMBER_TO_VSTRING(COORDINATE_DIMENSION,"*",ERR,ERROR))
-                    CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+        CALL GeneratedMeshCoordinateSystemGet(generatedMesh,coordinateSystem,err,error,*999)
+        CALL COORDINATE_SYSTEM_DIMENSION_GET(coordinateSystem,coordinateDimension,err,error,*999)
+        numberOfBases=SIZE(bases,1)
+        IF(numberOfBases >= 1) THEN
+          !Check the supplied bases
+          DO basisIdx=1,numberOfBases
+            IF(ASSOCIATED(bases(basisIdx)%ptr)) THEN
+              IF(bases(basisIdx)%ptr%NUMBER_OF_XI<=coordinateDimension) THEN
+                IF(basisIdx == 1) THEN
+                  numberOfXi=bases(1)%ptr%NUMBER_OF_XI
+                  basisType=bases(1)%ptr%type
+                ELSE                  
+                  IF(bases(basisIdx)%ptr%NUMBER_OF_XI /= numberOfXi) THEN
+                    CALL FlagError("All bases must have the same number of xi.",err,error,*999)
                   ENDIF
-                ELSE
-                  LOCAL_ERROR="The basis with index "//TRIM(NUMBER_TO_VSTRING(basis_idx,"*",ERR,ERROR))// &
-                    & " is not associated."
-                  CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+                  IF(bases(basesIdx)%ptr%type /= basisType) THEN
+                    CALL FlagError("Using different basis types is not supported for generated meshes.",err,error,*999)
+                  ENDIF
                 ENDIF
-              ENDDO
+                IF(.NOT.ALL(basis%COLLAPSED_XI==BASIS_NOT_COLLAPSED)) &
+                  & CALL FlagError("Degenerate (collapsed) basis not implemented.",err,error,*999)
+              ELSE
+                localError="The basis number of xi dimensions of "// &
+                  & TRIM(NumberToVString(bases(basis_idx)%ptr%NUMBER_OF_XI,"*",err,error))// &
+                  & " is invalid. The number of xi dimensions must be <= the number of coordinate dimensions of "// &
+                  & TRIM(NumberToVString(coordinateDimension,"*",err,error))
+                CALL FlagError(localError,err,error,*999)
+              ENDIF
+            ELSE
+              localError="The basis with index "//TRIM(NumberToVString(basisIdx,"*",err,error))// &
+                & " is not associated."
+              CALL FlagError(localError,err,error,*999)
             ENDIF
-          ELSE
-            CALL FLAG_ERROR("Regular generated mesh is not associated.",ERR,ERROR,*999)
-          ENDIF
-        CASE(GENERATED_MESH_POLAR_MESH_TYPE)
-          CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
-        CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
-          CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
-        CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
-          IF(ASSOCIATED(GENERATED_MESH%CYLINDER_MESH)) THEN
-            IF(ALLOCATED(GENERATED_MESH%CYLINDER_MESH%BASES)) DEALLOCATE(GENERATED_MESH%CYLINDER_MESH%BASES)
-            ALLOCATE(GENERATED_MESH%CYLINDER_MESH%BASES(NUM_BASES),STAT=ERR)
-            IF(ERR/=0) CALL FLAG_ERROR("Could not allocate bases.",ERR,ERROR,*999)
-            DO basis_idx=1,NUM_BASES
-              IF(ASSOCIATED(BASES(basis_idx)%PTR)) THEN
-                GENERATED_MESH%CYLINDER_MESH%BASES(basis_idx)%PTR=>BASES(basis_idx)%PTR
+          ENDDO !basisIdx
+          SELECT CASE(generatedMesh%generatedType)
+          CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
+            IF(ASSOCIATED(generatedMesh%regularMesh)) THEN
+              !Store the bases
+              IF(ALLOCATED(generatedMesh%regularMesh%bases)) DEALLOCATE(generatedMesh%regularMesh%bases)
+              ALLOCATE(generatedMesh%regularMesh%bases(numberOfBases),STAT=err)
+              IF(err/=0) CALL FlagError("Could not allocate bases.",err,error,*999)
+              DO basisIdx=1,numberOfBases
+                generatedMesh%regularMesh%bases(basisIdx)%ptr=>bases(basisIdx)%ptr
+              ENDDO !basisIdx
+              !Reset the number of elements in each xi direction
+              ALLOCATE(newNumberOfElementsXi(numberOfXi),STAT=err)
+              IF(err/=0) CALL FlagError("Could not allocate new number of elements xi.",err,error,*999)
+              IF(generatedMesh%regularMesh%meshDimension==0) THEN
+                !First time, default attributes
+                newNumberOfElementsXi(1:numberOfXi)=1
+              ELSE IF(generatedMesh%regularMesh%meshDimension>numberOfXi) THEN
+                !New number of xi is less than the old number of xi
+                newNumberOfElementsXi(1:numberOfXi)=generatedMesh%regularMesh%numberOfElementsXi(1:numberOfXi)
               ELSE
-                LOCAL_ERROR="The basis with index "//TRIM(NUMBER_TO_VSTRING(basis_idx,"*",ERR,ERROR))// &
-                  & " is not associated."
-                CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+                !New number of xi is more than the old number of xi
+                newNumberOfElementsXi(1:generatedMesh%regularMesh%meshDimension)= &
+                  & generatedMesh%regularMesh%numberOfElementsXi(1:generatedMesh%regularMesh%meshDimension)
+                newNumberOfElementsXi(generatedMesh%regularMesh%meshDimension+1:numberOfXi)= &
+                  & generatedMesh%regularMesh%numberOfElementsXi(generatedMesh%regularMesh%meshDimension+1:numberOfXi)
               ENDIF
-            ENDDO
-          ELSE
-            CALL FLAG_ERROR("Cylinder generated mesh is not associated.",ERR,ERROR,*999)
-          ENDIF
-        CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
-          IF(ASSOCIATED(GENERATED_MESH%ELLIPSOID_MESH)) THEN
-            IF(ALLOCATED(GENERATED_MESH%ELLIPSOID_MESH%BASES)) DEALLOCATE(GENERATED_MESH%ELLIPSOID_MESH%BASES)
-            ALLOCATE(GENERATED_MESH%ELLIPSOID_MESH%BASES(NUM_BASES),STAT=ERR)
-            IF(ERR/=0) CALL FLAG_ERROR("Could not allocate bases.",ERR,ERROR,*999)
-            DO basis_idx=1,NUM_BASES
-              IF(ASSOCIATED(BASES(basis_idx)%PTR)) THEN
-                GENERATED_MESH%ELLIPSOID_MESH%BASES(basis_idx)%PTR=>BASES(basis_idx)%PTR
+              CALL MOVE_ALLOC(newNumberOfElementsXi,generatedMesh%regularMesh%numberOfElementsXi)
+              !Reset the number of elements in each xi direction
+              ALLOCATE(newBaseVectors(coordinateDimension,numberOfXi),STAT=err)
+              IF(err/=0) CALL FlagError("Could not allocate new base vectors.",err,error,*999)
+              IF(ALLOCATED(generatedMesh%regularMesh%baseVectors)) THEN
+                IF(generatedMesh%regularMesh%meshDimension>numberOfXi) THEN
+                  !New number of xi is less than the old number of xi
+                  newBaseVectors(1:coordinateDimension,1:numberOfXi)= &
+                    & generatedMesh%regularMesh%baseVectors(1:coordinateDimension,1:numberOfXi)
+                ELSE
+                  !New number of xi is more than the old number of xi
+                  newBaseVectors(1:coordinateDimension,1:generatedMesh%regularMesh%meshDimension)= &
+                    & generatedMesh%regularMesh%baseVectors(1:coordinateDimension,1:generatedMesh%regularMesh%meshDimension)
+                  newBaseVectors(1:coordinateDimension,generatedMesh%regularMesh%meshDimension+1:numberOfXi)= &
+                    & generatedMesh%regularMesh%baseVectors(1:coordinateDimension,generatedMesh%regularMesh% &
+                    & meshDimension+1:numberOfXi)
+                ENDIF
               ELSE
-                LOCAL_ERROR="The basis with index "//TRIM(NUMBER_TO_VSTRING(basis_idx,"*",ERR,ERROR))// &
-                  & " is not associated."
-                CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+                !We don't have any base vectors defined so default the values to the extents
+                IF(numberOfXi==1) THEN
+                  !The base vector is just the extent vector
+                  newBaseVectors(1:coordinateDimension,1)=generatedMesh%regularMesh%maximumExtent(1:coordinateDimension)
+                ELSE
+                  newBaseVectors=0.0_DP
+                  IF(numberOfXi<coordinateDimension) THEN
+                    !Find the first number of mesh dimensions for which the extent is non-zero.
+                    count=0
+                    coordinateIdx=1
+                    DO xiIdx=1,numberOfXi
+                      DO WHILE(ABS(generatedMesh%regularMesh%maximumExtent(coordinateIdx))<=ZERO_TOLERANCE)
+                        coordinateIdx=coordinateIdxdx+1
+                      ENDDO !While
+                      newBaseVectors(coordinateIdx,xiIdx)=generatedMesh%regularMesh%maximumExtent(coordinateIdx)
+                      coordinateIdx=coordinateIdx+1
+                      count=count+1
+                    ENDDO !xiIdx
+                    IF(count/=numberOfXi)  &
+                      & CALL FlagError("Invalid mesh extent. There number of non-zero components is < the mesh dimension.", &
+                      & err,error,*999)
+                  ELSE
+                    !Number of xi is the same as the number of coordinates
+                    !The default base vectors are aligned with the coordinate vectors
+                    DO coordinateIdx=1,coordinateDimension
+                      newBaseVectors(coordinateIdx,coordinateIdx)=generatedMesh%regularMesh%maximumExtent(coordinateIdx)
+                    ENDDO !coordinate_idx
+                  ENDIF
+                ENDIF
               ENDIF
-            ENDDO
-          ELSE
-            CALL FLAG_ERROR("Ellpsoid generated mesh is not associated.",ERR,ERROR,*999)
-          ENDIF
-        CASE DEFAULT
-          LOCAL_ERROR="The generated mesh type of "//TRIM(NUMBER_TO_VSTRING(GENERATED_MESH%GENERATED_TYPE,"*",ERR,ERROR))// &
-            & " is invalid."
-          CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
-        END SELECT
+              CALL MOVE_ALLOC(newNumberOfElementsXi,generatedMesh%regularMesh%numberOfElementsXi)
+              !Set the mesh dimension to be the new number of Xi
+              generatedMesh%regularMesh%meshDimension=numberOfXi
+            ELSE
+              CALL FlagError("Regular generated mesh is not associated.",err,error,*999)
+            ENDIF
+          CASE(GENERATED_MESH_POLAR_MESH_TYPE)
+            CALL FlagError("Not implemented.",err,error,*999)
+          CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
+            CALL FlagError("Not implemented.",err,error,*999)
+          CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
+            IF(ASSOCIATED(generatedMesh%cylinderMesh)) THEN
+              IF(ALLOCATED(generatedMesh%cylinderMesh%baseVectors)) THEN
+                CALL FlagError("Can not reset the basis if base vectors have been specified.",err,error,*999)
+              ELSE
+                IF(ALLOCATED(generatedMesh%cylinderMesh%bases)) DEALLOCATE(generatedMesh%cylinderMesh%bases)
+                ALLOCATE(generatedMesh%cylinderMesh%bases(numberOfBases),STAT=err)
+                IF(err/=0) CALL FlagError("Could not allocate bases.",err,error,*999)
+                DO basisIdx=1,numberOfBases
+                  generatedMesh%cylinderMesh%bases(basisIdx)%ptr=>bases(basisIdx)%ptr
+                ENDDO !basisIdx
+                generatedMesh%cylinderMesh%meshDimension=numberOfXi
+              ENDIF
+            ELSE
+              CALL FlagError("Cylinder generated mesh is not associated.",err,error,*999)
+            ENDIF
+          CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
+            IF(ASSOCIATED(generatedMesh%ellipsoidMesh)) THEN
+              IF(ALLOCATED(generatedMesh%ellipsoidMesh%bases)) DEALLOCATE(generatedMesh%ellipsoidMesh%bases)
+              ALLOCATE(generatedMesh%ellipsoidMesh%bases(numberOfBases),STAT=err)
+              IF(err/=0) CALL FlagError("Could not allocate bases.",err,error,*999)
+              DO basisIdx=1,numberOfBases
+                generatedMesh%ellipsoidMesh%bases(basisIdx)%ptr=>bases(basisIdx)%ptr
+              ENDDO !basisIdx
+              generatedMesh%ellipsoidMesh%meshDimension=numberOfXi
+            ELSE
+              CALL FlagError("Ellpsoid generated mesh is not associated.",err,error,*999)
+            ENDIF
+          CASE DEFAULT
+            localError="The generated mesh type of "//TRIM(NumberToVString(generatedMesh%generatedType,"*",err,error))// &
+              & " is invalid."
+            CALL FlagError(localError,err,error,*999)
+          END SELECT
+        ENDIF
+      ELSEIF
+        CALL FlagError("No bases where supplied.",err,error,*999)
       ENDIF
     ELSE
-      CALL FLAG_ERROR("Generated mesh is already associated.",ERR,ERROR,*999)
+      CALL FlagError("Generated mesh is already associated.",err,error,*999)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_BASIS_SET")
+    CALL Exits("GeneratedMeshBasisSet")
     RETURN
-999 CALL ERRORS("GENERATED_MESH_BASIS_SET",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_BASIS_SET")
+999 CALL Errors("GeneratedMeshBasisSet",err,error)
+    CALL Exits("GeneratedMeshBasisSet")
     RETURN 1
-  END SUBROUTINE GENERATED_MESH_BASIS_SET
+  END SUBROUTINE GeneratedMeshBasisSet
 
   !
   !================================================================================================================================
   !
 
   !>Sets/changes the base vectors of a generated mesh. \see OPENCMISS::CMISSGeneratedMeshBaseVectorsSet
-  SUBROUTINE GENERATED_MESH_BASE_VECTORS_SET(GENERATED_MESH,BASE_VECTORS,ERR,ERROR,*)
+  SUBROUTINE GeneratedMeshBaseVectorsSet(generatedMesh,baseVectors,err,error,*)
 
     !Argument variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<A pointer to the generated mesh to set the base vectors fo
-    REAL(DP), INTENT(IN) :: BASE_VECTORS(:,:) !<BASE_VECTORS(coordinate_idx,xi_idx). The base vectors for the generated mesh to set.
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    TYPE(generatedMesh_TYPE), POINTER :: generatedMesh !<A pointer to the generated mesh to set the base vectors fo
+    REAL(DP), INTENT(IN) :: baseVectors(:,:) !<baseVectors(coordinateIdx,xiIdx). The base vectors for the generated mesh to set.
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
-    INTEGER(INTG) :: COORDINATE_DIMENSION
-    TYPE(BASIS_TYPE), POINTER :: BASIS
-    TYPE(BASIS_PTR_TYPE), POINTER :: BASES(:)
-    TYPE(COORDINATE_SYSTEM_TYPE), POINTER :: COORDINATE_SYSTEM
-    TYPE(VARYING_STRING) :: LOCAL_ERROR
+    INTEGER(INTG) :: coordinateDimension
+    TYPE(BASIS_TYPE), POINTER :: basis
+    TYPE(BASIS_PTR_TYPE), POINTER :: bases(:)
+    TYPE(COORDINATE_SYSTEM_TYPE), POINTER :: coordinateSystem
+    TYPE(VARYING_STRING) :: localError
 
-    CALL ENTERS("GENERATED_MESH_BASE_VECTORS_SET",ERR,ERROR,*999)
+    NULLIFY(coordinateSystem)
+    NULLIFY(bases)
+    NULLIFY(basis)
+    
+    CALL Enters("GeneratedMeshBaseVectorsSet",err,error,*999)
 
-    IF(ASSOCIATED(GENERATED_MESH)) THEN
-      IF(GENERATED_MESH%GENERATED_MESH_FINISHED) THEN
-        CALL FLAG_ERROR("Generated mesh has been finished.",ERR,ERROR,*999)
+    IF(ASSOCIATED(generatedMesh)) THEN
+      IF(generatedMesh%generatedMeshFinished) THEN
+        CALL FlagError("Generated mesh has been finished.",err,error,*999)
       ELSE
-        NULLIFY(COORDINATE_SYSTEM)
-        CALL GENERATED_MESH_COORDINATE_SYSTEM_GET(GENERATED_MESH,COORDINATE_SYSTEM,ERR,ERROR,*999)
-        CALL COORDINATE_SYSTEM_DIMENSION_GET(COORDINATE_SYSTEM,COORDINATE_DIMENSION,ERR,ERROR,*999)
-        IF(SIZE(BASE_VECTORS,1)==COORDINATE_DIMENSION) THEN
-          SELECT CASE(GENERATED_MESH%GENERATED_TYPE)
+        CALL GeneratedMeshCoordinateSystemGet(generatedMesh,coordianteSystem,err,error,*999)
+        CALL COORDINATE_SYSTEM_DIMENSION_GET(coordinateSystem,coordinateDimension,err,error,*999)
+        IF(SIZE(baseVectors,1)==coordinateDimension) THEN
+          SELECT CASE(generatedMesh%generatedType)
           CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
-            IF(ASSOCIATED(GENERATED_MESH%REGULAR_MESH)) THEN
-              BASES=>GENERATED_MESH%REGULAR_MESH%BASES
-              IF(ASSOCIATED(BASES)) THEN
-                BASIS=>BASES(1)%PTR !Bases should all have same number of xi
-                IF(ASSOCIATED(BASIS)) THEN
-                  IF(SIZE(BASE_VECTORS,2)==BASIS%NUMBER_OF_XI) THEN
-                    IF(ALLOCATED(GENERATED_MESH%REGULAR_MESH%BASE_VECTORS)) DEALLOCATE(GENERATED_MESH%REGULAR_MESH%BASE_VECTORS)
-                    ALLOCATE(GENERATED_MESH%REGULAR_MESH%BASE_VECTORS(SIZE(BASE_VECTORS,1),SIZE(BASE_VECTORS,2)),STAT=ERR)
-                    IF(ERR/=0) CALL FLAG_ERROR("Could not allocate base vectors.",ERR,ERROR,*999)
-                    GENERATED_MESH%REGULAR_MESH%BASE_VECTORS=BASE_VECTORS
+            IF(ASSOCIATED(generatedMesh%regularMesh)) THEN
+              bases=>generatedMesh%regularMesh%bases
+              IF(ASSOCIATED(bases)) THEN
+                basis=>bases(1)%ptr !Bases should all have same number of xi
+                IF(ASSOCIATED(bases)) THEN
+                  IF(SIZE(baseVectors,2)==basis%NUMBER_OF_XI) THEN
+                    IF(ALLOCATED(generatedMesh%regularMesh%baseVectors)) DEALLOCATE(generatedMesh%regularMesh%baseVectors)
+                    ALLOCATE(generatedMesh%regularMesh%baseVectors(SIZE(baseVectors,1),SIZE(baseVectors,2)),STAT=err)
+                    IF(err/=0) CALL FlagError("Could not allocate base vectors.",err,error,*999)
+                    generatedMesh%regularMesh%baseVectors=baseVectors
                   ELSE
-                    LOCAL_ERROR="The size of the second dimension of base vectors of "// &
-                      & TRIM(NUMBER_TO_VSTRING(SIZE(BASE_VECTORS,2),"*",ERR,ERROR))// &
+                    localError="The size of the second dimension of base vectors of "// &
+                      & TRIM(NumberToVString(SIZE(baseVectors,2),"*",err,error))// &
                       & " is invalid. The second dimension size must match the number of mesh dimensions of "// &
-                      & TRIM(NUMBER_TO_VSTRING(BASIS%NUMBER_OF_XI,"*",ERR,ERROR))//"."
-                    CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+                      & TRIM(NumberToVString(basis%NUMBER_OF_XI,"*",err,error))//"."
+                    CALL FlagError(localError,err,error,*999)
                   ENDIF
                 ELSE
-                  CALL FLAG_ERROR("Bases are not associated.",ERR,ERROR,*999)
+                  CALL FlagError("Bases are not associated.",err,error,*999)
                 ENDIF
               ELSE
-                CALL FLAG_ERROR("You must set the generated mesh basis before setting base vectors.",ERR,ERROR,*999)
+                CALL FlagError("You must set the generated mesh basis before setting base vectors.",err,error,*999)
               ENDIF
             ELSE
-              CALL FLAG_ERROR("Regular generated mesh is not associated.",ERR,ERROR,*999)
+              CALL FlagError("Regular generated mesh is not associated.",err,error,*999)
             ENDIF
           CASE(GENERATED_MESH_POLAR_MESH_TYPE)
-            CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
+            CALL FlagError("Not implemented.",err,error,*999)
           CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
-            CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
+            CALL FlagError("Not implemented.",err,error,*999)
           CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
-            CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
+            IF(ASSOCIATED(generatedMesh%cylinderMesh)) THEN
+              bases=>generatedMesh%cylinderMesh%bases
+              IF(ASSOCIATED(bases)) THEN
+                basis=>bases(1)%ptr !Bases should all have same number of xi
+                IF(ASSOCIATED(bases)) THEN
+                  IF(SIZE(baseVectors,2)==basis%NUMBER_OF_XI) THEN
+                    IF(ALLOCATED(generatedMesh%cylinderMesh%baseVectors)) DEALLOCATE(generatedMesh%cylinderMesh%baseVectors)
+                    ALLOCATE(generatedMesh%cylinderMesh%baseVectors(SIZE(baseVectors,1),SIZE(baseVectors,2)),STAT=err)
+                    IF(err/=0) CALL FlagError("Could not allocate base vectors.",err,error,*999)
+                    generatedMesh%cylinderMesh%baseVectors=baseVectors
+                  ELSE
+                    localError="The size of the second dimension of base vectors of "// &
+                      & TRIM(NumberToVString(SIZE(baseVectors,2),"*",err,error))// &
+                      & " is invalid. The second dimension size must match the number of mesh dimensions of "// &
+                      & TRIM(NumberToVString(basis%NUMBER_OF_XI,"*",err,error))//"."
+                    CALL FlagError(localError,err,error,*999)
+                  ENDIF
+                ELSE
+                  CALL FlagError("Bases are not associated.",err,error,*999)
+                ENDIF
+              ELSE
+                CALL FlagError("You must set the generated mesh basis before setting base vectors.",err,error,*999)
+              ENDIF
+            ELSE
+              CALL FlagError("Cylinder generated mesh is not associated.",err,error,*999)
+            ENDIF
+          CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
+            CALL FlagError("Not implemented.",err,error,*999)
           CASE DEFAULT
-            LOCAL_ERROR="The generated mesh mesh type of "//TRIM(NUMBER_TO_VSTRING(GENERATED_MESH%GENERATED_TYPE,"*",ERR,ERROR))// &
+            localError="The generated mesh mesh type of "//TRIM(NumberToVString(generatedMesh%generatedType,"*",err,error))// &
               & " is invalid."
-            CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+            CALL FlagError(localError,err,error,*999)
           END SELECT
         ELSE
-          LOCAL_ERROR="The size of the first dimension of base vectors of "// &
-            & TRIM(NUMBER_TO_VSTRING(SIZE(BASE_VECTORS,1),"*",ERR,ERROR))// &
+          localError="The size of the first dimension of base vectors of "// &
+            & TRIM(NumberToVString(SIZE(baseVectors,1),"*",err,error))// &
             & " is invalid. The first dimension size must match the coordinate system dimension of "// &
-            & TRIM(NUMBER_TO_VSTRING(COORDINATE_DIMENSION,"*",ERR,ERROR))//"."
-          CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+            & TRIM(NumberToVString(coordinateDimension,"*",err,error))//"."
+          CALL FlagError(localError,err,error,*999)
         ENDIF
       ENDIF
     ELSE
-      CALL FLAG_ERROR("Generated mesh is not associated.",ERR,ERROR,*999)
+      CALL FlagError("Generated mesh is not associated.",err,error,*999)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_BASE_VECTORS_SET")
+    CALL Exits("GeneratedMeshBaseVectorsSet")
     RETURN
-999 CALL ERRORS("GENERATED_MESH_BASE_VECTORS_SET",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_BASE_VECTORS_SET")
+999 CALL Errors("GeneratedMeshBaseVectorsSet",err,error)
+    CALL Exits("GeneratedMeshBaseVectorsSet")
     RETURN 1
-  END SUBROUTINE GENERATED_MESH_BASE_VECTORS_SET
+  END SUBROUTINE GeneratedMeshBaseVectorsSet
 
   !
   !================================================================================================================================
   !
 
   !>Returns the coordinate system for a generated mesh accounting for regions and interfaces
-  SUBROUTINE GENERATED_MESH_COORDINATE_SYSTEM_GET(GENERATED_MESH,COORDINATE_SYSTEM,ERR,ERROR,*)
+  SUBROUTINE GeneratedMeshCoordinateSystemGet(generatedMesh,coordinateSystem,err,error,*)
 
     !Argument variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<A pointer to the generated mesh to get the coordinate system for
-    TYPE(COORDINATE_SYSTEM_TYPE), POINTER :: COORDINATE_SYSTEM !<On return, the generated meshes coordinate system. Must not be associated on entry.
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh to get the coordinate system for
+    TYPE(COORDINATE_SYSTEM_TYPE), POINTER :: coordinateSystem !<On return, the generated meshes coordinate system. Must not be associated on entry.
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
-    TYPE(INTERFACE_TYPE), POINTER :: INTERFACE
-    TYPE(REGION_TYPE), POINTER :: REGION
-    TYPE(VARYING_STRING) :: LOCAL_ERROR
+    TYPE(INTERFACE_TYPE), POINTER :: interface
+    TYPE(REGION_TYPE), POINTER :: region
+    TYPE(VARYING_STRING) :: localError
 
-    CALL ENTERS("GENERATED_MESH_COORDINATE_SYSTEM_GET",ERR,ERROR,*999)
+    NULLIFY(interface)
+    NULLIFY(region)
+    
+    CALL Enters("GeneratedMeshCoordinateSystemGet",err,error,*999)
 
-    IF(ASSOCIATED(GENERATED_MESH)) THEN
-      IF(ASSOCIATED(COORDINATE_SYSTEM)) THEN
-        CALL FLAG_ERROR("Coordinate system is already associated.",ERR,ERROR,*999)
+    IF(ASSOCIATED(generatedMesh)) THEN
+      IF(ASSOCIATED(coordinateSystem)) THEN
+        CALL FlagError("Coordinate system is already associated.",err,error,*999)
       ELSE
-        NULLIFY(COORDINATE_SYSTEM)
-        REGION=>GENERATED_MESH%REGION
-        IF(ASSOCIATED(REGION)) THEN
-          COORDINATE_SYSTEM=>REGION%COORDINATE_SYSTEM
-          IF(.NOT.ASSOCIATED(COORDINATE_SYSTEM)) THEN
-            LOCAL_ERROR="The coordinate system is not associated for generated mesh number "// &
-              & TRIM(NUMBER_TO_VSTRING(GENERATED_MESH%USER_NUMBER,"*",ERR,ERROR))//" of region number "// &
-              & TRIM(NUMBER_TO_VSTRING(REGION%USER_NUMBER,"*",ERR,ERROR))//"."
-            CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+        NULLIFY(coordinateSystem)
+        region=>generatedMesh%region
+        IF(ASSOCIATED(region)) THEN
+          coordinateSystem=>region%COORDINATE_SYSTEM
+          IF(.NOT.ASSOCIATED(coordinateSystem)) THEN
+            localError="The coordinate system is not associated for generated mesh number "// &
+              & TRIM(NumberToVString(generatedMesh%userNumber,"*",err,error))//" of region number "// &
+              & TRIM(NumberToVString(region%USER_NUMBER,"*",err,error))//"."
+            CALL FlagError(localError,err,error,*999)
           ENDIF
         ELSE
-          NULLIFY(INTERFACE)
-          INTERFACE=>GENERATED_MESH%INTERFACE
-          IF(ASSOCIATED(INTERFACE)) THEN
-            COORDINATE_SYSTEM=>INTERFACE%COORDINATE_SYSTEM
-            IF(.NOT.ASSOCIATED(COORDINATE_SYSTEM)) THEN
-              LOCAL_ERROR="The coordinate system is not associated for generated mesh number "// &
-                & TRIM(NUMBER_TO_VSTRING(GENERATED_MESH%USER_NUMBER,"*",ERR,ERROR))//" of interface number "// &
-                & TRIM(NUMBER_TO_VSTRING(INTERFACE%USER_NUMBER,"*",ERR,ERROR))//"."
-              CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+          interface=>generatedMesh%interface
+          IF(ASSOCIATED(interface)) THEN
+            coordinateSystem=>interface%COORDINATE_SYSTEM
+            IF(.NOT.ASSOCIATED(coordinateSystem)) THEN
+              localError="The coordinate system is not associated for generated mesh number "// &
+                & TRIM(NumberToVString(generatedMesh%userNumber,"*",err,error))//" of interface number "// &
+                & TRIM(NumberToVString(interface%USER_NUMBER,"*",err,error))//"."
+              CALL FlagError(localError,err,error,*999)
             ENDIF
           ELSE
-            LOCAL_ERROR="The interface is not associated for generated mesh number "// &
-              & TRIM(NUMBER_TO_VSTRING(GENERATED_MESH%USER_NUMBER,"*",ERR,ERROR))//"."
-            CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+            localError="The interface is not associated for generated mesh number "// &
+              & TRIM(NumberToVString(generatedMesh%userNumber,"*",err,error))//"."
+            CALL FlagError(localError,err,error,*999)
           ENDIF
         ENDIF
       ENDIF
     ELSE
-      CALL FLAG_ERROR("Generated mesh is not associated.",ERR,ERROR,*999)
+      CALL FlagError("Generated mesh is not associated.",err,error,*999)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_COORDINATE_SYSTEM_GET")
+    CALL Exits("GeneratedMeshCoordinateSystemGet")
     RETURN
-999 CALL ERRORS("GENERATED_MESH_COORDINATE_SYSTEM_GET",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_COORDINATE_SYSTEM_GET")
+999 CALL Errors("GeneratedMeshCoordinateSystemGet",err,error)
+    CALL Exits("GeneratedMeshCoordinateSystemGet")
     RETURN 1
-  END SUBROUTINE GENERATED_MESH_COORDINATE_SYSTEM_GET
+    
+  END SUBROUTINE GeneratedMeshCoordinateSystemGet
 
   !
   !================================================================================================================================
   !
 
   !>Finishes the creation of a generated mesh. \see OPENCMISS::CMISSGeneratedMeshCreateFinish
-  SUBROUTINE GENERATED_MESH_CREATE_FINISH(GENERATED_MESH,MESH_USER_NUMBER,MESH,ERR,ERROR,*)
+  SUBROUTINE GeneratedMeshCreateFinish(generatedMesh,meshUserNumber,mesh,err,error,*)
 
     !Argument variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<A pointer to the generated mesh to finish the creation of
-    INTEGER(INTG), INTENT(IN) :: MESH_USER_NUMBER !<The mesh's user number
-    TYPE(MESH_TYPE), POINTER :: MESH !<On exit, a pointer to the generated mesh. Must not be associated on entry
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh to finish the creation of
+    INTEGER(INTG), INTENT(IN) :: meshUserNumber !<The mesh's user number
+    TYPE(MESH_TYPE), POINTER :: mesh !<On exit, a pointer to the generated mesh. Must not be associated on entry
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
-    TYPE(VARYING_STRING) :: LOCAL_ERROR
+    TYPE(VARYING_STRING) :: localError
 
-    CALL ENTERS("GENERATED_MESH_CREATE_FINISH",ERR,ERROR,*999)
+    CALL Enters("GeneratedMeshCreateFinish",err,error,*999)
 
-    IF(ASSOCIATED(GENERATED_MESH)) THEN
-      IF(GENERATED_MESH%GENERATED_MESH_FINISHED) THEN
-        CALL FLAG_ERROR("Generated mesh has already been finished.",ERR,ERROR,*999)
+    IF(ASSOCIATED(generatedMesh)) THEN
+      IF(generatedMesh%generatedMeshFinished) THEN
+        CALL FlagError("Generated mesh has already been finished.",err,error,*999)
       ELSE
-        IF(ASSOCIATED(MESH)) THEN
-          CALL FLAG_ERROR("Mesh is already associated.",ERR,ERROR,*999)
+        IF(ASSOCIATED(mesh)) THEN
+          CALL FlagError("Mesh is already associated.",err,error,*999)
         ELSE
-          SELECT CASE(GENERATED_MESH%GENERATED_TYPE)
+          SELECT CASE(generatedMesh%generatedType)
           CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
-            CALL GENERATED_MESH_REGULAR_CREATE_FINISH(GENERATED_MESH,MESH_USER_NUMBER,ERR,ERROR,*999)
+            CALL GeneratedMeshRegularCreateFinish(generatedMesh,meshUserNumber,err,error,*999)
           CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
-            CALL GENERATED_MESH_CYLINDER_CREATE_FINISH(GENERATED_MESH,MESH_USER_NUMBER,ERR,ERROR,*999)
+            CALL GENERATED_MESH_CYLINDER_CREATE_FINISH(generatedMesh,meshUserNumber,err,error,*999)
           CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
-            CALL GENERATED_MESH_ELLIPSOID_CREATE_FINISH(GENERATED_MESH,MESH_USER_NUMBER,ERR,ERROR,*999)
+            CALL GeneratedMeshEllipsoidCreateFinish(generatedMesh,meshUserNumber,err,error,*999)
           CASE(GENERATED_MESH_POLAR_MESH_TYPE)
-            CALL FLAG_ERROR("Not implmented.",ERR,ERROR,*999)
+            CALL FlagError("Not implmented.",err,error,*999)
           CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
-            CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
+            CALL FlagError("Not implemented.",err,error,*999)
           CASE DEFAULT
-            LOCAL_ERROR="The generated mesh mesh type of "// &
-              & TRIM(NUMBER_TO_VSTRING(GENERATED_MESH%GENERATED_TYPE,"*",ERR,ERROR))//" is invalid."
-            CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+            localError="The generated mesh mesh type of "// &
+              & TRIM(NumberToVString(generatedMesh%generatedType,"*",err,error))//" is invalid."
+            CALL FlagError(localError,err,error,*999)
           END SELECT
           !Return the pointers
-          MESH=>GENERATED_MESH%MESH
-          MESH%GENERATED_MESH=>GENERATED_MESH
-          GENERATED_MESH%GENERATED_MESH_FINISHED=.TRUE.
+          mesh=>generatedMesh%mesh
+          mesh%GENERATED_MESH=>generatedMesh
+          generatedMesh%generatedMeshFinished=.TRUE.
         ENDIF
       ENDIF
     ELSE
-      CALL FLAG_ERROR("Generated mesh is not associated.",ERR,ERROR,*999)
+      CALL FlagError("Generated mesh is not associated.",err,error,*999)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_CREATE_FINISH")
+    CALL Exits("GeneratedMeshCreateFinish")
     RETURN
-999 CALL ERRORS("GENERATED_MESH_CREATE_FINISH",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_CREATE_FINISH")
+999 CALL Errors("GeneratedMeshCreateFinish",err,error)
+    CALL Exits("GeneratedMeshCreateFinish")
     RETURN 1
-  END SUBROUTINE GENERATED_MESH_CREATE_FINISH
+    
+  END SUBROUTINE GeneratedMeshCreateFinish
 
   !
   !================================================================================================================================
   !
 
   !>Starts the creation of a generic generated mesh.
-  SUBROUTINE GENERATED_MESH_CREATE_START_GENERIC(GENERATED_MESHES,USER_NUMBER,GENERATED_MESH,ERR,ERROR,*)
+  SUBROUTINE GeneratedMeshCreateStartGeneric(generatedMeshes,userNumber,generatedMesh,err,error,*)
 
     !Argument variables
-    TYPE(GENERATED_MESHES_TYPE), POINTER :: GENERATED_MESHES !<A pointer to the generated meshes
-    INTEGER(INTG), INTENT(IN) :: USER_NUMBER !<The user number of the generated mesh to create
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<On exit, a pointer to the created generated mesh. Must not be associated on entry.
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    TYPE(GeneratedMeshesType), POINTER :: generatedMeshes !<A pointer to the generated meshes
+    INTEGER(INTG), INTENT(IN) :: userNumber !<The user number of the generated mesh to create
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<On exit, a pointer to the created generated mesh. Must not be associated on entry.
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
-    INTEGER(INTG) :: DUMMY_ERR,generated_mesh_idx
-    TYPE(GENERATED_MESH_TYPE), POINTER :: NEW_GENERATED_MESH
-    TYPE(GENERATED_MESH_PTR_TYPE), POINTER :: NEW_GENERATED_MESHES(:)
-    TYPE(VARYING_STRING) :: DUMMY_ERROR
+    INTEGER(INTG) :: dummyErr,generatedMeshIdx
+    TYPE(GeneratedMeshType), POINTER :: newGeneratedMesh
+    TYPE(GeneratedMeshPtrType), ALLOCATABLE :: newGeneratedMeshes(:)
+    TYPE(VARYING_STRING) :: dummyError
 
-    NULLIFY(NEW_GENERATED_MESH)
-    NULLIFY(NEW_GENERATED_MESHES)
+    NULLIFY(newGeneratedMesh)
 
-    CALL ENTERS("GENERATED_MESH_CREATE_START_GENERIC",ERR,ERROR,*997)
+    CALL Enters("GeneratedMeshCreateStartGeneric",err,error,*997)
 
-    IF(ASSOCIATED(GENERATED_MESHES)) THEN
-      IF(ASSOCIATED(GENERATED_MESH)) THEN
-        CALL FLAG_ERROR("Generated mesh is already associated.",ERR,ERROR,*997)
+    IF(ASSOCIATED(generatedMeshes)) THEN
+      IF(ASSOCIATED(generatedMesh)) THEN
+        CALL FlagError("Generated mesh is already associated.",err,error,*997)
       ELSE
         !Initialise generated mesh
-        CALL GENERATED_MESH_INITIALISE(NEW_GENERATED_MESH,ERR,ERROR,*999)
+        CALL GeneratedMeshInitialise(newGeneratedMesh,err,error,*999)
         !Set default generated mesh values
-        NEW_GENERATED_MESH%USER_NUMBER=USER_NUMBER
-        NEW_GENERATED_MESH%GLOBAL_NUMBER=GENERATED_MESHES%NUMBER_OF_GENERATED_MESHES+1
-        NEW_GENERATED_MESH%GENERATED_MESHES=>GENERATED_MESHES
+        newGeneratedMesh%userNumber=userNumber
+        newGeneratedMesh%globalNumber=generatedMeshes%numberOfGeneratedMeshes+1
+        newGeneratedMesh%generatedMeshes=>generatedMeshes
         !Add new generated mesh into list of generated meshes
-        ALLOCATE(NEW_GENERATED_MESHES(GENERATED_MESHES%NUMBER_OF_GENERATED_MESHES+1),STAT=ERR)
-        IF(ERR/=0) CALL FLAG_ERROR("Could not allocate new generated meshes.",ERR,ERROR,*999)
-        DO generated_mesh_idx=1,GENERATED_MESHES%NUMBER_OF_GENERATED_MESHES
-          NEW_GENERATED_MESHES(generated_mesh_idx)%PTR=>GENERATED_MESHES%GENERATED_MESHES(generated_mesh_idx)%PTR
-        ENDDO !generated_mesh_idx
-        NEW_GENERATED_MESHES(GENERATED_MESHES%NUMBER_OF_GENERATED_MESHES+1)%PTR=>NEW_GENERATED_MESH
-        IF(ASSOCIATED(GENERATED_MESHES%GENERATED_MESHES)) DEALLOCATE(GENERATED_MESHES%GENERATED_MESHES)
-        GENERATED_MESHES%GENERATED_MESHES=>NEW_GENERATED_MESHES
-        GENERATED_MESHES%NUMBER_OF_GENERATED_MESHES=GENERATED_MESHES%NUMBER_OF_GENERATED_MESHES+1
+        ALLOCATE(newGeneratedMeshes(generatedMeshes%numberOfGeneratedMeshes+1),STAT=err)
+        IF(err/=0) CALL FlagError("Could not allocate new generated meshes.",err,error,*999)
+        DO generatedMeshIdx=1,generatedMeshes%numberOfGeneratedMeshes
+          newGeneratedMeshes(generatedMeshIdx)%ptr=>generatedMeshes%generatedMeshes(generatedMeshIdx)%ptr
+        ENDDO !generatedMeshIdx
+        newGeneratedMeshes(generatedMeshes%numberOfGeneratedMeshes+1)%ptr=>newGeneratedMesh
+        CALL MOVE_ALLOC(newGeneratedMeshes,generatedMeshes%generatedMeshes)
+        generatedMeshes%numberOfGeneratedMeshes=generatedMeshes%numberOfGeneratedMeshes+1
         !Return the pointer
-        GENERATED_MESH=>NEW_GENERATED_MESH
+        generatedMesh=>newGeneratedMesh
       ENDIF
     ELSE
-      CALL FLAG_ERROR("Generated meshes is not associated.",ERR,ERROR,*997)
+      CALL FlagError("Generated meshes is not associated.",err,error,*997)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_CREATE_START_GENERIC")
+    CALL Exits("GeneratedMeshCreateStartGeneric")
     RETURN
-999 CALL GENERATED_MESH_FINALISE(NEW_GENERATED_MESH,DUMMY_ERR,DUMMY_ERROR,*998)
-998 IF(ASSOCIATED(NEW_GENERATED_MESHES)) DEALLOCATE(NEW_GENERATED_MESHES)
-    NULLIFY(GENERATED_MESH)
-997 CALL ERRORS("GENERATED_MESH_CREATE_START_GENERIC",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_CREATE_START_GENERIC")
+999 CALL GeneratedMeshFinalise(newGeneratedMesh,dummyErr,dummyError,*998)
+998 IF(ALLOCATED(newGeneratedMeshes)) DEALLOCATE(newGeneratedMeshes)
+    NULLIFY(generatedMesh)
+997 CALL Errors("GeneratedMeshCreateStartGeneric",err,error)
+    CALL Exits("GeneratedMeshCreateStartGeneric")
     RETURN 1
 
-  END SUBROUTINE GENERATED_MESH_CREATE_START_GENERIC
+  END SUBROUTINE GeneratedMeshCreateStartGeneric
 
   !
   !================================================================================================================================
   !
 
   !>Starts the creation of a generated mesh. \see OPENCMISS::CMISSGeneratedMeshCreateFinish
-  SUBROUTINE GENERATED_MESH_CREATE_START_INTERFACE(USER_NUMBER,INTERFACE,GENERATED_MESH,ERR,ERROR,*)
+  SUBROUTINE GeneratedMeshCreateStartInterface(userNumber,interface,generatedMesh,err,error,*)
 
     !Argument variables
-    INTEGER(INTG), INTENT(IN) :: USER_NUMBER !<The user number of the generated mesh to create
-    TYPE(INTERFACE_TYPE), POINTER :: INTERFACE !<A pointer to the interface to create the generated mesh on
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<On exit, a pointer to the created generated mesh. Must not be associated on entry.
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    INTEGER(INTG), INTENT(IN) :: userNumber !<The user number of the generated mesh to create
+    TYPE(INTERFACE_TYPE), POINTER :: interface !<A pointer to the interface to create the generated mesh on
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<On exit, a pointer to the created generated mesh. Must not be associated on entry.
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
-    TYPE(VARYING_STRING) :: LOCAL_ERROR
+    TYPE(VARYING_STRING) :: localError
 
-    CALL ENTERS("GENERATED_MESH_CREATE_START_INTERFACE",ERR,ERROR,*999)
+    CALL Enters("GeneratedMeshCreateStartInterface",err,error,*999)
 
-    IF(ASSOCIATED(INTERFACE)) THEN
-      IF(ASSOCIATED(GENERATED_MESH)) THEN
-        CALL FLAG_ERROR("Generated mesh is already associated.",ERR,ERROR,*999)
+    IF(ASSOCIATED(interface)) THEN
+      IF(ASSOCIATED(generatedMesh)) THEN
+        CALL FlagError("Generated mesh is already associated.",err,error,*999)
       ELSE
-        NULLIFY(GENERATED_MESH)
-        CALL GENERATED_MESH_USER_NUMBER_FIND(USER_NUMBER,INTERFACE,GENERATED_MESH,ERR,ERROR,*999)
-        IF(ASSOCIATED(GENERATED_MESH)) THEN
-          LOCAL_ERROR="The specified user number of "//TRIM(NUMBER_TO_VSTRING(USER_NUMBER,"*",ERR,ERROR))// &
+        NULLIFY(generatedMesh)
+        CALL GENERATED_MESH_USER_NUMBER_FIND(userNumber,interface,generatedMesh,err,error,*999)
+        IF(ASSOCIATED(generatedMesh)) THEN
+          localError="The specified user number of "//TRIM(NumberToVString(userNumber,"*",err,error))// &
             & " has already been used for a generated mesh."
-          CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+          CALL FlagError(localError,err,error,*999)
         ELSE
-          IF(ASSOCIATED(INTERFACE%GENERATED_MESHES)) THEN
-            CALL GENERATED_MESH_CREATE_START_GENERIC(INTERFACE%GENERATED_MESHES,USER_NUMBER,GENERATED_MESH,ERR,ERROR,*999)
-            GENERATED_MESH%INTERFACE=>INTERFACE
+          IF(ASSOCIATED(interface%GENERATED_MESHES)) THEN
+            CALL GeneratedMeshCreateStartGeneric(interface%GENERATED_MESHES,userNumber,generatedMesh,err,error,*999)
+            generatedMesh%interface=>interface
           ELSE
-            CALL FLAG_ERROR("Interface generated meshes is not associated.",ERR,ERROR,*999)
+            CALL FlagError("Interface generated meshes is not associated.",err,error,*999)
           ENDIF
         ENDIF
       ENDIF
     ELSE
-      CALL FLAG_ERROR("Interface is not associated.",ERR,ERROR,*999)
+      CALL FlagError("Interface is not associated.",err,error,*999)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_CREATE_START_INTERFACE")
+    CALL Exits("GeneratedMeshCreateStartInterface")
     RETURN
-999 CALL ERRORS("GENERATED_MESH_CREATE_START_INTERFACE",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_CREATE_START_INTERFACE")
+999 CALL Errors("GeneratedMeshCreateStartInterface",err,error)
+    CALL Exits("GeneratedMeshCreateStartInterface")
     RETURN 1
-  END SUBROUTINE GENERATED_MESH_CREATE_START_INTERFACE
+    
+  END SUBROUTINE GeneratedMeshCreateStartInterface
 
   !
   !================================================================================================================================
   !
 
   !>Starts the creation of a generated mesh. \see OPENCMISS::CMISSGeneratedMeshCreateFinish
-  SUBROUTINE GENERATED_MESH_CREATE_START_REGION(USER_NUMBER,REGION,GENERATED_MESH,ERR,ERROR,*)
+  SUBROUTINE GeneratedMeshCreateStartRegion(userNumber,region,generatedMesh,err,error,*)
 
     !Argument variables
-    INTEGER(INTG), INTENT(IN) :: USER_NUMBER !<The user number of the generated mesh to create
-    TYPE(REGION_TYPE), POINTER :: REGION !<A pointer to the region to create the generated mesh on
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<On exit, a pointer to the created generated mesh. Must not be associated on entry.
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    INTEGER(INTG), INTENT(IN) :: userNumber !<The user number of the generated mesh to create
+    TYPE(REGION_TYPE), POINTER :: region !<A pointer to the region to create the generated mesh on
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<On exit, a pointer to the created generated mesh. Must not be associated on entry.
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
-    TYPE(VARYING_STRING) :: LOCAL_ERROR
+    TYPE(VARYING_STRING) :: localError
 
-    CALL ENTERS("GENERATED_MESH_CREATE_START_REGION",ERR,ERROR,*999)
+    CALL Enters("GeneratedMeshCreateStartRegion",err,error,*999)
 
-    IF(ASSOCIATED(REGION)) THEN
-      IF(ASSOCIATED(GENERATED_MESH)) THEN
-        CALL FLAG_ERROR("Generated mesh is already associated.",ERR,ERROR,*999)
+    IF(ASSOCIATED(region)) THEN
+      IF(ASSOCIATED(generatedMesh)) THEN
+        CALL FlagError("Generated mesh is already associated.",err,error,*999)
       ELSE
-        NULLIFY(GENERATED_MESH)
-        CALL GENERATED_MESH_USER_NUMBER_FIND(USER_NUMBER,REGION,GENERATED_MESH,ERR,ERROR,*999)
-        IF(ASSOCIATED(GENERATED_MESH)) THEN
-          LOCAL_ERROR="The specified user number of "//TRIM(NUMBER_TO_VSTRING(USER_NUMBER,"*",ERR,ERROR))// &
+        NULLIFY(generatedMesh)
+        CALL GENERATED_MESH_USER_NUMBER_FIND(userNumber,region,generatedMesh,err,error,*999)
+        IF(ASSOCIATED(generatedMesh)) THEN
+          localError="The specified user number of "//TRIM(NumberToVString(userNumber,"*",err,error))// &
             & " has already been used for a generated mesh."
-          CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+          CALL FlagError(localError,err,error,*999)
         ELSE
-          IF(ASSOCIATED(REGION%GENERATED_MESHES)) THEN
-            CALL GENERATED_MESH_CREATE_START_GENERIC(REGION%GENERATED_MESHES,USER_NUMBER,GENERATED_MESH,ERR,ERROR,*999)
-            GENERATED_MESH%REGION=>REGION
+          IF(ASSOCIATED(region%GENERATED_MESHES)) THEN
+            CALL GeneratedMeshCreateStartGeneric(region%GENERATED_MESHES,userNumber,generatedMesh,err,error,*999)
+            generatedMesh%region=>region
           ELSE
-            CALL FLAG_ERROR("Region generated meshes is not associated.",ERR,ERROR,*999)
+            CALL FlagError("Region generated meshes is not associated.",err,error,*999)
           ENDIF
         ENDIF
       ENDIF
     ELSE
-      CALL FLAG_ERROR("Region is not associated.",ERR,ERROR,*999)
+      CALL FlagError("Region is not associated.",err,error,*999)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_CREATE_START_REGION")
+    CALL Exits("GeneratedMeshCreateStartRegion")
     RETURN
-999 CALL ERRORS("GENERATED_MESH_CREATE_START_REGION",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_CREATE_START_REGION")
+999 CALL Errors("GeneratedMeshCreateStartRegion",err,error)
+    CALL Exits("GeneratedMeshCreateStartRegion")
     RETURN 1
-  END SUBROUTINE GENERATED_MESH_CREATE_START_REGION
+    
+  END SUBROUTINE GeneratedMeshCreateStartRegion
 
   !
   !================================================================================================================================
   !
 
-  !>Destroys a generated mesh. \see OPENCMISS::CMISSGeneratedMeshCreateDestroy
-  SUBROUTINE GENERATED_MESH_DESTROY(GENERATED_MESH,ERR,ERROR,*)
+  !>Destroys a generated mesh. \see OPENCMISS::CMISSGeneratedMeshDestroy
+  SUBROUTINE GeneratedMeshDestroy(generatedMesh,err,error,*)
 
     !Argument variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<A pointer to the generated mesh to destroy
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh to destroy
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
-    INTEGER(INTG) :: generated_mesh_idx,generated_mesh_position
-    TYPE(GENERATED_MESH_PTR_TYPE), POINTER :: NEW_GENERATED_MESHES(:)
-    TYPE(GENERATED_MESHES_TYPE), POINTER :: GENERATED_MESHES
+    INTEGER(INTG) :: generatedMeshIdx,generatedMeshPosition
+    TYPE(GeneratedMeshesType), POINTER :: generatedMeshes
+    TYPE(GeneratedMeshPtrType), ALLOCATABLE :: newGeneratedMeshes(:)
 
-    CALL ENTERS("GENERATED_MESH_DESTROY",ERR,ERROR,*998)
+    CALL Enters("GeneratedMeshDestroy",err,error,*998)
 
-    IF(ASSOCIATED(GENERATED_MESH)) THEN
-      GENERATED_MESHES=>GENERATED_MESH%GENERATED_MESHES
-      IF(ASSOCIATED(GENERATED_MESHES)) THEN
-        IF(ASSOCIATED(GENERATED_MESHES%GENERATED_MESHES)) THEN
-          generated_mesh_position=GENERATED_MESH%GLOBAL_NUMBER
-          CALL GENERATED_MESH_FINALISE(GENERATED_MESH,ERR,ERROR,*999)
+    IF(ASSOCIATED(generatedMesh)) THEN
+      generatedMeshes=>generatedMesh%generatedMeshes
+      IF(ASSOCIATED(generatedMeshes)) THEN
+        IF(ASSOCIATED(generatedMeshes%generatedMeshes)) THEN
+          generatedMeshPosition=generatedMesh%globalNumber
+          CALL GeneratedMeshFinalise(generatedMesh,err,error,*999)
           !Remove the generated mesh from the list of generated meshes
-          IF(GENERATED_MESHES%NUMBER_OF_GENERATED_MESHES>1) THEN
-            ALLOCATE(NEW_GENERATED_MESHES(GENERATED_MESHES%NUMBER_OF_GENERATED_MESHES-1),STAT=ERR)
-            IF(ERR/=0) CALL FLAG_ERROR("Could not allocate new generated meshes.",ERR,ERROR,*999)
-            DO generated_mesh_idx=1,GENERATED_MESHES%NUMBER_OF_GENERATED_MESHES
-              IF(generated_mesh_idx<generated_mesh_position) THEN
-                NEW_GENERATED_MESHES(generated_mesh_idx)%PTR=>GENERATED_MESHES%GENERATED_MESHES(generated_mesh_idx)%PTR
-              ELSE IF(generated_mesh_idx>generated_mesh_position) THEN
-                GENERATED_MESHES%GENERATED_MESHES(generated_mesh_idx)%PTR%GLOBAL_NUMBER=GENERATED_MESHES% &
-                  & GENERATED_MESHES(generated_mesh_idx)%PTR%GLOBAL_NUMBER-1
-                NEW_GENERATED_MESHES(generated_mesh_idx-1)%PTR=>GENERATED_MESHES%GENERATED_MESHES(generated_mesh_idx)%PTR
+          IF(generatedMeshes%numberOfGeneratedMeshes>1) THEN
+            ALLOCATE(newGeneratedMeshes(generatedMeshes%numberOfGeneratedMeshes-1),STAT=err)
+            IF(err/=0) CALL FlagError("Could not allocate new generated meshes.",err,error,*999)
+            DO generatedMeshIdx=1,generatedMeshes%numberOfGeneratedMeshes
+              IF(generatedMeshIdx<generatedMeshPosition) THEN
+                newGeneratedMeshes(generatedMeshIdx)%ptr=>generatedMeshes%generatedMeshes(generatedMeshIdx)%ptr
+              ELSE IF(generatedMeshIdx>generatedMeshPosition) THEN
+                generatedMeshes%generatedMeshes(generatedMeshIdx)%ptr%globalNumber=generatedMeshes% &
+                  & generatedMeshes(generatedMeshIdx)%ptr%globalnumber-1
+                newGeneratedMeshes(generatedMeshIdx-1)%ptr=>generatedMeshes%generatedMeshes(generatedMeshIdx)%ptr
               ENDIF
-            ENDDO !generated_mesh_idx
-            DEALLOCATE(GENERATED_MESHES%GENERATED_MESHES)
-            GENERATED_MESHES%GENERATED_MESHES=>NEW_GENERATED_MESHES
-            GENERATED_MESHES%NUMBER_OF_GENERATED_MESHES=GENERATED_MESHES%NUMBER_OF_GENERATED_MESHES-1
+            ENDDO !generatedMeshIdx
+            CALL MOVE_ALLOC(newGeneratedMeshes,generatedMeshes%generatedMeshes)
+            generatedMeshes%numberOfGeneratedMeshes=generatedMeshes%numberOfGeneratedMeshes-1
           ELSE
-            DEALLOCATE(GENERATED_MESHES%GENERATED_MESHES)
-            GENERATED_MESHES%NUMBER_OF_GENERATED_MESHES=0
+            DEALLOCATE(generatedMeshes%generatedMeshes)
+            generatedMeshes%numberOfGeneratedMeshes=0
           ENDIF
         ELSE
-          CALL FLAG_ERROR("Generated meshes are not associated",ERR,ERROR,*998)
+          CALL FlagError("Generated meshes are not associated",err,error,*998)
         ENDIF
       ELSE
-        CALL FLAG_ERROR("Generated mesh generated meshes is not associated.",ERR,ERROR,*998)
+        CALL FlagError("Generated mesh generated meshes is not associated.",err,error,*998)
       ENDIF
     ELSE
-      CALL FLAG_ERROR("Generated mesh is not associated",ERR,ERROR,*998)
+      CALL FlagError("Generated mesh is not associated",err,error,*998)
     END IF
 
-    CALL EXITS("GENERATED_MESH_DESTROY")
+    CALL Exits("GeneratedMeshDestroy")
     RETURN
-999 IF(ASSOCIATED(NEW_GENERATED_MESHES)) DEALLOCATE(NEW_GENERATED_MESHES)
-998 CALL ERRORS("GENERATED_MESH_DESTROY",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_DESTROY")
+999 IF(ASSOCIATED(newGeneratedMeshes)) DEALLOCATE(newGeneratedMeshes)
+998 CALL Errors("GeneratedMeshDestroy",err,error)
+    CALL Exits("GeneratedMeshDestroy")
     RETURN 1
-  END SUBROUTINE GENERATED_MESH_DESTROY
+    
+  END SUBROUTINE GeneratedMeshDestroy
 
   !
   !================================================================================================================================
   !
 
   !>Gets the extent of a generated mesh. \see OPENCMISS::CMISSGeneratedMeshExtentGet
-  SUBROUTINE GENERATED_MESH_EXTENT_GET(GENERATED_MESH,EXTENT,ERR,ERROR,*)
+  SUBROUTINE GeneratedMeshExtentGet(generatedMesh,extent,err,error,*)
 
     !Argument variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<A pointer to the generated mesh to get the type of
-    REAL(DP), INTENT(OUT) :: EXTENT(:) !<On return, maximum extent per axis, or inner & outer radii and length of cylinder
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh to get the type of
+    REAL(DP), INTENT(OUT) :: extent(:) !<On return, the mesh extent. For regular meshes this is the maximum extent per axis. For cylindral meshes this is the inner & outer radii and length of cylinder
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
-    TYPE(VARYING_STRING) :: LOCAL_ERROR
+    TYPE(VARYING_STRING) :: localError
 
-    CALL ENTERS("GENERATED_MESH_EXTENT_GET",ERR,ERROR,*999)
+    CALL Enters("GeneratedMeshExtentGet",err,error,*999)
 
-    IF(ASSOCIATED(GENERATED_MESH)) THEN
-      SELECT CASE(GENERATED_MESH%GENERATED_TYPE)
+    IF(ASSOCIATED(generatedMesh)) THEN
+      SELECT CASE(generatedMesh%generatedType)
       CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
-        IF(SIZE(EXTENT,1)>=SIZE(GENERATED_MESH%REGULAR_MESH%MAXIMUM_EXTENT,1)) THEN
-          EXTENT=GENERATED_MESH%REGULAR_MESH%MAXIMUM_EXTENT
+        IF(SIZE(extent,1)>=SIZE(generatedMesh%regularMesh%maximumExtent,1)) THEN
+          extent(1:generatedMesh%regularMesh%coordinateDimension)= &
+            & generatedMesh%regularMesh%maximumExtent(1:generatedMesh%regularMesh%coordinateDimension)
         ELSE
-          LOCAL_ERROR="The size of EXTENT is too small. The supplied size is "// &
-            & TRIM(NUMBER_TO_VSTRING(SIZE(EXTENT,1),"*",ERR,ERROR))//" and it needs to be >= "// &
-            & TRIM(NUMBER_TO_VSTRING(SIZE(GENERATED_MESH%REGULAR_MESH%MAXIMUM_EXTENT,1),"*",ERR,ERROR))//"."
-          CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+          localError="The size of extent is too small. The supplied size is "// &
+            & TRIM(NumberToVString(SIZE(extent,1),"*",err,error))//" and it needs to be >= "// &
+            & TRIM(NumberToVString(SIZE(generatedMesh%regularMesh%maximumExtent,1),"*",err,error))//"."
+          CALL FlagError(localError,err,error,*999)
         ENDIF
       CASE(GENERATED_MESH_POLAR_MESH_TYPE)
-        CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
+        CALL FlagError("Not implemented.",err,error,*999)
       CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
-        CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
+        CALL FlagError("Not implemented.",err,error,*999)
       CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
-        IF(SIZE(EXTENT,1)>=3) THEN
-          EXTENT=GENERATED_MESH%CYLINDER_MESH%CYLINDER_EXTENT
+        IF(SIZE(extent,1)>=SIZE(generatedMesh%cylinderMesh%cylinderExtent,1)) THEN
+          extent(1:generatedMesh%cylinderMesh%coordinateDimension)= &
+            & generatedMesh%cylinderMesh%cylinderExtent(1:generatedMesh%regularMesh%coordinateDimension)
         ELSE
-          LOCAL_ERROR="The size of EXTENT is too small. The supplied size is "// &
-            & TRIM(NUMBER_TO_VSTRING(SIZE(EXTENT,1),"*",ERR,ERROR))//" and it needs to be 3."
-          CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+          localError="The size of extent is too small. The supplied size is "// &
+            & TRIM(NumberToVString(SIZE(extent,1),"*",err,error))//" and it needs to be >= "// &
+            & TRIM(NumberToVString(SIZE(generatedMesh%cylinderMesh%cylinderExtent,1),"*",err,error))//"."
+          CALL FlagError(localError,err,error,*999)
         ENDIF
       CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
-        EXTENT=GENERATED_MESH%ELLIPSOID_MESH%ELLIPSOID_EXTENT
+        IF(SIZE(extent,1)>=SIZE(generatedMesh%ellipsoidMesh%ellipsoidExtent,1)) THEN
+          extent(1:generatedMesh%ellipsoidMesh%coordinateDimension)= &
+            & generatedMesh%ellipsoidMesh%ellipsoidExtent(1:generatedMesh%ellipsoidMesh%coordinateDimension)
+        ELSE
+          localError="The size of extent is too small. The supplied size is "// &
+            & TRIM(NumberToVString(SIZE(extent,1),"*",err,error))//" and it needs to be >= "// &
+            & TRIM(NumberToVString(SIZE(generatedMesh%ellipsoidMesh%ellipsoidExtent,1),"*",err,error))//"."
+          CALL FlagError(localError,err,error,*999)
+        ENDIF
       CASE DEFAULT
-        LOCAL_ERROR="The generated mesh mesh type of "//TRIM(NUMBER_TO_VSTRING(GENERATED_MESH%GENERATED_TYPE,"*",ERR,ERROR))// &
+        localError="The generated mesh mesh type of "//TRIM(NumberToVString(generatedMesh%generatedType,"*",err,error))// &
           & " is invalid."
-        CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+        CALL FlagError(localError,err,error,*999)
       END SELECT
     ELSE
-      CALL FLAG_ERROR("Generated mesh is not associated",ERR,ERROR,*999)
+      CALL FlagError("Generated mesh is not associated",err,error,*999)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_EXTENT_GET")
+    CALL Exits("GeneratedMeshExtentGet")
     RETURN
-999 CALL ERRORS("GENERATED_MESH_EXTENT_GET",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_EXTENT_GET")
+999 CALL Errors("GeneratedMeshExtentGet",err,error)
+    CALL Exits("GeneratedMeshExtentGet")
     RETURN
-  END SUBROUTINE GENERATED_MESH_EXTENT_GET
+  END SUBROUTINE GeneratedMeshExtentGet
   !
   !================================================================================================================================
   !
 
   !>Sets/changes the extent of a generated mesh. \see OPENCMISS::CMISSGeneratedMeshExtentSet
-  SUBROUTINE GENERATED_MESH_EXTENT_SET(GENERATED_MESH,EXTENT,ERR,ERROR,*)
+  SUBROUTINE GeneratedMeshExtentSet(generatedMesh,extent,err,error,*)
 
     !Argument variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<A pointer to the generated mesh to set the type of
-    REAL(DP), INTENT(IN) :: EXTENT(:) !<The extent of the generated mesh (MAXIMUM for regular type, CYLINDER for cylinder type)
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh to set the type of
+    REAL(DP), INTENT(IN) :: extent(:) !<The extent of the generated mesh (MAXIMUM for regular type, CYLINDER for cylinder type)
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
-    INTEGER(INTG) :: COORDINATE_DIMENSION
-    TYPE(COORDINATE_SYSTEM_TYPE), POINTER :: COORDINATE_SYSTEM
-    TYPE(VARYING_STRING) :: LOCAL_ERROR
+    INTEGER(INTG) :: coordinateDimension
+    TYPE(COORDINATE_SYSTEM_TYPE), POINTER :: coordinateSystem
+    TYPE(VARYING_STRING) :: localError
 
-    CALL ENTERS("GENERATED_MESH_EXTENT_SET",ERR,ERROR,*999)
+    NULLIFY(coordinateSystem)
+    
+    CALL Enters("GeneratedMeshExtentSet",err,error,*999)
 
-    IF(ASSOCIATED(GENERATED_MESH)) THEN
-      IF(GENERATED_MESH%GENERATED_MESH_FINISHED) THEN
-        CALL FLAG_ERROR("Generated mesh has been finished.",ERR,ERROR,*999)
+    IF(ASSOCIATED(generatedMesh)) THEN
+      IF(generatedMesh%generatedMeshFinished) THEN
+        CALL FlagError("Generated mesh has been finished.",err,error,*999)
       ELSE
-        NULLIFY(COORDINATE_SYSTEM)
-        CALL GENERATED_MESH_COORDINATE_SYSTEM_GET(GENERATED_MESH,COORDINATE_SYSTEM,ERR,ERROR,*999)
-        CALL COORDINATE_SYSTEM_DIMENSION_GET(COORDINATE_SYSTEM,COORDINATE_DIMENSION,ERR,ERROR,*999)
-        SELECT CASE(GENERATED_MESH%GENERATED_TYPE)
+        CALL GeneratedMeshCoordinateSystemGet(generatedMesh,coordinateSystem,err,error,*999)
+        CALL COORDINATE_SYSTEM_DIMENSION_GET(coordinateSystem,coordinateDimension,err,error,*999)
+        SELECT CASE(generatedMesh%generatedType)
         CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
-          IF(SIZE(EXTENT,1)==COORDINATE_DIMENSION) THEN
-            IF(ASSOCIATED(GENERATED_MESH%REGULAR_MESH)) THEN
-              IF(L2NORM(EXTENT)>ZERO_TOLERANCE) THEN
-                IF(ALLOCATED(GENERATED_MESH%REGULAR_MESH%MAXIMUM_EXTENT)) &
-                    & DEALLOCATE(GENERATED_MESH%REGULAR_MESH%MAXIMUM_EXTENT)
-                ALLOCATE(GENERATED_MESH%REGULAR_MESH%MAXIMUM_EXTENT(COORDINATE_DIMENSION),STAT=ERR)
-                IF(ERR/=0) CALL FLAG_ERROR("Could not allocate maximum extent.",ERR,ERROR,*999)
-                GENERATED_MESH%REGULAR_MESH%MAXIMUM_EXTENT=EXTENT
+          IF(SIZE(extent,1)>=coordinateDimension) THEN
+            IF(ASSOCIATED(generatedMesh%regularMesh)) THEN
+              IF(L2Norm(extent(1:coordinateDimension))>ZERO_TOLERANCE) THEN
+                generatedMesh%regularMesh%maximumExtent(1:coordinateDimension)=extent(1:coordinateDimension)
               ELSE
-                CALL FLAG_ERROR("The norm of the mesh extent is zero.",ERR,ERROR,*999)
+                CALL FlagError("The norm of the mesh extent is zero.",err,error,*999)
               ENDIF
             ELSE
-              CALL FLAG_ERROR("Regular generated mesh is not associated.",ERR,ERROR,*999)
+              CALL FlagError("Regular generated mesh is not associated.",err,error,*999)
             ENDIF
           ELSE
-            LOCAL_ERROR="The extent size of "//TRIM(NUMBER_TO_VSTRING(SIZE(EXTENT,1),"*",ERR,ERROR))// &
-                & " is invalid. The extent size must match the coordinate system dimension of "// &
-                & TRIM(NUMBER_TO_VSTRING(COORDINATE_DIMENSION,"*",ERR,ERROR))//"."
-            CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+            localError="The extent size of "//TRIM(NumberToVString(SIZE(extent,1),"*",err,error))// &
+                & " is invalid. The extent size must be >= the coordinate system dimension of "// &
+                & TRIM(NumberToVString(coordinateDimension,"*",err,error))//"."
+            CALL FlagError(localError,err,error,*999)
           ENDIF
         CASE(GENERATED_MESH_POLAR_MESH_TYPE)
-          CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
+          CALL FlagError("Not implemented.",err,error,*999)
         CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
-          CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
+          CALL FlagError("Not implemented.",err,error,*999)
         CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
-          IF(SIZE(EXTENT,1)==COORDINATE_DIMENSION) THEN
-            IF(ASSOCIATED(GENERATED_MESH%CYLINDER_MESH)) THEN
-              ALLOCATE(GENERATED_MESH%CYLINDER_MESH%CYLINDER_EXTENT(SIZE(EXTENT)),STAT=ERR)
-              IF(ERR/=0) CALL FLAG_ERROR("Could not allocate maximum extent.",ERR,ERROR,*999)
-              GENERATED_MESH%CYLINDER_MESH%CYLINDER_EXTENT=EXTENT
+          IF(ASSOCIATED(generatedMesh%cylinderMesh)) THEN
+            meshDimension=generatedMesh%cylinderMesh%meshDimension
+            IF(SIZE(extent,1)>=meshDimension) THEN
+              generatedMesh%cylinderMesh%cylinderExtent(1:meshDimension)=extent(1:meshDimension)
             ELSE
-              CALL FLAG_ERROR("Cylinder generated mesh is not associated.",ERR,ERROR,*999)
+              CALL FlagError("Cylinder generated mesh is not associated.",err,error,*999)
             ENDIF
           ELSE
-            LOCAL_ERROR="The extent size of "//TRIM(NUMBER_TO_VSTRING(SIZE(EXTENT,1),"*",ERR,ERROR))// &
-                & " is invalid. The extent size must match the coordinate system dimension of "// &
-                & TRIM(NUMBER_TO_VSTRING(COORDINATE_DIMENSION,"*",ERR,ERROR))//"."
-            CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+            localError="The extent size of "//TRIM(NumberToVString(SIZE(extent,1),"*",err,error))// &
+                & " is invalid. The extent size must >= the mesh dimension of "// &
+                & TRIM(NumberToVString(meshDimension,"*",err,error))//"."
+            CALL FlagError(localError,err,error,*999)
           ENDIF
         CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
-          IF((SIZE(EXTENT,1)-1)==COORDINATE_DIMENSION) THEN
-            IF(ASSOCIATED(GENERATED_MESH%ELLIPSOID_MESH)) THEN
-              ALLOCATE(GENERATED_MESH%ELLIPSOID_MESH%ELLIPSOID_EXTENT(SIZE(EXTENT)),STAT=ERR)
-              IF(ERR/=0) CALL FLAG_ERROR("Could not allocate maximum extent.",ERR,ERROR,*999)
-              GENERATED_MESH%ELLIPSOID_MESH%ELLIPSOID_EXTENT=EXTENT
+          IF((SIZE(extent,1)-1)>=coordinateDimension) THEN
+            IF(ASSOCIATED(generatedMesh%ellipsoidMesh)) THEN
+              generatedMesh%ellipsoidMesh%ellipsoidExtent(1:coordinateDimension+1)=extent(1:coordinateDimension+1)
             ELSE
-              CALL FLAG_ERROR("Ellipsoid generated mesh is not associated.",ERR,ERROR,*999)
+              CALL FlagError("Ellipsoid generated mesh is not associated.",err,error,*999)
             ENDIF
           ELSE
-            LOCAL_ERROR="The extent size of "//TRIM(NUMBER_TO_VSTRING(SIZE(EXTENT,1),"*",ERR,ERROR))// &
-                & " is invalid. The extent size must be equal one plus the coordinate system dimension of "// &
-                & TRIM(NUMBER_TO_VSTRING(COORDINATE_DIMENSION,"*",ERR,ERROR))//"."
-            CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+            localError="The extent size of "//TRIM(NumberToVString(SIZE(extent,1),"*",err,error))// &
+                & " is invalid. The extent size must >= to one plus the coordinate system dimension of "// &
+                & TRIM(NumberToVString(coordinateDimension,"*",err,error))//"."
+            CALL FlagError(localError,err,error,*999)
           ENDIF
         CASE DEFAULT
-          LOCAL_ERROR="The generated mesh mesh type of "// &
-              & TRIM(NUMBER_TO_VSTRING(GENERATED_MESH%GENERATED_TYPE,"*",ERR,ERROR))// &
+          localError="The generated mesh mesh type of "// &
+              & TRIM(NumberToVString(generatedMesh%generatedType,"*",err,error))// &
               & " is invalid."
-          CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+          CALL FlagError(localError,err,error,*999)
         END SELECT
       ENDIF
     ELSE
-      CALL FLAG_ERROR("Generated mesh is not associated.",ERR,ERROR,*999)
+      CALL FlagError("Generated mesh is not associated.",err,error,*999)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_EXTENT_SET")
+    CALL Exits("GeneratedMeshExtentSet")
     RETURN
-999 CALL ERRORS("GENERATED_MESH_EXTENT_SET",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_EXTENT_SET")
+999 CALL Errors("GeneratedMeshExtentSet",err,error)
+    CALL Exits("GeneratedMeshExtentSet")
     RETURN 1
-  END SUBROUTINE GENERATED_MESH_EXTENT_SET
+  END SUBROUTINE GeneratedMeshExtentSet
 
   !
   !================================================================================================================================
   !
 
   !>Get one of the surfaces of a generated mesh. \see OPENCMISS::CMISSGeneratedMeshSurfaceGet
-  SUBROUTINE GENERATED_MESH_SURFACE_GET(GENERATED_MESH,MESH_COMPONENT,SURFACE_TYPE,SURFACE_NODES,NORMAL_XI,ERR,ERROR,*)
+  SUBROUTINE GENERATED_MESH_SURFACE_GET(GENERATED_MESH,MESH_COMPONENT,SURFACE_TYPE,SURFACE_NODES,NORMAL_XI,err,error,*)
 
     !Argument variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<A pointer to the generated mesh to get the type of
+    TYPE(GeneratedMeshType), POINTER :: GENERATED_MESH !<A pointer to the generated mesh to get the type of
     INTEGER(INTG), INTENT(IN) :: MESH_COMPONENT !<The mesh component to get the surface for.
     INTEGER(INTG), INTENT(IN) :: SURFACE_TYPE !<The surface you are interested in
     INTEGER(INTG), ALLOCATABLE, INTENT(OUT) :: SURFACE_NODES (:) !<The nodes on the specified surface
     INTEGER(INTG), INTENT(OUT) :: NORMAL_XI !<The normal outward pointing xi direction
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
-    TYPE(GENERATED_MESH_ELLIPSOID_TYPE), POINTER :: ELLIPSOID_MESH
-    TYPE(GENERATED_MESH_CYLINDER_TYPE), POINTER :: CYLINDER_MESH
-    TYPE(GENERATED_MESH_REGULAR_TYPE), POINTER :: REGULAR_MESH
-    TYPE(VARYING_STRING) :: LOCAL_ERROR
+    TYPE(GeneratedMeshEllipsoidType), POINTER :: ELLIPSOID_MESH
+    TYPE(GeneratedMeshCylinderType), POINTER :: CYLINDER_MESH
+    TYPE(GeneratedMeshRegularType), POINTER :: REGULAR_MESH
+    TYPE(VARYING_STRING) :: localError
 !     INTEGER(INTG), ALLOCATABLE :: NODES(:)
 
 
-    CALL ENTERS("GENERATED_MESH_SURFACE_GET",ERR,ERROR,*999)
+    CALL Enters("GENERATED_MESH_SURFACE_GET",err,error,*999)
 
     IF(ASSOCIATED(GENERATED_MESH)) THEN
-      SELECT CASE(GENERATED_MESH%GENERATED_TYPE)
+      SELECT CASE(GENERATED_MESH%generatedType)
       CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
-        REGULAR_MESH=>GENERATED_MESH%REGULAR_MESH
-        CALL GENERATED_MESH_REGULAR_SURFACE_GET(REGULAR_MESH,MESH_COMPONENT,SURFACE_TYPE,SURFACE_NODES,NORMAL_XI,ERR,ERROR,*999)
+        REGULAR_MESH=>GENERATED_MESH%regularMesh
+        CALL GENERATED_MESH_REGULAR_SURFACE_GET(REGULAR_MESH,MESH_COMPONENT,SURFACE_TYPE,SURFACE_NODES,NORMAL_XI,err,error,*999)
       CASE(GENERATED_MESH_POLAR_MESH_TYPE)
-        CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
+        CALL FlagError("Not implemented.",err,error,*999)
       CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
-        CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
+        CALL FlagError("Not implemented.",err,error,*999)
       CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
-        CYLINDER_MESH=>GENERATED_MESH%CYLINDER_MESH
-        CALL GENERATED_MESH_CYLINDER_SURFACE_GET(CYLINDER_MESH,MESH_COMPONENT,SURFACE_TYPE,SURFACE_NODES,NORMAL_XI,ERR,ERROR,*999)
+        CYLINDER_MESH=>GENERATED_MESH%cylinderMesh
+        CALL GENERATED_MESH_CYLINDER_SURFACE_GET(CYLINDER_MESH,MESH_COMPONENT,SURFACE_TYPE,SURFACE_NODES,NORMAL_XI,err,error,*999)
       CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
-        ELLIPSOID_MESH=>GENERATED_MESH%ELLIPSOID_MESH
+        ELLIPSOID_MESH=>GENERATED_MESH%ellipsoidMesh
         CALL GENERATED_MESH_ELLIPSOID_SURFACE_GET(ELLIPSOID_MESH,MESH_COMPONENT,SURFACE_TYPE,SURFACE_NODES,NORMAL_XI, &
-            & ERR,ERROR,*999)
+            & err,error,*999)
       CASE DEFAULT
-        LOCAL_ERROR="The generated mesh mesh type of "//TRIM(NUMBER_TO_VSTRING(GENERATED_MESH%GENERATED_TYPE,"*",ERR,ERROR))// &
+        localError="The generated mesh mesh type of "//TRIM(NumberToVString(GENERATED_MESH%generatedType,"*",err,error))// &
             & " is invalid."
-        CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+        CALL FlagError(localError,err,error,*999)
       END SELECT
     ELSE
-      CALL FLAG_ERROR("Generated mesh is not associated",ERR,ERROR,*999)
+      CALL FlagError("Generated mesh is not associated",err,error,*999)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_SURFACE_GET")
+    CALL Exits("GENERATED_MESH_SURFACE_GET")
     RETURN
-999 CALL ERRORS("GENERATED_MESH_SURFACE_GET",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_SURFACE_GET")
+999 CALL Errors("GENERATED_MESH_SURFACE_GET",err,error)
+    CALL Exits("GENERATED_MESH_SURFACE_GET")
     RETURN
   END SUBROUTINE GENERATED_MESH_SURFACE_GET
 
@@ -1016,711 +1169,663 @@ CONTAINS
   !
 
   !>Finalises a generated mesh and dellocates all memory.
-  SUBROUTINE GENERATED_MESH_FINALISE(GENERATED_MESH,ERR,ERROR,*)
+  SUBROUTINE GeneratedMeshFinalise(generatedMesh,err,error,*)
 
     !Argument variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<A pointer to the generated mesh to finalise.
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh to finalise.
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
 
-    CALL ENTERS("GENERATED_MESH_FINALISE",ERR,ERROR,*999)
+    CALL Enters("GeneratedMeshFinalise",err,error,*999)
 
-    IF(ASSOCIATED(GENERATED_MESH)) THEN
-      CALL GENERATED_MESH_REGULAR_FINALISE(GENERATED_MESH%REGULAR_MESH,ERR,ERROR,*999)
-      CALL GENERATED_MESH_CYLINDER_FINALISE(GENERATED_MESH%CYLINDER_MESH,ERR,ERROR,*999)
-      CALL GENERATED_MESH_ELLIPSOID_FINALISE(GENERATED_MESH%ELLIPSOID_MESH,ERR,ERROR,*999)
-      DEALLOCATE(GENERATED_MESH)
+    IF(ASSOCIATED(generatedMesh)) THEN
+      CALL GENERATED_MESH_REGULAR_FINALISE(generatedMesh%regularMesh,err,error,*999)
+      CALL GENERATED_MESH_CYLINDER_FINALISE(generatedMesh%cylinderMesh,err,error,*999)
+      CALL GENERATED_MESH_ELLIPSOID_FINALISE(generatedMesh%ellipsoidMesh,err,error,*999)
+      DEALLOCATE(generatedMesh)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_FINALISE")
+    CALL Exits("GeneratedMeshFinalise")
     RETURN
-999 CALL ERRORS("GENERATED_MESH_FINALISE",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_FINALISE")
+999 CALL Errors("GeneratedMeshFinalise",err,error)
+    CALL Exits("GeneratedMeshFinalise")
     RETURN 1
-  END SUBROUTINE GENERATED_MESH_FINALISE
+  END SUBROUTINE GeneratedMeshFinalise
 
   !
   !================================================================================================================================
   !
 
   !>Initialises a generated mesh.
-  SUBROUTINE GENERATED_MESH_INITIALISE(GENERATED_MESH,ERR,ERROR,*)
+  SUBROUTINE GeneratedMeshInitialise(generatedMesh,err,error,*)
 
     !Argument variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<A pointer to the generated mesh to initialise
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh to initialise
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
 
-    CALL ENTERS("GENERATED_MESH_INITIALISE",ERR,ERROR,*999)
+    CALL Enters("GeneratedMeshInitialise",err,error,*999)
 
-    IF(ASSOCIATED(GENERATED_MESH)) THEN
-      CALL FLAG_ERROR("Generated mesh is already associated.",ERR,ERROR,*999)
+    IF(ASSOCIATED(generatedMesh)) THEN
+      CALL FlagError("Generated mesh is already associated.",err,error,*999)
     ELSE
-      ALLOCATE(GENERATED_MESH,STAT=ERR)
-      IF(ERR/=0) CALL FLAG_ERROR("Could not allocate generated mesh.",ERR,ERROR,*999)
-      GENERATED_MESH%USER_NUMBER=0
-      GENERATED_MESH%GLOBAL_NUMBER=0
-      GENERATED_MESH%GENERATED_MESH_FINISHED=.FALSE.
-      NULLIFY(GENERATED_MESH%REGION)
-      NULLIFY(GENERATED_MESH%INTERFACE)
-      GENERATED_MESH%GENERATED_TYPE=0
-      NULLIFY(GENERATED_MESH%REGULAR_MESH)
-      NULLIFY(GENERATED_MESH%CYLINDER_MESH)
-      NULLIFY(GENERATED_MESH%ELLIPSOID_MESH)
-      NULLIFY(GENERATED_MESH%MESH)
+      ALLOCATE(generatedMesh,STAT=err)
+      IF(err/=0) CALL FlagError("Could not allocate generated mesh.",err,error,*999)
+      generatedMesh%userNumber=0
+      generatedMesh%globalNumber=0
+      generatedMesh%generatedMeshFinished=.FALSE.
+      NULLIFY(generatedMesh%region)
+      NULLIFY(generatedMesh%interface)
+      generatedMesh%generatedType=0
+      NULLIFY(generatedMesh%regularMesh)
+      NULLIFY(generatedMesh%cylinderMesh)
+      NULLIFY(generatedMesh%ellipsoidMesh)
+      NULLIFY(generatedMesh%mesh)
       !Default to a regular mesh.
-      CALL GENERATED_MESH_REGULAR_INITIALISE(GENERATED_MESH,ERR,ERROR,*999)
+      CALL GENERATED_MESH_REGULAR_INITIALISE(generatedMesh,err,error,*999)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_INITIALISE")
+    CALL Exits("GeneratedMeshInitialise")
     RETURN
-999 CALL ERRORS("GENERATED_MESH_INITIALISE",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_INITIALISE")
+999 CALL Errors("GeneratedMeshInitialise",err,error)
+    CALL Exits("GeneratedMeshInitialise")
     RETURN 1
-  END SUBROUTINE GENERATED_MESH_INITIALISE
+  END SUBROUTINE GeneratedMeshInitialise
 
   !
   !================================================================================================================================
   !
 
   !>Gets the number of elements in a generated mesh.  \see OPENCMISS::CMISSGeneratedMeshNumberOfElementsGet
-  SUBROUTINE GENERATED_MESH_NUMBER_OF_ELEMENTS_GET(GENERATED_MESH,NUMBER_OF_ELEMENTS,ERR,ERROR,*)
+  SUBROUTINE GeneratedMeshNumberOfElementsGet(generatedMesh,numberOfElements,err,error,*)
 
     !Argument variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<A pointer to the generated mesh to set the type of
-    INTEGER(INTG), INTENT(OUT) :: NUMBER_OF_ELEMENTS(:) !<On return, number of elements per axis
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh to set the type of
+    INTEGER(INTG), INTENT(OUT) :: numberOfElements(:) !<On return, number of elements per mesh dimension axis
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
-    TYPE(VARYING_STRING) :: LOCAL_ERROR
+    INTEGER(INTG) :: meshDimension
+    TYPE(VARYING_STRING) :: localError
 
-    CALL ENTERS("GENERATED_MESH_NUMBER_OF_ELEMENTS_GET",ERR,ERROR,*999)
+    CALL Enters("GeneratedMeshNumberOfElementsGet",err,error,*999)
 
-    IF(ASSOCIATED(GENERATED_MESH)) THEN
-      SELECT CASE(GENERATED_MESH%GENERATED_TYPE)
+    IF(ASSOCIATED(generatedMesh)) THEN
+      SELECT CASE(generatedMesh%generatedType)
       CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
-        IF(SIZE(NUMBER_OF_ELEMENTS,1)>=SIZE(GENERATED_MESH%REGULAR_MESH%NUMBER_OF_ELEMENTS_XI,1)) THEN
-          NUMBER_OF_ELEMENTS=GENERATED_MESH%REGULAR_MESH%NUMBER_OF_ELEMENTS_XI
+        meshDimension=generatedMesh%regularMesh%meshDimension
+        IF(SIZE(numberOfElements,1)>=meshDimension) THEN
+          numberOfElements(1:meshDimension)=generatedMesh%regularMesh%numberOfElementsXi(1:meshDimension)
         ELSE
-          LOCAL_ERROR="The size of NUMBER_OF_ELEMENTS is too small. The supplied size is "// &
-            & TRIM(NUMBER_TO_VSTRING(SIZE(NUMBER_OF_ELEMENTS,1),"*",ERR,ERROR))//" and it needs to be >= "// &
-            & TRIM(NUMBER_TO_VSTRING(SIZE(GENERATED_MESH%REGULAR_MESH%NUMBER_OF_ELEMENTS_XI,1),"*",ERR,ERROR))//"."
-          CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+          localError="The size of number of elements is too small. The supplied size is "// &
+            & TRIM(NumberToVString(SIZE(numberOfElements,1),"*",err,error))//" and it needs to be >= "// &
+            & TRIM(NumberToVString(meshDimension,"*",err,error))//"."
+          CALL FlagError(localError,err,error,*999)
         ENDIF
       CASE(GENERATED_MESH_POLAR_MESH_TYPE)
-        CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
+        CALL FlagError("Not implemented.",err,error,*999)
       CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
-        CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
+        CALL FlagError("Not implemented.",err,error,*999)
       CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
-        IF(SIZE(NUMBER_OF_ELEMENTS,1)>=SIZE(GENERATED_MESH%CYLINDER_MESH%NUMBER_OF_ELEMENTS_XI,1)) THEN
-          NUMBER_OF_ELEMENTS=GENERATED_MESH%CYLINDER_MESH%NUMBER_OF_ELEMENTS_XI
+        meshDimension=generatedMesh%cylinderMesh%meshDimension
+        IF(SIZE(numberOfElements,1)>=meshDimension) THEN
+          numberOfElements(1:meshDimension)=generatedMesh%cylinderMesh%numberOfElementsXi(1:meshDimension)
         ELSE
-          LOCAL_ERROR="The size of NUMBER_OF_ELEMENTS is too small. The supplied size is "// &
-            & TRIM(NUMBER_TO_VSTRING(SIZE(NUMBER_OF_ELEMENTS,1),"*",ERR,ERROR))//" and it needs to be >= "// &
-            & TRIM(NUMBER_TO_VSTRING(SIZE(GENERATED_MESH%CYLINDER_MESH%NUMBER_OF_ELEMENTS_XI,1),"*",ERR,ERROR))//"."
-          CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+          localError="The size of number of elements is too small. The supplied size is "// &
+            & TRIM(NumberToVString(SIZE(numberOfElements,1),"*",err,error))//" and it needs to be >= "// &
+            & TRIM(NumberToVString(meshDimension,"*",err,error))//"."
+          CALL FlagError(localError,err,error,*999)
         ENDIF
       CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
-        IF(SIZE(NUMBER_OF_ELEMENTS,1)>=SIZE(GENERATED_MESH%ELLIPSOID_MESH%NUMBER_OF_ELEMENTS_XI,1)) THEN
-          NUMBER_OF_ELEMENTS=GENERATED_MESH%ELLIPSOID_MESH%NUMBER_OF_ELEMENTS_XI
+        meshDimension=generatedMesh%cylinderMesh%meshDimension
+        IF(SIZE(numberOfElements,1)>=meshDimension) THEN
+          numberOfElements(1:meshDimension)=generatedMesh%ellipsoidMesh%numberOfElementsXi(1:meshDimension)
         ELSE
-          LOCAL_ERROR="The size of NUMBER_OF_ELEMENTS is too small. The supplied size is "// &
-            & TRIM(NUMBER_TO_VSTRING(SIZE(NUMBER_OF_ELEMENTS,1),"*",ERR,ERROR))//" and it needs to be >= "// &
-            & TRIM(NUMBER_TO_VSTRING(SIZE(GENERATED_MESH%ELLIPSOID_MESH%NUMBER_OF_ELEMENTS_XI,1),"*",ERR,ERROR))//"."
-          CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+          localError="The size of number of elements is too small. The supplied size is "// &
+            & TRIM(NumberToVString(SIZE(numberOfElements,1),"*",err,error))//" and it needs to be >= "// &
+            & TRIM(NumberToVString(meshDimension,"*",err,error))//"."
+          CALL FlagError(localError,err,error,*999)
         ENDIF
       CASE DEFAULT
-        LOCAL_ERROR="The generated mesh mesh type of "//TRIM(NUMBER_TO_VSTRING(GENERATED_MESH%GENERATED_TYPE,"*",ERR,ERROR))// &
+        localError="The generated mesh mesh type of "//TRIM(NumberToVString(generatedMesh%generatedType,"*",err,error))// &
           & " is invalid."
-        CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+        CALL FlagError(localError,err,error,*999)
       END SELECT
     ELSE
-      CALL FLAG_ERROR("Generated mesh is not associated.",ERR,ERROR,*999)
+      CALL FlagError("Generated mesh is not associated.",err,error,*999)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_NUMBER_OF_ELEMENTS_GET")
+    CALL Exits("GeneratedMeshNumberOfElementsGet")
     RETURN
-999 CALL ERRORS("GENERATED_MESH_NUMBER_OF_ELEMENTS_GET",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_NUMBER_OF_ELEMENTS_GET")
+999 CALL Errors("GeneratedMeshNumberOfElementsGet",err,error)
+    CALL Exits("GeneratedMeshNumberOfElementsGet")
     RETURN 1
-  END SUBROUTINE GENERATED_MESH_NUMBER_OF_ELEMENTS_GET
+  END SUBROUTINE GeneratedMeshNumberOfElementsGet
 
   !
   !================================================================================================================================
   !
 
   !>Sets/changes the number of elements in a generated mesh. \see OPENCMISS::CMISSGeneratedMeshNumberOfElementsSet
-  SUBROUTINE GENERATED_MESH_NUMBER_OF_ELEMENTS_SET(GENERATED_MESH,NUMBER_OF_ELEMENTS_XI,ERR,ERROR,*)
+  SUBROUTINE GeneratedMeshNumberOfElementsSet(generatedMesh,numberOfElements,err,error,*)
 
     !Argument variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<A pointer to the generated mesh to set the type of
-    INTEGER(INTG), INTENT(IN) :: NUMBER_OF_ELEMENTS_XI(:) !<NUMBER_OF_ELEMENTS_XI(ni). The number of elements in the ni'th xi direction (or, r,theta,z for cylinder) to set.
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh to set the type of
+    INTEGER(INTG), INTENT(IN) :: numberOfElements(:) !<numberOfElements(xiIdx). The number of elements in the xiIdx'th xi direction to set.
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
-    TYPE(BASIS_TYPE), POINTER :: BASIS
-    TYPE(GENERATED_MESH_REGULAR_TYPE), POINTER :: REGULAR_MESH
-    TYPE(VARYING_STRING) :: LOCAL_ERROR
+    TYPE(GeneratedMeshCylinderType), POINTER :: cylinderMesh
+    TYPE(GeneratedMeshEllipsoidType), POINTER :: cylinderMesh
+    TYPE(GeneratedMeshRegularType), POINTER :: regularMesh
+    TYPE(VARYING_STRING) :: localError
 
-    CALL ENTERS("GENERATED_MESH_NUMBER_OF_ELEMENTS_SET",ERR,ERROR,*999)
+    CALL Enters("GeneratedMeshNumberOfElementsSet",err,error,*999)
 
-    IF(ASSOCIATED(GENERATED_MESH)) THEN
-      IF(GENERATED_MESH%GENERATED_MESH_FINISHED) THEN
-        CALL FLAG_ERROR("Generated mesh has been finished.",ERR,ERROR,*999)
+    IF(ASSOCIATED(generatedMesh)) THEN
+      IF(generatedMesh%generatedMeshFinished) THEN
+        CALL FlagError("Generated mesh has been finished.",err,error,*999)
       ELSE
-        SELECT CASE(GENERATED_MESH%GENERATED_TYPE)
+        SELECT CASE(generatedMesh%generatedType)
         CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
-          REGULAR_MESH=>GENERATED_MESH%REGULAR_MESH
-          IF(ASSOCIATED(REGULAR_MESH)) THEN
-            IF(ALLOCATED(REGULAR_MESH%BASES)) THEN
-              BASIS=>REGULAR_MESH%BASES(1)%PTR !Number of xi will be the same for all bases
-              IF(ASSOCIATED(BASIS)) THEN
-                IF(SIZE(NUMBER_OF_ELEMENTS_XI,1)==BASIS%NUMBER_OF_XI) THEN
-                  IF(ALL(NUMBER_OF_ELEMENTS_XI>0)) THEN
-                    IF(ALLOCATED(REGULAR_MESH%NUMBER_OF_ELEMENTS_XI)) DEALLOCATE(REGULAR_MESH%NUMBER_OF_ELEMENTS_XI)
-                    ALLOCATE(REGULAR_MESH%NUMBER_OF_ELEMENTS_XI(BASIS%NUMBER_OF_XI),STAT=ERR)
-                    IF(ERR/=0) CALL FLAG_ERROR("Could not allocate number of elements xi.",ERR,ERROR,*999)
-                    REGULAR_MESH%NUMBER_OF_ELEMENTS_XI(1:BASIS%NUMBER_OF_XI)=NUMBER_OF_ELEMENTS_XI(1:BASIS%NUMBER_OF_XI)
-                  ELSE
-                    CALL FLAG_ERROR("Must have 1 or more elements in all directions.",ERR,ERROR,*999)
-                  ENDIF
+          regularMesh=>generatedMesh%regularMesh
+          IF(ASSOCIATED(regularMesh)) THEN
+            meshDimension=regularMesh%meshDimension
+            IF(ASSOCIATED(regularMesh%bases)) THEN
+              IF(SIZE(numberOfElements,1)>=meshDimension) THEN
+                IF(ALL(numberOfElements>0)) THEN
+                  regularMesh%numberOfElementsXi(1:meshDimension)=numberOfElements(1:meshDimension)
                 ELSE
-                  LOCAL_ERROR="The number of elements xi size of "// &
-                    & TRIM(NUMBER_TO_VSTRING(SIZE(NUMBER_OF_ELEMENTS_XI,1),"*",ERR,ERROR))// &
-                    & " is invalid. The number of elements xi size must match the basis number of xi dimensions of "// &
-                    & TRIM(NUMBER_TO_VSTRING(BASIS%NUMBER_OF_XI,"*",ERR,ERROR))//"."
-                  CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+                  CALL FlagError("Must have 1 or more elements in all directions.",err,error,*999)
                 ENDIF
               ELSE
-                CALL FLAG_ERROR("Must set the generated mesh basis before setting the number of elements.",ERR,ERROR,*999)
+                localError="The number of elements xi size of "// &
+                  & TRIM(NumberToVString(SIZE(numberOfElements,1),"*",err,error))// &
+                  & " is invalid. The number of elements size must be >= the mesh dimension of "// &
+                  & TRIM(NumberToVString(meshDimension,"*",err,error))//"."
+                CALL FlagError(localError,err,error,*999)
               ENDIF
             ELSE
-              CALL FLAG_ERROR("Must set the generated mesh basis before setting the number of elements.",ERR,ERROR,*999)
+              CALL FlagError("Must set the generated mesh basis before setting the number of elements.",err,error,*999)
             ENDIF
           ELSE
-            CALL FLAG_ERROR("Regular generated mesh is not associated.",ERR,ERROR,*999)
+            CALL FlagError("Regular generated mesh is not associated.",err,error,*999)
           ENDIF
         CASE(GENERATED_MESH_POLAR_MESH_TYPE)
-          CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
+          CALL FlagError("Not implemented.",err,error,*999)
         CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
-          CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
+          CALL FlagError("Not implemented.",err,error,*999)
         CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
-          IF(ASSOCIATED(GENERATED_MESH%CYLINDER_MESH)) THEN
-            ALLOCATE(GENERATED_MESH%CYLINDER_MESH%NUMBER_OF_ELEMENTS_XI(SIZE(NUMBER_OF_ELEMENTS_XI)),STAT=ERR)
-            GENERATED_MESH%CYLINDER_MESH%NUMBER_OF_ELEMENTS_XI=NUMBER_OF_ELEMENTS_XI
+          cylinderMesh=>generatedMesh%cylinderMesh
+          IF(ASSOCIATED(cylinderMesh)) THEN
+            meshDimension=cylinderMesh%meshDimension
+            IF(ASSOCIATED(cylinderMesh%bases)) THEN
+              IF(SIZE(numberOfElements,1)>=meshDimension) THEN
+                IF(ALL(numberOfElements>0)) THEN
+                  cylinderMesh%numberOfElementsXi(1:meshDimension)=numberOfElements(1:meshDimension)
+                ELSE
+                  CALL FlagError("Must have 1 or more elements in all directions.",err,error,*999)
+                ENDIF
+              ELSE
+                localError="The number of elements xi size of "// &
+                  & TRIM(NumberToVString(SIZE(numberOfElements,1),"*",err,error))// &
+                  & " is invalid. The number of elements size must be >= the mesh dimension of "// &
+                  & TRIM(NumberToVString(meshDimension,"*",err,error))//"."
+                CALL FlagError(localError,err,error,*999)
+              ENDIF
+            ELSE
+              CALL FlagError("Must set the generated mesh basis before setting the number of elements.",err,error,*999)
+            ENDIF
           ELSE
-            CALL FLAG_ERROR("Cylinder generated mesh is not associated.",ERR,ERROR,*999)
+            CALL FlagError("Cylinder generated mesh is not associated.",err,error,*999)
           ENDIF
         CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
-          IF(ASSOCIATED(GENERATED_MESH%ELLIPSOID_MESH)) THEN
-            ALLOCATE(GENERATED_MESH%ELLIPSOID_MESH%NUMBER_OF_ELEMENTS_XI(SIZE(NUMBER_OF_ELEMENTS_XI)),STAT=ERR)
-            GENERATED_MESH%ELLIPSOID_MESH%NUMBER_OF_ELEMENTS_XI=NUMBER_OF_ELEMENTS_XI
+          ellipsoidMesh=>generatedMesh%ellipsoidMesh
+          IF(ASSOCIATED(ellipsoidMesh)) THEN
+            meshDimension=ellipsoidMesh%meshDimension
+            IF(ASSOCIATED(ellipsoidMesh%bases)) THEN
+              IF(SIZE(numberOfElements,1)>=meshDimension) THEN
+                IF(ALL(numberOfElements>0)) THEN
+                  ellipsoidMesh%numberOfElementsXi(1:meshDimension)=numberOfElements(1:meshDimension)
+                ELSE
+                  CALL FlagError("Must have 1 or more elements in all directions.",err,error,*999)
+                ENDIF
+              ELSE
+                localError="The number of elements xi size of "// &
+                  & TRIM(NumberToVString(SIZE(numberOfElements,1),"*",err,error))// &
+                  & " is invalid. The number of elements size must be >= the mesh dimension of "// &
+                  & TRIM(NumberToVString(meshDimension,"*",err,error))//"."
+                CALL FlagError(localError,err,error,*999)
+              ENDIF
+            ELSE
+              CALL FlagError("Must set the generated mesh basis before setting the number of elements.",err,error,*999)
+            ENDIF
           ELSE
-            CALL FLAG_ERROR("Ellipsoid generated mesh is not associated.",ERR,ERROR,*999)
+            CALL FlagError("Ellipsoid generated mesh is not associated.",err,error,*999)
           ENDIF
         CASE DEFAULT
-          LOCAL_ERROR="The generated mesh mesh type of "//TRIM(NUMBER_TO_VSTRING(GENERATED_MESH%GENERATED_TYPE,"*",ERR,ERROR))// &
+          localError="The generated mesh mesh type of "//TRIM(NumberToVString(generatedMesh%generatedType,"*",err,error))// &
             & " is invalid."
-          CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+          CALL FlagError(localError,err,error,*999)
         END SELECT
       ENDIF
     ELSE
-      CALL FLAG_ERROR("Generated mesh is not associated.",ERR,ERROR,*999)
+      CALL FlagError("Generated mesh is not associated.",err,error,*999)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_NUMBER_OF_ELEMENTS_SET")
+    CALL Exits("GeneratedMeshNumberOfElementsSet")
     RETURN
-999 CALL ERRORS("GENERATED_MESH_NUMBER_OF_ELEMENTS_SET",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_NUMBER_OF_ELEMENTS_SET")
+999 CALL Errors("GeneratedMeshNumberOfElementsSet",err,error)
+    CALL Exits("GeneratedMeshNumberOfElementsSet")
     RETURN 1
-  END SUBROUTINE GENERATED_MESH_NUMBER_OF_ELEMENTS_SET
+  END SUBROUTINE GeneratedMeshNumberOfElementsSet
 
   !
   !================================================================================================================================
   !
 
   !>Get the origin of a generated mesh. \see OPENCMISS::CMISSGeneratedMeshOriginGet
-  SUBROUTINE GENERATED_MESH_ORIGIN_GET(GENERATED_MESH,ORIGIN,ERR,ERROR,*)
+  SUBROUTINE GeneratedMeshOriginGet(generatedMesh,origin,err,error,*)
 
     !Argument variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<A pointer to the generated mesh to get the type of
-    REAL(DP), INTENT(OUT) :: ORIGIN(:) !<On return, the origin coordinate for each axis
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh to get the type of
+    REAL(DP), INTENT(OUT) :: origin(:) !<On return, the origin coordinate for each axis
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
-    TYPE(VARYING_STRING) :: LOCAL_ERROR
+    INTEGER(INTG) :: coordinateDimension
+    TYPE(COORDINATE_SYSTEM_TYPE), POINTER :: coordinateSystem
+    TYPE(VARYING_STRING) :: localError
 
-    CALL ENTERS("GENERATED_MESH_ORIGIN_GET",ERR,ERROR,*999)
+    NULLIFY(coordinateSystem)
 
-    IF(ASSOCIATED(GENERATED_MESH)) THEN
-      SELECT CASE(GENERATED_MESH%GENERATED_TYPE)
-      CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
-        IF(SIZE(ORIGIN,1)>=SIZE(GENERATED_MESH%REGULAR_MESH%ORIGIN,1)) THEN
-          ORIGIN=GENERATED_MESH%REGULAR_MESH%ORIGIN
-        ELSE
-          LOCAL_ERROR="The size of ORIGIN is too small. The supplied size is "// &
-            & TRIM(NUMBER_TO_VSTRING(SIZE(ORIGIN,1),"*",ERR,ERROR))//" and it needs to be >= "// &
-            & TRIM(NUMBER_TO_VSTRING(SIZE(GENERATED_MESH%REGULAR_MESH%ORIGIN,1),"*",ERR,ERROR))//"."
-          CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
-        ENDIF
-      CASE(GENERATED_MESH_POLAR_MESH_TYPE)
-        CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
-      CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
-        CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
-      CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
-        IF(SIZE(ORIGIN,1)>=SIZE(GENERATED_MESH%CYLINDER_MESH%ORIGIN,1)) THEN
-          ORIGIN=GENERATED_MESH%CYLINDER_MESH%ORIGIN
-        ELSE
-          LOCAL_ERROR="The size of ORIGIN is too small. The supplied size is "// &
-            & TRIM(NUMBER_TO_VSTRING(SIZE(ORIGIN,1),"*",ERR,ERROR))//" and it needs to be 3."
-          CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
-        ENDIF
-      CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
-        IF(SIZE(ORIGIN,1)>=SIZE(GENERATED_MESH%ELLIPSOID_MESH%ORIGIN,1)) THEN
-          ORIGIN=GENERATED_MESH%ELLIPSOID_MESH%ORIGIN
-        ELSE
-          LOCAL_ERROR="The size of ORIGIN is too small. The supplied size is "// &
-            & TRIM(NUMBER_TO_VSTRING(SIZE(ORIGIN,1),"*",ERR,ERROR))//" and it needs to be 3."
-          CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
-        ENDIF
-      CASE DEFAULT
-        LOCAL_ERROR="The generated mesh mesh type of "//TRIM(NUMBER_TO_VSTRING(GENERATED_MESH%GENERATED_TYPE,"*",ERR,ERROR))// &
-          & " is invalid."
-        CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
-      END SELECT
+    CALL Enters("GeneratedMeshOriginGet",err,error,*999)
+
+    IF(ASSOCIATED(generatedMesh)) THEN
+      CALL GeneratedMeshCoordinateSystemGet(generatedMesh,coordinateSystem,err,error,*999)
+      CALL COORDINATE_SYSTEM_DIMENSION_GET(coordianteSystem,coordinateDimension,err,error,*999)
+      IF(SIZE(origin,1)>=coordinateDimension) THEN
+        SELECT CASE(generatedMesh%generatedType)
+        CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
+          origin(1:coordinateDimension)=generatedMesh%regularMesh%origin(1:coordinateDimension)
+        CASE(GENERATED_MESH_POLAR_MESH_TYPE)
+          CALL FlagError("Not implemented.",err,error,*999)
+        CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
+          CALL FlagError("Not implemented.",err,error,*999)
+        CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
+          origin(1:coordinateDimension)=generatedMesh%cylinderMesh%origin(1:coordinateDimension)
+        CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
+          origin(1:coordinateDimension)=generatedMesh%ellipsoidMesh%origin(1:coordinateDimension)
+        CASE DEFAULT
+          localError="The generated mesh mesh type of "//TRIM(NumberToVString(generatedMesh%generatedType,"*",err,error))// &
+            & " is invalid."
+          CALL FlagError(localError,err,error,*999)
+        END SELECT
+      ELSE
+        localError="The size of origin is too small. The supplied size is "// &
+          & TRIM(NumberToVString(SIZE(origin,1),"*",err,error))// &
+          & " and it needs to be >= the coordinate dimension of "// &
+          & TRIM(NumberToVString(coordinateDimension,"*",err,error))//"."
+        CALL FlagError(localError,err,error,*999)
+      ENDIF
     ELSE
-      CALL FLAG_ERROR("Generated mesh is not associated",ERR,ERROR,*999)
+      CALL FlagError("Generated mesh is not associated",err,error,*999)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_ORIGIN_GET")
+    CALL Exits("GeneratedMeshOriginGet")
     RETURN
-999 CALL ERRORS("GENERATED_MESH_ORIGIN_GET",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_ORIGIN_GET")
+999 CALL Errors("GeneratedMeshOriginGet",err,error)
+    CALL Exits("GeneratedMeshOriginGet")
     RETURN 1
-  END SUBROUTINE GENERATED_MESH_ORIGIN_GET
+  END SUBROUTINE GeneratedMeshOriginGet
 
   !
   !================================================================================================================================
   !
 
   !>Sets/changes the origin of a generated mesh. \see OPENCMISS::CMISSGeneratedMeshOriginSet
-  SUBROUTINE GENERATED_MESH_ORIGIN_SET(GENERATED_MESH,ORIGIN,ERR,ERROR,*)
+  SUBROUTINE GeneratedMeshOriginSet(generatedMesh,origin,err,error,*)
 
     !Argument variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<A pointer to the generated mesh to set the type of
-    REAL(DP), INTENT(IN) :: ORIGIN(:) !<ORIGIN(nj). The nj'th coordinate origin for the generated mesh
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh to set the type of
+    REAL(DP), INTENT(IN) :: origin(:) !<origin(coordinateIdx). The coordinateIdx'th coordinate origin for the generated mesh
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
-    INTEGER(INTG) :: COORDINATE_DIMENSION
-    TYPE(COORDINATE_SYSTEM_TYPE), POINTER :: COORDINATE_SYSTEM
-    TYPE(VARYING_STRING) :: LOCAL_ERROR
+    INTEGER(INTG) :: coordianteDimension
+    TYPE(COORDINATE_SYSTEM_TYPE), POINTER :: coordinateSystem
+    TYPE(VARYING_STRING) :: localError
 
-    CALL ENTERS("GENERATED_MESH_ORIGIN_SET",ERR,ERROR,*999)
+    NULLIFY(coordinateSystem)
+    
+    CALL Enters("GeneratedMeshOriginSet",err,error,*999)
 
-    IF(ASSOCIATED(GENERATED_MESH)) THEN
-      IF(GENERATED_MESH%GENERATED_MESH_FINISHED) THEN
-        CALL FLAG_ERROR("Generated mesh has been finished.",ERR,ERROR,*999)
+    IF(ASSOCIATED(generatedMesh)) THEN
+      IF(generatedMesh%generatedMeshFinished) THEN
+        CALL FlagError("Generated mesh has been finished.",err,error,*999)
       ELSE
-        NULLIFY(COORDINATE_SYSTEM)
-        CALL GENERATED_MESH_COORDINATE_SYSTEM_GET(GENERATED_MESH,COORDINATE_SYSTEM,ERR,ERROR,*999)
-        CALL COORDINATE_SYSTEM_DIMENSION_GET(COORDINATE_SYSTEM,COORDINATE_DIMENSION,ERR,ERROR,*999)
-        IF(SIZE(ORIGIN,1)==COORDINATE_DIMENSION) THEN
-          SELECT CASE(GENERATED_MESH%GENERATED_TYPE)
+        CALL GeneratedMeshCoordinateSystemGet(generatedMesh,coordianteSystem,err,error,*999)
+        CALL COORDINATE_SYSTEM_DIMENSION_GET(coordinateSystem,coordinateDimension,err,error,*999)
+        IF(SIZE(origin,1)>=coordinateDimension) THEN
+          SELECT CASE(generatedMesh%generatedType)
           CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
-            IF(ASSOCIATED(GENERATED_MESH%REGULAR_MESH)) THEN
-              IF(.NOT.ALLOCATED(GENERATED_MESH%REGULAR_MESH%ORIGIN)) THEN
-                ALLOCATE(GENERATED_MESH%REGULAR_MESH%ORIGIN(SIZE(ORIGIN)),STAT=ERR)
-                IF(ERR/=0) CALL FLAG_ERROR("Could not allocate origin.",ERR,ERROR,*999)
-              ENDIF
-              GENERATED_MESH%REGULAR_MESH%ORIGIN=ORIGIN
+            IF(ASSOCIATED(generatedMesh%regularMesh)) THEN
+              generatedMesh%regularMesh%origin(1:coordinateDimension)=origin(1:coordinateDimension)
             ELSE
-              CALL FLAG_ERROR("Regular generated mesh is not associated.",ERR,ERROR,*999)
+              CALL FlagError("Regular generated mesh is not associated.",err,error,*999)
             ENDIF
           CASE(GENERATED_MESH_POLAR_MESH_TYPE)
-            CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
+            CALL FlagError("Not implemented.",err,error,*999)
           CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
-            CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
+            CALL FlagError("Not implemented.",err,error,*999)
           CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
-            IF(ASSOCIATED(GENERATED_MESH%CYLINDER_MESH)) THEN
-              IF(SIZE(ORIGIN,1)==3) THEN
-                IF(.NOT.ALLOCATED(GENERATED_MESH%CYLINDER_MESH%ORIGIN)) THEN
-                  ALLOCATE(GENERATED_MESH%CYLINDER_MESH%ORIGIN(SIZE(ORIGIN)),STAT=ERR)
-                  IF(ERR/=0) CALL FLAG_ERROR("Could not allocate origin.",ERR,ERROR,*999)
-                ENDIF
-              ELSE
-                CALL FLAG_ERROR("Cylinder generated mesh is only supported for 3D.",ERR,ERROR,*999)
-              ENDIF
-              GENERATED_MESH%CYLINDER_MESH%ORIGIN=ORIGIN
+            IF(ASSOCIATED(generatedMesh%cylinderMesh)) THEN
+              generatedMesh%cylinderMesh%origin(1:coordinateDimension)=origin(1:coordinateDimension)
             ELSE
-              CALL FLAG_ERROR("Cylinder generated mesh is not associated.",ERR,ERROR,*999)
+              CALL FlagError("Cylinder generated mesh is not associated.",err,error,*999)
             END IF
           CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
-            IF(ASSOCIATED(GENERATED_MESH%ELLIPSOID_MESH)) THEN
-              IF(SIZE(ORIGIN,1)==3) THEN
-                IF(.NOT.ALLOCATED(GENERATED_MESH%ELLIPSOID_MESH%ORIGIN)) THEN
-                  ALLOCATE(GENERATED_MESH%ELLIPSOID_MESH%ORIGIN(SIZE(ORIGIN)),STAT=ERR)
-                  IF(ERR/=0) CALL FLAG_ERROR("Could not allocate origin.",ERR,ERROR,*999)
-                ENDIF
-              ELSE
-                CALL FLAG_ERROR("Ellipsoid generated mesh is only supported for 3D.",ERR,ERROR,*999)
-              ENDIF
-              GENERATED_MESH%ELLIPSOID_MESH%ORIGIN=ORIGIN
+            IF(ASSOCIATED(generatedMesh%ellipsoidMesh)) THEN
+             generatedMesh%ellipsoidMesh%origin(1:coordinateDimension)=origin(1:coordinateDimension)
             ELSE
-              CALL FLAG_ERROR("Ellipsoid generated mesh is not associated.",ERR,ERROR,*999)
+              CALL FlagError("Ellipsoid generated mesh is not associated.",err,error,*999)
             END IF
           CASE DEFAULT
-            LOCAL_ERROR="The generated mesh mesh type of "//TRIM(NUMBER_TO_VSTRING(GENERATED_MESH%GENERATED_TYPE,"*",ERR,ERROR))// &
+            localError="The generated mesh mesh type of "//TRIM(NumberToVString(generatedMesh%generatedType,"*",err,error))// &
               & " is invalid."
-            CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+            CALL FlagError(localError,err,error,*999)
           END SELECT
         ELSE
-          LOCAL_ERROR="The origin size of "//TRIM(NUMBER_TO_VSTRING(SIZE(ORIGIN,1),"*",ERR,ERROR))// &
-            & " is invalid. The extent size must match the coordinate system dimension of "// &
-            & TRIM(NUMBER_TO_VSTRING(COORDINATE_DIMENSION,"*",ERR,ERROR))//"."
-          CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+          localError="The origin size of "//TRIM(NumberToVString(SIZE(origin,1),"*",err,error))// &
+            & " is invalid. The origin size must be >= the coordinate system dimension of "// &
+            & TRIM(NumberToVString(coordinateDimension,"*",err,error))//"."
+          CALL FlagError(localError,err,error,*999)
         ENDIF
       ENDIF
     ELSE
-      CALL FLAG_ERROR("Generated mesh is not associated.",ERR,ERROR,*999)
+      CALL FlagError("Generated mesh is not associated.",err,error,*999)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_ORIGIN_SET")
+    CALL Exits("GeneratedMeshOriginSet")
     RETURN
-999 CALL ERRORS("GENERATED_MESH_ORIGIN_SET",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_ORIGIN_SET")
+999 CALL Errors("GeneratedMeshOriginSet",err,error)
+    CALL Exits("GeneratedMeshOriginSet")
     RETURN 1
-  END SUBROUTINE GENERATED_MESH_ORIGIN_SET
+  END SUBROUTINE GeneratedMeshOriginSet
 
   !
   !================================================================================================================================
   !
 
   !>Start to create the regular generated mesh type
-  SUBROUTINE GENERATED_MESH_REGULAR_CREATE_FINISH(GENERATED_MESH,MESH_USER_NUMBER,ERR,ERROR,*)
+  SUBROUTINE GeneratedMeshRegularCreateFinish(generatedMesh,meshUserNumber,err,error,*)
 
     !Argument variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<A pointer to the generated mesh
-    INTEGER(INTG), INTENT(IN) :: MESH_USER_NUMBER !<The user number for the mesh to generate
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh
+    INTEGER(INTG), INTENT(IN) :: meshUserNumber !<The user number for the mesh to generate
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
     INTEGER(INTG) :: coordinate_idx,COUNT,ELEMENT_FACTOR,grid_ne,GRID_NUMBER_OF_ELEMENTS,ni,ne,ne1,ne2,ne3,nn,nn1,nn2,nn3,np, &
       & NUMBER_OF_ELEMENTS_XI(3),TOTAL_NUMBER_OF_NODES_XI(3),TOTAL_NUMBER_OF_NODES,NUMBER_OF_CORNER_NODES, &
       & TOTAL_NUMBER_OF_ELEMENTS,xi_idx,NUM_BASES,basis_idx,BASIS_NUMBER_OF_NODES
-    INTEGER(INTG), ALLOCATABLE :: ELEMENT_NODES(:),ELEMENT_NODES_USER_NUMBERS(:)
-    TYPE(BASIS_TYPE), POINTER :: BASIS
-    TYPE(COORDINATE_SYSTEM_TYPE), POINTER :: COORDINATE_SYSTEM
-    TYPE(GENERATED_MESH_REGULAR_TYPE), POINTER :: REGULAR_MESH
-    TYPE(INTERFACE_TYPE), POINTER :: INTERFACE
-    TYPE(MeshComponentElementsType), POINTER :: MESH_ELEMENTS
-    TYPE(NODES_TYPE), POINTER :: NODES
-    TYPE(REGION_TYPE), POINTER :: REGION
-    TYPE(VARYING_STRING) :: LOCAL_ERROR
+    INTEGER(INTG), ALLOCATABLE :: elementNodes(:),elementNodesUserNumbers(:)
+    TYPE(BASIS_TYPE), POINTER :: basis
+    TYPE(COORDINATE_SYSTEM_TYPE), POINTER :: coordinateSystem
+    TYPE(GeneratedMeshRegularType), POINTER :: regularMesh
+    TYPE(INTERFACE_TYPE), POINTER :: interface
+    TYPE(MeshComponentElementsType), POINTER :: meshElements
+    TYPE(NODES_TYPE), POINTER :: nodes
+    TYPE(REGION_TYPE), POINTER :: region
+    TYPE(VARYING_STRING) :: localError
 
-    CALL ENTERS("GENERATED_MESH_REGULAR_CREATE_FINISH",ERR,ERROR,*999)
+    NULLIFY(coordinateSystem)
+    
+    CALL Enters("GeneratedMeshRegularCreateFinish",err,error,*999)
 
-    IF(ASSOCIATED(GENERATED_MESH)) THEN
-      NULLIFY(COORDINATE_SYSTEM)
-      CALL GENERATED_MESH_COORDINATE_SYSTEM_GET(GENERATED_MESH,COORDINATE_SYSTEM,ERR,ERROR,*999)
-      REGION=>GENERATED_MESH%REGION
-      INTERFACE=>GENERATED_MESH%INTERFACE
-      REGULAR_MESH=>GENERATED_MESH%REGULAR_MESH
-      IF(ASSOCIATED(REGULAR_MESH)) THEN
-        SELECT CASE(COORDINATE_SYSTEM%TYPE)
+    IF(ASSOCIATED(generatedMesh)) THEN
+      CALL GeneratedMeshCoordinateSystemGet(generatedMesh,coordinateSystem,err,error,*999)
+      CALL COORDINATE_SYSTEM_DIMENSION_GET(coordinateSystem,coordinateDimension,err,error,*999)
+      CALL COORDINATE_SYSTEM_TYPE_GET(coordinateSystem,coordinateType,err,error,*999)
+      region=>generatedMesh%region
+      interface=>generatedMesh%interface
+      regularMesh=>generatedMesh%regularMesh
+      IF(ASSOCIATED(regularMesh)) THEN
+        SELECT CASE(coordinateType)
         CASE(COORDINATE_RECTANGULAR_CARTESIAN_TYPE)
-          IF(ALLOCATED(REGULAR_MESH%BASES)) THEN
+          IF(ALLOCATED(regularMesh%bases)) THEN
             !Use first basis to get number of xi
-            BASIS=>REGULAR_MESH%BASES(1)%PTR
+            basis=>REGULAR_MESH%bases(1)%PTR
             SELECT CASE(BASIS%TYPE)
             CASE(BASIS_LAGRANGE_HERMITE_TP_TYPE,BASIS_SIMPLEX_TYPE)
-              IF(.NOT.ALL(BASIS%COLLAPSED_XI==BASIS_NOT_COLLAPSED)) &
-                & CALL FLAG_ERROR("Degenerate (collapsed) basis not implemented.",ERR,ERROR,*999)
-              !Determine the coordinate system and create the regular mesh for that system
-              REGULAR_MESH%COORDINATE_DIMENSION=COORDINATE_SYSTEM%NUMBER_OF_DIMENSIONS
-              REGULAR_MESH%MESH_DIMENSION=BASIS%NUMBER_OF_XI
-              IF(.NOT.ALLOCATED(REGULAR_MESH%ORIGIN)) THEN
-                ALLOCATE(REGULAR_MESH%ORIGIN(REGULAR_MESH%COORDINATE_DIMENSION),STAT=ERR)
-                IF(ERR/=0) CALL FLAG_ERROR("Could not allocate origin.",ERR,ERROR,*999)
-                REGULAR_MESH%ORIGIN=0.0_DP
-              ENDIF
-              IF(.NOT.ALLOCATED(REGULAR_MESH%MAXIMUM_EXTENT)) THEN
-                ALLOCATE(REGULAR_MESH%MAXIMUM_EXTENT(REGULAR_MESH%COORDINATE_DIMENSION),STAT=ERR)
-                IF(ERR/=0) CALL FLAG_ERROR("Could not allocate maximum extent.",ERR,ERROR,*999)
-                REGULAR_MESH%MAXIMUM_EXTENT=1.0_DP
-              ENDIF
-              IF(.NOT.ALLOCATED(REGULAR_MESH%NUMBER_OF_ELEMENTS_XI)) THEN
-                ALLOCATE(REGULAR_MESH%NUMBER_OF_ELEMENTS_XI(REGULAR_MESH%MESH_DIMENSION),STAT=ERR)
-                IF(ERR/=0) CALL FLAG_ERROR("Could not allocate number of elements xi.",ERR,ERROR,*999)
-                REGULAR_MESH%NUMBER_OF_ELEMENTS_XI=1
-              ENDIF
-              IF(ALLOCATED(REGULAR_MESH%BASE_VECTORS)) THEN
-                !!TODO: Check base vectors
-              ELSE
-                !Calculate base vectors
-                ALLOCATE(REGULAR_MESH%BASE_VECTORS(REGULAR_MESH%COORDINATE_DIMENSION,REGULAR_MESH%MESH_DIMENSION),STAT=ERR)
-                IF(ERR/=0) CALL FLAG_ERROR("Could not allocate number of elements xi.",ERR,ERROR,*999)
-                REGULAR_MESH%BASE_VECTORS=0.0_DP
-                IF(REGULAR_MESH%MESH_DIMENSION==1) THEN
-                  !The base vector is just the extent vector
-                  REGULAR_MESH%BASE_VECTORS(:,1)=REGULAR_MESH%MAXIMUM_EXTENT
-                ELSE
-                  IF(REGULAR_MESH%MESH_DIMENSION<REGULAR_MESH%COORDINATE_DIMENSION) THEN
-                    !Find the first number of mesh dimensions for which the extent is non-zero.
-                    COUNT=0
-                    coordinate_idx=1
-                    DO xi_idx=1,REGULAR_MESH%MESH_DIMENSION
-                      DO WHILE(ABS(REGULAR_MESH%MAXIMUM_EXTENT(coordinate_idx))<=ZERO_TOLERANCE)
-                        coordinate_idx=coordinate_idx+1
-                      ENDDO
-                      REGULAR_MESH%BASE_VECTORS(coordinate_idx,xi_idx)=REGULAR_MESH%MAXIMUM_EXTENT(coordinate_idx)
-                      coordinate_idx=coordinate_idx+1
-                      COUNT=COUNT+1
-                    ENDDO !xi_idx
-                    IF(COUNT/=REGULAR_MESH%MESH_DIMENSION)  &
-                      & CALL FLAG_ERROR("Invalid mesh extent. There number of non-zero components is < the mesh dimension.", &
-                      & ERR,ERROR,*999)
-                  ELSE IF(REGULAR_MESH%MESH_DIMENSION==REGULAR_MESH%COORDINATE_DIMENSION) THEN
-                    !The default base vectors are aligned with the coordinate vectors
-                    DO coordinate_idx=1,REGULAR_MESH%COORDINATE_DIMENSION
-                      REGULAR_MESH%BASE_VECTORS(coordinate_idx,coordinate_idx)=REGULAR_MESH%MAXIMUM_EXTENT(coordinate_idx)
-                    ENDDO !coordinate_idx
-                  ELSE
-                    CALL FLAG_ERROR("The mesh dimension is greater than the coordinate dimension.",ERR,ERROR,*999)
-                  ENDIF
-                ENDIF
-              ENDIF
               !Calculate the sizes of a regular grid of elements with the appropriate number of basis nodes in each dimension of
               !the grid element
-              TOTAL_NUMBER_OF_NODES=1
-              GRID_NUMBER_OF_ELEMENTS=1
-              NUMBER_OF_ELEMENTS_XI=1
-              NUM_BASES=SIZE(REGULAR_MESH%BASES)
-              DO ni=1,REGULAR_MESH%MESH_DIMENSION
+              totalNumberOfNodes=1
+              gridNumberOfElements=1
+              numberOfElementsXi=1
+              numberOfBases=SIZE(regularMesh%bases)
+              DO xiIdx=1,regularMesh%meshDimension
                 !Set total number of nodes to corner nodes only
-                TOTAL_NUMBER_OF_NODES=TOTAL_NUMBER_OF_NODES*(REGULAR_MESH%NUMBER_OF_ELEMENTS_XI(ni)+1)
-                NUMBER_OF_ELEMENTS_XI(ni)=REGULAR_MESH%NUMBER_OF_ELEMENTS_XI(ni)
-                GRID_NUMBER_OF_ELEMENTS=GRID_NUMBER_OF_ELEMENTS*REGULAR_MESH%NUMBER_OF_ELEMENTS_XI(ni)
-              ENDDO
-              NUMBER_OF_CORNER_NODES=TOTAL_NUMBER_OF_NODES
+                totalNumberOfNodes=totalNumberOfNodes*(regularMesh%numberOfElementsXi(xiIdx)+1)
+                numberOfElementsXi(xiIdx)=regularMesh%numberOfElementsXi(xiIdx)
+                gridNumberOfElements=gridNumberOfElements*regularMesh%numberOfElementsXi(xiIdx)
+              ENDDO !xiIdx
+              numberOfCornerNodes=totalNumberOfNodes
               !Add extra nodes for each basis
               !Will end up with some duplicate nodes if bases have the same interpolation in one direction
-              DO basis_idx=1,NUM_BASES
-                BASIS=>REGULAR_MESH%BASES(basis_idx)%PTR
-                BASIS_NUMBER_OF_NODES=1
-                DO ni=1,REGULAR_MESH%MESH_DIMENSION
-                  BASIS_NUMBER_OF_NODES=BASIS_NUMBER_OF_NODES*((BASIS%NUMBER_OF_NODES_XIC(ni)-1)* &
-                      & REGULAR_MESH%NUMBER_OF_ELEMENTS_XI(ni)+1)
-                ENDDO
-                TOTAL_NUMBER_OF_NODES=TOTAL_NUMBER_OF_NODES+BASIS_NUMBER_OF_NODES-NUMBER_OF_CORNER_NODES
+              DO basisIdx=1,numberOfBases
+                basis=>regularMesh%basis(basisIdx)%ptr
+                basisNumberOfNodes=1
+                DO xiIdx=1,regularMesh%meshDimension
+                  basisNumberofNodes=BasisNumberOfNodes*((basis%NUMBER_OF_NODES_XIC(xiIdx)-1)* &
+                    & regularMesh%numberOfElementsXi(xiIdx)+1)
+                ENDDO !xiIdx
+                totalNumberOfNodes=totalNumberOfNodes+basisNumberOfNodes-numberOfCornerNodes
               ENDDO
               !Compute the element factor i.e., the number of sub elements each grid element will be split into.
-              IF(BASIS%TYPE==BASIS_LAGRANGE_HERMITE_TP_TYPE) THEN
-                ELEMENT_FACTOR=1
+              IF(basis%TYPE==BASIS_LAGRANGE_HERMITE_TP_TYPE) THEN
+                elementFactor=1
               ELSE
-                SELECT CASE(REGULAR_MESH%MESH_DIMENSION)
+                SELECT CASE(regularMesh%meshDimension)
                 CASE(1)
-                  ELEMENT_FACTOR=1
+                  elementFactor=1
                 CASE(2)
-                  ELEMENT_FACTOR=2
+                  elementFactor=2
                 CASE(3)
-                  ELEMENT_FACTOR=6
+                  elementFactor=6
                 CASE DEFAULT
-                  LOCAL_ERROR="The mesh dimension dimension of "// &
-                    & TRIM(NUMBER_TO_VSTRING(REGULAR_MESH%MESH_DIMENSION,"*",ERR,ERROR))//" is invalid."
-                  CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+                  localError="The mesh dimension dimension of "// &
+                    & TRIM(NumberToVString(regularMesh%meshDimension,"*",err,error))//" is invalid."
+                  CALL FlagError(localError,err,error,*999)
                 END SELECT
               ENDIF
-              TOTAL_NUMBER_OF_ELEMENTS=ELEMENT_FACTOR*GRID_NUMBER_OF_ELEMENTS
+              totalNumberOfElements=elementFactor*gridNumberOfElements
               !Create the default node set
-              NULLIFY(NODES)
-              IF(ASSOCIATED(REGION)) THEN
-                CALL NODES_CREATE_START(REGION,TOTAL_NUMBER_OF_NODES,NODES,ERR,ERROR,*999)
+              NULLIFY(nodes)
+              IF(ASSOCIATED(region)) THEN
+                CALL NODES_CREATE_START(region,totalNumberOfNodes,nodes,err,error,*999)
               ELSE
-                CALL NODES_CREATE_START(INTERFACE,TOTAL_NUMBER_OF_NODES,NODES,ERR,ERROR,*999)
+                CALL NODES_CREATE_START(INTERFACE,totalNumberOfNodes,nodes,err,error,*999)
               ENDIF
               !Finish the nodes creation
-              CALL NODES_CREATE_FINISH(NODES,ERR,ERROR,*999)
+              CALL NODES_CREATE_FINISH(nodes,err,error,*999)
               !Create the mesh
-              IF(ASSOCIATED(REGION)) THEN
-                CALL MESH_CREATE_START(MESH_USER_NUMBER,REGION,REGULAR_MESH%MESH_DIMENSION,GENERATED_MESH%MESH, &
-                  & ERR,ERROR,*999)
+              IF(ASSOCIATED(region)) THEN
+                CALL MESH_CREATE_START(meshUserNumber,region,regularMesh%meshDimension,generatedMesh%mesh,err,error,*999)
               ELSE
-                CALL MESH_CREATE_START(MESH_USER_NUMBER,INTERFACE,REGULAR_MESH%MESH_DIMENSION,GENERATED_MESH%MESH, &
-                  & ERR,ERROR,*999)
+                CALL MESH_CREATE_START(meshUserNumber,interface,regularMesh%meshDimension,generatedMesh%mesh,err,error,*999)
               ENDIF
               !Set the number of mesh components
-              CALL MESH_NUMBER_OF_COMPONENTS_SET(GENERATED_MESH%MESH,NUM_BASES,ERR,ERROR,*999)
+              CALL MESH_NUMBER_OF_COMPONENTS_SET(generatedMesh%mesh,numberOfBases,err,error,*999)
               !Create the elements
-              CALL MESH_NUMBER_OF_ELEMENTS_SET(GENERATED_MESH%MESH,TOTAL_NUMBER_OF_ELEMENTS,ERR,ERROR,*999)
-              DO basis_idx=1,NUM_BASES
-                BASIS=>REGULAR_MESH%BASES(basis_idx)%PTR
+              CALL MESH_NUMBER_OF_ELEMENTS_SET(generatedMesh%mesh,totalNumberOfElements,err,error,*999)
+              DO basisIdx=1,numberOfBases
+                basis=>regularMesh%bases(basisIdx)%ptr
                 !Get number of nodes in each xi direction for this basis
-                DO ni=1,REGULAR_MESH%MESH_DIMENSION
-                  TOTAL_NUMBER_OF_NODES_XI(ni)=(BASIS%NUMBER_OF_NODES_XIC(ni)-1)*REGULAR_MESH%NUMBER_OF_ELEMENTS_XI(ni)+1
+                DO xiIdx=1,regularMesh%meshDimension
+                  totalNumberOfNodesXi(xiIdx)=(basis%NUMBER_OF_NODES_XIC(xiIdx)-1)*regularMesh%numberOfElementsXi(xiIdx)+1
                 ENDDO
-                NULLIFY(MESH_ELEMENTS)
-                CALL MESH_TOPOLOGY_ELEMENTS_CREATE_START(GENERATED_MESH%MESH,basis_idx,BASIS,MESH_ELEMENTS,ERR,ERROR,*999)
+                NULLIFY(meshElements)
+                CALL MESH_TOPOLOGY_ELEMENTS_CREATE_START(generatedMesh%mesh,basisIdx,basis,meshElements,err,error,*999)
                 !Set the elements for the regular mesh
-                IF (ALLOCATED(ELEMENT_NODES)) DEALLOCATE(ELEMENT_NODES)
-                ALLOCATE(ELEMENT_NODES(BASIS%NUMBER_OF_NODES),STAT=ERR)
-                IF (ALLOCATED(ELEMENT_NODES_USER_NUMBERS)) DEALLOCATE(ELEMENT_NODES_USER_NUMBERS)
-                ALLOCATE(ELEMENT_NODES_USER_NUMBERS(BASIS%NUMBER_OF_NODES),STAT=ERR)
-                IF(ERR/=0) CALL FLAG_ERROR("Could not allocate element nodes.",ERR,ERROR,*999)
+                IF(ALLOCATED(elementNodes)) DEALLOCATE(elementNodes)
+                ALLOCATE(elementNodes(basis%NUMBER_OF_NODES),STAT=err)
+                IF (ALLOCATED(elementNodesUserNumbers)) DEALLOCATE(elementNodesUserNumbers)
+                ALLOCATE(elementNodesUserNumbers(basis%NUMBER_OF_NODES),STAT=err)
+                IF(err/=0) CALL FlagError("Could not allocate element nodes.",err,error,*999)
                 !Step in the xi(3) direction
-                DO ne3=1,NUMBER_OF_ELEMENTS_XI(3)+1
-                  DO ne2=1,NUMBER_OF_ELEMENTS_XI(2)+1
-                    DO ne1=1,NUMBER_OF_ELEMENTS_XI(1)+1
-                      IF(BASIS%NUMBER_OF_XI<3.OR.ne3<=NUMBER_OF_ELEMENTS_XI(3)) THEN
-                        IF(BASIS%NUMBER_OF_XI<2.OR.ne2<=NUMBER_OF_ELEMENTS_XI(2)) THEN
-                          IF(ne1<=NUMBER_OF_ELEMENTS_XI(1)) THEN
-                            grid_ne=ne1
-                            np=1+(ne1-1)*(BASIS%NUMBER_OF_NODES_XIC(1)-1)
-                            IF(BASIS%NUMBER_OF_XI>1) THEN
-                              grid_ne=grid_ne+(ne2-1)*NUMBER_OF_ELEMENTS_XI(1)
-                              np=np+(ne2-1)*TOTAL_NUMBER_OF_NODES_XI(1)*(BASIS%NUMBER_OF_NODES_XIC(2)-1)
-                              IF(BASIS%NUMBER_OF_XI>2) THEN
-                                grid_ne=grid_ne+(ne3-1)*NUMBER_OF_ELEMENTS_XI(1)*NUMBER_OF_ELEMENTS_XI(2)
-                                np=np+(ne3-1)*TOTAL_NUMBER_OF_NODES_XI(1)*TOTAL_NUMBER_OF_NODES_XI(2)* &
-                                  & (BASIS%NUMBER_OF_NODES_XIC(3)-1)
+                DO elementIdx3=1,numberOfElementsXi(3)+1
+                  DO elementIdx2=1,numberOfElementsXi(2)+1
+                    DO elementIdx1=1,numberOfElementsXi(1)+1
+                      IF(basis%NUMBER_OF_XI<3.OR.elementIdx3<=numberOfElementsXi(3)) THEN
+                        IF(basis%NUMBER_OF_XI<2.OR.elementIdx2<=numberOfElementsXi(2)) THEN
+                          IF(elementIdx1<=numberOfElementsXi(1)) THEN
+                            gridElementIdx=elementIdx1
+                            nodeIdx=1+(elementIdx1-1)*(basis%NUMBER_OF_NODES_XIC(1)-1)
+                            IF(basis%NUMBER_OF_XI>1) THEN
+                              gridElementIdx=gridElementIdx+(elementIdx2-1)*numberOfElementsXi(1)
+                              nodeIdx=nodeIdx+(elementIdx2-1)*totalNumberOfNodesXi(1)*(basis%NUMBER_OF_NODES_XIC(2)-1)
+                              IF(basis%NUMBER_OF_XI>2) THEN
+                                gridElementIdx=gridElementIdx+(elementIdx3-1)*numberOfElementsXi(1)*numberOfElementsXi(2)
+                                nodeIdx=nodeIdx+(elementIdx3-1)*totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)* &
+                                  & (basis%NUMBER_OF_NODES_XIC(3)-1)
                               ENDIF
                             ENDIF
                             IF(BASIS%TYPE==BASIS_LAGRANGE_HERMITE_TP_TYPE) THEN
                               !Lagrange Hermite TP elements
-                              ne=grid_ne
-                              nn=0
-                              DO nn1=1,BASIS%NUMBER_OF_NODES_XIC(1)
-                                nn=nn+1
-                                ELEMENT_NODES(nn)=np+(nn1-1)
-                              ENDDO !nn1
-                              IF(BASIS%NUMBER_OF_XI>1) THEN
-                                DO nn2=2,BASIS%NUMBER_OF_NODES_XIC(2)
-                                  DO nn1=1,BASIS%NUMBER_OF_NODES_XIC(1)
-                                    nn=nn+1
-                                    ELEMENT_NODES(nn)=np+(nn1-1)+(nn2-1)*TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ENDDO !nn1
-                                ENDDO !nn2
-                                IF(BASIS%NUMBER_OF_XI>2) THEN
-                                  DO nn3=2,BASIS%NUMBER_OF_NODES_XIC(3)
-                                    DO nn2=1,BASIS%NUMBER_OF_NODES_XIC(2)
-                                      DO nn1=1,BASIS%NUMBER_OF_NODES_XIC(1)
-                                        nn=nn+1
-                                        ELEMENT_NODES(nn)=np+(nn1-1)+(nn2-1)*TOTAL_NUMBER_OF_NODES_XI(1)+ &
-                                            & (nn3-1)*TOTAL_NUMBER_OF_NODES_XI(1)*TOTAL_NUMBER_OF_NODES_XI(2)
-                                      ENDDO !nn1
-                                    ENDDO !nn2
-                                  ENDDO !nn3
+                              elementIdx=gridElementIdx
+                              localNodeIdx=0
+                              DO localNodeIdx1=1,basis%NUMBER_OF_NODES_XIC(1)
+                                localNodeIdx=localNodeIdx+1
+                                elementNodes(localNodeIdx)=nodeIdx+(localNodeIdx1-1)
+                              ENDDO !localNodeIdx1
+                              IF(basis%NUMBER_OF_XI>1) THEN
+                                DO localNodeIdx2=2,basis%NUMBER_OF_NODES_XIC(2)
+                                  DO localNodeIdx1=1,basis%NUMBER_OF_NODES_XIC(1)
+                                    localNodeIdx=localNodeIdx+1
+                                    elementNodes(localNodeIdx)=nodeIdx+(localNodeidx1-1)+(localNodeIdx2-1)*totalNumberOfNodesXi(1)
+                                  ENDDO !localNodeIdx1
+                                ENDDO !localNodeIdx2
+                                IF(basis%NUMBER_OF_XI>2) THEN
+                                  DO localNodeIdx3=2,basis%NUMBER_OF_NODES_XIC(3)
+                                    DO localnodeIdx2=1,basis%NUMBER_OF_NODES_XIC(2)
+                                      DO localNodeIdx1=1,basis%NUMBER_OF_NODES_XIC(1)
+                                        locaNodeIdx=localNodeidx+1
+                                        elementNodes(localNodeIdx)=nodeIdx+(localNodeIdx1-1)+(localnodeIdx2-1)* &
+                                          & totalNumberOfNodes(1)+(localNodeIdx3-1)*totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)
+                                      ENDDO !localNodeIdx1
+                                    ENDDO !localnodeIdx2
+                                  ENDDO !localNodeIdx3
                                 ENDIF
                               ENDIF
-                              CALL GENERATED_MESH_REGULAR_COMPONENT_NODES_TO_USER_NUMBERS(REGULAR_MESH%GENERATED_MESH, &
-                                & basis_idx,ELEMENT_NODES,ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
-                              CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(ne,MESH_ELEMENTS, &
-                                & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
+                              CALL GENERATED_MESH_REGULAR_COMPONENT_NODES_TO_USER_NUMBERS(regularMesh%generatedMesh, &
+                                & basisIdx,elementNodes,elementNodesUserNumbers,err,error,*999)
+                              CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(elementIdx,meshElements,elementNodesUserNumbers, &
+                                & err,error,*999)
                             ELSE
                               !Simplex elements
-                              SELECT CASE(BASIS%NUMBER_OF_XI)
+                              SELECT CASE(basis%NUMBER_OF_XI)
                               CASE(1)
                                 !Line element
-                                ne=grid_ne
-                                nn=0
-                                DO nn1=1,BASIS%NUMBER_OF_NODES_XIC(1)
-                                  nn=nn+1
-                                  ELEMENT_NODES(nn)=np+(nn1-1)
-                                ENDDO !nn1
-                                CALL COMPONENT_NODES_TO_USER_NUMBERS(REGULAR_MESH%GENERATED_MESH,basis_idx,ELEMENT_NODES, &
-                                    & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
-                                CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(ne,MESH_ELEMENTS, &
-                                    & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
+                                elementIdx=gridElementIdx
+                                localNodeIdx=0
+                                DO localNodeIdx1=1,basis%NUMBER_OF_NODES_XIC(1)
+                                  localNodeIdx=localNodeIdx+1
+                                  elementNodes(localNodeIdx)=nodeIdx+(localNodeIdx1-1)
+                                ENDDO !localNodeIdx1
+                                CALL COMPONENT_NODES_TO_USER_NUMBERS(regularMesh%generatedMesh,basisIdx,elementNodes, &
+                                  & elementNodesUserNumbers,err,error,*999)
+                                CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(elementIdx,meshElements,elementNodesUserNumbers, &
+                                  & err,error,*999)
                               CASE(2)
                                 !Triangular element
                                 !Break the grid square element into 2 triangles. The 2 triangles are
                                 !Element 1: vertices {(0,0);(1,0);(1,1)}
                                 !Element 2: vertices {(0,0);(1,1);(0,1)}
-                                SELECT CASE(BASIS%INTERPOLATION_ORDER(1))
+                                SELECT CASE(basis%INTERPOLATION_ORDER(1))
                                 CASE(BASIS_LINEAR_INTERPOLATION_ORDER)
                                   !First sub-element
-                                  ne=(grid_ne-1)*ELEMENT_FACTOR+1
-                                  ELEMENT_NODES(1)=np
-                                  ELEMENT_NODES(2)=np+1
-                                  ELEMENT_NODES(3)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)
-                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(REGULAR_MESH%GENERATED_MESH,basis_idx,ELEMENT_NODES, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
-                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(ne,MESH_ELEMENTS, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
+                                  elementIdx=(gridElementIdx-1)*elementFactor+1
+                                  elementNodes(1)=nodeIdx
+                                  elementNodes(2)=nodeIdx+1
+                                  elementNodes(3)=nodeIdx+1+totalNumberOfNodesXi(1)
+                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(regularMesh%generatedMesh,basisIdx,elementNodes, &
+                                    & elementNodesUserNumbers,err,error,*999)
+                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(elementIdx,meshElements,elementNodesUserNumbers, &
+                                    & err,error,*999)
                                   !Second sub-element
-                                  ne=(grid_ne-1)*ELEMENT_FACTOR+2
-                                  ELEMENT_NODES(1)=np
-                                  ELEMENT_NODES(2)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(3)=np+TOTAL_NUMBER_OF_NODES_XI(1)
-                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(REGULAR_MESH%GENERATED_MESH,basis_idx,ELEMENT_NODES, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
-                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(ne,MESH_ELEMENTS, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
+                                  elementIdx=(gridElementIdx-1)*elementFactor+2
+                                  elementNodes(1)=nodeIdx
+                                  elementNodes(2)=nodeIdx+1+totalNumberOfNodesXi(1)
+                                  elementNodes(3)=nodeIdx+totalNumberOfNodesXi(1)
+                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(regularMesh%generatedMesh,basisIdx,elementNodes, &
+                                    & elementNodesUserNumbers,err,error,*999)
+                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(elementIdx,meshElements,elementNodesUserNumbers, &
+                                    & err,error,*999)
                                 CASE(BASIS_QUADRATIC_INTERPOLATION_ORDER)
                                   !First sub-element
-                                  ne=(grid_ne-1)*ELEMENT_FACTOR+1
-                                  ELEMENT_NODES(1)=np
-                                  ELEMENT_NODES(2)=np+2
-                                  ELEMENT_NODES(3)=np+2+2*TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(4)=np+1
-                                  ELEMENT_NODES(5)=np+2+TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(6)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)
-                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(REGULAR_MESH%GENERATED_MESH,basis_idx,ELEMENT_NODES, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
-                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(ne,MESH_ELEMENTS, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
+                                  elementIdx=(gridElementIdx-1)*elementFactor+1
+                                  elementNodes(1)=nodeIdx
+                                  elementNodes(2)=nodeIdx+2
+                                  elementNodes(3)=nodeIdx+2+2*totalNumberOfNodesXi(1)
+                                  elementNodes(4)=nodeIdx+1
+                                  elementNodes(5)=nodeIdx+2+totalNumberOfNodesXi(1)
+                                  elementNodes(6)=nodeIdx+1+totalNumberOfNodesXi(1)
+                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(regularMesh%generatedMesh,basisIdx,elementNodes, &
+                                    & elementNodesUserNumbers,err,error,*999)
+                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(elementIdx,meshElements,elementNodesUserNumbers, &
+                                    & err,error,*999)
                                   !Second sub-element
-                                  ne=(grid_ne-1)*ELEMENT_FACTOR+2
-                                  ELEMENT_NODES(1)=np
-                                  ELEMENT_NODES(2)=np+2+2*TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(3)=np+2*TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(4)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(5)=np+1+2*TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(6)=np+TOTAL_NUMBER_OF_NODES_XI(1)
-                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(REGULAR_MESH%GENERATED_MESH,basis_idx,ELEMENT_NODES, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
-                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(ne,MESH_ELEMENTS, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
-                               CASE(BASIS_CUBIC_INTERPOLATION_ORDER)
+                                  elementIdx=(gridElementIdx-1)*elementFactor+2
+                                  elementNodes(1)=nodeIdx
+                                  elementNodes(2)=nodeIdx+2+2*totalNumberOfNodesXi(1)
+                                  elementNodes(3)=nodeIdx+2*totalNumberOfNodesXi(1)
+                                  elementNodes(4)=nodeIdx+1+totalNumberOfNodesXi(1)
+                                  elementNodes(5)=nodeIdx+1+2*totalNumberOfNodesXi(1)
+                                  elementNodes(6)=nodeIdx+totalNumberOfNodesXi(1)
+                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(regularMesh%generatedMesh,basisIdx,elementNodes, &
+                                    & elementNodesUserNumbers,err,error,*999)
+                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(elementIdx,meshElements,elementNodesUserNumbers, &
+                                    & err,error,*999)
+                                CASE(BASIS_CUBIC_INTERPOLATION_ORDER)
                                   !First sub-element
-                                  ne=(grid_ne-1)*ELEMENT_FACTOR+1
-                                  ELEMENT_NODES(1)=np
-                                  ELEMENT_NODES(2)=np+3
-                                  ELEMENT_NODES(3)=np+3+3*TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(4)=np+1
-                                  ELEMENT_NODES(5)=np+2
-                                  ELEMENT_NODES(6)=np+3+TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(7)=np+3+2*TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(8)=np+2+2*TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(9)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(10)=np+2+TOTAL_NUMBER_OF_NODES_XI(1)
-                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(REGULAR_MESH%GENERATED_MESH,basis_idx,ELEMENT_NODES, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
-                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(ne,MESH_ELEMENTS, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
+                                  elementIdx=(gridElementIdx-1)*elementFactor+1
+                                  elementNodes(1)=nodeIdx
+                                  elementNodes(2)=nodeIdx+3
+                                  elementNodes(3)=nodeIdx+3+3*totalNumberOfNodesXi(1)
+                                  elementNodes(4)=nodeIdx+1
+                                  elementNodes(5)=nodeIdx+2
+                                  elementNodes(6)=nodeIdx+3+totalNumberOfNodesXi(1)
+                                  elementNodes(7)=nodeIdx+3+2*totalNumberOfNodesXi(1)
+                                  elementNodes(8)=nodeIdx+2+2*totalNumberOfNodesXi(1)
+                                  elementNodes(9)=nodeIdx+1+totalNumberOfNodesXi(1)
+                                  elementNodes(10)=nodeIdx+2+totalNumberOfNodesXi(1)
+                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(regularMesh%generatedMesh,basisIdx,elementNodes, &
+                                    & elementNodesUserNumbers,err,error,*999)
+                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(elementIdx,meshElements,elementNodesUserNumbers, &
                                   !Second sub-element
-                                  ne=(grid_ne-1)*ELEMENT_FACTOR+2
-                                  ELEMENT_NODES(1)=np
-                                  ELEMENT_NODES(2)=np+3+3*TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(3)=np+3*TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(4)=np+2+2*TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(5)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(6)=np+2+3*TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(7)=np+1+3*TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(8)=np+TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(9)=np+2*TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(10)=np+1+2*TOTAL_NUMBER_OF_NODES_XI(1)
-                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(REGULAR_MESH%GENERATED_MESH,basis_idx,ELEMENT_NODES, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
-                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(ne,MESH_ELEMENTS, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
+                                  elementIdx=(gridElementIdx-1)*elementFactor+2
+                                  elementNodes(1)=nodeIdx
+                                  elementNodes(2)=nodeIdx+3+3*totalNumberOfNodesXi(1)
+                                  elementNodes(3)=nodeIdx+3*totalNumberOfNodesXi(1)
+                                  elementNodes(4)=nodeIdx+2+2*totalNumberOfNodesXi(1)
+                                  elementNodes(5)=nodeIdx+1+totalNumberOfNodesXi(1)
+                                  elementNodes(6)=nodeIdx+2+3*totalNumberOfNodesXi(1)
+                                  elementNodes(7)=nodeIdx+1+3*totalNumberOfNodesXi(1)
+                                  elementNodes(8)=nodeIdx+totalNumberOfNodesXi(1)
+                                  elementNodes(9)=nodeIdx+2*totalNumberOfNodesXi(1)
+                                  elementNodes(10)=nodeIdx+1+2*totalNumberOfNodesXi(1)
+                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(regularMesh%generatedMesh,basisIdx,elementNodes, &
+                                    & elementNodesUserNumbers,err,error,*999)
+                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(elementIdx,meshElements,elementNodesUserNumbers, &
+                                    & err,error,*999)
                                 CASE DEFAULT
-                                  LOCAL_ERROR="The simplex basis interpolation order of "// &
-                                    & TRIM(NUMBER_TO_VSTRING(BASIS%INTERPOLATION_ORDER(1),"*",ERR,ERROR))// &
+                                  localError="The simplex basis interpolation order of "// &
+                                    & TRIM(NumberToVString(basis%INTERPOLATION_ORDER(1),"*",err,error))// &
                                     & " is invalid."
-                                  CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+                                  CALL FlagError(localError,err,error,*999)
                                 END SELECT
                               CASE(3)
                                 !Tetrahedra element
@@ -1732,762 +1837,756 @@ CONTAINS
                                 !Element 4: vertices {(0,0,0);(0,0,1);(1,0,1);(1,1,1)}
                                 !Element 5: vertices {(0,0,0);(0,1,0);(0,1,1);(1,1,1)}
                                 !Element 6: vertices {(0,0,0);(0,1,1);(0,0,1);(1,1,1)}
-                                SELECT CASE(BASIS%INTERPOLATION_ORDER(1))
+                                SELECT CASE(basis%INTERPOLATION_ORDER(1))
                                 CASE(BASIS_LINEAR_INTERPOLATION_ORDER)
                                   !First sub-element
-                                  ne=(grid_ne-1)*ELEMENT_FACTOR+1
-                                  ELEMENT_NODES(1)=np
-                                  ELEMENT_NODES(2)=np+1
-                                  ELEMENT_NODES(3)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(4)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(REGULAR_MESH%GENERATED_MESH,basis_idx,ELEMENT_NODES, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
-                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(ne,MESH_ELEMENTS, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
+                                  elementIdx=(gridElementIdx-1)*elementFactor+1
+                                  elementNodes(1)=nodeIdx
+                                  elementNodes(2)=nodeIdx+1
+                                  elementNodes(3)=nodeIdx+1+totalNumberOfNodesXi(1)
+                                  elementNodes(4)=nodeIdx+1+totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(regularMesh%generatedMesh,basisIdx,elementNodes, &
+                                    & elementNodesUserNumbers,err,error,*999)
+                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(elementIdx,meshElements,elementNodesUserNumbers, &
+                                    & err,error,*999)
                                   !Second sub-element
-                                  ne=(grid_ne-1)*ELEMENT_FACTOR+2
-                                  ELEMENT_NODES(1)=np
-                                  ELEMENT_NODES(2)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(3)=np+TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(4)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(REGULAR_MESH%GENERATED_MESH,basis_idx,ELEMENT_NODES, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
-                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(ne,MESH_ELEMENTS, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
+                                  elementIdx=(gridElementIdx-1)*elementFactor+2
+                                  elementNodes(1)=nodeIdx
+                                  elementNodes(2)=nodeIdx+1+totalNumberOfNodesXi(1)
+                                  elementNodes(3)=nodeIdx+totalNumberOfNodesXi(1)
+                                  elementNodes(4)=nodeIdx+1+totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(regularMesh%generatedMesh,basisIdx,elementNodes, &
+                                    & elementNodesUserNumbers,err,error,*999)
+                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(elementIdx,meshElements,elementNodesUserNumbers, &
+                                    & err,error,*999)
                                   !Third sub-element
-                                  ne=(grid_ne-1)*ELEMENT_FACTOR+3
-                                  ELEMENT_NODES(1)=np
-                                  ELEMENT_NODES(2)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)*TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(3)=np+1
-                                  ELEMENT_NODES(4)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(REGULAR_MESH%GENERATED_MESH,basis_idx,ELEMENT_NODES, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
-                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(ne,MESH_ELEMENTS, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
+                                  elementIdx=(gridElementIdx-1)*elementFactor+3
+                                  elementNodes(1)=nodeIdx
+                                  elementNodes(2)=nodeIdx+1+totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)
+                                  elementNodes(3)=nodeIdx+1
+                                  elementNodes(4)=nodeIdx+1+totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(regularMesh%generatedMesh,basisIdx,elementNodes, &
+                                    & elementNodesUserNumbers,err,error,*999)
+                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(elementIdx,meshElements,elementNodesUserNumbers, &
+                                    & err,error,*999)
                                   !Fourth sub-element
-                                  ne=(grid_ne-1)*ELEMENT_FACTOR+4
-                                  ELEMENT_NODES(1)=np
-                                  ELEMENT_NODES(2)=np+TOTAL_NUMBER_OF_NODES_XI(1)*TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(3)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)*TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(4)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(REGULAR_MESH%GENERATED_MESH,basis_idx,ELEMENT_NODES, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
-                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(ne,MESH_ELEMENTS, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
+                                  elementIdx=(gridElementIdx-1)*elementFactor+4
+                                  elementNodes(1)=nodeIdx
+                                  elementNodes(2)=nodeIdx+totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)
+                                  elementNodes(3)=nodeIdx+1+totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)
+                                  elementNodes(4)=nodeIdx+1+totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(regularMesh%generatedMesh,basisIdx,elementNodes, &
+                                    & elementNodesUserNumbers,err,error,*999)
+                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(elementIdx,meshElements,elementNodesUserNumbers, &
+                                    & err,error,*999)
                                   !Fifth sub-element
-                                  ne=(grid_ne-1)*ELEMENT_FACTOR+5
-                                  ELEMENT_NODES(1)=np
-                                  ELEMENT_NODES(2)=np+TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(3)=np+TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(4)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(REGULAR_MESH%GENERATED_MESH,basis_idx,ELEMENT_NODES, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
-                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(ne,MESH_ELEMENTS, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
+                                  elementIdx=(gridElementIdx-1)*elementFactor+5
+                                  elementNodes(1)=nodeIdx
+                                  elementNodes(2)=nodeIdx+totalNumberOfNodesXi(1)
+                                  elementNodes(3)=nodeIdx+totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(4)=nodeIdx+1+totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(regularMesh%generatedMesh,basisIdx,elementNodes, &
+                                    & elementNodesUserNumbers,err,error,*999)
+                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(elementIdx,meshElements,elementNodesUserNumbers, &
+                                    & err,error,*999)
                                   !Sixth sub-element
-                                  ne=(grid_ne-1)*ELEMENT_FACTOR+6
-                                  ELEMENT_NODES(1)=np
-                                  ELEMENT_NODES(2)=np+TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(3)=np+TOTAL_NUMBER_OF_NODES_XI(1)*TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(4)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(REGULAR_MESH%GENERATED_MESH,basis_idx,ELEMENT_NODES, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
-                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(ne,MESH_ELEMENTS, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
+                                  elementIdx=(gridElementIdx-1)*elementFactor+6
+                                  elementNodes(1)=nodeIdx
+                                  elementNodes(2)=nodeIdx+totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(3)=nodeIdx+totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)
+                                  elementNodes(4)=nodeIdx+1+totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(regularMesh%generatedMesh,basisIdx,elementNodes, &
+                                    & elementNodesUserNumbers,err,error,*999)
+                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(elementIdx,meshElements,elementNodesUserNumbers, &
+                                    & err,error,*999)
                                 CASE(BASIS_QUADRATIC_INTERPOLATION_ORDER)
                                   !First sub-element
-                                  ne=(grid_ne-1)*ELEMENT_FACTOR+1
-                                  ELEMENT_NODES(1)=np
-                                  ELEMENT_NODES(2)=np+2
-                                  ELEMENT_NODES(3)=np+2+2*TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(4)=np+2+2*TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(5)=np+1
-                                  ELEMENT_NODES(6)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(7)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(8)=np+2+TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(9)=np+2+2*TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(10)=np+2+TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(REGULAR_MESH%GENERATED_MESH,basis_idx,ELEMENT_NODES, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
-                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(ne,MESH_ELEMENTS, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
+                                  elementIdx=(gridElementIdx-1)*elementFactor+1
+                                  elementNodes(1)=nodeIdx
+                                  elementNodes(2)=nodeIdx+2
+                                  elementNodes(3)=nodeIdx+2+2*totalNumberOfNodesXi(1)
+                                  elementNodes(4)=nodeIdx+2+2*totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(5)=nodeIdx+1
+                                  elementNodes(6)=nodeIdx+1+totalNumberOfNodesXi(1)
+                                  elementNodes(7)=nodeIdx+1+totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(8)=nodeIdx+2+totalNumberOfNodesXi(1)
+                                  elementNodes(9)=nodeIdx+2+2*totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(10)=nodeIdx+2+totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(regularMesh%generatedMesh,basisIdx,elementNodes, &
+                                    & elementNodesUserNumbers,err,error,*999)
+                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(elementIdx,meshElements,elementNodesUserNumbers, &
+                                    & err,error,*999)
                                   !Second sub-element
-                                  ne=(grid_ne-1)*ELEMENT_FACTOR+2
-                                  ELEMENT_NODES(1)=np
-                                  ELEMENT_NODES(2)=np+2+2*TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(3)=np+2*TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(4)=np+2+2*TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(5)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(6)=np+TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(7)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(8)=np+1+2*TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(9)=np+1+2*TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(10)=np+2+2*TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(REGULAR_MESH%GENERATED_MESH,basis_idx,ELEMENT_NODES, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
-                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(ne,MESH_ELEMENTS, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
+                                  elementIdx=(gridElementIdx-1)*elementFactor+2
+                                  elementNodes(1)=nodeIdx
+                                  elementNodes(2)=nodeIdx+2+2*totalNumberOfNodesXi(1)
+                                  elementNodes(3)=nodeIdx+2*totalNumberOfNodesXi(1)
+                                  elementNodes(4)=nodeIdx+2+2*totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(5)=nodeIdx+1+totalNumberOfNodesXi(1)
+                                  elementNodes(6)=nodeIdx+totalNumberOfNodesXi(1)
+                                  elementNodes(7)=nodeIdx+1+totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(8)=nodeIdx+1+2*totalNumberOfNodesXi(1)
+                                  elementNodes(9)=nodeIdx+1+2*totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(10)=nodeIdx+2+2*totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(regularMesh%generatedMesh,basisIdx,elementNodes, &
+                                    & elementNodesUserNumbers,err,error,*999)
+                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(elementIdx,meshElements,elementNodesUserNumbers, &
+                                    & err,error,*999)
                                   !Third sub-element
-                                  ne=(grid_ne-1)*ELEMENT_FACTOR+3
-                                  ELEMENT_NODES(1)=np
-                                  ELEMENT_NODES(2)=np+2+2*TOTAL_NUMBER_OF_NODES_XI(1)*TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(3)=np+2
-                                  ELEMENT_NODES(4)=np+2+2*TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(5)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)*TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(6)=np+1
-                                  ELEMENT_NODES(7)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(8)=np+2+TOTAL_NUMBER_OF_NODES_XI(1)*TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(9)=np+2+TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(10)=np+2+TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(REGULAR_MESH%GENERATED_MESH,basis_idx,ELEMENT_NODES, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
-                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(ne,MESH_ELEMENTS, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
+                                  elementIdx=(gridElementIdx-1)*elementFactor+3
+                                  elementNodes(1)=nodeIdx
+                                  elementNodes(2)=nodeIdx+2+2*totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)
+                                  elementNodes(3)=nodeIdx+2
+                                  elementNodes(4)=nodeIdx+2+2*totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(5)=nodeIdx+1+totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)
+                                  elementNodes(6)=nodeIdx+1
+                                  elementNodes(7)=nodeIdx+1+totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(8)=nodeIdx+2+totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)
+                                  elementNodes(9)=nodeIdx+2+totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(10)=nodeIdx+2+totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(regularMesh%generatedMesh,basisIdx,elementNodes, &
+                                    & elementNodesUserNumbers,err,error,*999)
+                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(elementIdx,meshElements,elementNodesUserNumbers, &
+                                    & err,error,*999)
                                   !Fourth sub-element
-                                  ne=(grid_ne-1)*ELEMENT_FACTOR+4
-                                  ELEMENT_NODES(1)=np
-                                  ELEMENT_NODES(2)=np+2*TOTAL_NUMBER_OF_NODES_XI(1)*TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(3)=np+2+2*TOTAL_NUMBER_OF_NODES_XI(1)*TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(4)=np+2+2*TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(5)=np+TOTAL_NUMBER_OF_NODES_XI(1)*TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(6)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)*TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(7)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(8)=np+1+2*TOTAL_NUMBER_OF_NODES_XI(1)*TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(9)=np+2+TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(10)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(REGULAR_MESH%GENERATED_MESH,basis_idx,ELEMENT_NODES, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
-                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(ne,MESH_ELEMENTS, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
+                                  elementIdx=(gridElementIdx-1)*elementFactor+4
+                                  elementNodes(1)=nodeIdx
+                                  elementNodes(2)=nodeIdx+2*totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)
+                                  elementNodes(3)=nodeIdx+2+2*totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)
+                                  elementNodes(4)=nodeIdx+2+2*totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(5)=nodeIdx+totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)
+                                  elementNodes(6)=nodeIdx+1+totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)
+                                  elementNodes(7)=nodeIdx+1+totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(8)=nodeIdx+1+2*totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)
+                                  elementNodes(9)=nodeIdx+2+totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(10)=nodeIdx+1+totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(regularMesh%generatedMesh,basisIdx,elementNodes, &
+                                    & elementNodesUserNumbers,err,error,*999)
+                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(elementIdx,meshElements,elementNodesUserNumbers, &
+                                    & err,error,*999)
                                   !Fifth sub-element
-                                  ne=(grid_ne-1)*ELEMENT_FACTOR+5
-                                  ELEMENT_NODES(1)=np
-                                  ELEMENT_NODES(2)=np+2*TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(3)=np+2*TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(4)=np+2+2*TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(5)=np+TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(6)=np+TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(7)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(8)=np+2*TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(9)=np+1+2*TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(10)=np+1+2*TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(REGULAR_MESH%GENERATED_MESH,basis_idx,ELEMENT_NODES, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
-                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(ne,MESH_ELEMENTS, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
+                                  elementIdx=(gridElementIdx-1)*elementFactor+5
+                                  elementNodes(1)=nodeIdx
+                                  elementNodes(2)=nodeIdx+2*totalNumberOfNodesXi(1)
+                                  elementNodes(3)=nodeIdx+2*totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(4)=nodeIdx+2+2*totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(5)=nodeIdx+totalNumberOfNodesXi(1)
+                                  elementNodes(6)=nodeIdx+totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(7)=nodeIdx+1+totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(8)=nodeIdx+2*totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(9)=nodeIdx+1+2*totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(10)=nodeIdx+1+2*totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(regularMesh%generatedMesh,basisIdx,elementNodes, &
+                                    & elementNodesUserNumbers,err,error,*999)
+                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(elementIdx,meshElements,elementNodesUserNumbers, &
+                                    & err,error,*999)
                                   !Sixth sub-element
-                                  ne=(grid_ne-1)*ELEMENT_FACTOR+6
-                                  ELEMENT_NODES(1)=np
-                                  ELEMENT_NODES(2)=np+2*TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(3)=np+2*TOTAL_NUMBER_OF_NODES_XI(1)*TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(4)=np+2+2*TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(5)=np+TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(6)=np+TOTAL_NUMBER_OF_NODES_XI(1)*TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(7)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(8)=np+TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(9)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(10)=np+1+2*TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(REGULAR_MESH%GENERATED_MESH,basis_idx,ELEMENT_NODES, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
-                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(ne,MESH_ELEMENTS, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
+                                  elementIdx=(gridElementIdx-1)*elementFactor+6
+                                  elementNodes(1)=nodeIdx
+                                  elementNodes(2)=nodeIdx+2*totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(3)=nodeIdx+2*totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)
+                                  elementNodes(4)=nodeIdx+2+2*totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(5)=nodeIdx+totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(6)=nodeIdx+totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)
+                                  elementNodes(7)=nodeIdx+1+totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(8)=nodeIdx+totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(9)=nodeIdx+1+totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(10)=nodeIdx+1+2*totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(regularMesh%generatedMesh,basisIdx,elementNodes, &
+                                    & elementNodesUserNumbers,err,error,*999)
+                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(elementIdx,meshElements,elementNodesUserNumbers, &
+                                    & err,error,*999)
                                 CASE(BASIS_CUBIC_INTERPOLATION_ORDER)
                                   !First sub-element
-                                  ne=(grid_ne-1)*ELEMENT_FACTOR+1
-                                  ELEMENT_NODES(1)=np
-                                  ELEMENT_NODES(2)=np+3
-                                  ELEMENT_NODES(3)=np+3+3*TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(4)=np+3+3*TOTAL_NUMBER_OF_NODES_XI(1)+3*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(5)=np+1
-                                  ELEMENT_NODES(6)=np+2
-                                  ELEMENT_NODES(7)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(8)=np+2+2*TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(9)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(10)=np+2+2*TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(11)=np+3+TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(12)=np+3+2*TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(13)=np+3+3*TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(14)=np+3+3*TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(15)=np+3+TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(16)=np+3+2*TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(17)=np+2+TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(18)=np+2*TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(19)=np+2+2*TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(20)=np+3+2*TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(REGULAR_MESH%GENERATED_MESH,basis_idx,ELEMENT_NODES, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
-                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(ne,MESH_ELEMENTS, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
+                                  elementIdx=(gridElementIdx-1)*elementFactor+1
+                                  elementNodes(1)=nodeIdx
+                                  elementNodes(2)=nodeIdx+3
+                                  elementNodes(3)=nodeIdx+3+3*totalNumberOfNodesXi(1)
+                                  elementNodes(4)=nodeIdx+3+3*totalNumberOfNodesXi(1)+3*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(5)=nodeIdx+1
+                                  elementNodes(6)=nodeIdx+2
+                                  elementNodes(7)=nodeIdx+1+totalNumberOfNodesXi(1)
+                                  elementNodes(8)=nodeIdx+2+2*totalNumberOfNodesXi(1)
+                                  elementNodes(9)=nodeIdx+1+totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(10)=nodeIdx+2+2*totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(11)=nodeIdx+3+totalNumberOfNodesXi(1)
+                                  elementNodes(12)=nodeIdx+3+2*totalNumberOfNodesXi(1)
+                                  elementNodes(13)=nodeIdx+3+3*totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(14)=nodeIdx+3+3*totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(15)=nodeIdx+3+totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(16)=nodeIdx+3+2*totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(17)=nodeIdx+2+totalNumberOfNodesXi(1)
+                                  elementNodes(18)=nodeIdx+2*totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(19)=nodeIdx+2+2*totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(20)=nodeIdx+3+2*totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(regularMesh%generatedMesh,basisIdx,elementNodes, &
+                                    & elementNodesUserNumbers,err,error,*999)
+                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(elementIdx,meshElements,elementNodesUserNumbers, &
+                                    & err,error,*999)
                                   !Second sub-element
-                                  ne=(grid_ne-1)*ELEMENT_FACTOR+2
-                                  ELEMENT_NODES(1)=np
-                                  ELEMENT_NODES(2)=np+3+3*TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(3)=np+3*TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(4)=np+3+3*TOTAL_NUMBER_OF_NODES_XI(1)+3*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(5)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(6)=np+2+2*TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(7)=np+TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(8)=np+2*TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(9)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(10)=np+2+2*TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(11)=np+2+3*TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(12)=np+1+3*TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(13)=np+1+3*TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(14)=np+2+3*TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(15)=np+3+3*TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(16)=np+3+3*TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(17)=np+1+2*TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(18)=np+2+2*TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(19)=np+1+2*TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(20)=np+2+3*TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(REGULAR_MESH%GENERATED_MESH,basis_idx,ELEMENT_NODES, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
-                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(ne,MESH_ELEMENTS, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
+                                  elementIdx=(gridElementIdx-1)*elementFactor+2
+                                  elementNodes(1)=nodeIdx
+                                  elementNodes(2)=nodeIdx+3+3*totalNumberOfNodesXi(1)
+                                  elementNodes(3)=nodeIdx+3*totalNumberOfNodesXi(1)
+                                  elementNodes(4)=nodeIdx+3+3*totalNumberOfNodesXi(1)+3*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(5)=nodeIdx+1+totalNumberOfNodesXi(1)
+                                  elementNodes(6)=nodeIdx+2+2*totalNumberOfNodesXi(1)
+                                  elementNodes(7)=nodeIdx+totalNumberOfNodesXi(1)
+                                  elementNodes(8)=nodeIdx+2*totalNumberOfNodesXi(1)
+                                  elementNodes(9)=nodeIdx+1+totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(10)=nodeIdx+2+2*totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(11)=nodeIdx+2+3*totalNumberOfNodesXi(1)
+                                  elementNodes(12)=nodeIdx+1+3*totalNumberOfNodesXi(1)
+                                  elementNodes(13)=nodeIdx+1+3*totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(14)=nodeIdx+2+3*totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(15)=nodeIdx+3+3*totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(16)=nodeIdx+3+3*totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(17)=nodeIdx+1+2*totalNumberOfNodesXi(1)
+                                  elementNodes(18)=nodeIdx+2+2*totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(19)=nodeIdx+1+2*totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(20)=nodeIdx+2+3*totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(regularMesh%generatedMesh,basisIdx,elementNodes, &
+                                    & elementNodesUserNumbers,err,error,*999)
+                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(elementIdx,meshElements,elementNodesUserNumbers, &
+                                    & err,error,*999)
                                   !Third sub-element
-                                  ne=(grid_ne-1)*ELEMENT_FACTOR+3
-                                  ELEMENT_NODES(1)=np
-                                  ELEMENT_NODES(2)=np+3+3*TOTAL_NUMBER_OF_NODES_XI(1)*TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(3)=np+3
-                                  ELEMENT_NODES(4)=np+3+3*TOTAL_NUMBER_OF_NODES_XI(1)+3*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(5)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)*TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(6)=np+2+2*TOTAL_NUMBER_OF_NODES_XI(1)*TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(7)=np+1
-                                  ELEMENT_NODES(8)=np+2
-                                  ELEMENT_NODES(9)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(10)=np+2+2*TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(11)=np+3+2*TOTAL_NUMBER_OF_NODES_XI(1)*TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(12)=np+3+TOTAL_NUMBER_OF_NODES_XI(1)*TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(13)=np+3+TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(14)=np+3+2*TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(15)=np+3+TOTAL_NUMBER_OF_NODES_XI(1)+3*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(16)=np+3+2*TOTAL_NUMBER_OF_NODES_XI(1)+3*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(17)=np+2+2*TOTAL_NUMBER_OF_NODES_XI(1)+3*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(18)=np+2+TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(19)=np+2+TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(20)=np+3+TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(REGULAR_MESH%GENERATED_MESH,basis_idx,ELEMENT_NODES, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
-                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(ne,MESH_ELEMENTS, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
+                                  elementIdx=(gridElementIdx-1)*elementFactor+3
+                                  elementNodes(1)=nodeIdx
+                                  elementNodes(2)=nodeIdx+3+3*totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)
+                                  elementNodes(3)=nodeIdx+3
+                                  elementNodes(4)=nodeIdx+3+3*totalNumberOfNodesXi(1)+3*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(5)=nodeIdx+1+totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)
+                                  elementNodes(6)=nodeIdx+2+2*totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)
+                                  elementNodes(7)=nodeIdx+1
+                                  elementNodes(8)=nodeIdx+2
+                                  elementNodes(9)=nodeIdx+1+totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(10)=nodeIdx+2+2*totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(11)=nodeIdx+3+2*totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)
+                                  elementNodes(12)=nodeIdx+3+totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)
+                                  elementNodes(13)=nodeIdx+3+totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(14)=nodeIdx+3+2*totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(15)=nodeIdx+3+totalNumberOfNodesXi(1)+3*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(16)=nodeIdx+3+2*totalNumberOfNodesXi(1)+3*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(17)=nodeIdx+2+2*totalNumberOfNodesXi(1)+3*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(18)=nodeIdx+2+totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(19)=nodeIdx+2+totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(20)=nodeIdx+3+totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(regularMesh%generatedMesh,basisIdx,elementNodes, &
+                                    & elementNodesUserNumbers,err,error,*999)
+                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(elementIdx,meshElements,elementNodesUserNumbers, &
+                                    & err,error,*999)
                                   !Fourth sub-element
-                                  ne=(grid_ne-1)*ELEMENT_FACTOR+4
-                                  ELEMENT_NODES(1)=np
-                                  ELEMENT_NODES(2)=np+3*TOTAL_NUMBER_OF_NODES_XI(1)*TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(3)=np+3+3*TOTAL_NUMBER_OF_NODES_XI(1)*TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(4)=np+3+3*TOTAL_NUMBER_OF_NODES_XI(1)+3*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(5)=np+TOTAL_NUMBER_OF_NODES_XI(1)*TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(6)=np+2*TOTAL_NUMBER_OF_NODES_XI(1)*TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(7)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)*TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(8)=np+2+2*TOTAL_NUMBER_OF_NODES_XI(1)*TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(9)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(10)=np+2+2*TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(11)=np+1+3*TOTAL_NUMBER_OF_NODES_XI(1)*TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(12)=np+2+3*TOTAL_NUMBER_OF_NODES_XI(1)*TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(13)=np+3+TOTAL_NUMBER_OF_NODES_XI(1)+3*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(14)=np+3+2*TOTAL_NUMBER_OF_NODES_XI(1)+3*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(15)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)+3*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(16)=np+2+2*TOTAL_NUMBER_OF_NODES_XI(1)+3*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(17)=np+1+2*TOTAL_NUMBER_OF_NODES_XI(1)*TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(18)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(19)=np+2+TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(20)=np+2+TOTAL_NUMBER_OF_NODES_XI(1)+3*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(REGULAR_MESH%GENERATED_MESH,basis_idx,ELEMENT_NODES, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
-                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(ne,MESH_ELEMENTS, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
+                                  elementIdx=(gridElementIdx-1)*elementFactor+4
+                                  elementNodes(1)=nodeIdx
+                                  elementNodes(2)=nodeIdx+3*totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)
+                                  elementNodes(3)=nodeIdx+3+3*totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)
+                                  elementNodes(4)=nodeIdx+3+3*totalNumberOfNodesXi(1)+3*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(5)=nodeIdx+totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)
+                                  elementNodes(6)=nodeIdx+2*totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)
+                                  elementNodes(7)=nodeIdx+1+totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)
+                                  elementNodes(8)=nodeIdx+2+2*totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)
+                                  elementNodes(9)=nodeIdx+1+totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(10)=nodeIdx+2+2*totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(11)=nodeIdx+1+3*totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)
+                                  elementNodes(12)=nodeIdx+2+3*totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)
+                                  elementNodes(13)=nodeIdx+3+totalNumberOfNodesXi(1)+3*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(14)=nodeIdx+3+2*totalNumberOfNodesXi(1)+3*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(15)=nodeIdx+1+totalNumberOfNodesXi(1)+3*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(16)=nodeIdx+2+2*totalNumberOfNodesXi(1)+3*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(17)=nodeIdx+1+2*totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)
+                                  elementNodes(18)=nodeIdx+1+totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(19)=nodeIdx+2+totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(20)=nodeIdx+2+totalNumberOfNodesXi(1)+3*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(regularMesh%generatedMesh,basisIdx,elementNodes, &
+                                    & elementNodesUserNumbers,err,error,*999)
+                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(elementIdx,meshElements,elementNodesUserNumbers, &
+                                    & err,error,*999)
                                   !Fifth sub-element
-                                  ne=(grid_ne-1)*ELEMENT_FACTOR+5
-                                  ELEMENT_NODES(1)=np
-                                  ELEMENT_NODES(2)=np+3*TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(3)=np+3*TOTAL_NUMBER_OF_NODES_XI(1)+3*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(4)=np+3+3*TOTAL_NUMBER_OF_NODES_XI(1)+3*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(5)=np+TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(6)=np+2*TOTAL_NUMBER_OF_NODES_XI(1)
-                                  ELEMENT_NODES(7)=np+TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(8)=np+2*TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(9)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(10)=np+2+2*TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(11)=np+3*TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(12)=np+3*TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(13)=np+1+3*TOTAL_NUMBER_OF_NODES_XI(1)+3*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(14)=np+2+3*TOTAL_NUMBER_OF_NODES_XI(1)+3*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(15)=np+1+3*TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(16)=np+2+3*TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(17)=np+2*TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(18)=np+1+2*TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(19)=np+1+2*TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(20)=np+1+3*TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(REGULAR_MESH%GENERATED_MESH,basis_idx,ELEMENT_NODES, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
-                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(ne,MESH_ELEMENTS, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
+                                  elementIdx=(gridElementIdx-1)*elementFactor+5
+                                  elementNodes(1)=nodeIdx
+                                  elementNodes(2)=nodeIdx+3*totalNumberOfNodesXi(1)
+                                  elementNodes(3)=nodeIdx+3*totalNumberOfNodesXi(1)+3*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(4)=nodeIdx+3+3*totalNumberOfNodesXi(1)+3*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(5)=nodeIdx+totalNumberOfNodesXi(1)
+                                  elementNodes(6)=nodeIdx+2*totalNumberOfNodesXi(1)
+                                  elementNodes(7)=nodeIdx+totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(8)=nodeIdx+2*totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(9)=nodeIdx+1+totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(10)=nodeIdx+2+2*totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(11)=nodeIdx+3*totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(12)=nodeIdx+3*totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(13)=nodeIdx+1+3*totalNumberOfNodesXi(1)+3*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(14)=nodeIdx+2+3*totalNumberOfNodesXi(1)+3*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(15)=nodeIdx+1+3*totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(16)=nodeIdx+2+3*totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(17)=nodeIdx+2*totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(18)=nodeIdx+1+2*totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(19)=nodeIdx+1+2*totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(20)=nodeIdx+1+3*totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(regularMesh%generatedMesh,basisIdx,elementNodes, &
+                                    & elementNodesUserNumbers,err,error,*999)
+                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(elementIdx,meshElements,elementNodesUserNumbers, &
+                                    & err,error,*999)
                                   !Sixth sub-element
-                                  ne=(grid_ne-1)*ELEMENT_FACTOR+6
-                                  ELEMENT_NODES(1)=np
-                                  ELEMENT_NODES(2)=np+3*TOTAL_NUMBER_OF_NODES_XI(1)+3*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(3)=np+3*TOTAL_NUMBER_OF_NODES_XI(1)*TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(4)=np+3+3*TOTAL_NUMBER_OF_NODES_XI(1)+3*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(5)=np+TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(6)=np+2*TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(7)=np+TOTAL_NUMBER_OF_NODES_XI(1)*TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(8)=np+2*TOTAL_NUMBER_OF_NODES_XI(1)*TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(9)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)+TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(10)=np+2+2*TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(11)=np+2*TOTAL_NUMBER_OF_NODES_XI(1)+3*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(12)=np+TOTAL_NUMBER_OF_NODES_XI(1)+3*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(13)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)+3*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(14)=np+2+2*TOTAL_NUMBER_OF_NODES_XI(1)+3*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(15)=np+1+3*TOTAL_NUMBER_OF_NODES_XI(1)+3*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(16)=np+2+3*TOTAL_NUMBER_OF_NODES_XI(1)+3*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(17)=np+TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(18)=np+1+2*TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(19)=np+1+TOTAL_NUMBER_OF_NODES_XI(1)+2*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  ELEMENT_NODES(20)=np+1+2*TOTAL_NUMBER_OF_NODES_XI(1)+3*TOTAL_NUMBER_OF_NODES_XI(1)* &
-                                    & TOTAL_NUMBER_OF_NODES_XI(2)
-                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(REGULAR_MESH%GENERATED_MESH,basis_idx,ELEMENT_NODES, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
-                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(ne,MESH_ELEMENTS, &
-                                      & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
+                                  elementIdx=(gridElementIdx-1)*elementFactor+6
+                                  elementNodes(1)=nodeIdx
+                                  elementNodes(2)=nodeIdx+3*totalNumberOfNodesXi(1)+3*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(3)=nodeIdx+3*totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)
+                                  elementNodes(4)=nodeIdx+3+3*totalNumberOfNodesXi(1)+3*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(5)=nodeIdx+totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(6)=nodeIdx+2*totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(7)=nodeIdx+totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)
+                                  elementNodes(8)=nodeIdx+2*totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)
+                                  elementNodes(9)=nodeIdx+1+totalNumberOfNodesXi(1)+totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(10)=nodeIdx+2+2*totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(11)=nodeIdx+2*totalNumberOfNodesXi(1)+3*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(12)=nodeIdx+totalNumberOfNodesXi(1)+3*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(13)=nodeIdx+1+totalNumberOfNodesXi(1)+3*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(14)=nodeIdx+2+2*totalNumberOfNodesXi(1)+3*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(15)=nodeIdx+1+3*totalNumberOfNodesXi(1)+3*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(16)=nodeIdx+2+3*totalNumberOfNodesXi(1)+3*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(17)=nodeIdx+totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(18)=nodeIdx+1+2*totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(19)=nodeIdx+1+totalNumberOfNodesXi(1)+2*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  elementNodes(20)=nodeIdx+1+2*totalNumberOfNodesXi(1)+3*totalNumberOfNodesXi(1)* &
+                                    & totalNumberOfNodesXi(2)
+                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(regularMesh%generatedMesh,basisIdx,elementNodes, &
+                                    & elementNodesUserNumbers,err,error,*999)
+                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(elementIdx,meshElements,elementNodesUserNumbers, &
+                                    & err,error,*999)
                                 CASE DEFAULT
-                                  LOCAL_ERROR="The simplex basis interpolation order of "// &
-                                    & TRIM(NUMBER_TO_VSTRING(BASIS%INTERPOLATION_ORDER(1),"*",ERR,ERROR))// &
+                                  localError="The simplex basis interpolation order of "// &
+                                    & TRIM(NumberToVString(basis%INTERPOLATION_ORDER(1),"*",err,error))// &
                                     & " is invalid."
-                                  CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+                                  CALL FlagError(localError,err,error,*999)
                                 END SELECT
                               CASE DEFAULT
-                                LOCAL_ERROR="The simplex number of xi directions of "// &
-                                  & TRIM(NUMBER_TO_VSTRING(BASIS%NUMBER_OF_XI,"*",ERR,ERROR))// &
+                                localError="The simplex number of xi directions of "// &
+                                  & TRIM(NumberToVString(basis%NUMBER_OF_XI,"*",err,error))// &
                                   & " is invalid."
-                                CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+                                CALL FlagError(localError,err,error,*999)
                               END SELECT
                             ENDIF
                           ENDIF
                         ENDIF
                       ENDIF
-                    ENDDO !ne1
-                  ENDDO !ne2
-                ENDDO !ne3
-                CALL MESH_TOPOLOGY_ELEMENTS_CREATE_FINISH(MESH_ELEMENTS,ERR,ERROR,*999)
-              ENDDO !basis_idx
+                    ENDDO !elementIdx1
+                  ENDDO !elementIdx2
+                ENDDO !elementIdx3
+                CALL MESH_TOPOLOGY_ELEMENTS_CREATE_FINISH(meshElements,err,error,*999)
+              ENDDO !basisIdx
               !Finish the mesh
-              CALL MESH_CREATE_FINISH(GENERATED_MESH%MESH,ERR,ERROR,*999)
+              CALL MESH_CREATE_FINISH(generatedMesh%mesh,err,error,*999)
             CASE DEFAULT
-              CALL FLAG_ERROR("Basis type is either invalid or not implemented.",ERR,ERROR,*999)
+              CALL FlagError("Basis type is either invalid or not implemented.",err,error,*999)
             END SELECT
           ELSE
-            CALL FLAG_ERROR("Bases are not allocated.",ERR,ERROR,*999)
+            CALL FlagError("Bases are not allocated.",err,error,*999)
           ENDIF
         CASE(COORDINATE_CYLINDRICAL_POLAR_TYPE)
-          CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
+          CALL FlagError("Not implemented.",err,error,*999)
         CASE(COORDINATE_SPHERICAL_POLAR_TYPE)
-          CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
+          CALL FlagError("Not implemented.",err,error,*999)
         CASE(COORDINATE_PROLATE_SPHEROIDAL_TYPE)
-          CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
+          CALL FlagError("Not implemented.",err,error,*999)
         CASE(COORDINATE_OBLATE_SPHEROIDAL_TYPE)
-          CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
+          CALL FlagError("Not implemented.",err,error,*999)
         CASE DEFAULT
-          LOCAL_ERROR="The coordinate system type of "//TRIM(NUMBER_TO_VSTRING(COORDINATE_SYSTEM%TYPE,"*",ERR,ERROR))// &
+          localError="The coordinate system type of "//TRIM(NumberToVString(coordinateType,"*",err,error))// &
             & " is invalid."
-          CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+          CALL FlagError(localError,err,error,*999)
         END SELECT
       ELSE
-        CALL FLAG_ERROR("Regular mesh is not associated.",ERR,ERROR,*999)
+        CALL FlagError("Regular mesh is not associated.",err,error,*999)
       ENDIF
     ELSE
-      CALL FLAG_ERROR("Generated Mesh is not associated.",ERR,ERROR,*999)
+      CALL FlagError("Generated Mesh is not associated.",err,error,*999)
     ENDIF
 
-    IF(ALLOCATED(ELEMENT_NODES)) DEALLOCATE(ELEMENT_NODES)
+    IF(ALLOCATED(elementNodes)) DEALLOCATE(elementNodes)
 
-    CALL EXITS("GENERATED_MESH_REGULAR_CREATE_FINISH")
+    CALL Exits("GeneratedMeshRegularCreateFinish")
     RETURN
     ! TODO invalidate other associations
-999 IF(ALLOCATED(ELEMENT_NODES)) DEALLOCATE(ELEMENT_NODES)
-    CALL ERRORS("GENERATED_MESH_REGULAR_CREATE_FINISH",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_REGULAR_CREATE_FINISH")
+999 IF(ALLOCATED(elementNodes)) DEALLOCATE(elementNodes)
+    CALL Errors("GeneratedMeshRegularCreateFinish",err,error)
+    CALL Exits("GeneratedMeshRegularCreateFinish")
     RETURN 1
-  END SUBROUTINE GENERATED_MESH_REGULAR_CREATE_FINISH
+  END SUBROUTINE GeneratedMeshRegularCreateFinish
 
   !
   !================================================================================================================================
   !
 
-  !>Start to create the regular generated mesh type
-  SUBROUTINE GENERATED_MESH_ELLIPSOID_CREATE_FINISH(GENERATED_MESH,MESH_USER_NUMBER,ERR,ERROR,*)
+  !>Start to create the ellipsoid generated mesh type
+  SUBROUTINE GeneratedMeshEllipsoidCreateFinish(generatedMesh,meshUserNumber,err,error,*)
 
     !Argument variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<A pointer to the generated mesh
-    INTEGER(INTG), INTENT(IN) :: MESH_USER_NUMBER !<The user number for the mesh to generate.
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh
+    INTEGER(INTG), INTENT(IN) :: meshUserNumber !<The user number for the mesh to generate.
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
-    TYPE(GENERATED_MESH_ELLIPSOID_TYPE), POINTER :: ELLIPSOID_MESH
-    TYPE(BASIS_TYPE), POINTER :: BASIS1,BASIS2
-    INTEGER(INTG), ALLOCATABLE :: NUMBER_ELEMENTS_XI(:)!,NUMBER_OF_NODES_XIC(:)
-    TYPE(REGION_TYPE), POINTER :: REGION
-    TYPE(NODES_TYPE), POINTER :: NODES
-    INTEGER(INTG) :: TOTAL_NUMBER_OF_NODES,TOTAL_NUMBER_OF_ELEMENTS,NUMBER_OF_DIMENSIONS
-    INTEGER(INTG) :: BASIS_NUMBER_OF_NODES,CORNER_NUMBER_OF_NODES
-    INTEGER(INTG) :: ne1,ne2,ne3,nn1,nn2,nn3,from1,from2,from3,nn,ne,mc
+    INTEGER(INTG) :: totalNumberOfNodes,totalNumberOfElements,meshDimension
+    INTEGER(INTG) :: basisNumberOfNodes,cornerNumberOfNodes
+    INTEGER(INTG) :: elementIdx1,elementIdx2,elementIdx3,localNodeIdx1,localNodeIdx2,localNodeIdx3,from1,from2,from3, &
+      & localNodeIdx,elementIdx,mc
     INTEGER(INTG), ALLOCATABLE :: APEX_ELEMENT_NODES(:), WALL_ELEMENT_NODES(:)
     INTEGER(INTG), ALLOCATABLE :: APEX_ELEMENT_NODES_USER_NUMBERS(:), WALL_ELEMENT_NODES_USER_NUMBERS(:)
     INTEGER(INTG), ALLOCATABLE :: NIDX(:,:,:),CORNER_NODES(:,:,:),EIDX(:,:,:)
+    INTEGER(INTG), ALLOCATABLE :: numberOfElementsXi(:)
     REAL(DP) :: DELTA(3),DELTAi(3)
-    TYPE(MeshComponentElementsType), POINTER :: MESH_ELEMENTS
+    TYPE(BASIS_TYPE), POINTER :: basis1,basis2
+    TYPE(GeneratedMeshEllipsoidType), POINTER :: ellipsoidMesh
+    TYPE(MeshComponentElementsType), POINTER :: meshElements
+    TYPE(NODES_TYPE), POINTER :: nodes
+    TYPE(REGION_TYPE), POINTER :: region
 
-    CALL ENTERS("GENERATED_MESH_ELLIPSOID_CREATE_FINISH",ERR,ERROR,*999)
+    CALL Enters("GeneratedMeshEllipsoidCreateFinish",err,error,*999)
 
-    IF(ASSOCIATED(GENERATED_MESH)) THEN
-      ELLIPSOID_MESH=>GENERATED_MESH%ELLIPSOID_MESH
-      IF(ASSOCIATED(ELLIPSOID_MESH)) THEN
-        REGION=>GENERATED_MESH%REGION
-        IF(ASSOCIATED(REGION)) THEN
-          IF(ASSOCIATED(REGION%COORDINATE_SYSTEM)) THEN
-            SELECT CASE(REGION%COORDINATE_SYSTEM%TYPE)
-            CASE(COORDINATE_RECTANGULAR_CARTESIAN_TYPE)
-              !Determine the coordinate system and create the regular mesh for that system
-              ELLIPSOID_MESH%MESH_DIMENSION=REGION%COORDINATE_SYSTEM%NUMBER_OF_DIMENSIONS
-              NUMBER_OF_DIMENSIONS=ELLIPSOID_MESH%MESH_DIMENSION
-              IF(NUMBER_OF_DIMENSIONS==3) THEN ! hard-coded for 3D only
-                IF(.NOT.ALLOCATED(ELLIPSOID_MESH%ORIGIN)) THEN
-                  ALLOCATE(ELLIPSOID_MESH%ORIGIN(NUMBER_OF_DIMENSIONS),STAT=ERR)
-                  IF(ERR/=0) CALL FLAG_ERROR("Could not allocate origin.",ERR,ERROR,*999)
-                  ELLIPSOID_MESH%ORIGIN=0.0_DP
-                ENDIF
-                IF(SIZE(ELLIPSOID_MESH%ORIGIN)==ELLIPSOID_MESH%MESH_DIMENSION) THEN
-                  IF(SIZE(ELLIPSOID_MESH%ELLIPSOID_EXTENT)==4) THEN
-                    IF(ALLOCATED(ELLIPSOID_MESH%BASES)) THEN
-                      IF(MOD(SIZE(ELLIPSOID_MESH%BASES),2)==0) THEN
-                        ALLOCATE(NUMBER_ELEMENTS_XI(SIZE(ELLIPSOID_MESH%NUMBER_OF_ELEMENTS_XI)),STAT=ERR)
-                        IF(ERR/=0) CALL FLAG_ERROR("Could not allocate number of elements xi.",ERR,ERROR,*999)
-                        NUMBER_ELEMENTS_XI(1:SIZE(ELLIPSOID_MESH%NUMBER_OF_ELEMENTS_XI))= &
-                          & ELLIPSOID_MESH%NUMBER_OF_ELEMENTS_XI(1:SIZE(ELLIPSOID_MESH%NUMBER_OF_ELEMENTS_XI))
+    IF(ASSOCIATED(generatedMesh)) THEN
+      ellipsoidMesh=>generatedMesh%ellipsoidMesh
+      IF(ASSOCIATED(ellipsoidMesh)) THEN
+        region=>generatedMesh%region
+        IF(ASSOCIATED(region)) THEN
+          CALL GeneratedMeshCoordinateSystemGet(generatedMesh,coordinateSystem,err,error,*999)
+          CALL COORDINATE_SYSTEM_DIMENSION_GET(coordinateSystem,coordinateDimension,err,error,*999)
+          CALL COORDINATE_SYSTEM_TYPE_GET(coordinateSystem,coordinateType,err,error,*999)
+          SELECT CASE(coordinateType)
+          CASE(COORDINATE_RECTANGULAR_CARTESIAN_TYPE)
+            IF(meshDimension==3) THEN ! hard-coded for 3D only
+                IF(SIZE(ellipsoidMesh%ellipsoidExtent)==4) THEN
+                    IF(ALLOCATED(ellipsoidMesh%bases)) THEN
+                      IF(MOD(SIZE(ellipsoidMesh%bases),2)==0) THEN
+                        ALLOCATE(numberOfElementsXi(SIZE(ellipsoidMesh%numberOfElementsXi)),STAT=err)
+                        IF(err/=0) CALL FlagError("Could not allocate number of elements xi.",err,error,*999)
+                        numberOfElementsXi(1:SIZE(ellipsoidMesh%numberOfElementsXi))= &
+                          & ellipsoidMesh%numberOfElementsXi(1:SIZE(ellipsoidMesh%numberOfElementsXi))
                         !Calculate total number of nodes from all bases and start mesh
-                        CORNER_NUMBER_OF_NODES=NUMBER_ELEMENTS_XI(1)*(NUMBER_ELEMENTS_XI(2)+1)*(NUMBER_ELEMENTS_XI(3)+1)- &
-                          & (NUMBER_ELEMENTS_XI(1)-1)*(NUMBER_ELEMENTS_XI(3)+1)
-                        TOTAL_NUMBER_OF_NODES=CORNER_NUMBER_OF_NODES
-                        DO mc=1,SIZE(ELLIPSOID_MESH%BASES),2
-                          BASIS1=>ELLIPSOID_MESH%BASES(mc)%PTR
-                          BASIS_NUMBER_OF_NODES=NUMBER_ELEMENTS_XI(1)*(BASIS1%NUMBER_OF_NODES_XIC(1)-1)* &
-                            & (NUMBER_ELEMENTS_XI(2)*(BASIS1%NUMBER_OF_NODES_XIC(2)-1)+1)* &
-                            & (NUMBER_ELEMENTS_XI(3)*(BASIS1%NUMBER_OF_NODES_XIC(3)-1)+1)- &
-                            & (NUMBER_ELEMENTS_XI(1)*(BASIS1%NUMBER_OF_NODES_XIC(1)-1)-1)* &
-                            & (NUMBER_ELEMENTS_XI(3)*(BASIS1%NUMBER_OF_NODES_XIC(3)-1)+1)
-                          TOTAL_NUMBER_OF_NODES=TOTAL_NUMBER_OF_NODES+BASIS_NUMBER_OF_NODES-CORNER_NUMBER_OF_NODES
+                        cornerNumberOfNodes=numberOfElementsXi(1)*(numberOfElementsXi(2)+1)*(numberOfElementsXi(3)+1)- &
+                          & (numberOfElementsXi(1)-1)*(numberOfElementsXi(3)+1)
+                        totalNumberOfNodes=cornerNumberOfNodes
+                        DO mc=1,SIZE(ellipsoidMesh%bases),2
+                          basis1=>ellipsoidMesh%bases(mc)%PTR
+                          basisNumberOfNodes=numberOfElementsXi(1)*(basis1%NUMBER_OF_NODES_XIC(1)-1)* &
+                            & (numberOfElementsXi(2)*(basis1%NUMBER_OF_NODES_XIC(2)-1)+1)* &
+                            & (numberOfElementsXi(3)*(basis1%NUMBER_OF_NODES_XIC(3)-1)+1)- &
+                            & (numberOfElementsXi(1)*(basis1%NUMBER_OF_NODES_XIC(1)-1)-1)* &
+                            & (numberOfElementsXi(3)*(basis1%NUMBER_OF_NODES_XIC(3)-1)+1)
+                          totalNumberOfNodes=totalNumberOfNodes+basisNumberOfNodes-cornerNumberOfNodes
                         ENDDO
                         NULLIFY(NODES)
-                        CALL NODES_CREATE_START(REGION,TOTAL_NUMBER_OF_NODES,NODES,ERR,ERROR,*999)
+                        CALL NODES_CREATE_START(region,totalNumberOfNodes,NODES,err,error,*999)
                         !Finish the nodes creation
-                        CALL NODES_CREATE_FINISH(NODES,ERR,ERROR,*999)
+                        CALL NODES_CREATE_FINISH(NODES,err,error,*999)
                         !Create the mesh
-                        CALL MESH_CREATE_START(MESH_USER_NUMBER,GENERATED_MESH%REGION, &
-                          & SIZE(NUMBER_ELEMENTS_XI,1), GENERATED_MESH%MESH,ERR,ERROR,*999)
+                        CALL MESH_CREATE_START(meshUserNumber,generatedMesh%region, &
+                          & SIZE(numberOfElementsXi,1), generatedMesh%MESH,err,error,*999)
                         !Create the elements
-                        CALL MESH_NUMBER_OF_COMPONENTS_SET(GENERATED_MESH%MESH,SIZE(ELLIPSOID_MESH%BASES)/2,ERR,ERROR,*999)
-                        DO mc=1,SIZE(ELLIPSOID_MESH%BASES),2
-                          IF((ELLIPSOID_MESH%BASES(mc)%PTR%NUMBER_OF_COLLAPSED_XI==0).AND. &
-                              & (ELLIPSOID_MESH%BASES(mc+1)%PTR%NUMBER_OF_COLLAPSED_XI>0))THEN
+                        CALL MESH_NUMBER_OF_COMPONENTS_SET(generatedMesh%MESH,SIZE(ellipsoidMesh%bases)/2,err,error,*999)
+                        DO mc=1,SIZE(ellipsoidMesh%bases),2
+                          IF((ellipsoidMesh%bases(mc)%PTR%NUMBER_OF_COLLAPSED_XI==0).AND. &
+                              & (ellipsoidMesh%bases(mc+1)%PTR%NUMBER_OF_COLLAPSED_XI>0))THEN
                             !test for collapsed nodes and force non collapsed to wall elements and collapsed to apex elements
-                            BASIS1=>ELLIPSOID_MESH%BASES(mc)%PTR
-                            BASIS2=>ELLIPSOID_MESH%BASES(mc+1)%PTR
+                            basis1=>ellipsoidMesh%bases(mc)%PTR
+                            basis2=>ellipsoidMesh%bases(mc+1)%PTR
                           ELSE
-                            CALL FLAG_ERROR("For each basis, one non collapsed version (basis1) and one collapsed "// &
-                                "version (basis2) is needed.",ERR,ERROR,*999)
+                            CALL FlagError("For each basis, one non collapsed version (basis1) and one collapsed "// &
+                                "version (basis2) is needed.",err,error,*999)
                           ENDIF
-                          SELECT CASE(BASIS1%TYPE)
+                          SELECT CASE(basis1%TYPE)
                           !should also test for basis2
                           CASE(BASIS_LAGRANGE_HERMITE_TP_TYPE)
-                            IF(BASIS1%NUMBER_OF_XI==SIZE(NUMBER_ELEMENTS_XI,1).AND. &
-                                & BASIS2%NUMBER_OF_XI==SIZE(NUMBER_ELEMENTS_XI,1)) THEN
-                              IF(.NOT.ALL(NUMBER_ELEMENTS_XI>0)) &
-                                  & CALL FLAG_ERROR("Must have 1 or more elements in all directions.",ERR,ERROR,*999)
-                              IF(NUMBER_ELEMENTS_XI(1)<3) &
-                                & CALL FLAG_ERROR("Need >2 elements around the circumferential direction.", &
-                                & ERR,ERROR,*999)
+                            IF(basis1%NUMBER_OF_XI==SIZE(numberOfElementsXi,1).AND. &
+                                & basis2%NUMBER_OF_XI==SIZE(numberOfElementsXi,1)) THEN
+                              IF(.NOT.ALL(numberOfElementsXi>0)) &
+                                  & CALL FlagError("Must have 1 or more elements in all directions.",err,error,*999)
+                              IF(numberOfElementsXi(1)<3) &
+                                & CALL FlagError("Need >2 elements around the circumferential direction.", &
+                                & err,error,*999)
                               !IF(.NOT.ALL(BASIS%COLLAPSED_XI==BASIS_NOT_COLLAPSED))  &
-                              !    & CALL FLAG_ERROR("Degenerate (collapsed) basis not implemented.",ERR,ERROR,*999)
+                              !    & CALL FlagError("Degenerate (collapsed) basis not implemented.",err,error,*999)
                               IF(ALLOCATED(NIDX)) DEALLOCATE(NIDX)
                               IF(ALLOCATED(EIDX)) DEALLOCATE(EIDX)
                               IF(ALLOCATED(CORNER_NODES)) DEALLOCATE(CORNER_NODES)
-                              CALL GENERATED_MESH_ELLIPSOID_BUILD_NODE_INDICES(NUMBER_ELEMENTS_XI,BASIS1% &
-                                  NUMBER_OF_NODES_XIC, ELLIPSOID_MESH%ELLIPSOID_EXTENT, TOTAL_NUMBER_OF_NODES, &
-                                  TOTAL_NUMBER_OF_ELEMENTS, NIDX,CORNER_NODES,EIDX,DELTA,DELTAi,ERR,ERROR,*999)
+                              CALL GENERATED_MESH_ELLIPSOID_BUILD_NODE_INDICES(numberOfElementsXi,basis1% &
+                                  NUMBER_OF_NODES_XIC, ellipsoidMesh%ellipsoidExtent, totalNumberOfNodes, &
+                                  totalNumberOfElements, NIDX,CORNER_NODES,EIDX,DELTA,DELTAi,err,error,*999)
                               IF(mc==1) THEN
-                                CALL MESH_NUMBER_OF_ELEMENTS_SET(GENERATED_MESH%MESH,TOTAL_NUMBER_OF_ELEMENTS, &
-                                  & ERR,ERROR,*999)
+                                CALL MESH_NUMBER_OF_ELEMENTS_SET(generatedMesh%MESH,totalNumberOfElements, &
+                                  & err,error,*999)
                               ENDIF
 
                               !Create the default node set
                               !TODO we finish create after the nodes are initialised?
 
-                              NULLIFY(MESH_ELEMENTS)
-                              CALL MESH_TOPOLOGY_ELEMENTS_CREATE_START(GENERATED_MESH%MESH,mc/2+1,BASIS1,MESH_ELEMENTS, &
+                              NULLIFY(meshElements)
+                              CALL MESH_TOPOLOGY_ELEMENTS_CREATE_START(generatedMesh%MESH,mc/2+1,basis1,meshElements, &
                                   ERR, ERROR,*999)
                               !Set the elements for the ellipsoid mesh
                               IF(ALLOCATED(WALL_ELEMENT_NODES)) DEALLOCATE(WALL_ELEMENT_NODES)
                               IF(ALLOCATED(APEX_ELEMENT_NODES)) DEALLOCATE(APEX_ELEMENT_NODES)
                               IF(ALLOCATED(WALL_ELEMENT_NODES_USER_NUMBERS)) DEALLOCATE(WALL_ELEMENT_NODES_USER_NUMBERS)
                               IF(ALLOCATED(APEX_ELEMENT_NODES_USER_NUMBERS)) DEALLOCATE(APEX_ELEMENT_NODES_USER_NUMBERS)
-                              ALLOCATE(WALL_ELEMENT_NODES(BASIS1%NUMBER_OF_NODES),STAT=ERR)
-                              IF(ERR/=0) CALL FLAG_ERROR("Could not allocate wall element nodes.",ERR,ERROR,*999)
-                              ALLOCATE(APEX_ELEMENT_NODES(BASIS2%NUMBER_OF_NODES),STAT=ERR)
-                              IF(ERR/=0) CALL FLAG_ERROR("Could not allocate apex element nodes.",ERR,ERROR,*999)
-                              ALLOCATE(WALL_ELEMENT_NODES_USER_NUMBERS(BASIS1%NUMBER_OF_NODES),STAT=ERR)
-                              IF(ERR/=0) CALL FLAG_ERROR("Could not allocate wall element nodes.",ERR,ERROR,*999)
-                              ALLOCATE(APEX_ELEMENT_NODES_USER_NUMBERS(BASIS2%NUMBER_OF_NODES),STAT=ERR)
-                              IF(ERR/=0) CALL FLAG_ERROR("Could not allocate apex element nodes.",ERR,ERROR,*999)
+                              ALLOCATE(WALL_ELEMENT_NODES(basis1%NUMBER_OF_NODES),STAT=err)
+                              IF(err/=0) CALL FlagError("Could not allocate wall element nodes.",err,error,*999)
+                              ALLOCATE(APEX_ELEMENT_NODES(basis2%NUMBER_OF_NODES),STAT=err)
+                              IF(err/=0) CALL FlagError("Could not allocate apex element nodes.",err,error,*999)
+                              ALLOCATE(WALL_ELEMENT_NODES_USER_NUMBERS(basis1%NUMBER_OF_NODES),STAT=err)
+                              IF(err/=0) CALL FlagError("Could not allocate wall element nodes.",err,error,*999)
+                              ALLOCATE(APEX_ELEMENT_NODES_USER_NUMBERS(basis2%NUMBER_OF_NODES),STAT=err)
+                              IF(err/=0) CALL FlagError("Could not allocate apex element nodes.",err,error,*999)
                               ! calculate element topology (nodes per each element)
                               ! the idea is to translate given (r,theta,z) to NIDX equivalents, which include interior nodes
-                              ne=0
-                              nn=0
+                              elementIdx=0
+                              localNodeIdx=0
                               !fromJ=global J direction counting number of first node in element in J direction
-                              DO ne3=1,NUMBER_ELEMENTS_XI(3)
-                                from3=NINT(DELTA(3)*(ne3-1)/DELTAi(3)+1)
-                                ne2=1
-                                from2=NINT(DELTA(2)*(ne2-1)/DELTAi(2)+1)
+                              DO elementIdx3=1,numberOfElementsXi(3)
+                                from3=NINT(DELTA(3)*(elementIdx3-1)/DELTAi(3)+1)
+                                elementIdx2=1
+                                from2=NINT(DELTA(2)*(elementIdx2-1)/DELTAi(2)+1)
                                 !apex elements
-                                DO ne1=1,NUMBER_ELEMENTS_XI(1)
-                                  from1=NINT(DELTA(1)*(ne1-1)/DELTAi(1)+1)
-                                  nn=0
+                                DO elementIdx1=1,numberOfElementsXi(1)
+                                  from1=NINT(DELTA(1)*(elementIdx1-1)/DELTAi(1)+1)
+                                  localNodeIdx=0
                                   ! number of nodes in an element is dependent on basis used
-                                  DO nn3=from3,from3+BASIS2%NUMBER_OF_NODES_XIC(3)-1
-                                    nn2=1
-                                    nn1=1
+                                  DO localNodeIdx3=from3,from3+basis2%NUMBER_OF_NODES_XIC(3)-1
+                                    localNodeIdx2=1
+                                    localNodeIdx1=1
                                     !central axis nodes
-                                    nn=nn+1
-                                    APEX_ELEMENT_NODES(nn)=NIDX(nn1,nn2,nn3)
-                                    DO nn2=from2+1,from2+BASIS2%NUMBER_OF_NODES_XIC(2)-1
-                                      DO nn1=from1,from1+BASIS2%NUMBER_OF_NODES_XIC(1)-1
-                                        nn=nn+1
+                                    localNodeIdx=localNodeIdx+1
+                                    APEX_ELEMENT_NODES(localNodeIdx)=NIDX(localNodeIdx1,localNodeIdx2,localNodeIdx3)
+                                    DO localNodeIdx2=from2+1,from2+basis2%NUMBER_OF_NODES_XIC(2)-1
+                                      DO localNodeIdx1=from1,from1+basis2%NUMBER_OF_NODES_XIC(1)-1
+                                        localNodeIdx=localNodeIdx+1
                                         ! circumferential loop-around
-                                        IF(nn1>SIZE(NIDX,1)) THEN
-                                          APEX_ELEMENT_NODES(nn)=NIDX(1,nn2,nn3)
+                                        IF(localNodeIdx1>SIZE(NIDX,1)) THEN
+                                          APEX_ELEMENT_NODES(localNodeIdx)=NIDX(1,localNodeIdx2,localNodeIdx3)
                                         ELSE
-                                          APEX_ELEMENT_NODES(nn)=NIDX(nn1,nn2,nn3)
+                                          APEX_ELEMENT_NODES(localNodeIdx)=NIDX(localNodeIdx1,localNodeIdx2,localNodeIdx3)
                                         ENDIF
-                                      ENDDO ! nn1
-                                    ENDDO ! nn2
-                                  ENDDO ! nn3
-                                  ne=ne+1
-                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_BASIS_SET(ne,MESH_ELEMENTS,BASIS2,ERR,ERROR,*999)
-                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(ELLIPSOID_MESH%GENERATED_MESH,mc,APEX_ELEMENT_NODES, &
-                                      & APEX_ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
-                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(ne,MESH_ELEMENTS, &
-                                    APEX_ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
-                                ENDDO ! ne1
+                                      ENDDO ! localNodeIdx1
+                                    ENDDO ! localNodeIdx2
+                                  ENDDO ! localNodeIdx3
+                                  elementIdx=elementIdx+1
+                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_BASIS_SET(ne,meshElements,basis2,err,error,*999)
+                                  CALL COMPONENT_NODES_TO_USER_NUMBERS(ellipsoidMesh%generatedMesh,mc,APEX_ELEMENT_NODES, &
+                                      & APEX_ELEMENT_NODES_USER_NUMBERS,err,error,*999)
+                                  CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(ne,meshElements, &
+                                    APEX_ELEMENT_NODES_USER_NUMBERS,err,error,*999)
+                                ENDDO ! elementIdx1
                                 !wall elements
-                                DO ne2=2,NUMBER_ELEMENTS_XI(2)
-                                  from2=NINT(DELTA(2)*(ne2-1)/DELTAi(2)+1)
-                                  DO ne1=1,NUMBER_ELEMENTS_XI(1)
-                                    from1=NINT(DELTA(1)*(ne1-1)/DELTAi(1)+1)
-                                    nn=0
+                                DO elementIdx2=2,numberOfElementsXi(2)
+                                  from2=NINT(DELTA(2)*(elementIdx2-1)/DELTAi(2)+1)
+                                  DO elementIdx1=1,numberOfElementsXi(1)
+                                    from1=NINT(DELTA(1)*(elementIdx1-1)/DELTAi(1)+1)
+                                    localNodeIdx=0
                                     ! number of nodes in an element is dependent on basis used
-                                    DO nn3=from3,from3+BASIS1%NUMBER_OF_NODES_XIC(3)-1
-                                      DO nn2=from2,from2+BASIS1%NUMBER_OF_NODES_XIC(2)-1
-                                        DO nn1=from1,from1+BASIS1%NUMBER_OF_NODES_XIC(1)-1
-                                          nn=nn+1
+                                    DO localNodeIdx3=from3,from3+basis1%NUMBER_OF_NODES_XIC(3)-1
+                                      DO localNodeIdx2=from2,from2+basis1%NUMBER_OF_NODES_XIC(2)-1
+                                        DO localNodeIdx1=from1,from1+basis1%NUMBER_OF_NODES_XIC(1)-1
+                                          localNodeIdx=localNodeIdx+1
                                           ! circumferential loop-around
-                                          IF(nn1>SIZE(NIDX,1)) THEN
-                                            WALL_ELEMENT_NODES(nn)=NIDX(1,nn2,nn3)
+                                          IF(localNodeIdx1>SIZE(NIDX,1)) THEN
+                                            WALL_ELEMENT_NODES(localNodeIdx)=NIDX(1,localNodeIdx2,localNodeIdx3)
                                           ELSE
-                                            WALL_ELEMENT_NODES(nn)=NIDX(nn1,nn2,nn3)
+                                            WALL_ELEMENT_NODES(localNodeIdx)=NIDX(localNodeIdx1,localNodeIdx2,localNodeIdx3)
                                           ENDIF
-                                        ENDDO ! nn1
-                                      ENDDO ! nn2
-                                    ENDDO ! nn3
-                                    ne=ne+1
-                                    CALL COMPONENT_NODES_TO_USER_NUMBERS(ELLIPSOID_MESH%GENERATED_MESH,mc,WALL_ELEMENT_NODES, &
-                                        & WALL_ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
-                                    CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(ne,MESH_ELEMENTS, &
-                                        & WALL_ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
-                                  ENDDO ! ne1
-                                ENDDO ! ne2
-                              ENDDO ! ne3
-                              CALL MESH_TOPOLOGY_ELEMENTS_CREATE_FINISH(MESH_ELEMENTS,ERR,ERROR,*999)
+                                        ENDDO ! localNodeIdx1
+                                      ENDDO ! localNodeIdx2
+                                    ENDDO ! localNodeIdx3
+                                    elementIdx=elementIdx+1
+                                    CALL COMPONENT_NODES_TO_USER_NUMBERS(ellipsoidMesh%generatedMesh,mc,WALL_ELEMENT_NODES, &
+                                        & WALL_ELEMENT_NODES_USER_NUMBERS,err,error,*999)
+                                    CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(ne,meshElements, &
+                                        & WALL_ELEMENT_NODES_USER_NUMBERS,err,error,*999)
+                                  ENDDO ! elementIdx1
+                                ENDDO ! elementIdx2
+                              ENDDO ! elementIdx3
+                              CALL MESH_TOPOLOGY_ELEMENTS_CREATE_FINISH(meshElements,err,error,*999)
                             ELSE
-                              CALL FLAG_ERROR("The number of xi directions of the given basis does not match the size of &
-                                &the number of elements for the mesh.",ERR,ERROR,*999)
+                              CALL FlagError("The number of xi directions of the given basis does not match the size of &
+                                &the number of elements for the mesh.",err,error,*999)
                             ENDIF
                           CASE(BASIS_SIMPLEX_TYPE)
-                            CALL FLAG_ERROR("Ellipsoid meshes with simplex basis types is not implemented.",ERR,ERROR,*999)
+                            CALL FlagError("Ellipsoid meshes with simplex basis types is not implemented.",err,error,*999)
                           CASE DEFAULT
-                            CALL FLAG_ERROR("Basis type is either invalid or not implemented.",ERR,ERROR,*999)
+                            CALL FlagError("Basis type is either invalid or not implemented.",err,error,*999)
                           END SELECT
                         ENDDO
                         !Finish the mesh
-                        CALL MESH_CREATE_FINISH(GENERATED_MESH%MESH,ERR,ERROR,*999)
+                        CALL MESH_CREATE_FINISH(generatedMesh%MESH,err,error,*999)
                       ELSE
-                        CALL FLAG_ERROR("An ellipsoid mesh requires a collapsed basis for each basis,"// &
-                            & " so there must be n*2 bases.",ERR,ERROR,*999)
+                        CALL FlagError("An ellipsoid mesh requires a collapsed basis for each basis,"// &
+                            & " so there must be n*2 bases.",err,error,*999)
                       ENDIF
                     ELSE
-                      CALL FLAG_ERROR("Bases is not allocated.",ERR,ERROR,*999)
+                      CALL FlagError("Bases is not allocated.",err,error,*999)
                     ENDIF
                   ELSE
-                    CALL FLAG_ERROR("For an ellipsoid mesh the following measures need to be given: &
-                        & LONG_AXIS, SHORT_AXIS, WALL_THICKNESS and CUTOFF_ANGLE.",ERR,ERROR,*999)
+                    CALL FlagError("For an ellipsoid mesh the following measures need to be given: &
+                        & LONG_AXIS, SHORT_AXIS, WALL_THICKNESS and CUTOFF_ANGLE.",err,error,*999)
                   ENDIF
                 ELSE
-                  CALL FLAG_ERROR("The number of dimensions of the given regular mesh does not match the size of &
-                      &the origin.",ERR,ERROR,*999)
+                  CALL FlagError("The number of dimensions of the given regular mesh does not match the size of &
+                      &the origin.",err,error,*999)
                 ENDIF
               ELSE
-                CALL FLAG_ERROR("Ellipsoid mesh requires a 3 dimensional coordinate system.",ERR,ERROR,*999)
+                CALL FlagError("Ellipsoid mesh requires a 3 dimensional coordinate system.",err,error,*999)
               ENDIF
             CASE DEFAULT
-              CALL FLAG_ERROR("Coordinate type is either invalid or not implemented.",ERR,ERROR,*999)
+              CALL FlagError("Coordinate type is either invalid or not implemented.",err,error,*999)
             END SELECT
           ELSE
-            CALL FLAG_ERROR("Coordiate System is not associated.",ERR,ERROR,*999)
+            CALL FlagError("Coordiate System is not associated.",err,error,*999)
           ENDIF
         ELSE
-          CALL FLAG_ERROR("Region is not associated.",ERR,ERROR,*999)
+          CALL FlagError("Region is not associated.",err,error,*999)
         ENDIF
       ELSE
-        CALL FLAG_ERROR("Ellipsoid mesh is not associated.",ERR,ERROR,*999)
+        CALL FlagError("Ellipsoid mesh is not associated.",err,error,*999)
       ENDIF
     ELSE
-      CALL FLAG_ERROR("Generated Mesh is not associated.",ERR,ERROR,*999)
+      CALL FlagError("Generated Mesh is not associated.",err,error,*999)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_ELLIPSOID_CREATE_FINISH")
+    CALL Exits("GeneratedMeshEllipsoidCreateFinish")
     RETURN
     ! TODO invalidate other associations
 999 IF(ALLOCATED(NIDX)) DEALLOCATE(NIDX)
     IF(ALLOCATED(EIDX)) DEALLOCATE(EIDX)
     IF(ALLOCATED(CORNER_NODES)) DEALLOCATE(CORNER_NODES)
-    IF(ALLOCATED(NUMBER_ELEMENTS_XI)) DEALLOCATE(NUMBER_ELEMENTS_XI)
+    IF(ALLOCATED(numberOfElementsXi)) DEALLOCATE(numberOfElementsXi)
     IF(ALLOCATED(WALL_ELEMENT_NODES)) DEALLOCATE(WALL_ELEMENT_NODES)
     IF(ALLOCATED(APEX_ELEMENT_NODES)) DEALLOCATE(APEX_ELEMENT_NODES)
-    CALL ERRORS("GENERATED_MESH_ELLIPSOID_CREATE_FINISH",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_ELLIPSOID_CREATE_FINISH")
+    CALL Errors("GeneratedMeshEllipsoidCreateFinish",err,error)
+    CALL Exits("GeneratedMeshEllipsoidCreateFinish")
     RETURN 1
-  END SUBROUTINE GENERATED_MESH_ELLIPSOID_CREATE_FINISH
+  END SUBROUTINE GeneratedMeshEllipsoidCreateFinish
   !
   !================================================================================================================================
   !
 
   !>Start to create the regular generated mesh type
-  SUBROUTINE GENERATED_MESH_CYLINDER_CREATE_FINISH(GENERATED_MESH,MESH_USER_NUMBER,ERR,ERROR,*)
+  SUBROUTINE GENERATED_MESH_CYLINDER_CREATE_FINISH(GENERATED_MESH,MESH_USER_NUMBER,err,error,*)
 
     !Argument variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<A pointer to the generated mesh
+    TYPE(GeneratedMeshType), POINTER :: GENERATED_MESH !<A pointer to the generated mesh
     INTEGER(INTG), INTENT(IN) :: MESH_USER_NUMBER !<The user number for the mesh to generate.
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
-    TYPE(GENERATED_MESH_CYLINDER_TYPE), POINTER :: CYLINDER_MESH
+    TYPE(GeneratedMeshCylinderType), POINTER :: CYLINDER_MESH
     TYPE(BASIS_TYPE), POINTER :: BASIS
     INTEGER(INTG), ALLOCATABLE :: NUMBER_ELEMENTS_XI(:)
     TYPE(REGION_TYPE), POINTER :: REGION
@@ -2500,12 +2599,12 @@ CONTAINS
     REAL(DP) :: DELTA(3),DELTAi(3)
     TYPE(MeshComponentElementsType), POINTER :: MESH_ELEMENTS
 
-    CALL ENTERS("GENERATED_MESH_CYLINDER_CREATE_FINISH",ERR,ERROR,*999)
+    CALL Enters("GENERATED_MESH_CYLINDER_CREATE_FINISH",err,error,*999)
 
     IF(ASSOCIATED(GENERATED_MESH)) THEN
-      CYLINDER_MESH=>GENERATED_MESH%CYLINDER_MESH
+      CYLINDER_MESH=>GENERATED_MESH%cylinderMesh
       IF(ASSOCIATED(CYLINDER_MESH)) THEN
-        REGION=>GENERATED_MESH%REGION
+        REGION=>GENERATED_MESH%region
         IF(ASSOCIATED(REGION)) THEN
           IF(ASSOCIATED(REGION%COORDINATE_SYSTEM)) THEN
             !TODO is regular type only for COORDINATE_RECTANGULAR_CARTESIAN_TYPE?
@@ -2517,72 +2616,72 @@ CONTAINS
               NUMBER_OF_DIMENSIONS=CYLINDER_MESH%MESH_DIMENSION
               IF(NUMBER_OF_DIMENSIONS==3) THEN ! hard-coded for 3D only
                 IF(.NOT.ALLOCATED(CYLINDER_MESH%ORIGIN)) THEN
-                  ALLOCATE(CYLINDER_MESH%ORIGIN(NUMBER_OF_DIMENSIONS),STAT=ERR)
-                  IF(ERR/=0) CALL FLAG_ERROR("Could not allocate origin.",ERR,ERROR,*999)
+                  ALLOCATE(CYLINDER_MESH%ORIGIN(NUMBER_OF_DIMENSIONS),STAT=err)
+                  IF(err/=0) CALL FlagError("Could not allocate origin.",err,error,*999)
                   CYLINDER_MESH%ORIGIN=0.0_DP
                 ENDIF
                 IF(SIZE(CYLINDER_MESH%ORIGIN)==CYLINDER_MESH%MESH_DIMENSION) THEN
-                  IF(SIZE(CYLINDER_MESH%CYLINDER_EXTENT)==CYLINDER_MESH%MESH_DIMENSION) THEN
-                    IF(ALLOCATED(CYLINDER_MESH%BASES)) THEN
-                      ALLOCATE(NUMBER_ELEMENTS_XI(SIZE(CYLINDER_MESH%NUMBER_OF_ELEMENTS_XI)),STAT=ERR)
-                      IF(ERR/=0) CALL FLAG_ERROR("Could not allocate number of elements xi.",ERR,ERROR,*999)
-                      NUMBER_ELEMENTS_XI(1:SIZE(CYLINDER_MESH%NUMBER_OF_ELEMENTS_XI))= &
-                        & CYLINDER_MESH%NUMBER_OF_ELEMENTS_XI(1:SIZE(CYLINDER_MESH%NUMBER_OF_ELEMENTS_XI))
-                      CALL MESH_CREATE_START(MESH_USER_NUMBER,GENERATED_MESH%REGION,SIZE(NUMBER_ELEMENTS_XI,1), &
-                        & GENERATED_MESH%MESH,ERR,ERROR,*999)
-                      CALL MESH_NUMBER_OF_COMPONENTS_SET(GENERATED_MESH%MESH,SIZE(CYLINDER_MESH%BASES),ERR,ERROR,*999)
+                  IF(SIZE(CYLINDER_MESH%cylinderExtent)==CYLINDER_MESH%MESH_DIMENSION) THEN
+                    IF(ALLOCATED(CYLINDER_MESH%bases)) THEN
+                      ALLOCATE(NUMBER_ELEMENTS_XI(SIZE(CYLINDER_MESH%numberOfElementsXi)),STAT=err)
+                      IF(err/=0) CALL FlagError("Could not allocate number of elements xi.",err,error,*999)
+                      NUMBER_ELEMENTS_XI(1:SIZE(CYLINDER_MESH%numberOfElementsXi))= &
+                        & CYLINDER_MESH%numberOfElementsXi(1:SIZE(CYLINDER_MESH%numberOfElementsXi))
+                      CALL MESH_CREATE_START(MESH_USER_NUMBER,GENERATED_MESH%region,SIZE(NUMBER_ELEMENTS_XI,1), &
+                        & GENERATED_MESH%MESH,err,error,*999)
+                      CALL MESH_NUMBER_OF_COMPONENTS_SET(GENERATED_MESH%MESH,SIZE(CYLINDER_MESH%bases),err,error,*999)
                       !Calculate number of nodes
                       CORNER_NUMBER_OF_NODES=(NUMBER_ELEMENTS_XI(3)+1)*NUMBER_ELEMENTS_XI(2)*(NUMBER_ELEMENTS_XI(1)+1)
                       TOTAL_NUMBER_OF_NODES=CORNER_NUMBER_OF_NODES
-                      DO basis_idx=1,SIZE(CYLINDER_MESH%BASES)
-                        BASIS=>CYLINDER_MESH%BASES(basis_idx)%PTR
+                      DO basis_idx=1,SIZE(CYLINDER_MESH%bases)
+                        BASIS=>CYLINDER_MESH%bases(basis_idx)%PTR
                         IF(ASSOCIATED(BASIS)) THEN
                           BASIS_NUMBER_OF_NODES=((BASIS%NUMBER_OF_NODES_XIC(3)-1)*NUMBER_ELEMENTS_XI(3)+1)* &
                               & ((BASIS%NUMBER_OF_NODES_XIC(2)-1)*NUMBER_ELEMENTS_XI(2))* &
                               & ((BASIS%NUMBER_OF_NODES_XIC(1)-1)*NUMBER_ELEMENTS_XI(1)+1)
                           TOTAL_NUMBER_OF_NODES=TOTAL_NUMBER_OF_NODES+BASIS_NUMBER_OF_NODES-CORNER_NUMBER_OF_NODES
                         ELSE
-                          CALL FLAG_ERROR("Basis is not associated.",ERR,ERROR,*999)
+                          CALL FlagError("Basis is not associated.",err,error,*999)
                         ENDIF
                       ENDDO
                       NULLIFY(NODES)
-                      CALL NODES_CREATE_START(REGION,TOTAL_NUMBER_OF_NODES,NODES,ERR,ERROR,*999)
+                      CALL NODES_CREATE_START(REGION,TOTAL_NUMBER_OF_NODES,NODES,err,error,*999)
                       !Finish the nodes creation
-                      CALL NODES_CREATE_FINISH(NODES,ERR,ERROR,*999)
+                      CALL NODES_CREATE_FINISH(NODES,err,error,*999)
                       !Set the total number of elements
                       TOTAL_NUMBER_OF_ELEMENTS=NUMBER_ELEMENTS_XI(1)*NUMBER_ELEMENTS_XI(2)*NUMBER_ELEMENTS_XI(3)
-                      CALL MESH_NUMBER_OF_ELEMENTS_SET(GENERATED_MESH%MESH,TOTAL_NUMBER_OF_ELEMENTS,ERR,ERROR,*999)
-                      DO basis_idx=1,SIZE(CYLINDER_MESH%BASES)
-                        BASIS=>CYLINDER_MESH%BASES(basis_idx)%PTR
+                      CALL MESH_NUMBER_OF_ELEMENTS_SET(GENERATED_MESH%MESH,TOTAL_NUMBER_OF_ELEMENTS,err,error,*999)
+                      DO basis_idx=1,SIZE(CYLINDER_MESH%bases)
+                        BASIS=>CYLINDER_MESH%bases(basis_idx)%PTR
                         IF(ASSOCIATED(BASIS)) THEN
                           SELECT CASE(BASIS%TYPE)
                           CASE(BASIS_LAGRANGE_HERMITE_TP_TYPE)
                             IF(BASIS%NUMBER_OF_XI==SIZE(NUMBER_ELEMENTS_XI,1)) THEN
                               IF(.NOT.ALL(NUMBER_ELEMENTS_XI>0)) &
-                                & CALL FLAG_ERROR("Must have 1 or more elements in all directions.",ERR,ERROR,*999)
+                                & CALL FlagError("Must have 1 or more elements in all directions.",err,error,*999)
                               IF(NUMBER_ELEMENTS_XI(2)<3) &
-                                CALL FLAG_ERROR("Need >2 elements around the circumferential direction.",ERR,ERROR,*999)
+                                CALL FlagError("Need >2 elements around the circumferential direction.",err,error,*999)
                               IF(.NOT.ALL(BASIS%COLLAPSED_XI==BASIS_NOT_COLLAPSED))  &
-                                & CALL FLAG_ERROR("Degenerate (collapsed) basis not implemented.",ERR,ERROR,*999)
+                                & CALL FlagError("Degenerate (collapsed) basis not implemented.",err,error,*999)
                               !Calculate nodes and element sizes
                               IF(ALLOCATED(NIDX)) DEALLOCATE(NIDX)
                               IF(ALLOCATED(EIDX)) DEALLOCATE(EIDX)
                               CALL GENERATED_MESH_CYLINDER_BUILD_NODE_INDICES(NUMBER_ELEMENTS_XI,BASIS%NUMBER_OF_NODES_XIC, &
-                                & CYLINDER_MESH%CYLINDER_EXTENT, TOTAL_NUMBER_OF_NODES,TOTAL_NUMBER_OF_ELEMENTS, &
-                                & NIDX,EIDX,DELTA,DELTAi,ERR,ERROR,*999)
+                                & CYLINDER_MESH%cylinderExtent, TOTAL_NUMBER_OF_NODES,TOTAL_NUMBER_OF_ELEMENTS, &
+                                & NIDX,EIDX,DELTA,DELTAi,err,error,*999)
                               !Set the elements for the cylinder mesh
                               IF(ALLOCATED(ELEMENT_NODES)) DEALLOCATE(ELEMENT_NODES)
                               IF(ALLOCATED(ELEMENT_NODES_USER_NUMBERS)) DEALLOCATE(ELEMENT_NODES_USER_NUMBERS)
-                              ALLOCATE(ELEMENT_NODES_USER_NUMBERS(BASIS%NUMBER_OF_NODES),STAT=ERR)
-                              ALLOCATE(ELEMENT_NODES(BASIS%NUMBER_OF_NODES),STAT=ERR)
-                              IF(ERR/=0) CALL FLAG_ERROR("Could not allocate element nodes.",ERR,ERROR,*999)
+                              ALLOCATE(ELEMENT_NODES_USER_NUMBERS(BASIS%NUMBER_OF_NODES),STAT=err)
+                              ALLOCATE(ELEMENT_NODES(BASIS%NUMBER_OF_NODES),STAT=err)
+                              IF(err/=0) CALL FlagError("Could not allocate element nodes.",err,error,*999)
                               !Create the elements
                               NULLIFY(MESH_ELEMENTS)
                               CALL MESH_TOPOLOGY_ELEMENTS_CREATE_START(GENERATED_MESH%MESH,basis_idx,BASIS,MESH_ELEMENTS, &
-                                  & ERR,ERROR,*999)
+                                  & err,error,*999)
                               ! calculate element topology (nodes per each element)
                               ! the idea is to translate given (r,theta,z) to NIDX equivalents, which include interior nodes
-                              ne=0
+                              elementIdx=0
                               DO ne3=1,NUMBER_ELEMENTS_XI(3)
                                 from3=NINT(DELTA(3)*(ne3-1)/DELTAi(3)+1)
                                 DO ne2=1,NUMBER_ELEMENTS_XI(2)
@@ -2598,7 +2697,7 @@ CONTAINS
                                           ! compensate for circumferential loop-around
                                           IF(nn2>SIZE(NIDX,2)) THEN
                                             ! DEBUG: little check here
-                                            IF(nn2>SIZE(NIDX,2)+1) CALL FLAG_ERROR("NIDX needs debugging",ERR,ERROR,*999)
+                                            IF(nn2>SIZE(NIDX,2)+1) CALL FlagError("NIDX needs debugging",err,error,*999)
                                             ELEMENT_NODES(nn)=NIDX(nn1,1,nn3)
                                           ELSE
                                             ELEMENT_NODES(nn)=NIDX(nn1,nn2,nn3)
@@ -2606,69 +2705,69 @@ CONTAINS
                                         ENDDO ! nn1
                                       ENDDO ! nn2
                                     ENDDO ! nn3
-                                    ne=ne+1
+                                    elementIdx=elementIdx+1
                                     CALL COMPONENT_NODES_TO_USER_NUMBERS(CYLINDER_MESH%GENERATED_MESH,basis_idx,ELEMENT_NODES, &
-                                        & ELEMENT_NODES_USER_NUMBERS,ERR,ERROR,*999)
+                                        & ELEMENT_NODES_USER_NUMBERS,err,error,*999)
                                     CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(ne,MESH_ELEMENTS,ELEMENT_NODES_USER_NUMBERS, &
-                                        & ERR,ERROR,*999)
+                                        & err,error,*999)
                                   ENDDO ! ne1
                                 ENDDO ! ne2
                               ENDDO ! ne3
-                              CALL MESH_TOPOLOGY_ELEMENTS_CREATE_FINISH(MESH_ELEMENTS,ERR,ERROR,*999)
+                              CALL MESH_TOPOLOGY_ELEMENTS_CREATE_FINISH(MESH_ELEMENTS,err,error,*999)
                             ELSE
-                              CALL FLAG_ERROR("The number of xi directions of the given basis does not match the size of &
-                                &the number of elements for the mesh.",ERR,ERROR,*999)
+                              CALL FlagError("The number of xi directions of the given basis does not match the size of &
+                                &the number of elements for the mesh.",err,error,*999)
                             ENDIF
                           CASE(BASIS_SIMPLEX_TYPE)
-                            CALL FLAG_ERROR("Cylinder meshes with simplex basis types is not implemented.",ERR,ERROR,*999)
+                            CALL FlagError("Cylinder meshes with simplex basis types is not implemented.",err,error,*999)
                           CASE DEFAULT
-                            CALL FLAG_ERROR("Basis type is either invalid or not implemented.",ERR,ERROR,*999)
+                            CALL FlagError("Basis type is either invalid or not implemented.",err,error,*999)
                           END SELECT
                         ELSE
-                          CALL FLAG_ERROR("Basis is not associated.",ERR,ERROR,*999)
+                          CALL FlagError("Basis is not associated.",err,error,*999)
                         ENDIF
                       ENDDO
                       !Finish the mesh
-                      CALL MESH_CREATE_FINISH(GENERATED_MESH%MESH,ERR,ERROR,*999)
+                      CALL MESH_CREATE_FINISH(GENERATED_MESH%MESH,err,error,*999)
                     ELSE
-                      CALL FLAG_ERROR("Bases are not allocated.",ERR,ERROR,*999)
+                      CALL FlagError("Bases are not allocated.",err,error,*999)
                     ENDIF
                   ELSE
-                    CALL FLAG_ERROR("The number of dimensions of the given regular mesh does not match the size of &
-                      &the maximum extent.",ERR,ERROR,*999)
+                    CALL FlagError("The number of dimensions of the given regular mesh does not match the size of &
+                      &the maximum extent.",err,error,*999)
                   ENDIF
                 ELSE
-                  CALL FLAG_ERROR("The number of dimensions of the given regular mesh does not match the size of &
-                    &the origin.",ERR,ERROR,*999)
+                  CALL FlagError("The number of dimensions of the given regular mesh does not match the size of &
+                    &the origin.",err,error,*999)
                 ENDIF
               ELSE
-                CALL FLAG_ERROR("Cylinder mesh requires a 3 dimensional coordinate system.",ERR,ERROR,*999)
+                CALL FlagError("Cylinder mesh requires a 3 dimensional coordinate system.",err,error,*999)
               ENDIF
             CASE DEFAULT
-              CALL FLAG_ERROR("Coordinate type is either invalid or not implemented.",ERR,ERROR,*999)
+              CALL FlagError("Coordinate type is either invalid or not implemented.",err,error,*999)
             END SELECT
           ELSE
-            CALL FLAG_ERROR("Coordiate System is not associated.",ERR,ERROR,*999)
+            CALL FlagError("Coordiate System is not associated.",err,error,*999)
           ENDIF
         ELSE
-          CALL FLAG_ERROR("Region is not associated.",ERR,ERROR,*999)
+          CALL FlagError("Region is not associated.",err,error,*999)
         ENDIF
       ELSE
-        CALL FLAG_ERROR("Regular mesh is not associated.",ERR,ERROR,*999)
+        CALL FlagError("Regular mesh is not associated.",err,error,*999)
       ENDIF
     ELSE
-      CALL FLAG_ERROR("Generated Mesh is not associated.",ERR,ERROR,*999)
+      CALL FlagError("Generated Mesh is not associated.",err,error,*999)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_CYLINDER_CREATE_FINISH")
+    CALL Exits("GENERATED_MESH_CYLINDER_CREATE_FINISH")
     RETURN
     ! TODO invalidate other associations
 999 IF(ALLOCATED(NIDX)) DEALLOCATE(NIDX)
     IF(ALLOCATED(EIDX)) DEALLOCATE(EIDX)
     IF(ALLOCATED(NUMBER_ELEMENTS_XI)) DEALLOCATE(NUMBER_ELEMENTS_XI)
     IF(ALLOCATED(ELEMENT_NODES)) DEALLOCATE(ELEMENT_NODES)
-    CALL ERRORS("GENERATED_MESH_CYLINDER_CREATE_FINISH",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_CYLINDER_CREATE_FINISH")
+    CALL Errors("GENERATED_MESH_CYLINDER_CREATE_FINISH",err,error)
+    CALL Exits("GENERATED_MESH_CYLINDER_CREATE_FINISH")
     RETURN 1
   END SUBROUTINE GENERATED_MESH_CYLINDER_CREATE_FINISH
 
@@ -2677,29 +2776,29 @@ CONTAINS
   !
 
   !>Finalise the cylinder mesh type
-  SUBROUTINE GENERATED_MESH_CYLINDER_FINALISE(CYLINDER_MESH,ERR,ERROR,*)
+  SUBROUTINE GENERATED_MESH_CYLINDER_FINALISE(CYLINDER_MESH,err,error,*)
 
     !Argument variables
-    TYPE(GENERATED_MESH_CYLINDER_TYPE), POINTER :: CYLINDER_MESH !<A pointer to the generated mesh
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    TYPE(GeneratedMeshCylinderType), POINTER :: CYLINDER_MESH !<A pointer to the generated mesh
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
 
-    CALL ENTERS("GENERATED_MESH_CYLINDER_FINALISE",ERR,ERROR,*999)
+    CALL Enters("GENERATED_MESH_CYLINDER_FINALISE",err,error,*999)
 
     IF(ASSOCIATED(CYLINDER_MESH)) THEN
       IF(ALLOCATED(CYLINDER_MESH%ORIGIN)) DEALLOCATE(CYLINDER_MESH%ORIGIN)
-      IF(ALLOCATED(CYLINDER_MESH%CYLINDER_EXTENT)) DEALLOCATE(CYLINDER_MESH%CYLINDER_EXTENT)
-      IF(ALLOCATED(CYLINDER_MESH%NUMBER_OF_ELEMENTS_XI)) DEALLOCATE(CYLINDER_MESH%NUMBER_OF_ELEMENTS_XI)
-      IF(ALLOCATED(CYLINDER_MESH%BASES)) DEALLOCATE(CYLINDER_MESH%BASES)
+      IF(ALLOCATED(CYLINDER_MESH%cylinderExtent)) DEALLOCATE(CYLINDER_MESH%cylinderExtent)
+      IF(ALLOCATED(CYLINDER_MESH%numberOfElementsXi)) DEALLOCATE(CYLINDER_MESH%numberOfElementsXi)
+      IF(ALLOCATED(CYLINDER_MESH%bases)) DEALLOCATE(CYLINDER_MESH%bases)
       DEALLOCATE(CYLINDER_MESH)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_CYLINDER_FINALISE")
+    CALL Exits("GENERATED_MESH_CYLINDER_FINALISE")
     RETURN
     ! TODO invalidate other associations
-999 CALL ERRORS("GENERATED_MESH_CYLINDER_FINALISE",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_CYLINDER_FINALISE")
+999 CALL Errors("GENERATED_MESH_CYLINDER_FINALISE",err,error)
+    CALL Exits("GENERATED_MESH_CYLINDER_FINALISE")
     RETURN 1
   END SUBROUTINE GENERATED_MESH_CYLINDER_FINALISE
 
@@ -2708,36 +2807,36 @@ CONTAINS
   !
 
   !>Initialise the cylinder generated mesh type
-  SUBROUTINE GENERATED_MESH_CYLINDER_INITIALISE(GENERATED_MESH,ERR,ERROR,*)
+  SUBROUTINE GENERATED_MESH_CYLINDER_INITIALISE(GENERATED_MESH,err,error,*)
 
     !Argument variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<A pointer to the generated mesh
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    TYPE(GeneratedMeshType), POINTER :: GENERATED_MESH !<A pointer to the generated mesh
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
-    INTEGER(INTG) :: DUMMY_ERR
-    TYPE(VARYING_STRING) :: DUMMY_ERROR
+    INTEGER(INTG) :: dummyErr
+    TYPE(VARYING_STRING) :: dummyError
 
-    CALL ENTERS("GENERATED_MESH_CYLINDER_INITIALISE",ERR,ERROR,*999)
+    CALL Enters("GENERATED_MESH_CYLINDER_INITIALISE",err,error,*999)
 
     IF(ASSOCIATED(GENERATED_MESH)) THEN
-      IF(ASSOCIATED(GENERATED_MESH%CYLINDER_MESH)) THEN
-        CALL FLAG_ERROR("Cylinder mesh is already associated for this generated mesh.",ERR,ERROR,*998)
+      IF(ASSOCIATED(GENERATED_MESH%cylinderMesh)) THEN
+        CALL FlagError("Cylinder mesh is already associated for this generated mesh.",err,error,*998)
       ELSE
-        ALLOCATE(GENERATED_MESH%CYLINDER_MESH,STAT=ERR)
-        IF(ERR/=0) CALL FLAG_ERROR("Could not allocate cylinder generated mesh.",ERR,ERROR,*999)
-        GENERATED_MESH%CYLINDER_MESH%GENERATED_MESH=>GENERATED_MESH
-        GENERATED_MESH%GENERATED_TYPE=GENERATED_MESH_CYLINDER_MESH_TYPE
+        ALLOCATE(GENERATED_MESH%cylinderMesh,STAT=err)
+        IF(err/=0) CALL FlagError("Could not allocate cylinder generated mesh.",err,error,*999)
+        GENERATED_MESH%cylinderMesh%GENERATED_MESH=>GENERATED_MESH
+        GENERATED_MESH%generatedType=GENERATED_MESH_CYLINDER_MESH_TYPE
       ENDIF
     ELSE
-      CALL FLAG_ERROR("Generated mesh is not associated.",ERR,ERROR,*998)
+      CALL FlagError("Generated mesh is not associated.",err,error,*998)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_CYLINDER_INITIALISE")
+    CALL Exits("GENERATED_MESH_CYLINDER_INITIALISE")
     RETURN
-999 CALL GENERATED_MESH_CYLINDER_FINALISE(GENERATED_MESH%CYLINDER_MESH,DUMMY_ERR,DUMMY_ERROR,*998)
-998 CALL ERRORS("GENERATED_MESH_CYLINDER_INITIALISE",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_CYLINDER_INITIALISE")
+999 CALL GENERATED_MESH_CYLINDER_FINALISE(GENERATED_MESH%cylinderMesh,dummyErr,dummyError,*998)
+998 CALL Errors("GENERATED_MESH_CYLINDER_INITIALISE",err,error)
+    CALL Exits("GENERATED_MESH_CYLINDER_INITIALISE")
     RETURN 1
   END SUBROUTINE GENERATED_MESH_CYLINDER_INITIALISE
 
@@ -2746,30 +2845,30 @@ CONTAINS
   !
 
   !>Finalise the regular mesh type
-  SUBROUTINE GENERATED_MESH_REGULAR_FINALISE(REGULAR_MESH,ERR,ERROR,*)
+  SUBROUTINE GENERATED_MESH_REGULAR_FINALISE(REGULAR_MESH,err,error,*)
 
     !Argument variables
-    TYPE(GENERATED_MESH_REGULAR_TYPE), POINTER :: REGULAR_MESH !<A pointer to the generated mesh
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    TYPE(GeneratedMeshRegularType), POINTER :: REGULAR_MESH !<A pointer to the generated mesh
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
 
-    CALL ENTERS("GENERATED_MESH_REGULAR_FINALISE",ERR,ERROR,*999)
+    CALL Enters("GENERATED_MESH_REGULAR_FINALISE",err,error,*999)
 
     IF(ASSOCIATED(REGULAR_MESH)) THEN
       IF(ALLOCATED(REGULAR_MESH%ORIGIN)) DEALLOCATE(REGULAR_MESH%ORIGIN)
-      IF(ALLOCATED(REGULAR_MESH%MAXIMUM_EXTENT)) DEALLOCATE(REGULAR_MESH%MAXIMUM_EXTENT)
-      IF(ALLOCATED(REGULAR_MESH%NUMBER_OF_ELEMENTS_XI)) DEALLOCATE(REGULAR_MESH%NUMBER_OF_ELEMENTS_XI)
-      IF(ALLOCATED(REGULAR_MESH%BASE_VECTORS)) DEALLOCATE(REGULAR_MESH%BASE_VECTORS)
-      IF(ALLOCATED(REGULAR_MESH%BASES)) DEALLOCATE(REGULAR_MESH%BASES)
+      IF(ALLOCATED(REGULAR_MESH%maximumExtent)) DEALLOCATE(REGULAR_MESH%maximumExtent)
+      IF(ALLOCATED(REGULAR_MESH%numberOfElementsXi)) DEALLOCATE(REGULAR_MESH%numberOfElementsXi)
+      IF(ALLOCATED(REGULAR_MESH%baseVectors)) DEALLOCATE(REGULAR_MESH%baseVectors)
+      IF(ALLOCATED(REGULAR_MESH%bases)) DEALLOCATE(REGULAR_MESH%bases)
       DEALLOCATE(REGULAR_MESH)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_REGULAR_FINALISE")
+    CALL Exits("GENERATED_MESH_REGULAR_FINALISE")
     RETURN
     ! TODO invalidate other associations
-999 CALL ERRORS("GENERATED_MESH_REGULAR_FINALISE",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_REGULAR_FINALISE")
+999 CALL Errors("GENERATED_MESH_REGULAR_FINALISE",err,error)
+    CALL Exits("GENERATED_MESH_REGULAR_FINALISE")
     RETURN 1
   END SUBROUTINE GENERATED_MESH_REGULAR_FINALISE
 
@@ -2778,36 +2877,45 @@ CONTAINS
   !
 
   !>Initialise the regular generated mesh type
-  SUBROUTINE GENERATED_MESH_REGULAR_INITIALISE(GENERATED_MESH,ERR,ERROR,*)
+  SUBROUTINE GENERATED_MESH_REGULAR_INITIALISE(GENERATED_MESH,err,error,*)
 
     !Argument variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<A pointer to the generated mesh
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    TYPE(GeneratedMeshType), POINTER :: GENERATED_MESH !<A pointer to the generated mesh
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
-    INTEGER(INTG) :: DUMMY_ERR
-    TYPE(VARYING_STRING) :: DUMMY_ERROR
+    INTEGER(INTG) :: dummyErr
+    TYPE(VARYING_STRING) :: dummyError
+    
+    NULLIFY(COORDINATE_SYSTEM)
 
-    CALL ENTERS("GENERATED_MESH_REGULAR_INITIALISE",ERR,ERROR,*998)
+    CALL Enters("GENERATED_MESH_REGULAR_INITIALISE",err,error,*998)
 
     IF(ASSOCIATED(GENERATED_MESH)) THEN
-      IF(ASSOCIATED(GENERATED_MESH%REGULAR_MESH)) THEN
-        CALL FLAG_ERROR("Regular mesh is already associated for this generated mesh.",ERR,ERROR,*998)
+      IF(ASSOCIATED(GENERATED_MESH%regularMesh)) THEN
+        CALL FlagError("Regular mesh is already associated for this generated mesh.",err,error,*998)
       ELSE
-        ALLOCATE(GENERATED_MESH%REGULAR_MESH,STAT=ERR)
-        IF(ERR/=0) CALL FLAG_ERROR("Could not allocate regular generated mesh.",ERR,ERROR,*999)
-        GENERATED_MESH%REGULAR_MESH%GENERATED_MESH=>GENERATED_MESH
-        GENERATED_MESH%GENERATED_TYPE=GENERATED_MESH_REGULAR_MESH_TYPE
+      CALL GeneratedMeshCoordinateSystemGet(GENERATED_MESH,COORDINATE_SYSTEM,err,error,*999)
+        ALLOCATE(GENERATED_MESH%regularMesh,STAT=err)
+        IF(err/=0) CALL FlagError("Could not allocate regular generated mesh.",err,error,*999)
+        GENERATED_MESH%regularMesh%GENERATED_MESH=>GENERATED_MESH
+        ALLOCATE(generatedMesh%regularMesh%origin(coordinateDimension),STAT=err)
+        IF(err/=) CALL FlagError("Could not allocate origin.",err,error,*998)
+        generatedMesh%regularMesh%origin=0.0_DP
+        ALLOCATE(generatedMesh%regularMesh%maximumExtent(coordinateDimension),STAT=err)
+        IF(err/=) CALL FlagError("Could not allocate maximum extent.",err,error,*998)
+        generatedMesh%regularMesh%maximumExtent=1.0_DP
+        GENERATED_MESH%generatedType=GENERATED_MESH_REGULAR_MESH_TYPE
       ENDIF
     ELSE
-      CALL FLAG_ERROR("Generated mesh is not associated.",ERR,ERROR,*998)
+      CALL FlagError("Generated mesh is not associated.",err,error,*998)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_REGULAR_INITIALISE")
+    CALL Exits("GENERATED_MESH_REGULAR_INITIALISE")
     RETURN
-999 CALL GENERATED_MESH_REGULAR_FINALISE(GENERATED_MESH%REGULAR_MESH,DUMMY_ERR,DUMMY_ERROR,*998)
-998 CALL ERRORS("GENERATED_MESH_REGULAR_INITIALISE",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_REGULAR_INITIALISE")
+999 CALL GENERATED_MESH_REGULAR_FINALISE(GENERATED_MESH%regularMesh,dummyErr,dummyError,*998)
+998 CALL Errors("GENERATED_MESH_REGULAR_INITIALISE",err,error)
+    CALL Exits("GENERATED_MESH_REGULAR_INITIALISE")
     RETURN 1
   END SUBROUTINE GENERATED_MESH_REGULAR_INITIALISE
 
@@ -2816,29 +2924,29 @@ CONTAINS
   !
 
   !>Finalise ellipsoid mesh type
-  SUBROUTINE GENERATED_MESH_ELLIPSOID_FINALISE(ELLIPSOID_MESH,ERR,ERROR,*)
+  SUBROUTINE GENERATED_MESH_ELLIPSOID_FINALISE(ELLIPSOID_MESH,err,error,*)
 
     !Argument variables
-    TYPE(GENERATED_MESH_ELLIPSOID_TYPE), POINTER :: ELLIPSOID_MESH !<A pointer to the generated mesh
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    TYPE(GeneratedMeshEllipsoidType), POINTER :: ELLIPSOID_MESH !<A pointer to the generated mesh
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
 
-    CALL ENTERS("GENERATED_MESH_ELLIPSOID_FINALISE",ERR,ERROR,*999)
+    CALL Enters("GENERATED_MESH_ELLIPSOID_FINALISE",err,error,*999)
 
     IF(ASSOCIATED(ELLIPSOID_MESH)) THEN
       IF(ALLOCATED(ELLIPSOID_MESH%ORIGIN)) DEALLOCATE(ELLIPSOID_MESH%ORIGIN)
-      IF(ALLOCATED(ELLIPSOID_MESH%ELLIPSOID_EXTENT)) DEALLOCATE(ELLIPSOID_MESH%ELLIPSOID_EXTENT)
-      IF(ALLOCATED(ELLIPSOID_MESH%NUMBER_OF_ELEMENTS_XI)) DEALLOCATE(ELLIPSOID_MESH%NUMBER_OF_ELEMENTS_XI)
-      IF(ALLOCATED(ELLIPSOID_MESH%BASES)) DEALLOCATE(ELLIPSOID_MESH%BASES)
+      IF(ALLOCATED(ELLIPSOID_MESH%ellipsoidExtent)) DEALLOCATE(ELLIPSOID_MESH%ellipsoidExtent)
+      IF(ALLOCATED(ELLIPSOID_MESH%numberOfElementsXi)) DEALLOCATE(ELLIPSOID_MESH%numberOfElementsXi)
+      IF(ALLOCATED(ELLIPSOID_MESH%bases)) DEALLOCATE(ELLIPSOID_MESH%bases)
       DEALLOCATE(ELLIPSOID_MESH)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_ELLIPSOID_FINALISE")
+    CALL Exits("GENERATED_MESH_ELLIPSOID_FINALISE")
     RETURN
     ! TODO invalidate other associations
-999 CALL ERRORS("GENERATED_MESH_ELLIPSOID_FINALISE",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_ELLIPSOID_FINALISE")
+999 CALL Errors("GENERATED_MESH_ELLIPSOID_FINALISE",err,error)
+    CALL Exits("GENERATED_MESH_ELLIPSOID_FINALISE")
     RETURN 1
   END SUBROUTINE GENERATED_MESH_ELLIPSOID_FINALISE
 
@@ -2847,36 +2955,36 @@ CONTAINS
   !
 
   !>Initialise the ellipsoid generated mesh type
-  SUBROUTINE GENERATED_MESH_ELLIPSOID_INITIALISE(GENERATED_MESH,ERR,ERROR,*)
+  SUBROUTINE GENERATED_MESH_ELLIPSOID_INITIALISE(GENERATED_MESH,err,error,*)
 
     !Argument variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<A pointer to the generated mesh
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    TYPE(GeneratedMeshType), POINTER :: GENERATED_MESH !<A pointer to the generated mesh
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
-    INTEGER(INTG) :: DUMMY_ERR
-    TYPE(VARYING_STRING) :: DUMMY_ERROR
+    INTEGER(INTG) :: dummyErr
+    TYPE(VARYING_STRING) :: dummyError
 
-    CALL ENTERS("GENERATED_MESH_ELLIPSOID_INITIALISE",ERR,ERROR,*999)
+    CALL Enters("GENERATED_MESH_ELLIPSOID_INITIALISE",err,error,*999)
 
     IF(ASSOCIATED(GENERATED_MESH)) THEN
-      IF(ASSOCIATED(GENERATED_MESH%ELLIPSOID_MESH)) THEN
-        CALL FLAG_ERROR("Ellipsoid mesh is already associated for this generated mesh.",ERR,ERROR,*998)
+      IF(ASSOCIATED(GENERATED_MESH%ellipsoidMesh)) THEN
+        CALL FlagError("Ellipsoid mesh is already associated for this generated mesh.",err,error,*998)
       ELSE
-        ALLOCATE(GENERATED_MESH%ELLIPSOID_MESH,STAT=ERR)
-        IF(ERR/=0) CALL FLAG_ERROR("Could not allocate ellipsoid generated mesh.",ERR,ERROR,*999)
-        GENERATED_MESH%ELLIPSOID_MESH%GENERATED_MESH=>GENERATED_MESH
-        GENERATED_MESH%GENERATED_TYPE=GENERATED_MESH_ELLIPSOID_MESH_TYPE
+        ALLOCATE(GENERATED_MESH%ellipsoidMesh,STAT=err)
+        IF(err/=0) CALL FlagError("Could not allocate ellipsoid generated mesh.",err,error,*999)
+        GENERATED_MESH%ellipsoidMesh%GENERATED_MESH=>GENERATED_MESH
+        GENERATED_MESH%generatedType=GENERATED_MESH_ELLIPSOID_MESH_TYPE
       ENDIF
     ELSE
-      CALL FLAG_ERROR("Generated mesh is not associated.",ERR,ERROR,*998)
+      CALL FlagError("Generated mesh is not associated.",err,error,*998)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_ELLIPSOID_INITIALISE")
+    CALL Exits("GENERATED_MESH_ELLIPSOID_INITIALISE")
     RETURN
-999 CALL GENERATED_MESH_ELLIPSOID_FINALISE(GENERATED_MESH%ELLIPSOID_MESH,DUMMY_ERR,DUMMY_ERROR,*998)
-998 CALL ERRORS("GENERATED_MESH_ELLIPSOID_INITIALISE",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_ELLIPSOID_INITIALISE")
+999 CALL GENERATED_MESH_ELLIPSOID_FINALISE(GENERATED_MESH%ellipsoidMesh,dummyErr,dummyError,*998)
+998 CALL Errors("GENERATED_MESH_ELLIPSOID_INITIALISE",err,error)
+    CALL Exits("GENERATED_MESH_ELLIPSOID_INITIALISE")
     RETURN 1
   END SUBROUTINE GENERATED_MESH_ELLIPSOID_INITIALISE
 
@@ -2885,457 +2993,493 @@ CONTAINS
   !
 
   !>Gets the type of a generated mesh. \see OPENCMISS::CMISSGeneratedMeshTypeGet
-  SUBROUTINE GENERATED_MESH_TYPE_GET(GENERATED_MESH,TYPE,ERR,ERROR,*)
+  SUBROUTINE GeneratedMeshTypeGet(generatedMesh,meshType,err,error,*)
 
     !Argument variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<A pointer to the generated mesh to set the type of
-    INTEGER(INTG), INTENT(OUT) :: TYPE !<On return, the type of mesh to generate
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh to set the type of
+    INTEGER(INTG), INTENT(OUT) :: meshType !<On return, the type of mesh to generate
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
 
-    CALL ENTERS("GENERATED_MESH_TYPE_GET",ERR,ERROR,*999)
+    CALL Enters("GeneratedMeshTypeGet",err,error,*999)
 
-    IF(ASSOCIATED(GENERATED_MESH)) THEN
-      TYPE=GENERATED_MESH%GENERATED_TYPE
+    IF(ASSOCIATED(generatedMesh)) THEN
+      meshType=generatedMesh%generatedType
     ELSE
-      CALL FLAG_ERROR("Generated mesh is not associated.",ERR,ERROR,*999)
+      CALL FlagError("Generated mesh is not associated.",err,error,*999)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_TYPE_GET")
+    CALL Exits("GeneratedMeshTypeGet")
     RETURN
-999 CALL ERRORS("GENERATED_MESH_TYPE_GET",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_TYPE_GET")
+999 CALL Errors("GeneratedMeshTypeGet",err,error)
+    CALL Exits("GeneratedMeshTypeGet")
     RETURN 1
-  END SUBROUTINE GENERATED_MESH_TYPE_GET
+    
+  END SUBROUTINE GeneratedMeshTypeGet
 
   !
   !================================================================================================================================
   !
 
   !>Sets/changes the type of a generated mesh. \see OPENCMISS::CMISSGeneratedMeshTypeSet
-  SUBROUTINE GENERATED_MESH_TYPE_SET(GENERATED_MESH,GENERATED_TYPE,ERR,ERROR,*)
+  SUBROUTINE GeneratedMeshTypeSet(generatedMesh,meshType,err,error,*)
 
     !Argument variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<A pointer to the generated mesh to set the type of
-    INTEGER(INTG), INTENT(IN) :: GENERATED_TYPE !<The type of mesh to generate \see GENERATED_MESH_ROUTINES_GeneratedMeshTypes,GENERATED_MESH_ROUTINES
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    TYPE(GeneratedMeshType), POINTER :: gneratedMesh !<A pointer to the generated mesh to set the type of
+    INTEGER(INTG), INTENT(IN) :: meshType !<The type of mesh to generate \see GeneratedMeshRoutines_GeneratedMeshTypes,GeneratedMeshRoutines
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
-    INTEGER(INTG) :: OLD_GENERATED_TYPE
-    TYPE(VARYING_STRING) :: LOCAL_ERROR
+    INTEGER(INTG) :: oldMeshType
+    TYPE(VARYING_STRING) :: localError
 
-    CALL ENTERS("GENERATED_MESH_TYPE_SET",ERR,ERROR,*999)
+    CALL Enters("GeneratedMeshTypeSet",err,error,*999)
 
-    IF(ASSOCIATED(GENERATED_MESH)) THEN
-      IF(GENERATED_MESH%GENERATED_MESH_FINISHED) THEN
-        CALL FLAG_ERROR("Generated mesh has already been finished.",ERR,ERROR,*999)
+    IF(ASSOCIATED(generatedMesh)) THEN
+      IF(generatedMesh%generatedMeshFinished) THEN
+        CALL FlagError("Generated mesh has already been finished.",err,error,*999)
       ELSE
-        OLD_GENERATED_TYPE=GENERATED_MESH%GENERATED_TYPE
-        IF(OLD_GENERATED_TYPE/=GENERATED_TYPE) THEN
+        oldMeshType=generatedMesh%generatedType
+        IF(oldMeshType/=meshType) THEN
           !Initialise the new generated mesh type
-          SELECT CASE(GENERATED_TYPE)
+          SELECT CASE(meshType)
           CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
-            CALL GENERATED_MESH_REGULAR_INITIALISE(GENERATED_MESH,ERR,ERROR,*999)
+            CALL GENERATED_MESH_REGULAR_INITIALISE(generatedMesh,err,error,*999)
           CASE(GENERATED_MESH_POLAR_MESH_TYPE)
-            CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
+            CALL FlagError("Not implemented.",err,error,*999)
           CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
-            CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
+            CALL FlagError("Not implemented.",err,error,*999)
           CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
-            CALL GENERATED_MESH_CYLINDER_INITIALISE(GENERATED_MESH,ERR,ERROR,*999)
+            CALL GENERATED_MESH_CYLINDER_INITIALISE(generatedMesh,err,error,*999)
           CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
-            CALL GENERATED_MESH_ELLIPSOID_INITIALISE(GENERATED_MESH,ERR,ERROR,*999)
+            CALL GENERATED_MESH_ELLIPSOID_INITIALISE(generatedMesh,err,error,*999)
           CASE DEFAULT
-            LOCAL_ERROR="The specified generated mesh mesh type of "//TRIM(NUMBER_TO_VSTRING(GENERATED_TYPE,"*",ERR,ERROR))// &
+            localError="The specified generated mesh mesh type of "//TRIM(NumberToVString(meshType,"*",err,error))// &
               & " is invalid."
-            CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+            CALL FlagError(localError,err,error,*999)
           END SELECT
           !Finalise the new generated mesh type
-          SELECT CASE(OLD_GENERATED_TYPE)
+          SELECT CASE(oldMeshType)
           CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
-            CALL GENERATED_MESH_REGULAR_FINALISE(GENERATED_MESH%REGULAR_MESH,ERR,ERROR,*999)
+            CALL GENERATED_MESH_REGULAR_FINALISE(generatedMesh%regularMesh,err,error,*999)
           CASE(GENERATED_MESH_POLAR_MESH_TYPE)
-            CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
+            CALL FlagError("Not implemented.",err,error,*999)
           CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
-            CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
+            CALL FlagError("Not implemented.",err,error,*999)
           CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
-            CALL GENERATED_MESH_CYLINDER_FINALISE(GENERATED_MESH%CYLINDER_MESH,ERR,ERROR,*999)
+            CALL GENERATED_MESH_CYLINDER_FINALISE(generatedMesh%cylinderMesh,err,error,*999)
           CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
-            CALL GENERATED_MESH_ELLIPSOID_FINALISE(GENERATED_MESH%ELLIPSOID_MESH,ERR,ERROR,*999)
+            CALL GENERATED_MESH_ELLIPSOID_FINALISE(generatedMesh%ellipsoidMesh,err,error,*999)
           CASE DEFAULT
-            LOCAL_ERROR="The generated mesh mesh type of "//TRIM(NUMBER_TO_VSTRING(OLD_GENERATED_TYPE,"*",ERR,ERROR))// &
+            localError="The generated mesh mesh type of "//TRIM(NumberToVString(oldMeshType,"*",err,error))// &
               & " is invalid."
-            CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+            CALL FlagError(localError,err,error,*999)
           END SELECT
         ENDIF
       ENDIF
     ELSE
-      CALL FLAG_ERROR("Generated mesh is not associated.",ERR,ERROR,*999)
+      CALL FlagError("Generated mesh is not associated.",err,error,*999)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_TYPE_SET")
+    CALL Exits("GeneratedMeshTypeSet")
     RETURN
-999 CALL ERRORS("GENERATED_MESH_TYPE_SET",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_TYPE_SET")
+999 CALL Errors("GeneratedMeshTypeSet",err,error)
+    CALL Exits("GeneratedMeshTypeSet")
     RETURN 1
-  END SUBROUTINE GENERATED_MESH_TYPE_SET
+  END SUBROUTINE GeneratedMeshTypeSet
 
   !
   !================================================================================================================================
   !
 
-  !>Finds and returns in generated mesh a pointer to that identified by USER_NUMBER in the given list of GENERATED_MESHES.
-  !>If no generated mesh with that number exists GENERATED_MESH is left nullified.
-  SUBROUTINE GENERATED_MESH_USER_NUMBER_FIND_GENERIC(USER_NUMBER,GENERATED_MESHES,GENERATED_MESH,ERR,ERROR,*)
+  !>Finds and returns in generated mesh a pointer to that identified by userNumber in the given list of generatedMeshes.
+  !>If no generated mesh with that number exists generatedMesh is left nullified.
+  SUBROUTINE GeneratedMeshUserNumberFindGeneric(userNumber,generatedMeshes,generatedMesh,err,error,*)
 
     !Argument variables
-    INTEGER(INTG), INTENT(IN) :: USER_NUMBER !<The user number of the mesh to find
-    TYPE(GENERATED_MESHES_TYPE), POINTER :: GENERATED_MESHES !<A pointer to the generated meshes to find the user number in
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<On return, a pointer to the generated mesh of the specified user number. In no generated mesh with the specified user number exists the pointer is returned NULL.
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    INTEGER(INTG), INTENT(IN) :: userNumber !<The user number of the mesh to find
+    TYPE(GeneratedMeshesType), POINTER :: generatedMeshes !<A pointer to the generated meshes to find the user number in
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<On return, a pointer to the generated mesh of the specified user number. In no generated mesh with the specified user number exists the pointer is returned NULL.
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
-    INTEGER(INTG) :: generated_mesh_idx
+    INTEGER(INTG) :: generatedMeshIdx
 
-    CALL ENTERS("GENERATED_MESH_USER_NUMBER_FIND_GENERIC",ERR,ERROR,*999)
+    CALL Enters("GeneratedMeshUserNumberFindGeneric",err,error,*999)
 
-    IF(ASSOCIATED(GENERATED_MESHES)) THEN
-      IF(ASSOCIATED(GENERATED_MESH)) THEN
-        CALL FLAG_ERROR("Generated mesh is already associated.",ERR,ERROR,*999)
+    IF(ASSOCIATED(generatedMeshes)) THEN
+      IF(ASSOCIATED(generatedMesh)) THEN
+        CALL FlagError("Generated mesh is already associated.",err,error,*999)
       ELSE
-        NULLIFY(GENERATED_MESH)
-        generated_mesh_idx=1
-        DO WHILE(generated_mesh_idx<=GENERATED_MESHES%NUMBER_OF_GENERATED_MESHES.AND..NOT.ASSOCIATED(GENERATED_MESH))
-          IF(GENERATED_MESHES%GENERATED_MESHES(generated_mesh_idx)%PTR%USER_NUMBER==USER_NUMBER) THEN
-            GENERATED_MESH=>GENERATED_MESHES%GENERATED_MESHES(generated_mesh_idx)%PTR
+        NULLIFY(generatedMesh)
+        generatedMeshIdx=1
+        DO WHILE(generatedMeshIdx<=generatedMeshes%numberOfGeneratedMeshes.AND..NOT.ASSOCIATED(generatedMesh))
+          IF(generatedMeshes%generatedMeshes(generatedMeshIdx)%PTR%userNumber==userNumber) THEN
+            generatedMesh=>generatedMeshes%generatedMeshes(generatedMeshIdx)%PTR
             EXIT
           ELSE
-            generated_mesh_idx=generated_mesh_idx+1
+            generatedMeshIdx=generatedMeshIdx+1
           ENDIF
         ENDDO
       ENDIF
     ELSE
-      CALL FLAG_ERROR("Generated meshes is not associated.",ERR,ERROR,*999)
+      CALL FlagError("Generated meshes is not associated.",err,error,*999)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_USER_NUMBER_FIND_GENERIC")
+    CALL Exits("GeneratedMeshUserNumberFindGeneric")
     RETURN
-999 CALL ERRORS("GENERATED_MESH_USER_NUMBER_FIND_GENERIC",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_USER_NUMBER_FIND_GENERIC")
+999 CALL Errors("GeneratedMeshUserNumberFindGeneric",err,error)
+    CALL Exits("GeneratedMeshUserNumberFindGeneric")
     RETURN 1
-  END SUBROUTINE GENERATED_MESH_USER_NUMBER_FIND_GENERIC
+  END SUBROUTINE GeneratedMeshUserNumberFindGeneric
 
   !
   !================================================================================================================================
   !
 
-  !>Finds and returns in generated mesh a pointer to that identified by USER_NUMBER in the given INTERFACE.
-  !>If no generated mesh with that number exists GENERATED MESH is left nullified.
-  SUBROUTINE GENERATED_MESH_USER_NUMBER_FIND_INTERFACE(USER_NUMBER,INTERFACE,GENERATED_MESH,ERR,ERROR,*)
+  !>Finds and returns in generated mesh a pointer to that identified by userNumber in the given interface.
+  !>If no generated mesh with that number exists generatedMesh is left nullified.
+  SUBROUTINE GeneratedMeshUserNumberFindInterface(userNumber,interface,generatedMesh,err,error,*)
 
     !Argument variables
-    INTEGER(INTG), INTENT(IN) :: USER_NUMBER !<The user number of the mesh to find
-    TYPE(INTERFACE_TYPE), POINTER :: INTERFACE !<A pointer to the interface containing the generated mesh
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<On return, a pointer to the generated mesh of the specified user number. In no generated mesh with the specified user number exists the pointer is returned NULL.
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    INTEGER(INTG), INTENT(IN) :: userNumber !<The user number of the mesh to find
+    TYPE(INTERFACE_TYPE), POINTER :: interface !<A pointer to the interface containing the generated mesh
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<On return, a pointer to the generated mesh of the specified user number. In no generated mesh with the specified user number exists the pointer is returned NULL.
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
 
-    CALL ENTERS("GENERATED_MESH_USER_NUMBER_FIND_INTERFACE",ERR,ERROR,*999)
+    CALL Enters("GeneratedMeshUserNumberFindInterface",err,error,*999)
 
-    IF(ASSOCIATED(INTERFACE)) THEN
-      CALL GENERATED_MESH_USER_NUMBER_FIND_GENERIC(USER_NUMBER,INTERFACE%GENERATED_MESHES,GENERATED_MESH,ERR,ERROR,*999)
+    IF(ASSOCIATED(interface)) THEN
+      CALL GeneratedMeshUserNumberFindGeneric(userNumber,interface%GENERATED_MESHES,generatedMesh,err,error,*999)
     ELSE
-      CALL FLAG_ERROR("Interface is not associated.",ERR,ERROR,*999)
+      CALL FlagError("Interface is not associated.",err,error,*999)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_USER_NUMBER_FIND_INTERFACE")
+    CALL Exits("GeneratedMeshUserNumberFindInterface")
     RETURN
-999 CALL ERRORS("GENERATED_MESH_USER_NUMBER_FIND_INTERFACE",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_USER_NUMBER_FIND_INTERFACE")
+999 CALL Errors("GeneratedMeshUserNumberFindInterface",err,error)
+    CALL Exits("GeneratedMeshUserNumberFindInterface")
     RETURN 1
-  END SUBROUTINE GENERATED_MESH_USER_NUMBER_FIND_INTERFACE
+  END SUBROUTINE GeneratedMeshUserNumberFindInterface
 
   !
   !================================================================================================================================
   !
 
-  !>Finds and returns in generated mesh a pointer to that identified by USER_NUMBER in the given REGION.
-  !>If no generated mesh with that number exists GENERATED MESH is left nullified.
-  SUBROUTINE GENERATED_MESH_USER_NUMBER_FIND_REGION(USER_NUMBER,REGION,GENERATED_MESH,ERR,ERROR,*)
+  !>Finds and returns in generated mesh a pointer to that identified by userNumber in the given region.
+  !>If no generated mesh with that number exists generatedMesh is left nullified.
+  SUBROUTINE GeneratedMeshUserNumberFindRegion(userNumber,region,generatedMesh,err,error,*)
 
     !Argument variables
-    INTEGER(INTG), INTENT(IN) :: USER_NUMBER !<The user number of the mesh to find
-    TYPE(REGION_TYPE), POINTER :: REGION !<A pointer to the region containing the generated mesh
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<On return, a pointer to the generated mesh of the specified user number. In no generated mesh with the specified user number exists the pointer is returned NULL.
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    INTEGER(INTG), INTENT(IN) :: userNumber !<The user number of the mesh to find
+    TYPE(REGION_TYPE), POINTER :: region !<A pointer to the region containing the generated mesh
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<On return, a pointer to the generated mesh of the specified user number. In no generated mesh with the specified user number exists the pointer is returned NULL.
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
 
-    CALL ENTERS("GENERATED_MESH_USER_NUMBER_FIND_REGION",ERR,ERROR,*999)
+    CALL Enters("GeneratedMeshUserNumberFindRegion",err,error,*999)
 
-    IF(ASSOCIATED(REGION)) THEN
-      CALL GENERATED_MESH_USER_NUMBER_FIND_GENERIC(USER_NUMBER,REGION%GENERATED_MESHES,GENERATED_MESH,ERR,ERROR,*999)
+    IF(ASSOCIATED(region)) THEN
+      CALL GeneratedMeshUserNumberFindGeneric(userNumber,region%GENERATED_MESHES,generatedMesh,err,error,*999)
     ELSE
-      CALL FLAG_ERROR("Region is not associated.",ERR,ERROR,*999)
+      CALL FlagError("Region is not associated.",err,error,*999)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_USER_NUMBER_FIND_REGION")
+    CALL Exits("GeneratedMeshUserNumberFindRegion")
     RETURN
-999 CALL ERRORS("GENERATED_MESH_USER_NUMBER_FIND_REGION",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_USER_NUMBER_FIND_REGION")
+999 CALL Errors("GeneratedMeshUserNumberFindRegion",err,error)
+    CALL Exits("GeneratedMeshUserNumberFindRegion")
     RETURN 1
 
-  END SUBROUTINE GENERATED_MESH_USER_NUMBER_FIND_REGION
+  END SUBROUTINE GeneratedMeshUserNumberFindRegion
 
   !
   !================================================================================================================================
   !
 
   !>Finalises all generated meshes and deallocates all memory.
-  SUBROUTINE GENERATED_MESHES_FINALISE(GENERATED_MESHES,ERR,ERROR,*)
+  SUBROUTINE GeneratedMeshesFinalise(generatedMeshes,err,error,*)
 
     !Argument variables
-    TYPE(GENERATED_MESHES_TYPE), POINTER :: GENERATED_MESHES !<A pointer to the generated meshes to finalise
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    TYPE(GeneratedMeshesType), POINTER :: generatedMeshes !<A pointer to the generated meshes to finalise
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh
 
-    CALL ENTERS("GENERATED_MESHES_FINALISE",ERR,ERROR,*999)
+    CALL Enters("GeneratedMeshesFinalise",err,error,*999)
 
-    IF(ASSOCIATED(GENERATED_MESHES)) THEN
-      DO WHILE(GENERATED_MESHES%NUMBER_OF_GENERATED_MESHES>0)
-        GENERATED_MESH=>GENERATED_MESHES%GENERATED_MESHES(1)%PTR
-        CALL GENERATED_MESH_DESTROY(GENERATED_MESH,ERR,ERROR,*999)
-      ENDDO !generated_mesh_idx
-      DEALLOCATE(GENERATED_MESHES)
+    IF(ASSOCIATED(generatedMeshes)) THEN
+      DO WHILE(generatedMeshes%numberOfGeneratedMeshes>0)
+        generatedMesh=>generatedMeshes%generatedMeshes(1)%ptr
+        CALL GeneratedMeshDestroy(generatedMesh,err,error,*999)
+      ENDDO !generatedMeshIdx
+      DEALLOCATE(generatedMeshes)
     ENDIF
 
-    CALL EXITS("GENERATED_MESHES_FINALISE")
+    CALL Exits("GeneratedMeshesFinalise")
     RETURN
-999 CALL ERRORS("GENERATED_MESHES_FINALISE",ERR,ERROR)
-    CALL EXITS("GENERATED_MESHES_FINALISE")
+999 CALL Errors("GeneratedMeshesFinalise",err,error)
+    CALL Exits("GeneratedMeshesFinalise")
     RETURN 1
 
-  END SUBROUTINE GENERATED_MESHES_FINALISE
+  END SUBROUTINE GeneratedMeshesFinalise
 
   !
   !================================================================================================================================
   !
 
   !>Intialises all generated meshes.
-  SUBROUTINE GENERATED_MESHES_INITIALISE_GENERIC(GENERATED_MESHES,ERR,ERROR,*)
+  SUBROUTINE GeneratedMeshesInitialiseGeneric(generatedMeshes,err,error,*)
 
     !Argument variables
-    TYPE(GENERATED_MESHES_TYPE), POINTER :: GENERATED_MESHES !<A pointer to the generated meshes to initialise
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    TYPE(GeneratedMeshesType), POINTER :: generatedMeshes !<A pointer to the generated meshes to initialise
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
-    INTEGER(INTG) :: DUMMY_ERR
-    TYPE(VARYING_STRING) :: DUMMY_ERROR
+    INTEGER(INTG) :: dummyErr
+    TYPE(VARYING_STRING) :: dummyError
 
-    CALL ENTERS("GENERATED_MESHES_INITIALISE_GENERIC",ERR,ERROR,*998)
+    CALL Enters("GeneratedMeshesInitialiseGeneric",err,error,*998)
 
-    IF(ASSOCIATED(GENERATED_MESHES)) THEN
-      CALL FLAG_ERROR("Generated meshes is already associated.",ERR,ERROR,*998)
+    IF(ASSOCIATED(generatedMeshes)) THEN
+      CALL FlagError("Generated meshes is already associated.",err,error,*998)
     ELSE
-      ALLOCATE(GENERATED_MESHES,STAT=ERR)
-      IF(ERR/=0) CALL FLAG_ERROR("Generated meshes is not associated.",ERR,ERROR,*999)
-      GENERATED_MESHES%NUMBER_OF_GENERATED_MESHES=0
-      NULLIFY(GENERATED_MESHES%GENERATED_MESHES)
-      NULLIFY(GENERATED_MESHES%REGION)
-      NULLIFY(GENERATED_MESHES%INTERFACE)
+      ALLOCATE(generatedMeshes,STAT=err)
+      IF(err/=0) CALL FlagError("Generated meshes is not associated.",err,error,*999)
+      generatedMeshes%numberOfGeneratedMeshes=0
+      NULLIFY(generatedMeshes%generatedMeshes)
+      NULLIFY(generatedMeshes%region)
+      NULLIFY(generatedMeshes%interface)
     ENDIF
 
-    CALL EXITS("GENERATED_MESHES_INITIALISE_GENERIC")
+    CALL Exits("GeneratedMeshesInitialiseGeneric")
     RETURN
-999 CALL GENERATED_MESHES_FINALISE(GENERATED_MESHES,DUMMY_ERR,DUMMY_ERROR,*998)
-998 CALL ERRORS("GENERATED_MESHES_INITIALISE_GENERIC",ERR,ERROR)
-    CALL EXITS("GENERATED_MESHES_INITIALISE_GENERIC")
+999 CALL GeneratedMeshesFinalise(generatedMeshes,dummyErr,dummyError,*998)
+998 CALL Errors("GeneratedMeshesInitialiseGeneric",err,error)
+    CALL Exits("GeneratedMeshesInitialiseGeneric")
     RETURN 1
-  END SUBROUTINE GENERATED_MESHES_INITIALISE_GENERIC
+  END SUBROUTINE GeneratedMeshesInitialiseGeneric
 
   !
   !================================================================================================================================
   !
 
   !>Intialises the generated meshes for an interface.
-  SUBROUTINE GENERATED_MESHES_INITIALISE_INTERFACE(INTERFACE,ERR,ERROR,*)
+  SUBROUTINE GeneratedMeshesInitialiseInterface(interface,err,error,*)
 
     !Argument variables
-    TYPE(INTERFACE_TYPE), POINTER :: INTERFACE !<A pointer to the interface to initialise the generated meshes for.
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    TYPE(INTERFACE_TYPE), POINTER :: interface !<A pointer to the interface to initialise the generated meshes for.
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
 
-    CALL ENTERS("GENERATED_MESHES_INITIALISE_INTERFACE",ERR,ERROR,*999)
+    CALL Enters("GeneratedMeshesInitialiseInterface",err,error,*999)
 
-    IF(ASSOCIATED(INTERFACE)) THEN
-      IF(ASSOCIATED(INTERFACE%GENERATED_MESHES)) THEN
-        CALL FLAG_ERROR("Interface generated meshes is already associated.",ERR,ERROR,*999)
+    IF(ASSOCIATED(interface)) THEN
+      IF(ASSOCIATED(interface%GENERATED_MESHES)) THEN
+        CALL FlagError("Interface generated meshes is already associated.",err,error,*999)
       ELSE
-        CALL GENERATED_MESHES_INITIALISE_GENERIC(INTERFACE%GENERATED_MESHES,ERR,ERROR,*999)
-        INTERFACE%GENERATED_MESHES%INTERFACE=>INTERFACE
+        CALL GeneratedMeshesInitialiseGeneric(interface%GENERATED_MESHES,err,error,*999)
+        interface%GENERATED_MESHES%interface=>interface
       ENDIF
     ELSE
-      CALL FLAG_ERROR("Interface is not associated.",ERR,ERROR,*999)
+      CALL FlagError("Interface is not associated.",err,error,*999)
     ENDIF
 
-    CALL EXITS("GENERATED_MESHES_INITIALISE_INTERFACE")
+    CALL Exits("GeneratedMeshesInitialiseInterface")
     RETURN
-999 CALL ERRORS("GENERATED_MESHES_INITIALISE_INTERFACE",ERR,ERROR)
-    CALL EXITS("GENERATED_MESHES_INITIALISE_INTERFACE")
+999 CALL Errors("GeneratedMeshesInitialiseInterface",err,error)
+    CALL Exits("GeneratedMeshesInitialiseInterface")
     RETURN 1
-  END SUBROUTINE GENERATED_MESHES_INITIALISE_INTERFACE
+  END SUBROUTINE GeneratedMeshesInitialiseInterface
 
   !
   !================================================================================================================================
   !
 
   !>Intialises the generated meshes for a region.
-  SUBROUTINE GENERATED_MESHES_INITIALISE_REGION(REGION,ERR,ERROR,*)
+  SUBROUTINE GeneratedMeshesInitialiseRegion(region,err,error,*)
 
     !Argument variables
-    TYPE(REGION_TYPE), POINTER :: REGION !<A pointer to the region
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    TYPE(REGION_TYPE), POINTER :: region !<A pointer to the region
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
 
-    CALL ENTERS("GENERATED_MESHES_INITIALISE_REGION",ERR,ERROR,*999)
+    CALL Enters("GeneratedMeshesInitialiseRegion",err,error,*999)
 
-    IF(ASSOCIATED(REGION)) THEN
-      IF(ASSOCIATED(REGION%GENERATED_MESHES)) THEN
-        CALL FLAG_ERROR("Region generated meshes is already associated.",ERR,ERROR,*999)
+    IF(ASSOCIATED(region)) THEN
+      IF(ASSOCIATED(region%GENERATED_MESHES)) THEN
+        CALL FlagError("Region generated meshes is already associated.",err,error,*999)
       ELSE
-        CALL GENERATED_MESHES_INITIALISE_GENERIC(REGION%GENERATED_MESHES,ERR,ERROR,*999)
-        REGION%GENERATED_MESHES%REGION=>REGION
+        CALL GeneratedMeshesInitialiseGeneric(region%GENERATED_MESHES,err,error,*999)
+        region%GENERATED_MESHES%region=>region
       ENDIF
     ELSE
-      CALL FLAG_ERROR("Region is not associated.",ERR,ERROR,*999)
+      CALL FlagError("Region is not associated.",err,error,*999)
     ENDIF
 
-    CALL EXITS("GENERATED_MESHES_INITIALISE_REGION")
+    CALL Exits("GeneratedMeshesInitialiseRegion")
     RETURN
-999 CALL ERRORS("GENERATED_MESHES_INITIALISE_REGION",ERR,ERROR)
-    CALL EXITS("GENERATED_MESHES_INITIALISE_REGION")
+999 CALL Errors("GeneratedMeshesInitialiseRegion",err,error)
+    CALL Exits("GeneratedMeshesInitialiseRegion")
     RETURN 1
-  END SUBROUTINE GENERATED_MESHES_INITIALISE_REGION
+  END SUBROUTINE GeneratedMeshesInitialiseRegion
 
   !
   !================================================================================================================================
   !
 
   !>Updates the geometric field parameters from the initial nodal positions of the mesh. \see OPENCMISS::CMISSGeneratedMeshGeometricParametersCalculate
-  SUBROUTINE GENERATED_MESH_GEOMETRIC_PARAMETERS_CALCULATE(FIELD,GENERATED_MESH,ERR,ERROR,*)
+  SUBROUTINE GeneratedMeshGeometricParametersCalculate(generatedMesh,geometricField,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to update the geometric parameters for
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<The mesh which is generated by the generated mesh \todo is this necessary???
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<The mesh which is generated by the generated mesh \todo is this necessary???
+    TYPE(FIELD_TYPE), POINTER :: geometricField !<A pointer to the field to update the geometric parameters for
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
-    TYPE(VARYING_STRING) :: LOCAL_ERROR
+    TYPE(REGION_TYPE), POINTER :: meshRegion,fieldRegion
+    TYPE(VARYING_STRING) :: localError
 
-    CALL ENTERS("GENERATED_MESH_GEOMETRIC_PARAMETERS_CALCULATE",ERR,ERROR,*999)
+    NULLIFY(meshRegion)
+    NULLIFY(fieldRegion)
 
-    IF(ASSOCIATED(FIELD)) THEN
-      IF(FIELD%FIELD_FINISHED) THEN
-        IF(ASSOCIATED(GENERATED_MESH)) THEN
-          SELECT CASE(GENERATED_MESH%GENERATED_TYPE)
-          CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
-            CALL GENERATED_MESH_REGULAR_GEOMETRIC_PARAMETERS_CALCULATE(GENERATED_MESH%REGULAR_MESH, &
-                & FIELD,ERR,ERROR,*999)
-          CASE(GENERATED_MESH_POLAR_MESH_TYPE)
-            CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
-          CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
-            CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
-          CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
-            CALL GENERATED_MESH_CYLINDER_GEOMETRIC_PARAMETERS_CALCULATE(GENERATED_MESH%CYLINDER_MESH, &
-                & FIELD,ERR,ERROR,*999)
-          CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
-            CALL GENERATED_MESH_ELLIPSOID_GEOMETRIC_PARAMETERS_CALCULATE(GENERATED_MESH%ELLIPSOID_MESH, &
-                & FIELD,ERR,ERROR,*999)
-          CASE DEFAULT
-            LOCAL_ERROR="The generated mesh mesh type of "// &
-              & TRIM(NUMBER_TO_VSTRING(GENERATED_MESH%GENERATED_TYPE,"*",ERR,ERROR))// &
-              & " is invalid."
-            CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
-            CALL FLAG_ERROR("Generated mesh type is either invalid or not implemented.",ERR,ERROR,*999)
-          END SELECT
+    CALL Enters("GeneratedMeshGeometricParametersCalculate",err,error,*999)
+
+    IF(ASSOCIATED(generatedMesh)) THEN
+      IF(generatedMesh%generatedMeshFinished) THEN
+        IF(ASSOCIATED(geometricField)) THEN
+          IF(geometricField%FIELD_FINISHED) THEN
+            !Check that the field is a geometric field.
+            IF(geometricField%TYPE==FIELD_GEOMETRIC_TYPE) THEN
+              !Check the mesh and field have the same region
+              CALL GeneratedMeshRegionGet(generatedMesh,meshRegion,err,error,*999)
+              CALL FIELD_REGION_GET(geometricField,fieldRegion,err,error,*999)
+              IF(ASSOCIATED(meshRegion,fieldRegion)) THEN
+                !Check that the geometric interpolation types are nodally based.
+                CALL FIELD_VARIABLE_GET(geometricField,FIELD_U_VARIABLE_TYPE,fieldVariable,err,error,*999)
+                DO componentIdx=1,fieldVariable%NUMBER_OF_COMPONENTS
+                  IF(fieldVariable%components(componentIdx)%INTERPOLATION_TYPE/=FIELD_NODE_BASED_INTERPOLATION) THEN
+                    localError="Component number "//TRIM(NumberToVString(componentIdx,"*",err,error))// &
+                      & " of geometric field number "//TRIM(NumberToVString(geometricField%USER_NUMBER,"*",err,error))// &
+                      & " is not nodally interpolated."
+                    CALL FlagError(localError,err,error,*999)
+                  ENDIF
+                ENDDO !componentIdx
+                !End of checks, calculate the geometric parameters for each mesh type
+                SELECT CASE(generatedMesh%generatedType)
+                CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
+                  CALL GeneratedMeshRegularGeometricParametersCalculate(generatedMesh%regularMesh,geometricField,err,error,*999)
+                CASE(GENERATED_MESH_POLAR_MESH_TYPE)
+                  CALL FlagError("Not implemented.",err,error,*999)
+                CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
+                  CALL FlagError("Not implemented.",err,error,*999)
+                CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
+                  CALL GeneratedMeshCylinderGeometricParametersCalculate(generatedMesh%cylinderMesh,geometricField,err,error,*999)
+                CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
+                  CALL GENERATED_MESH_ELLIPSOID_GEOMETRIC_PARAMETERS_CALCULATE(generatedMesh%ellipsoidMesh,geometricField,err,error,*999)
+                CASE DEFAULT
+                  localError="The generated mesh mesh type of "// &
+                    & TRIM(NumberToVString(generatedMesh%generatedType,"*",err,error))// &
+                    & " is invalid."
+                  CALL FlagError(localError,err,error,*999)
+                END SELECT
+              ELSE
+                localError="The generated mesh region user number of "// &
+                  & TRIM(NumberToVString(meshRegion%USER_NUMBER,"*",err,error))// &
+                  & " does not match the geometric field region user number of "//&
+                  & TRIM(NumberToVString(fieldRegion%USER_NUMBER,"*",err,error))//"."
+                CALL FlagError(localErr,err,error,*999)
+              ENDIF
+            ELSE
+              localError="Field number "//TRIM(NumberToVString(geometricField%USER_NUMBER,"*",err,error))// &
+                & " is not a geometric field."
+              CALL FlagError(localError,err,error,*999)
+            ENDIF
+          ELSE
+            localError="Field number "//TRIM(NumberToVString(geometricField%USER_NUMBER,"*",err,error))//" has not been finished."
+            CALL FlagError(localError,err,error,*999)
+          ENDIF
         ELSE
-          CALL FLAG_ERROR("Generated mesh is not associated.",ERR,ERROR,*999)
+          CALL FlagError("Field is not associated.",err,error,*999)
         ENDIF
       ELSE
-        LOCAL_ERROR="Field number "//TRIM(NUMBER_TO_VSTRING(FIELD%USER_NUMBER,"*",ERR,ERROR))//" has not been finished."
-        CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+          CALL FlagError("Generated mesh has not been finished.",err,error,*999)
       ENDIF
     ELSE
-      CALL FLAG_ERROR("Field is not associated.",ERR,ERROR,*999)
+      CALL FlagError("Generated mesh is not associated.",err,error,*999)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_GEOMETRIC_PARAMETERS_CALCULATE")
+    CALL Exits("GeneratedMeshGeometricParametersCalculate")
     RETURN
-999 CALL ERRORS("GENERATED_MESH_GEOMETRIC_PARAMETERS_CALCULATE",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_GEOMETRIC_PARAMETERS_CALCULATE")
+999 CALL Errors("GeneratedMeshGeometricParametersCalculate",err,error)
+    CALL Exits("GeneratedMeshGeometricParametersCalculate")
     RETURN 1
-  END SUBROUTINE GENERATED_MESH_GEOMETRIC_PARAMETERS_CALCULATE
+    
+  END SUBROUTINE GeneratedMeshGeometricParametersCalculate
 
   !
   !================================================================================================================================
   !
 
   !>Returns the region for a generated mesh accounting for regions and interfaces
-  SUBROUTINE GENERATED_MESH_REGION_GET(GENERATED_MESH,REGION,ERR,ERROR,*)
+  SUBROUTINE GeneratedMeshRegionGet(generatedMesh,region,err,error,*)
 
     !Argument variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<A pointer to the generated mesh to get the region for
-    TYPE(REGION_TYPE), POINTER :: REGION !<On return, the generated meshes region. Must not be associated on entry.
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh to get the region for
+    TYPE(REGION_TYPE), POINTER :: region !<On return, the generated meshes region. Must not be associated on entry.
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
-    TYPE(INTERFACE_TYPE), POINTER :: INTERFACE
-    TYPE(REGION_TYPE), POINTER :: PARENT_REGION
-    TYPE(VARYING_STRING) :: LOCAL_ERROR
+    TYPE(INTERFACE_TYPE), POINTER :: interface
+    TYPE(REGION_TYPE), POINTER :: parentRegion
+    TYPE(VARYING_STRING) :: localError
 
-    CALL ENTERS("GENERATED_MESH_REGION_GET",ERR,ERROR,*999)
+    CALL Enters("GeneratedMeshRegionGet",err,error,*999)
 
-    IF(ASSOCIATED(GENERATED_MESH)) THEN
-      IF(ASSOCIATED(REGION)) THEN
-        CALL FLAG_ERROR("Region is already associated.",ERR,ERROR,*999)
+    IF(ASSOCIATED(generatedMesh)) THEN
+      IF(ASSOCIATED(region)) THEN
+        CALL FlagError("Region is already associated.",err,error,*999)
       ELSE
-        NULLIFY(REGION)
-        NULLIFY(INTERFACE)
-        REGION=>GENERATED_MESH%REGION
-        IF(.NOT.ASSOCIATED(REGION)) THEN
-          INTERFACE=>GENERATED_MESH%INTERFACE
-          IF(ASSOCIATED(INTERFACE)) THEN
-            PARENT_REGION=>INTERFACE%PARENT_REGION
-            IF(ASSOCIATED(PARENT_REGION)) THEN
-              REGION=>PARENT_REGION
+        NULLIFY(region)
+        NULLIFY(interface)
+        region=>generatedMesh%region
+        IF(.NOT.ASSOCIATED(region)) THEN
+          interface=>generatedMesh%interface
+          IF(ASSOCIATED(interface)) THEN
+            parentRegion=>interface%PARENT_REGION
+            IF(ASSOCIATED(parentRegion)) THEN
+              region=>parentRegion
             ELSE
-              LOCAL_ERROR="The parent region not associated for generated mesh number "// &
-                & TRIM(NUMBER_TO_VSTRING(GENERATED_MESH%USER_NUMBER,"*",ERR,ERROR))//" of interface number "// &
-                & TRIM(NUMBER_TO_VSTRING(INTERFACE%USER_NUMBER,"*",ERR,ERROR))//"."
-              CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+              localError="The parent region not associated for generated mesh number "// &
+                & TRIM(NumberToVString(generatedMesh%userNumber,"*",err,error))//" of interface number "// &
+                & TRIM(NumberToVString(interface%USER_NUMBER,"*",err,error))//"."
+              CALL FlagError(localError,err,error,*999)
             ENDIF
           ELSE
-            LOCAL_ERROR="The region or interface is not associated for generated mesh number "// &
-              & TRIM(NUMBER_TO_VSTRING(GENERATED_MESH%USER_NUMBER,"*",ERR,ERROR))//"."
-            CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+            localError="The region or interface is not associated for generated mesh number "// &
+              & TRIM(NumberToVString(generatedMesh%userNumber,"*",err,error))//"."
+            CALL FlagError(localError,err,error,*999)
           ENDIF
         ENDIF
       ENDIF
     ELSE
-      CALL FLAG_ERROR("Generated mesh is not associated.",ERR,ERROR,*999)
+      CALL FlagError("Generated mesh is not associated.",err,error,*999)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_REGION_GET")
+    CALL Exits("GeneratedMeshRegionGet")
     RETURN
-999 CALL ERRORS("GENERATED_MESH_REGION_GET",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_REGION_GET")
+999 CALL Errors("GeneratedMeshRegionGet",err,error)
+    CALL Exits("GeneratedMeshRegionGet")
     RETURN 1
-  END SUBROUTINE GENERATED_MESH_REGION_GET
+    
+  END SUBROUTINE GeneratedMeshRegionGet
 
   !
   !
@@ -3343,293 +3487,273 @@ CONTAINS
   !
 
   !>Updates the geometric field parameters from the initial nodal positions of the regular mesh.
-  SUBROUTINE GENERATED_MESH_REGULAR_GEOMETRIC_PARAMETERS_CALCULATE(REGULAR_MESH,FIELD,ERR,ERROR,*)
+  SUBROUTINE GeneratedMeshRegularGeometricParametersCalculate(regularMesh,geometricField,err,error,*)
 
     !Argument variables
-    TYPE(GENERATED_MESH_REGULAR_TYPE), POINTER :: REGULAR_MESH !<A pointer to the regular mesh object
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to update the geometric parameters for
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    TYPE(GeneratedMeshRegularType), POINTER :: regularMesh !<A pointer to the regular mesh object
+    TYPE(FIELD_TYPE), POINTER :: geometricField !<A pointer to the field to update the geometric parameters for
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
 
     !Local variables
-    INTEGER(INTG) :: component_idx,derivative_idx, &
-      & component_node,MESH_COMPONENT, &
-      & node_idx,node_position_idx(3), &
-      & TOTAL_NUMBER_OF_NODES_XI(3),xi_idx,NODE_USER_NUMBER
-    REAL(DP) :: DELTA_COORD(3,3),MY_ORIGIN(3),VALUE
-    REAL(DP) :: DERIVATIVE_VALUES(MAXIMUM_GLOBAL_DERIV_NUMBER)
-    TYPE(COORDINATE_SYSTEM_TYPE), POINTER :: COORDINATE_SYSTEM
-    TYPE(DOMAIN_TYPE), POINTER :: DOMAIN
-    TYPE(DOMAIN_NODES_TYPE), POINTER :: DOMAIN_NODES
-    TYPE(FIELD_VARIABLE_COMPONENT_TYPE), POINTER :: FIELD_VARIABLE_COMPONENT
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: FIELD_VARIABLE
-    TYPE(VARYING_STRING) :: LOCAL_ERROR
-    LOGICAL :: NODE_EXISTS,GHOST_NODE
+    INTEGER(INTG) :: componentIdx,derivativeIdx,componentNode,meshComponent,nodeIdx,nodePositionIdx(3), &
+      & totalNumberOfNodesXi(3),xiIdx,nodeUserNumber
+    REAL(DP) :: deltaCoordinate(3,3),MY_ORIGIN(3),VALUE
+    REAL(DP) :: derivativeValues(MAXIMUM_GLOBAL_DERIV_NUMBER)
+    TYPE(COORDINATE_SYSTEM_TYPE), POINTER :: coordinateSystem
+    TYPE(DOMAIN_TYPE), POINTER :: domain
+    TYPE(DOMAIN_NODES_TYPE), POINTER :: domainNodes
+    TYPE(FIELD_VARIABLE_COMPONENT_TYPE), POINTER :: fieldVariableComponent
+    TYPE(FIELD_VARIABLE_TYPE), POINTER :: fieldVariable
+    TYPE(VARYING_STRING) :: localError
+    LOGICAL :: nodeExists,ghostNode
 
-    CALL ENTERS("GENERATED_MESH_REGULAR_GEOMETRIC_PARAMETERS_CALCULATE",ERR,ERROR,*999)
+    NULLIFY(coordinateSystem)
 
-    IF(ASSOCIATED(REGULAR_MESH)) THEN
-      IF(ASSOCIATED(FIELD)) THEN
-        NULLIFY(COORDINATE_SYSTEM)
-        CALL FIELD_COORDINATE_SYSTEM_GET(FIELD,COORDINATE_SYSTEM,ERR,ERROR,*999)
-        IF(COORDINATE_SYSTEM%TYPE==COORDINATE_RECTANGULAR_CARTESIAN_TYPE) THEN
+    CALL Enters("GeneratedMeshRegularGeometricParametersCalculate",err,error,*999)
 
-          MY_ORIGIN=0.0_DP
-          MY_ORIGIN(1:REGULAR_MESH%COORDINATE_DIMENSION)=REGULAR_MESH%ORIGIN(1:REGULAR_MESH%COORDINATE_DIMENSION)
-          DELTA_COORD=0.0_DP
-          TOTAL_NUMBER_OF_NODES_XI=1
-          IF(FIELD%TYPE==FIELD_GEOMETRIC_TYPE) THEN
-            FIELD_VARIABLE=>FIELD%VARIABLE_TYPE_MAP(FIELD_U_VARIABLE_TYPE)%PTR
-            IF(ASSOCIATED(FIELD_VARIABLE)) THEN
-              DO component_idx=1,FIELD_VARIABLE%NUMBER_OF_COMPONENTS
-                FIELD_VARIABLE_COMPONENT=>FIELD_VARIABLE%COMPONENTS(component_idx)
-                MESH_COMPONENT=FIELD_VARIABLE_COMPONENT%MESH_COMPONENT_NUMBER
-                IF(FIELD_VARIABLE_COMPONENT%INTERPOLATION_TYPE==FIELD_NODE_BASED_INTERPOLATION) THEN
-                  DO xi_idx=1,REGULAR_MESH%MESH_DIMENSION
-                    TOTAL_NUMBER_OF_NODES_XI(xi_idx)=(REGULAR_MESH%BASES(MESH_COMPONENT)% &
-                        & PTR%NUMBER_OF_NODES_XIC(xi_idx)-2)*REGULAR_MESH%NUMBER_OF_ELEMENTS_XI(xi_idx)+ &
-                        & REGULAR_MESH%NUMBER_OF_ELEMENTS_XI(xi_idx)+1
-                  ENDDO !xi_idx
-                  DO xi_idx=1,REGULAR_MESH%MESH_DIMENSION
-                    DELTA_COORD(1:REGULAR_MESH%COORDINATE_DIMENSION,xi_idx)= &
-                      & REGULAR_MESH%BASE_VECTORS(1:REGULAR_MESH%COORDINATE_DIMENSION,xi_idx)/ &
-                      & REAL(TOTAL_NUMBER_OF_NODES_XI(xi_idx)-1,DP)
-                  ENDDO !xi_idx
-                  SELECT CASE(FIELD%SCALINGS%SCALING_TYPE)
-                  CASE(FIELD_NO_SCALING,FIELD_UNIT_SCALING)
-                    DERIVATIVE_VALUES=0.0_DP
-                    IF(REGULAR_MESH%NUMBER_OF_ELEMENTS_XI(1)>0) THEN
-                      DERIVATIVE_VALUES(GLOBAL_DERIV_S1)= &
-                        & REGULAR_MESH%BASE_VECTORS(component_idx,1)/REGULAR_MESH%NUMBER_OF_ELEMENTS_XI(1)
-                    END IF
-                    IF(REGULAR_MESH%MESH_DIMENSION>1) THEN
-                      IF(REGULAR_MESH%NUMBER_OF_ELEMENTS_XI(2)>0) THEN
-                        DERIVATIVE_VALUES(GLOBAL_DERIV_S2)= &
-                          & REGULAR_MESH%BASE_VECTORS(component_idx,2)/REGULAR_MESH%NUMBER_OF_ELEMENTS_XI(2)
-                      END IF
-                    ENDIF
-                    IF(REGULAR_MESH%MESH_DIMENSION>2) THEN
-                      IF(REGULAR_MESH%NUMBER_OF_ELEMENTS_XI(3)>0) THEN
-                        DERIVATIVE_VALUES(GLOBAL_DERIV_S3)= &
-                          & REGULAR_MESH%BASE_VECTORS(component_idx,3)/REGULAR_MESH%NUMBER_OF_ELEMENTS_XI(3)
-                      END IF
-                    ENDIF
-                  CASE DEFAULT
-                    !Arc length or arithmetic mean scaling
-                    DERIVATIVE_VALUES=0.0_DP
-                    IF(REGULAR_MESH%NUMBER_OF_ELEMENTS_XI(1)>0) THEN
-                      DERIVATIVE_VALUES(GLOBAL_DERIV_S1)=REGULAR_MESH%BASE_VECTORS(component_idx,1)/ &
-                        & L2NORM(REGULAR_MESH%BASE_VECTORS(:,1))
-                    END IF
-                    IF(REGULAR_MESH%MESH_DIMENSION>1) THEN
-                      IF(REGULAR_MESH%NUMBER_OF_ELEMENTS_XI(2)>0) THEN
-                        DERIVATIVE_VALUES(GLOBAL_DERIV_S2)=REGULAR_MESH%BASE_VECTORS(component_idx,2)/ &
-                          & L2NORM(REGULAR_MESH%BASE_VECTORS(:,2))
-                      END IF
-                    ENDIF
-                    IF(REGULAR_MESH%MESH_DIMENSION>2) THEN
-                      IF(REGULAR_MESH%NUMBER_OF_ELEMENTS_XI(3)>0) THEN
-                        DERIVATIVE_VALUES(GLOBAL_DERIV_S3)=REGULAR_MESH%BASE_VECTORS(component_idx,3)/ &
-                          & L2NORM(REGULAR_MESH%BASE_VECTORS(:,3))
-                      END IF
-                    ENDIF
-                  END SELECT
-                  !Update geometric parameters in this computational domain only
-                  DOMAIN=>FIELD_VARIABLE_COMPONENT%DOMAIN
-                  DOMAIN_NODES=>DOMAIN%TOPOLOGY%NODES
-                  DO component_node=1,TOTAL_NUMBER_OF_NODES_XI(1)*TOTAL_NUMBER_OF_NODES_XI(2)*TOTAL_NUMBER_OF_NODES_XI(3)
-                    !Regular meshes with Lagrange/Hermite elements use different node numberings to other mesh types
-                    IF(REGULAR_MESH%BASES(MESH_COMPONENT)%PTR%TYPE==BASIS_LAGRANGE_HERMITE_TP_TYPE) THEN
-                      CALL GENERATED_MESH_REGULAR_COMPONENT_NODE_TO_USER_NUMBER(REGULAR_MESH%GENERATED_MESH,MESH_COMPONENT, &
-                        & component_node,NODE_USER_NUMBER,ERR,ERROR,*999)
-                    ELSE
-                      NODE_USER_NUMBER=COMPONENT_NODE_TO_USER_NUMBER(REGULAR_MESH%GENERATED_MESH,MESH_COMPONENT, &
-                        & component_node,ERR,ERROR)
-                    END IF
-                    CALL DOMAIN_TOPOLOGY_NODE_CHECK_EXISTS(FIELD_VARIABLE_COMPONENT%DOMAIN%TOPOLOGY, &
-                      & NODE_USER_NUMBER,NODE_EXISTS,node_idx,GHOST_NODE,ERR,ERROR,*999)
-                    IF(NODE_EXISTS.AND..NOT.GHOST_NODE) THEN
-                      node_position_idx(3)=(component_node-1)/(TOTAL_NUMBER_OF_NODES_XI(2)*TOTAL_NUMBER_OF_NODES_XI(1))+1
-                      node_position_idx(2)=MOD(component_node-1,TOTAL_NUMBER_OF_NODES_XI(2)*TOTAL_NUMBER_OF_NODES_XI(1))/ &
-                        & TOTAL_NUMBER_OF_NODES_XI(1)+1
-                      node_position_idx(1)=MOD(MOD(component_node-1,TOTAL_NUMBER_OF_NODES_XI(2)*TOTAL_NUMBER_OF_NODES_XI(1)), &
-                        & TOTAL_NUMBER_OF_NODES_XI(1))+1
-                      VALUE=0.0_DP
-                      DO xi_idx=1,REGULAR_MESH%MESH_DIMENSION
-                        VALUE=VALUE+REAL(node_position_idx(xi_idx)-1,DP)*DELTA_COORD(component_idx,xi_idx)
-                      ENDDO !xi_idx
-                      VALUE=MY_ORIGIN(component_idx)+VALUE
-                      CALL FIELD_PARAMETER_SET_UPDATE_NODE(FIELD,FIELD_U_VARIABLE_TYPE,FIELD_VALUES_SET_TYPE, &
-                        & 1,1,NODE_USER_NUMBER,component_idx,VALUE,ERR,ERROR,*999)
-                      !Set derivatives
-                      DO derivative_idx=2,DOMAIN_NODES%NODES(node_idx)%NUMBER_OF_DERIVATIVES
-                        CALL FIELD_PARAMETER_SET_UPDATE_NODE(FIELD,FIELD_U_VARIABLE_TYPE,FIELD_VALUES_SET_TYPE, &
-                          & 1,derivative_idx,NODE_USER_NUMBER,component_idx,DERIVATIVE_VALUES(derivative_idx),ERR,ERROR,*999)
-                      END DO !derivative_idx
-                    ENDIF !node_exists
-                  ENDDO !node_idx
-                ELSE
-                  LOCAL_ERROR="Component number "//TRIM(NUMBER_TO_VSTRING(component_idx,"*",ERR,ERROR))// &
-                    & " of field number "//TRIM(NUMBER_TO_VSTRING(FIELD%USER_NUMBER,"*",ERR,ERROR))// &
-                    & " does not have node based interpolation."
-                  CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
-                ENDIF
-              ENDDO !component_idx
+    IF(ASSOCIATED(regularMesh)) THEN
+      IF(ASSOCIATED(geometricField)) THEN
+        CALL GeneratedMeshCoordinateSystemGet(generatedMesh,coordinateSystem,err,error,*999)
+        CALL COORDINATE_SYSTEM_DIMENSION_GET(coordinateSystem,coordinateDimension,err,error,*999)
+        CALL COORDINATE_SYSTEM_TYPE_GET(coordinateSystem,coordinateType,err,error,*999)
+        IF(coordinateType==COORDINATE_RECTANGULAR_CARTESIAN_TYPE) THEN
+          deltaCoordinate=0.0_DP
+          totalNumberOfNodesXi=1
+          CALL FIELD_VARAIBLE_GET(geometricField,FIELD_U_VARIABLE_TYPE,fieldVariable,err,error,*999)
+          DO componentIdx=1,fieldVariable%NUMBER_OF_COMPONENTS
+            fieldVariableComponent=>fieldVariable%components(componentIdx)
+            meshComponent=fieldVariableComponent%MESH_COMPONENT_NUMBER
+            basis=>regularMesh%bases(meshComponent)%ptr
+            !Calculate the total number of nodes in each xi direction
+            DO xiIdx=1,regularMesh%meshDimension
+              totalNumberOfNodesXi(xiIdx)=(basis%NUMBER_OF_NODES_XIC(xiIdx)-2)*regularMesh%numberOfElementsXi(xiIdx)+ &
+                & regularMesh%numberOfElementsXi(xiIdx)+1
+            ENDDO !xiIdx
+            !Calculate delta
+            DO xiIdx=1,regularMesh%meshDimension
+              deltaCoordinate(1:coordinateDimension,xiIdx)=regularMesh%baseVectors(1:coordinateDimension,xiIdx)/ &
+                & REAL(totalNumberOfNodesXi(xiIdx)-1,DP)
+            ENDDO !xiIdx
+            derivativeValues=0.0_DP
+            CALL FIELD_SCALING_TYPE_GET(geometricField,scalingType,err,error,*999)
+            SELECT CASE(scalingType)
+            CASE(FIELD_NO_SCALING,FIELD_UNIT_SCALING)
+              IF(regularMesh%numberOfElementsXi(1)>0) THEN
+                derivativeValues(GLOBAL_DERIV_S1)=regularMesh%baseVectors(componentIdx,1)/regularMesh%numberOfElementsXi(1)
+              END IF
+              IF(regularMesh%meshDimension>1) THEN
+                IF(regularMesh%numberOfElementsXi(2)>0) THEN
+                  derivativeValues(GLOBAL_DERIV_S2)=regularMesh%baseVectors(componentIdx,2)/regularMesh%numberOfElementsXi(2)
+                END IF
+              ENDIF
+              IF(regularMesh%meshDimension>2) THEN
+                IF(regularMesh%numberOfElementsXi(3)>0) THEN
+                  derivativeValues(GLOBAL_DERIV_S3)=regularMesh%baseVectors(componentIdx,3)/regularMesh%numberOfElementsXi(3)
+                END IF
+              ENDIF
+            CASE(FIELD_ARC_LENGTH_SCALING,FIELD_ARITHMETIC_MEAN_SCALING, &
+              & FIELD_GEOMETRIC_MEAN_SCALING,FIELD_HARMONIC_MEAN_SCALING)
+              !Arc length scalings
+              IF(regularMesh%numberOfElementsXi(1)>0) THEN
+                derivativeValues(GLOBAL_DERIV_S1)=regularMesh%baseVectors(componentIdx,1)/L2Norm(regularMesh%baseVectors(:,1))
+              END IF
+              IF(regularMesh%meshDimension>1) THEN
+                IF(regularMesh%numberOfElementsXi(2)>0) THEN
+                  derivativeValues(GLOBAL_DERIV_S2)=regularMesh%baseVectors(componentIdx,2)/L2Norm(regularMesh%baseVectors(:,2))
+                END IF
+              ENDIF
+              IF(regularMesh%meshDimension>2) THEN
+                IF(regularMesh%numberOfElementsXi(3)>0) THEN
+                  derivativeValues(GLOBAL_DERIV_S3)=regularMesh%baseVectors(componentIdx,3)/L2Norm(regularMesh%baseVectors(:,3))
+                END IF
+              ENDIF
+            CASE DEFAULT
+              localError="The scaling type of "// &
+                & TRIM(NumberToVString(geometricField%SCALINGS%SCALING_TYPE,"*",err,error))// &
+                & " for geometric field number "//TRIM(NumberToVString(geometricField%USER_NUMBER,"*",err,error))// &
+                & " is invalid."
+              CALL FlagError(localError,err,error,*999)
+            END SELECT
+            !Update geometric parameters in this computational domain only
+            domain=>fieldVariableComponent%domain
+            domainNodes=>domain%TOPOLOGY%NODES
+            DO componentNode=1,totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)*totalNumberOfNodesXi(3)
+              !Regular meshes with Lagrange/Hermite elements use different node numberings to other mesh types
+              IF(regularMesh%bases(meshComponent)%ptr%TYPE==BASIS_LAGRANGE_HERMITE_TP_TYPE) THEN
+                CALL GENERATED_MESH_REGULAR_COMPONENT_NODE_TO_USER_NUMBER(regularMesh%generatedMesh,meshComponent, &
+                  & componentNode,nodeUserNumber,err,error,*999)
+              ELSE
+                nodeUserNumber=COMPONENT_NODE_TO_USER_NUMBER(regularMesh%GENERATED_MESH,MESH_COMPONENT, &
+                  & componentNode,err,error)
+              END IF
+              CALL DOMAIN_TOPOLOGY_NODE_CHECK_EXISTS(fieldVariableComponent%domain%topology,nodeUserNumber, &
+                nodeExists,nodeIdx,ghostNode,err,error,*999)
+              IF(nodeExists.AND..NOT.ghostNode) THEN
+                nodePositionIdx(3)=(componentNode-1)/(totalNumberOfNodesXi(2)*totalNumberOfNodesXi(1))+1
+                nodePositionIdx(2)=MOD(componentNode-1,totalNumberOfNodesXi(2)*totalNumberOfNodesXi(1))/ &
+                  & totalNumberOfNodesXi(1)+1
+                nodePositionIdx(1)=MOD(MOD(componentNode-1,totalNumberOfNodesXi(2)*totalNumberOfNodesXi(1)), &
+                  & totalNumberOfNodesXi(1))+1
+                VALUE=0.0_DP
+                DO xiIdx=1,regularMesh%meshDimension
+                  VALUE=VALUE+REAL(nodePositionIdx(xiIdx)-1,DP)*deltaCoordinate(componentIdx,xiIdx)
+                ENDDO !xiIdx
+                VALUE=regularMesh%origin(componentIdx)+VALUE
+                CALL FIELD_PARAMETER_SET_UPDATE_NODE(geometricField,FIELD_U_VARIABLE_TYPE,FIELD_VALUES_SET_TYPE, &
+                  & 1,1,nodeUserNumber,componentIdx,VALUE,err,error,*999)
+                !Set derivatives
+                DO derivativeIdx=2,domainNodes%nodes(nodeIdx)%NUMBER_OF_DERIVATIVES
+                  CALL FIELD_PARAMETER_SET_UPDATE_NODE(geometricField,FIELD_U_VARIABLE_TYPE,FIELD_VALUES_SET_TYPE, &
+                    & 1,derivativeIdx,nodeUserNumber,componentIdx,derivativeValues(derivativeIdx),err,error,*999)
+                ENDDO !derivativeIdx
+              ENDIF !node_exists
+            ENDDO !nodeIdx
+          ENDDO !componentIdx
 !!TODO: do boundary nodes first then start the update to overlap computation and computation.
-              CALL FIELD_PARAMETER_SET_UPDATE_START(FIELD,FIELD_U_VARIABLE_TYPE,FIELD_VALUES_SET_TYPE,ERR,ERROR,*999)
-              CALL FIELD_PARAMETER_SET_UPDATE_FINISH(FIELD,FIELD_U_VARIABLE_TYPE,FIELD_VALUES_SET_TYPE,ERR,ERROR,*999)
-            ELSE
-              LOCAL_ERROR="The standard field variable is not associated for field number "// &
-                & TRIM(NUMBER_TO_VSTRING(FIELD%USER_NUMBER,"*",ERR,ERROR))//"."
-              CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
-            ENDIF
-          ELSE
-            LOCAL_ERROR="Field number "//TRIM(NUMBER_TO_VSTRING(FIELD%USER_NUMBER,"*",ERR,ERROR))//" is not a geometric field."
-            CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
-          ENDIF
+          CALL FIELD_PARAMETER_SET_UPDATE_START(geometricField,FIELD_U_VARIABLE_TYPE,FIELD_VALUES_SET_TYPE,err,error,*999)
+          CALL FIELD_PARAMETER_SET_UPDATE_FINISH(geometricField,FIELD_U_VARIABLE_TYPE,FIELD_VALUES_SET_TYPE,err,error,*999)
         ELSE
-          CALL FLAG_ERROR("Non rectangular Cartesian coordinate systems are not implemented.",ERR,ERROR,*999)
+          CALL FlagError("Non rectangular Cartesian coordinate systems are not implemented.",err,error,*999)
         ENDIF
       ELSE
-        CALL FLAG_ERROR("Field is not associated.",ERR,ERROR,*999)
+        CALL FlagError("Field is not associated.",err,error,*999)
       ENDIF
     ELSE
-      CALL FLAG_ERROR("Regular mesh is not associated.",ERR,ERROR,*999)
+      CALL FlagError("Regular mesh is not associated.",err,error,*999)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_REGULAR_GEOMETRIC_PARAMETERS_CALCULATE")
+    CALL Exits("GeneratedMeshRegularGeometricParametersCalculate")
     RETURN
-999 CALL ERRORS("GENERATED_MESH_REGULAR_GEOMETRIC_PARAMETERS_CALCULATE",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_REGULAR_GEOMETRIC_PARAMETERS_CALCULATE")
+999 CALL Errors("GeneratedMeshRegularGeometricParametersCalculate",err,error)
+    CALL Exits("GeneratedMeshRegularGeometricParametersCalculate")
     RETURN 1
-  END SUBROUTINE GENERATED_MESH_REGULAR_GEOMETRIC_PARAMETERS_CALCULATE
+  END SUBROUTINE GeneratedMeshRegularGeometricParametersCalculate
 
   !
   !================================================================================================================================
   !
 
   !>Updates the geometric field parameters from the initial nodal positions of the mesh. Derivatives are averaged via straight line approximation, except for circumferential component
-  SUBROUTINE GENERATED_MESH_CYLINDER_GEOMETRIC_PARAMETERS_CALCULATE(CYLINDER_MESH,FIELD,ERR,ERROR,*)
+  SUBROUTINE GeneratedMeshCylinderGeometricParametersCalculate(cylinderMesh,geometricField,err,error,*)
 
     ! Argument variables
-    TYPE(GENERATED_MESH_CYLINDER_TYPE), POINTER :: CYLINDER_MESH !<A pointer to the cylinder mesh object
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to update the geometric parameters for
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    TYPE(GeneratedMeshCylinderType), POINTER :: cylinderMesh !<A pointer to the cylinder mesh object
+    TYPE(FIELD_TYPE), POINTER :: geometricField !<A pointer to the field to update the geometric parameters for
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     ! Local variables
     TYPE(BASIS_TYPE), POINTER :: BASIS
     TYPE(DOMAIN_TYPE),POINTER :: DOMAIN
-    TYPE(DOMAIN_NODES_TYPE), POINTER :: DOMAIN_NODES
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: FIELD_VARIABLE
-    TYPE(FIELD_VARIABLE_COMPONENT_TYPE), POINTER :: FIELD_VARIABLE_COMPONENT
+    TYPE(DOMAIN_NODES_TYPE), POINTER :: domainNodes
+    TYPE(FIELD_VARIABLE_TYPE), POINTER :: fieldVariable
+    TYPE(FIELD_VARIABLE_COMPONENT_TYPE), POINTER :: fieldVariableComponent
     INTEGER(INTG) :: NUMBER_ELEMENTS_XI(3),NUMBER_OF_NODES_XIC(3)
-    INTEGER(INTG) :: TOTAL_NUMBER_NODES_XI(3),INTERPOLATION_TYPES(3)
-    INTEGER(INTG) :: component_idx,xi_idx
-    INTEGER(INTG) :: np,global_np,component_np,ny,nk
-    INTEGER(INTG) :: NUMBER_OF_PLANAR_NODES,SCALING_TYPE,MESH_COMPONENT
+    INTEGER(INTG) :: totalNumberOfNodesXi(3),INTERPOLATION_TYPES(3)
+    INTEGER(INTG) :: componentIdx,xiIdx
+    INTEGER(INTG) :: nodeIdx,globalNodeIdx,componentNodeIdx,ny,nk
+    INTEGER(INTG) :: numberOfPlanarNodes,SCALING_TYPE,MESH_COMPONENT
     INTEGER(INTG), ALLOCATABLE :: NIDX(:,:,:),EIDX(:,:,:)
-    INTEGER(INTG) :: node_idx(3) ! holds r,theta,z indices
-    REAL(DP) :: DELTA(3),DELTAi(3),POLAR_COORDS(3),RECT_COORDS(3)
+    INTEGER(INTG) :: nodePositionIdx(3) ! holds r,theta,z indices
+    REAL(DP) :: deltaCoordinate(3),deltaCoordinateXi(3),polarCoordinates(3),rectangularCoordinates(3)
     REAL(DP) :: CYLINDER_EXTENT(3),DERIV
-    TYPE(VARYING_STRING) :: LOCAL_ERROR
+    TYPE(VARYING_STRING) :: localError
 
-    CALL ENTERS("GENERATED_MESH_CYLINDER_GEOMETRIC_PARAMETERS_CALCULATE",ERR,ERROR,*999)
+    NULLIFY(coordinateSystem)
 
-    ! assign to the field
-    IF(FIELD%TYPE==FIELD_GEOMETRIC_TYPE) THEN
-      FIELD_VARIABLE=>FIELD%VARIABLE_TYPE_MAP(FIELD_U_VARIABLE_TYPE)%PTR
-      IF(ASSOCIATED(FIELD_VARIABLE)) THEN
-        IF(FIELD_VARIABLE%NUMBER_OF_COMPONENTS==3) THEN
-          CALL FIELD_SCALING_TYPE_GET(FIELD,SCALING_TYPE,ERR,ERROR,*999)
-          IF(SCALING_TYPE/=FIELD_UNIT_SCALING) &
-            & CALL WRITE_STRING(GENERAL_OUTPUT_TYPE,"  Note: If the cylinder looks wonky, set field scaling to&
-            & unit scaling type.",ERR,ERROR,*999)
-          DO component_idx=1,3
-            INTERPOLATION_TYPES(component_idx)=FIELD_VARIABLE%COMPONENTS(component_idx)%INTERPOLATION_TYPE
-          ENDDO
-          IF(ALL(INTERPOLATION_TYPES==FIELD_NODE_BASED_INTERPOLATION)) THEN
-            DO component_idx=1,FIELD_VARIABLE%NUMBER_OF_COMPONENTS
-              FIELD_VARIABLE_COMPONENT=>FIELD_VARIABLE%COMPONENTS(component_idx)
-              MESH_COMPONENT=FIELD_VARIABLE_COMPONENT%MESH_COMPONENT_NUMBER
-              ! calculate the total number of nodes in each xi direction
-              BASIS=>CYLINDER_MESH%BASES(MESH_COMPONENT)%PTR
-              NUMBER_ELEMENTS_XI=CYLINDER_MESH%NUMBER_OF_ELEMENTS_XI
-              NUMBER_OF_NODES_XIC=BASIS%NUMBER_OF_NODES_XIC
-              DO xi_idx=1,3
-                TOTAL_NUMBER_NODES_XI(xi_idx)=(NUMBER_OF_NODES_XIC(xi_idx)-1)*NUMBER_ELEMENTS_XI(xi_idx)+1
-              ENDDO
-              TOTAL_NUMBER_NODES_XI(2)=TOTAL_NUMBER_NODES_XI(2)-1 ! theta loops around so slightly different
-              NUMBER_OF_PLANAR_NODES=TOTAL_NUMBER_NODES_XI(1)*TOTAL_NUMBER_NODES_XI(2)
-              DOMAIN=>FIELD_VARIABLE%COMPONENTS(MESH_COMPONENT)%DOMAIN
-              DOMAIN_NODES=>DOMAIN%TOPOLOGY%NODES
-              ! calculate DELTAi now
-              CYLINDER_EXTENT=CYLINDER_MESH%CYLINDER_EXTENT
-              DELTA(1)=(CYLINDER_EXTENT(2)-CYLINDER_EXTENT(1))/NUMBER_ELEMENTS_XI(1)
-              DELTA(2)=TWOPI/NUMBER_ELEMENTS_XI(2)
-              DELTA(3)=CYLINDER_EXTENT(3)/NUMBER_ELEMENTS_XI(3)
-              DO xi_idx=1,3
-                DELTAi(xi_idx)=DELTA(xi_idx)/(NUMBER_OF_NODES_XIC(xi_idx)-1)
-              ENDDO
-              DO np=1,DOMAIN_NODES%NUMBER_OF_NODES
-                global_np=DOMAIN_NODES%NODES(np)%GLOBAL_NUMBER
-                component_np=USER_NUMBER_TO_COMPONENT_NODE(CYLINDER_MESH%GENERATED_MESH, &
-                    & MESH_COMPONENT,global_np,ERR,ERROR)
-                ! calculate node_idx which will be used to calculate (r,theta,z) then (x,y,z)
-                component_np=component_np-1 ! let's go 0-based index for a bit
-                node_idx(3)=component_np/NUMBER_OF_PLANAR_NODES
-                node_idx(2)=(component_np-(node_idx(3))*NUMBER_OF_PLANAR_NODES)/TOTAL_NUMBER_NODES_XI(1)
-                node_idx(1)=MOD(component_np-(node_idx(3))*NUMBER_OF_PLANAR_NODES,TOTAL_NUMBER_NODES_XI(1))
-                DO xi_idx=1,3
-                  POLAR_COORDS(xi_idx)=node_idx(xi_idx)*DELTAi(xi_idx)
-                ENDDO
-                POLAR_COORDS(1)=node_idx(1)*DELTAi(1)+CYLINDER_EXTENT(1) ! add the inner radius
-                RECT_COORDS(1)=POLAR_COORDS(1)*COS(POLAR_COORDS(2))
-                RECT_COORDS(2)=POLAR_COORDS(1)*SIN(POLAR_COORDS(2))
-                RECT_COORDS(3)=POLAR_COORDS(3)
-                RECT_COORDS=RECT_COORDS+CYLINDER_MESH%ORIGIN
+    CALL Enters("GeneratedMeshCylinderGeometricParametersCalculate",err,error,*999)
+
+    IF(ASSOCIATED(cylinderMesh)) THEN
+      IF(ASSOCIATED(geometricField)) THEN
+        CALL GeneratedMeshCoordinateSystemGet(generatedMesh,coordinateSystem,err,error,*999)
+        CALL COORDINATE_SYSTEM_DIMENSION_GET(coordinateSystem,coordinateDimension,err,error,*999)
+        CALL COORDINATE_SYSTEM_TYPE_GET(coordinateSystem,coordinateType,err,error,*999)
+        IF(coordinateType==COORDINATE_RECTANGULAR_CARTESIAN_TYPE) THEN
+          fieldVariable=>geometricField%VARIABLE_TYPE_MAP(FIELD_U_VARIABLE_TYPE)%PTR
+          IF(ASSOCIATED(fieldVariable)) THEN
+            IF(fieldVariable%NUMBER_OF_COMPONENTS==3) THEN
+              DO componentIdx=1,fieldVariable%NUMBER_OF_COMPONENTS
+                fieldVariableComponent=>fieldVariable%components(componentIdx)
+                meshComponent=fieldVariableComponent%MESH_COMPONENT_NUMBER
+                basis=>cylinderMesh%bases(mechComponent)%ptr
+                !Calculate the total number of nodes in each xi direction
+                DO xiIdx=1,3
+                  totalNumberOfNodesXi(xiIdx)=(basis%NUMBER_OF_NODES_XIC(xiIdx)-1)*cylinderMesh%numberOfElementsXi(xiIdx)+1
+                ENDDO !xiIdx
+                totalNumberOfNodesXi(2)=totalNumberOfNodesXi(2)-1 !Theta loops around so slightly different
+                numberOfPlanarNodes=totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)
+                !Calculate delta
+                deltaCoordinate(1)=(cylinderMesh%cylinderExtent(2)-cylinderMesh%cylinderExtent(1))/ &
+                  & cylinderMesh%numberOfElementsXi(1)
+                deltaCoordinate(2)=TWOPI/cylinderMesh%numberOfElementsXi(2)
+                deltaCoordinate(3)=cylinderMesh%cylinderExtent(3)/cylinderMesh%numberOfElementsXi(3)
+                DO xiIdx=1,3
+                  deltaCoordinateXi(xiIdx)=deltaCoordinate(xiIdx)/(basis%NUMBER_OF_NODES_XIC(xiIdx)-1)
+                ENDDO !xiIdx
+                !Update geometric parameters in this computational domain only
+                domain=>fieldVariable%COMPONENTS(MESH_COMPONENT)%domain
+                domainNodes=>domain%TOPOLOGY%NODES
+                DO nodeIdx=1,domainNodes%NUMBER_OF_NODES
+                  globalNodeIdx=domainNodes%NODES(nodeIdx)%GLOBAL_NUMBER
+                  componentNodeIdx=USER_NUMBER_TO_COMPONENT_NODE(cylinderMesh%generatedMeshes,meshComponent,globalNodeIdx,err,error)
+                  !Calculate nodePositionIdx which will be used to calculate (r,theta,z) then (x,y,z)
+                  nodePositionIdx(3)=(componentNodeIdx-1)/numberOfPlanarNodes
+                  nodePositionIdx(2)=(componentNodeIdx-1-(nodePositionIdx(3))*numberOfPlanarNodes)/totalNumberOfNodesXi(1)
+                  nodePositionIdx(1)=MOD(componentNodeIdx-1-(nodePositionIdx(3))*numberOfPlanarNodes,totalNumberOfNodesXi(1))
+                  DO xiIdx=1,3
+                    polarCoordinates(xiIdx)=nodePositionIdx(xiIdx)*deltaCoordinateXi(xiIdx)
+                  ENDDO !xiIdx
+                  polarCoordinates(1)=nodePositionIdx(1)*deltaCoordinateXi(1)+cylinderMesh%cylinderExtent(1) !Add the inner radius
+                  rectangularCoordinates(1)=polarCoordinates(1)*COS(polarCoordinates(2))
+                  rectangularCoordinates(2)=polarCoordinates(1)*SIN(polarCoordinates(2))
+                  rectangularCoordinates(3)=polarCoordinates(3)
+                  rectangularCoordinates=rectangularCoordinates+cylinderMesh%origin
                 !Default to version 1 of each node derivative
-                ny=FIELD_VARIABLE_COMPONENT%PARAM_TO_DOF_MAP%NODE_PARAM2DOF_MAP%NODES(np)%DERIVATIVES(1)%VERSIONS(1)
-                CALL FIELD_PARAMETER_SET_UPDATE_LOCAL_DOF(FIELD,FIELD_U_VARIABLE_TYPE,FIELD_VALUES_SET_TYPE,ny, &
-                  & RECT_COORDS(component_idx),ERR,ERROR,*999)
+                ny=fieldVariableComponent%PARAM_TO_DOF_MAP%NODE_PARAM2DOF_MAP%NODES(nodeIdx)%DERIVATIVES(1)%VERSIONS(1)
+                CALL FIELD_PARAMETER_SET_UPDATE_LOCAL_DOF(geometricField,FIELD_U_VARIABLE_TYPE,FIELD_VALUES_SET_TYPE,ny, &
+                  & rectangularCoordinates(componentIdx),err,error,*999)
                 ! Do derivatives: if there are derivatives, we can assume it's cubic hermite
                 !   given that quadratic hermites are only used for collapsed hex elements,
                 !   but NB mixed bases have to be handled (e.g. CH-CH-linear combinations)
-                IF(DOMAIN_NODES%NODES(np)%NUMBER_OF_DERIVATIVES>1) THEN
+                IF(domainNodes%NODES(nodeIdx)%NUMBER_OF_DERIVATIVES>1) THEN
                   ! Since I decided how xi 1,2,3 line up with the cylinder polar coordinates,
                   ! we know a priori that only some of the derivatives are nonzero (analytically).
                   ! NOTE: if hermite type used, should assign FIELD_UNIT_SCALING type for this to work
-                  DO nk=2,FIELD_VARIABLE_COMPONENT%PARAM_TO_DOF_MAP%NODE_PARAM2DOF_MAP%NODES(np)%NUMBER_OF_DERIVATIVES
-                    SELECT CASE(DOMAIN_NODES%NODES(np)%DERIVATIVES(nk)%GLOBAL_DERIVATIVE_INDEX)
+                  DO nk=2,fieldVariableComponent%PARAM_TO_DOF_MAP%NODE_PARAM2DOF_MAP%NODES(nodeIdx)%NUMBER_OF_DERIVATIVES
+                CALL FIELD_SCALING_TYPE_GET(geometricField,scalingType,err,error,*999)
+              SELECT CASE(scalingType)
+              CASE(FIELD_NO_SCALING,FIELD_UNIT_SCALING)
+                    SELECT CASE(domainNodes%NODES(nodeIdx)%DERIVATIVES(nk)%GLOBAL_DERIVATIVE_INDEX)
                     CASE(GLOBAL_DERIV_S1)
-                      SELECT CASE(component_idx)
+                      SELECT CASE(componentIdx)
                       CASE(1)
-                        DERIV=COS(POLAR_COORDS(2))*DELTA(1)
+                        DERIV=COS(polarCoordinates(2))*deltaCoordinate(1)
                       CASE(2)
-                        DERIV=SIN(POLAR_COORDS(2))*DELTA(1)
+                        DERIV=SIN(polarCoordinates(2))*deltaCoordinate(1)
                       CASE DEFAULT
                         DERIV=0.0_DP
                       END SELECT
                     CASE(GLOBAL_DERIV_S2)
-                      SELECT CASE(component_idx)
+                      SELECT CASE(componentIdx)
                       CASE(1)
-                        DERIV=-POLAR_COORDS(1)*SIN(POLAR_COORDS(2))*DELTA(2)
+                        DERIV=-polarCoordinates(1)*SIN(polarCoordinates(2))*deltaCoordinate(2)
                       CASE(2)
-                        DERIV=POLAR_COORDS(1)*COS(POLAR_COORDS(2))*DELTA(2)
+                        DERIV=polarCoordinates(1)*COS(polarCoordinates(2))*deltaCoordinate(2)
                       CASE DEFAULT
                         DERIV=0.0_DP
                       END SELECT
                     CASE(GLOBAL_DERIV_S3)
-                      IF(component_idx==3) THEN
-                        DERIV=DELTA(3)
+                      IF(componentIdx==3) THEN
+                        DERIV=deltaCoordinate(3)
                       ELSE
                         DERIV=0.0_DP
                       ENDIF
                     CASE(GLOBAL_DERIV_S1_S2)
-                      SELECT CASE(component_idx)
+                      SELECT CASE(componentIdx)
                       CASE(1)
-                        DERIV=-SIN(POLAR_COORDS(2))*DELTA(1)*DELTA(2)
+                        DERIV=-SIN(polarCoordinates(2))*deltaCoordinate(1)*deltaCoordinate(2)
                       CASE(2)
-                        DERIV=COS(POLAR_COORDS(2))*DELTA(1)*DELTA(2)
+                        DERIV=COS(polarCoordinates(2))*deltaCoordinate(1)*deltaCoordinate(2)
                       CASE DEFAULT
                         DERIV=0.0_DP
                       END SELECT
@@ -3638,45 +3762,45 @@ CONTAINS
                     END SELECT
                     ! assign derivative
                     !Default to version 1 of each node derivative
-                    ny=FIELD_VARIABLE_COMPONENT%PARAM_TO_DOF_MAP%NODE_PARAM2DOF_MAP%NODES(np)%DERIVATIVES(nk)% &
+                    ny=fieldVariableComponent%PARAM_TO_DOF_MAP%NODE_PARAM2DOF_MAP%NODES(nodeIdx)%DERIVATIVES(nk)% &
                       & VERSIONS(1)
-                    CALL FIELD_PARAMETER_SET_UPDATE_LOCAL_DOF(FIELD,FIELD_U_VARIABLE_TYPE,FIELD_VALUES_SET_TYPE, &
-                         & ny,DERIV,ERR,ERROR,*999)
+                    CALL FIELD_PARAMETER_SET_UPDATE_LOCAL_DOF(geometricField,FIELD_U_VARIABLE_TYPE,FIELD_VALUES_SET_TYPE, &
+                         & ny,DERIV,err,error,*999)
                   ENDDO !nk
                 ENDIF !derivatives
-              ENDDO !np
-            ENDDO !component_idx
+              ENDDO !nodeIdx
+            ENDDO !componentIdx
           ELSE
-            CALL FLAG_ERROR("All field variable components must have node-based interpolation.",ERR,ERROR,*999)
+            CALL FlagError("All field variable components must have node-based interpolation.",err,error,*999)
           ENDIF
-          CALL FIELD_PARAMETER_SET_UPDATE_START(FIELD,FIELD_U_VARIABLE_TYPE,FIELD_VALUES_SET_TYPE,ERR,ERROR,*999)
-          CALL FIELD_PARAMETER_SET_UPDATE_FINISH(FIELD,FIELD_U_VARIABLE_TYPE,FIELD_VALUES_SET_TYPE,ERR,ERROR,*999)
+          CALL FIELD_PARAMETER_SET_UPDATE_START(geometricField,FIELD_U_VARIABLE_TYPE,FIELD_VALUES_SET_TYPE,err,error,*999)
+          CALL FIELD_PARAMETER_SET_UPDATE_FINISH(geometricField,FIELD_U_VARIABLE_TYPE,FIELD_VALUES_SET_TYPE,err,error,*999)
         ELSE
-          CALL FLAG_ERROR("Geometric field must be three dimensional.",ERR,ERROR,*999)
+          CALL FlagError("Geometric field must be three dimensional.",err,error,*999)
         ENDIF
       ELSE
-        LOCAL_ERROR="The standard field variable is not associated for field number "// &
-          & TRIM(NUMBER_TO_VSTRING(FIELD%USER_NUMBER,"*",ERR,ERROR))//"."
-        CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+        localError="The standard field variable is not associated for field number "// &
+          & TRIM(NumberToVString(geometricField%USER_NUMBER,"*",err,error))//"."
+        CALL FlagError(localError,err,error,*999)
       ENDIF
     ELSE
-      LOCAL_ERROR="Field number "//TRIM(NUMBER_TO_VSTRING(FIELD%USER_NUMBER,"*",ERR,ERROR))//" is not a geometric field."
-      CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+      localError="Field number "//TRIM(NumberToVString(geometricField%USER_NUMBER,"*",err,error))//" is not a geometric field."
+      CALL FlagError(localError,err,error,*999)
     ENDIF
 
     ! all done
     IF(ALLOCATED(NIDX)) DEALLOCATE(NIDX)
     IF(ALLOCATED(EIDX)) DEALLOCATE(EIDX)
 
-    CALL EXITS("GENERATED_MESH_CYLINDER_GEOMETRIC_PARAMETERS_CALCULATE")
+    CALL Exits("GeneratedMeshCylinderGeometricParametersCalculate")
     RETURN
 999 IF(ALLOCATED(NIDX)) DEALLOCATE(NIDX)
     IF(ALLOCATED(EIDX)) DEALLOCATE(EIDX)
-    CALL ERRORS("GENERATED_MESH_CYLINDER_GEOMETRIC_PARAMETERS_CALCULATE",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_CYLINDER_GEOMETRIC_PARAMETERS_CALCULATE")
+    CALL Errors("GeneratedMeshCylinderGeometricParametersCalculate",err,error)
+    CALL Exits("GeneratedMeshCylinderGeometricParametersCalculate")
     RETURN 1
 
-  END SUBROUTINE GENERATED_MESH_CYLINDER_GEOMETRIC_PARAMETERS_CALCULATE
+  END SUBROUTINE GeneratedMeshCylinderGeometricParametersCalculate
 
   !
   !================================================================================================================================
@@ -3684,13 +3808,13 @@ CONTAINS
 
   !>Updates the geometric field parameters from the initial nodal positions of the mesh.
   !>Derivatives are averaged via straight line approximation, except for circumferential component
-  SUBROUTINE GENERATED_MESH_ELLIPSOID_GEOMETRIC_PARAMETERS_CALCULATE(ELLIPSOID_MESH,FIELD,ERR,ERROR,*)
+  SUBROUTINE GENERATED_MESH_ELLIPSOID_GEOMETRIC_PARAMETERS_CALCULATE(ELLIPSOID_MESH,FIELD,err,error,*)
 
     ! Argument variables
-    TYPE(GENERATED_MESH_ELLIPSOID_TYPE), POINTER :: ELLIPSOID_MESH !<A pointer to the ellipsoid mesh object
+    TYPE(GeneratedMeshEllipsoidType), POINTER :: ELLIPSOID_MESH !<A pointer to the ellipsoid mesh object
     TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to update the geometric parameters for
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     ! Local variables
     TYPE(BASIS_TYPE), POINTER :: BASIS
     TYPE(DOMAIN_TYPE),POINTER :: DOMAIN
@@ -3699,7 +3823,7 @@ CONTAINS
     TYPE(FIELD_VARIABLE_TYPE), POINTER :: FIELD_VARIABLE
     TYPE(FIELD_VARIABLE_COMPONENT_TYPE), POINTER :: FIELD_VARIABLE_COMPONENT
     INTEGER(INTG) :: MY_COMPUTATIONAL_NODE,DOMAIN_NUMBER,MESH_COMPONENT,basis_idx
-    INTEGER(INTG) :: NUMBER_ELEMENTS_XI(3),NUMBER_OF_NODES_XIC(3)
+    INTEGER(INTG) :: NUMBER_ELEMENTS_XIQ(3),NUMBER_OF_NODES_XICQ(3)
     INTEGER(INTG) :: TOTAL_NUMBER_NODES_XI(3),INTERPOLATION_TYPES(3)
     INTEGER(INTG) :: component_idx,xi_idx
     INTEGER(INTG) :: np,npg,i,j,k, local_node
@@ -3708,13 +3832,13 @@ CONTAINS
     !INTEGER(INTG) :: node_idx(3) ! holds r,theta,z indices
     REAL(DP) :: DELTA(3),DELTAi(3),RECT_COORDS(3),t,phi,alpha,xi,nu,x,y,z
     REAL(DP) :: ELLIPSOID_EXTENT(4)
-    TYPE(VARYING_STRING) :: LOCAL_ERROR
+    TYPE(VARYING_STRING) :: localError
 
     NULLIFY(BASIS,DOMAIN,DECOMPOSITION,DOMAIN_NODES,FIELD_VARIABLE,FIELD_VARIABLE_COMPONENT)
 
-    CALL ENTERS("GENERATED_MESH_ELLIPSOID_GEOMETRIC_PARAMETERS_CALCULATE",ERR,ERROR,*999)
+    CALL Enters("GENERATED_MESH_ELLIPSOID_GEOMETRIC_PARAMETERS_CALCULATE",err,error,*999)
 
-    MY_COMPUTATIONAL_NODE=COMPUTATIONAL_NODE_NUMBER_GET(ERR,ERROR)
+    MY_COMPUTATIONAL_NODE=COMPUTATIONAL_NODE_NUMBER_GET(err,error)
 
     ! assign to the field
     np=0
@@ -3725,23 +3849,23 @@ CONTAINS
              MESH_COMPONENT=FIELD_VARIABLE%COMPONENTS(1)%MESH_COMPONENT_NUMBER
              DO component_idx=2,3
                 IF(FIELD_VARIABLE%COMPONENTS(component_idx)%MESH_COMPONENT_NUMBER/=MESH_COMPONENT) THEN
-                   CALL FLAG_ERROR("Multiple mesh components for geometric components is not implemented.",ERR,ERROR,*999)
+                   CALL FlagError("Multiple mesh components for geometric components is not implemented.",err,error,*999)
                 ENDIF
              ENDDO
              basis_idx=MESH_COMPONENT*2-1
              !< Ellipsoid_extent= inner long axis, inner short axis, wall thickness, top angle (from 0)
              ! calculate the total number of nodes in each xi direction
-             IF(ALLOCATED(ELLIPSOID_MESH%BASES)) THEN
+             IF(ALLOCATED(ELLIPSOID_MESH%bases)) THEN
                 !Check that the all geometric bases use the same mesh component
-                BASIS=>ELLIPSOID_MESH%BASES(basis_idx)%PTR
-                NUMBER_ELEMENTS_XI=ELLIPSOID_MESH%NUMBER_OF_ELEMENTS_XI
+                BASIS=>ELLIPSOID_MESH%bases(basis_idx)%PTR
+                NUMBER_ELEMENTS_XI=ELLIPSOID_MESH%numberOfElementsXi
                 NUMBER_OF_NODES_XIC=BASIS%NUMBER_OF_NODES_XIC
                 DO xi_idx=1,3
                    TOTAL_NUMBER_NODES_XI(xi_idx)=(NUMBER_OF_NODES_XIC(xi_idx)-1)*NUMBER_ELEMENTS_XI(xi_idx)+1
                 ENDDO
                 TOTAL_NUMBER_NODES_XI(1)=TOTAL_NUMBER_NODES_XI(1)-1 ! theta loops around so slightly different
                 ! calculate DELTAi now
-                ELLIPSOID_EXTENT=ELLIPSOID_MESH%ELLIPSOID_EXTENT
+                ELLIPSOID_EXTENT=ELLIPSOID_MESH%ellipsoidExtent
                 DELTA(1)=TWOPI/NUMBER_ELEMENTS_XI(1)
                 DELTA(2)=(PI-ELLIPSOID_EXTENT(4))/NUMBER_ELEMENTS_XI(2)
                 DELTA(3)=ELLIPSOID_EXTENT(3)/NUMBER_ELEMENTS_XI(3)
@@ -3749,12 +3873,12 @@ CONTAINS
                    DELTAi(xi_idx)=DELTA(xi_idx)/(NUMBER_OF_NODES_XIC(xi_idx)-1)
                 ENDDO
              ELSE
-                CALL FLAG_ERROR("Ellipsoid mesh does not have bases allocated.",ERR,ERROR,*999)
+                CALL FlagError("Ellipsoid mesh does not have bases allocated.",err,error,*999)
              ENDIF
-             CALL FIELD_SCALING_TYPE_GET(FIELD,SCALING_TYPE,ERR,ERROR,*999)
+             CALL FIELD_SCALING_TYPE_GET(FIELD,SCALING_TYPE,err,error,*999)
              IF(SCALING_TYPE/=FIELD_UNIT_SCALING) &
                   & CALL WRITE_STRING(GENERAL_OUTPUT_TYPE,"  Note: If the ellipsoid looks wonky, set field scaling to &
-                  & unit scaling type.",ERR,ERROR,*999)
+                  & unit scaling type.",err,error,*999)
              ! NUMBER_OF_PLANAR_NODES=TOTAL_NUMBER_NODES_XI(1)*TOTAL_NUMBER_NODES_XI(2)
              DO component_idx=1,3
                 INTERPOLATION_TYPES(component_idx)=FIELD_VARIABLE%COMPONENTS(component_idx)%INTERPOLATION_TYPE
@@ -3775,8 +3899,8 @@ CONTAINS
                    j=1
                    !apex node
                    np=1
-                   npg=COMPONENT_NODE_TO_USER_NUMBER(ELLIPSOID_MESH%GENERATED_MESH,basis_idx,np,ERR,ERROR)
-                   CALL DECOMPOSITION_NODE_DOMAIN_GET(DECOMPOSITION,npg,MESH_COMPONENT,DOMAIN_NUMBER,ERR,ERROR,*999)
+                   npg=COMPONENT_NODE_TO_USER_NUMBER(ELLIPSOID_MESH%GENERATED_MESH,basis_idx,np,err,error)
+                   CALL DECOMPOSITION_NODE_DOMAIN_GET(DECOMPOSITION,npg,MESH_COMPONENT,DOMAIN_NUMBER,err,error,*999)
                    IF(DOMAIN_NUMBER==MY_COMPUTATIONAL_NODE) THEN
                       RECT_COORDS(1)=0
                       RECT_COORDS(2)=0
@@ -3784,10 +3908,10 @@ CONTAINS
                       DO component_idx=1,FIELD_VARIABLE%NUMBER_OF_COMPONENTS
                          !Default to version 1 of each node derivative
                          CALL FIELD_PARAMETER_SET_UPDATE_NODE(FIELD,FIELD_U_VARIABLE_TYPE,FIELD_VALUES_SET_TYPE,1,1,npg, &
-                              & component_idx,RECT_COORDS(component_idx),ERR,ERROR,*999)
+                              & component_idx,RECT_COORDS(component_idx),err,error,*999)
                          local_node=DOMAIN%MAPPINGS%NODES%GLOBAL_TO_LOCAL_MAP(npg)%local_number(1)
                          IF(DOMAIN_NODES%NODES(local_node)%NUMBER_OF_DERIVATIVES>1) THEN
-                            CALL FLAG_ERROR("Not generalized to hermittean elements.",ERR,ERROR,*999)
+                            CALL FlagError("Not generalized to hermittean elements.",err,error,*999)
                          ENDIF !derivatives
                       ENDDO
                    ENDIF
@@ -3802,15 +3926,15 @@ CONTAINS
                          RECT_COORDS(2)=alpha*(sinh(xi)*sin(nu)*sin(phi))
                          RECT_COORDS(3)=alpha*(cosh(xi)*cos(nu))
                          np=np+1
-                         npg=COMPONENT_NODE_TO_USER_NUMBER(ELLIPSOID_MESH%GENERATED_MESH,basis_idx,np,ERR,ERROR)
-                         CALL DECOMPOSITION_NODE_DOMAIN_GET(DECOMPOSITION,npg,MESH_COMPONENT,DOMAIN_NUMBER,ERR,ERROR,*999)
+                         npg=COMPONENT_NODE_TO_USER_NUMBER(ELLIPSOID_MESH%GENERATED_MESH,basis_idx,np,err,error)
+                         CALL DECOMPOSITION_NODE_DOMAIN_GET(DECOMPOSITION,npg,MESH_COMPONENT,DOMAIN_NUMBER,err,error,*999)
                          IF(DOMAIN_NUMBER==MY_COMPUTATIONAL_NODE) THEN
                             DO component_idx=1,FIELD_VARIABLE%NUMBER_OF_COMPONENTS
                                CALL FIELD_PARAMETER_SET_UPDATE_NODE(FIELD,FIELD_U_VARIABLE_TYPE,FIELD_VALUES_SET_TYPE,1,1,npg, &
-                                    & component_idx,RECT_COORDS(component_idx),ERR,ERROR,*999)
+                                    & component_idx,RECT_COORDS(component_idx),err,error,*999)
                                local_node=DOMAIN%MAPPINGS%NODES%GLOBAL_TO_LOCAL_MAP(npg)%local_number(1)
                                IF(DOMAIN_NODES%NODES(local_node)%NUMBER_OF_DERIVATIVES>1) THEN
-                                  CALL FLAG_ERROR("Not generalized to hermittean elements.",ERR,ERROR,*999)
+                                  CALL FlagError("Not generalized to hermittean elements.",err,error,*999)
                                ENDIF !derivatives
                             ENDDO
                          ENDIF
@@ -3825,15 +3949,15 @@ CONTAINS
                       RECT_COORDS(2)=0
                       RECT_COORDS(3)=-ELLIPSOID_EXTENT(1)-(k-1)*(DELTAi(3))
                       np=np+1
-                      npg=COMPONENT_NODE_TO_USER_NUMBER(ELLIPSOID_MESH%GENERATED_MESH,basis_idx,np,ERR,ERROR)
-                      CALL DECOMPOSITION_NODE_DOMAIN_GET(DECOMPOSITION,npg,MESH_COMPONENT,DOMAIN_NUMBER,ERR,ERROR,*999)
+                      npg=COMPONENT_NODE_TO_USER_NUMBER(ELLIPSOID_MESH%GENERATED_MESH,basis_idx,np,err,error)
+                      CALL DECOMPOSITION_NODE_DOMAIN_GET(DECOMPOSITION,npg,MESH_COMPONENT,DOMAIN_NUMBER,err,error,*999)
                       IF(DOMAIN_NUMBER==MY_COMPUTATIONAL_NODE) THEN
                          DO component_idx=1,FIELD_VARIABLE%NUMBER_OF_COMPONENTS
                             CALL FIELD_PARAMETER_SET_UPDATE_NODE(FIELD,FIELD_U_VARIABLE_TYPE,FIELD_VALUES_SET_TYPE,1,1,npg, &
-                                 & component_idx,RECT_COORDS(component_idx),ERR,ERROR,*999)
+                                 & component_idx,RECT_COORDS(component_idx),err,error,*999)
                             local_node=DOMAIN%MAPPINGS%NODES%GLOBAL_TO_LOCAL_MAP(npg)%local_number(1)
                             IF(DOMAIN_NODES%NODES(local_node)%NUMBER_OF_DERIVATIVES>1) THEN
-                               CALL FLAG_ERROR("Not generalized to hermittean elements.",ERR,ERROR,*999)
+                               CALL FlagError("Not generalized to hermittean elements.",err,error,*999)
                             ENDIF !derivatives
                          ENDDO
                       ENDIF
@@ -3856,15 +3980,15 @@ CONTAINS
                             RECT_COORDS(2)=y*(1+2*t/(ELLIPSOID_EXTENT(2))**2)
                             RECT_COORDS(3)=z*(1+2*t/(ELLIPSOID_EXTENT(1))**2)
                             np=np+1
-                            npg=COMPONENT_NODE_TO_USER_NUMBER(ELLIPSOID_MESH%GENERATED_MESH,basis_idx,np,ERR,ERROR)
-                            CALL DECOMPOSITION_NODE_DOMAIN_GET(DECOMPOSITION,npg,MESH_COMPONENT,DOMAIN_NUMBER,ERR,ERROR,*999)
+                            npg=COMPONENT_NODE_TO_USER_NUMBER(ELLIPSOID_MESH%GENERATED_MESH,basis_idx,np,err,error)
+                            CALL DECOMPOSITION_NODE_DOMAIN_GET(DECOMPOSITION,npg,MESH_COMPONENT,DOMAIN_NUMBER,err,error,*999)
                             IF(DOMAIN_NUMBER==MY_COMPUTATIONAL_NODE) THEN
                                DO component_idx=1,FIELD_VARIABLE%NUMBER_OF_COMPONENTS
                                   CALL FIELD_PARAMETER_SET_UPDATE_NODE(FIELD,FIELD_U_VARIABLE_TYPE,FIELD_VALUES_SET_TYPE,1,1,npg, &
-                                       & component_idx,RECT_COORDS(component_idx),ERR,ERROR,*999)
+                                       & component_idx,RECT_COORDS(component_idx),err,error,*999)
                                   local_node=DOMAIN%MAPPINGS%NODES%GLOBAL_TO_LOCAL_MAP(npg)%local_number(1)
                                   IF(DOMAIN_NODES%NODES(local_node)%NUMBER_OF_DERIVATIVES>1) THEN
-                                     CALL FLAG_ERROR("Not generalized to hermittean elements.",ERR,ERROR,*999)
+                                     CALL FlagError("Not generalized to hermittean elements.",err,error,*999)
                                   ENDIF !derivatives
                                ENDDO
                             ENDIF
@@ -3883,15 +4007,15 @@ CONTAINS
                       RECT_COORDS(2)=0
                       RECT_COORDS(3)=-alpha
                       np=np+1
-                      npg=COMPONENT_NODE_TO_USER_NUMBER(ELLIPSOID_MESH%GENERATED_MESH,basis_idx,np,ERR,ERROR)
-                      CALL DECOMPOSITION_NODE_DOMAIN_GET(DECOMPOSITION,npg,MESH_COMPONENT,DOMAIN_NUMBER,ERR,ERROR,*999)
+                      npg=COMPONENT_NODE_TO_USER_NUMBER(ELLIPSOID_MESH%GENERATED_MESH,basis_idx,np,err,error)
+                      CALL DECOMPOSITION_NODE_DOMAIN_GET(DECOMPOSITION,npg,MESH_COMPONENT,DOMAIN_NUMBER,err,error,*999)
                       IF(DOMAIN_NUMBER==MY_COMPUTATIONAL_NODE) THEN
                          DO component_idx=1,FIELD_VARIABLE%NUMBER_OF_COMPONENTS
                             CALL FIELD_PARAMETER_SET_UPDATE_NODE(FIELD,FIELD_U_VARIABLE_TYPE,FIELD_VALUES_SET_TYPE,1,1,npg, &
-                                 & component_idx,RECT_COORDS(component_idx),ERR,ERROR,*999)
+                                 & component_idx,RECT_COORDS(component_idx),err,error,*999)
                             local_node=DOMAIN%MAPPINGS%NODES%GLOBAL_TO_LOCAL_MAP(npg)%local_number(1)
                             IF(DOMAIN_NODES%NODES(local_node)%NUMBER_OF_DERIVATIVES>1) THEN
-                               CALL FLAG_ERROR("Not generalized to hermittean elements.",ERR,ERROR,*999)
+                               CALL FlagError("Not generalized to hermittean elements.",err,error,*999)
                             ENDIF !derivatives
                          ENDDO
                       ENDIF
@@ -3906,15 +4030,15 @@ CONTAINS
                             RECT_COORDS(2)=alpha*sin(nu)*sin(phi)
                             RECT_COORDS(3)=alpha*cos(nu)
                             np=np+1
-                            npg=COMPONENT_NODE_TO_USER_NUMBER(ELLIPSOID_MESH%GENERATED_MESH,basis_idx,np,ERR,ERROR)
-                            CALL DECOMPOSITION_NODE_DOMAIN_GET(DECOMPOSITION,npg,MESH_COMPONENT,DOMAIN_NUMBER,ERR,ERROR,*999)
+                            npg=COMPONENT_NODE_TO_USER_NUMBER(ELLIPSOID_MESH%GENERATED_MESH,basis_idx,np,err,error)
+                            CALL DECOMPOSITION_NODE_DOMAIN_GET(DECOMPOSITION,npg,MESH_COMPONENT,DOMAIN_NUMBER,err,error,*999)
                             IF(DOMAIN_NUMBER==MY_COMPUTATIONAL_NODE) THEN
                                DO component_idx=1,FIELD_VARIABLE%NUMBER_OF_COMPONENTS
                                   CALL FIELD_PARAMETER_SET_UPDATE_NODE(FIELD,FIELD_U_VARIABLE_TYPE,FIELD_VALUES_SET_TYPE,1,1,npg, &
-                                       & component_idx,RECT_COORDS(component_idx),ERR,ERROR,*999)
+                                       & component_idx,RECT_COORDS(component_idx),err,error,*999)
                                   local_node=DOMAIN%MAPPINGS%NODES%GLOBAL_TO_LOCAL_MAP(npg)%local_number(1)
                                   IF(DOMAIN_NODES%NODES(local_node)%NUMBER_OF_DERIVATIVES>1) THEN
-                                     CALL FLAG_ERROR("Not generalized to hermittean elements.",ERR,ERROR,*999)
+                                     CALL FlagError("Not generalized to hermittean elements.",err,error,*999)
                                   ENDIF !derivatives
                                ENDDO
                             ENDIF
@@ -3933,18 +4057,18 @@ CONTAINS
                    j=1
                    !apex node
                    np=1
-                   npg=COMPONENT_NODE_TO_USER_NUMBER(ELLIPSOID_MESH%GENERATED_MESH,basis_idx,np,ERR,ERROR)
-                   CALL DECOMPOSITION_NODE_DOMAIN_GET(DECOMPOSITION,npg,MESH_COMPONENT,DOMAIN_NUMBER,ERR,ERROR,*999)
+                   npg=COMPONENT_NODE_TO_USER_NUMBER(ELLIPSOID_MESH%GENERATED_MESH,basis_idx,np,err,error)
+                   CALL DECOMPOSITION_NODE_DOMAIN_GET(DECOMPOSITION,npg,MESH_COMPONENT,DOMAIN_NUMBER,err,error,*999)
                    IF(DOMAIN_NUMBER==MY_COMPUTATIONAL_NODE) THEN
                       RECT_COORDS(1)=0
                       RECT_COORDS(2)=0
                       RECT_COORDS(3)=-ELLIPSOID_EXTENT(1)
                       DO component_idx=1,FIELD_VARIABLE%NUMBER_OF_COMPONENTS
                          CALL FIELD_PARAMETER_SET_UPDATE_NODE(FIELD,FIELD_U_VARIABLE_TYPE,FIELD_VALUES_SET_TYPE,1,1,npg, &
-                              & component_idx,RECT_COORDS(component_idx),ERR,ERROR,*999)
+                              & component_idx,RECT_COORDS(component_idx),err,error,*999)
                          local_node=DOMAIN%MAPPINGS%NODES%GLOBAL_TO_LOCAL_MAP(npg)%local_number(1)
                          IF(DOMAIN_NODES%NODES(local_node)%NUMBER_OF_DERIVATIVES>1) THEN
-                            CALL FLAG_ERROR("Not generalized to hermittean elements.",ERR,ERROR,*999)
+                            CALL FlagError("Not generalized to hermittean elements.",err,error,*999)
                          ENDIF !derivatives
                       ENDDO
                    ENDIF
@@ -3959,15 +4083,15 @@ CONTAINS
                          RECT_COORDS(2)=alpha*(cosh(xi)*cos(nu)*sin(phi))
                          RECT_COORDS(3)=alpha*(sinh(xi)*sin(nu))
                          np=np+1
-                         npg=COMPONENT_NODE_TO_USER_NUMBER(ELLIPSOID_MESH%GENERATED_MESH,basis_idx,np,ERR,ERROR)
-                         CALL DECOMPOSITION_NODE_DOMAIN_GET(DECOMPOSITION,npg,MESH_COMPONENT,DOMAIN_NUMBER,ERR,ERROR,*999)
+                         npg=COMPONENT_NODE_TO_USER_NUMBER(ELLIPSOID_MESH%GENERATED_MESH,basis_idx,np,err,error)
+                         CALL DECOMPOSITION_NODE_DOMAIN_GET(DECOMPOSITION,npg,MESH_COMPONENT,DOMAIN_NUMBER,err,error,*999)
                          IF(DOMAIN_NUMBER==MY_COMPUTATIONAL_NODE) THEN
                             DO component_idx=1,FIELD_VARIABLE%NUMBER_OF_COMPONENTS
                                CALL FIELD_PARAMETER_SET_UPDATE_NODE(FIELD,FIELD_U_VARIABLE_TYPE,FIELD_VALUES_SET_TYPE,1,1,npg, &
-                                    & component_idx,RECT_COORDS(component_idx),ERR,ERROR,*999)
+                                    & component_idx,RECT_COORDS(component_idx),err,error,*999)
                                local_node=DOMAIN%MAPPINGS%NODES%GLOBAL_TO_LOCAL_MAP(npg)%local_number(1)
                                IF(DOMAIN_NODES%NODES(local_node)%NUMBER_OF_DERIVATIVES>1) THEN
-                                  CALL FLAG_ERROR("Not generalized to hermittean elements.",ERR,ERROR,*999)
+                                  CALL FlagError("Not generalized to hermittean elements.",err,error,*999)
                                ENDIF !derivatives
                             ENDDO
                          ENDIF
@@ -3982,15 +4106,15 @@ CONTAINS
                       RECT_COORDS(2)=0
                       RECT_COORDS(3)=-ELLIPSOID_EXTENT(1)-(k-1)*(DELTAi(3))
                       np=np+1
-                      npg=COMPONENT_NODE_TO_USER_NUMBER(ELLIPSOID_MESH%GENERATED_MESH,basis_idx,np,ERR,ERROR)
-                      CALL DECOMPOSITION_NODE_DOMAIN_GET(DECOMPOSITION,npg,MESH_COMPONENT,DOMAIN_NUMBER,ERR,ERROR,*999)
+                      npg=COMPONENT_NODE_TO_USER_NUMBER(ELLIPSOID_MESH%GENERATED_MESH,basis_idx,np,err,error)
+                      CALL DECOMPOSITION_NODE_DOMAIN_GET(DECOMPOSITION,npg,MESH_COMPONENT,DOMAIN_NUMBER,err,error,*999)
                       IF(DOMAIN_NUMBER==MY_COMPUTATIONAL_NODE) THEN
                          DO component_idx=1,FIELD_VARIABLE%NUMBER_OF_COMPONENTS
                             CALL FIELD_PARAMETER_SET_UPDATE_NODE(FIELD,FIELD_U_VARIABLE_TYPE,FIELD_VALUES_SET_TYPE,1,1,npg, &
-                                 & component_idx,RECT_COORDS(component_idx),ERR,ERROR,*999)
+                                 & component_idx,RECT_COORDS(component_idx),err,error,*999)
                             local_node=DOMAIN%MAPPINGS%NODES%GLOBAL_TO_LOCAL_MAP(npg)%local_number(1)
                             IF(DOMAIN_NODES%NODES(local_node)%NUMBER_OF_DERIVATIVES>1) THEN
-                               CALL FLAG_ERROR("Not generalized to hermittean elements.",ERR,ERROR,*999)
+                               CALL FlagError("Not generalized to hermittean elements.",err,error,*999)
                             ENDIF !derivatives
                          ENDDO
                       ENDIF
@@ -4013,15 +4137,15 @@ CONTAINS
                             RECT_COORDS(2)=y*(1+2*t/(ELLIPSOID_EXTENT(2))**2)
                             RECT_COORDS(3)=z*(1+2*t/(ELLIPSOID_EXTENT(1))**2)
                             np=np+1
-                            npg=COMPONENT_NODE_TO_USER_NUMBER(ELLIPSOID_MESH%GENERATED_MESH,basis_idx,np,ERR,ERROR)
-                            CALL DECOMPOSITION_NODE_DOMAIN_GET(DECOMPOSITION,npg,MESH_COMPONENT,DOMAIN_NUMBER,ERR,ERROR,*999)
+                            npg=COMPONENT_NODE_TO_USER_NUMBER(ELLIPSOID_MESH%GENERATED_MESH,basis_idx,np,err,error)
+                            CALL DECOMPOSITION_NODE_DOMAIN_GET(DECOMPOSITION,npg,MESH_COMPONENT,DOMAIN_NUMBER,err,error,*999)
                             IF(DOMAIN_NUMBER==MY_COMPUTATIONAL_NODE) THEN
                                DO component_idx=1,FIELD_VARIABLE%NUMBER_OF_COMPONENTS
                                   CALL FIELD_PARAMETER_SET_UPDATE_NODE(FIELD,FIELD_U_VARIABLE_TYPE,FIELD_VALUES_SET_TYPE,1,1,npg, &
-                                       & component_idx,RECT_COORDS(component_idx),ERR,ERROR,*999)
+                                       & component_idx,RECT_COORDS(component_idx),err,error,*999)
                                   local_node=DOMAIN%MAPPINGS%NODES%GLOBAL_TO_LOCAL_MAP(npg)%local_number(1)
                                   IF(DOMAIN_NODES%NODES(local_node)%NUMBER_OF_DERIVATIVES>1) THEN
-                                     CALL FLAG_ERROR("Not generalized to hermittean elements.",ERR,ERROR,*999)
+                                     CALL FlagError("Not generalized to hermittean elements.",err,error,*999)
                                   ENDIF !derivatives
                                ENDDO
                             ENDIF
@@ -4029,36 +4153,36 @@ CONTAINS
                       ENDDO
                    ENDDO
                 ELSE
-                   CALL FLAG_ERROR("Not valid long axis - short axis relation",ERR,ERROR,*999)
+                   CALL FlagError("Not valid long axis - short axis relation",err,error,*999)
                 ENDIF
              ELSE
-                CALL FLAG_ERROR("All field variable components must have node-based interpolation.",ERR,ERROR,*999)
+                CALL FlagError("All field variable components must have node-based interpolation.",err,error,*999)
              ENDIF
-             CALL FIELD_PARAMETER_SET_UPDATE_START(FIELD,FIELD_U_VARIABLE_TYPE,FIELD_VALUES_SET_TYPE,ERR,ERROR,*999)
-             CALL FIELD_PARAMETER_SET_UPDATE_FINISH(FIELD,FIELD_U_VARIABLE_TYPE,FIELD_VALUES_SET_TYPE,ERR,ERROR,*999)
+             CALL FIELD_PARAMETER_SET_UPDATE_START(FIELD,FIELD_U_VARIABLE_TYPE,FIELD_VALUES_SET_TYPE,err,error,*999)
+             CALL FIELD_PARAMETER_SET_UPDATE_FINISH(FIELD,FIELD_U_VARIABLE_TYPE,FIELD_VALUES_SET_TYPE,err,error,*999)
           ELSE
-             CALL FLAG_ERROR("Geometric field must be three dimensional.",ERR,ERROR,*999)
+             CALL FlagError("Geometric field must be three dimensional.",err,error,*999)
           ENDIF
        ELSE
-          LOCAL_ERROR="The standard field variable is not associated for field number "// &
-               & TRIM(NUMBER_TO_VSTRING(FIELD%USER_NUMBER,"*",ERR,ERROR))//"."
-          CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+          localError="The standard field variable is not associated for field number "// &
+               & TRIM(NumberToVString(FIELD%USER_NUMBER,"*",err,error))//"."
+          CALL FlagError(localError,err,error,*999)
        ENDIF
     ELSE
-       LOCAL_ERROR="Field number "//TRIM(NUMBER_TO_VSTRING(FIELD%USER_NUMBER,"*",ERR,ERROR))//" is not a geometric field."
-       CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+       localError="Field number "//TRIM(NumberToVString(FIELD%USER_NUMBER,"*",err,error))//" is not a geometric field."
+       CALL FlagError(localError,err,error,*999)
     ENDIF
 
     ! all done
     IF(ALLOCATED(NIDX)) DEALLOCATE(NIDX)
     IF(ALLOCATED(EIDX)) DEALLOCATE(EIDX)
 
-    CALL EXITS("GENERATED_MESH_ELLIPSOID_GEOMETRIC_PARAMETERS_CALCULATE")
+    CALL Exits("GENERATED_MESH_ELLIPSOID_GEOMETRIC_PARAMETERS_CALCULATE")
     RETURN
 999 IF(ALLOCATED(NIDX)) DEALLOCATE(NIDX)
     IF(ALLOCATED(EIDX)) DEALLOCATE(EIDX)
-    CALL ERRORS("GENERATED_MESH_ELLIPSOID_GEOMETRIC_PARAMETERS_CALCULATE",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_ELLIPSOID_GEOMETRIC_PARAMETERS_CALCULATE")
+    CALL Errors("GENERATED_MESH_ELLIPSOID_GEOMETRIC_PARAMETERS_CALCULATE",err,error)
+    CALL Exits("GENERATED_MESH_ELLIPSOID_GEOMETRIC_PARAMETERS_CALCULATE")
     RETURN 1
 
   END SUBROUTINE GENERATED_MESH_ELLIPSOID_GEOMETRIC_PARAMETERS_CALCULATE
@@ -4068,16 +4192,16 @@ CONTAINS
   !
 
   !>Provides an easy way to grab surfaces for boundary condition assignment
-  SUBROUTINE GENERATED_MESH_REGULAR_SURFACE_GET(REGULAR_MESH,MESH_COMPONENT,SURFACE_TYPE,SURFACE_NODES,NORMAL_XI,ERR,ERROR,*)
+  SUBROUTINE GENERATED_MESH_REGULAR_SURFACE_GET(REGULAR_MESH,MESH_COMPONENT,SURFACE_TYPE,SURFACE_NODES,NORMAL_XI,err,error,*)
 
     ! Argument variables
-    TYPE(GENERATED_MESH_REGULAR_TYPE), POINTER :: REGULAR_MESH !<A pointer to the regular mesh object
+    TYPE(GeneratedMeshRegularType), POINTER :: REGULAR_MESH !<A pointer to the regular mesh object
     INTEGER(INTG), INTENT(IN) :: MESH_COMPONENT !<The mesh component to get the surface for.
-    INTEGER(INTG), INTENT(IN) :: SURFACE_TYPE !<A constant identifying the type of surface to get \see GENERATED_MESH_ROUTINES_GeneratedMeshRegularSurfaces,GENERATED_MESH_ROUTINES
+    INTEGER(INTG), INTENT(IN) :: SURFACE_TYPE !<A constant identifying the type of surface to get \see GeneratedMeshRoutines_GeneratedMeshRegularSurfaces,GeneratedMeshRoutines
     INTEGER(INTG), ALLOCATABLE, INTENT(OUT) :: SURFACE_NODES(:) !<On exit, contains the list of nodes belonging to the surface
     INTEGER(INTG), INTENT(OUT) :: NORMAL_XI !<On exit, contains the xi direction of the outward pointing normal of the surface
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     ! Local variables
     TYPE(BASIS_TYPE), POINTER :: BASIS
     INTEGER(INTG),ALLOCATABLE :: NIDX(:,:,:),EIDX(:,:,:)
@@ -4085,25 +4209,25 @@ CONTAINS
     INTEGER(INTG) :: NUMBER_OF_NODES_XI(3) ! Number of nodes per element in each xi direction (basis property)
     INTEGER(INTG) :: num_dims,TOTAL_NUMBER_OF_NODES,TOTAL_NUMBER_OF_ELEMENTS,NODE_USER_NUMBER
     REAL(DP) :: DELTA(3),DELTAI(3)
-    TYPE(VARYING_STRING) :: LOCAL_ERROR
+    TYPE(VARYING_STRING) :: localError
     INTEGER(INTG) :: node_counter,i,j,k
 
-    CALL ENTERS("GENERATED_MESH_REGULAR_SURFACE_GET",ERR,ERROR,*999)
+    CALL Enters("GENERATED_MESH_REGULAR_SURFACE_GET",err,error,*999)
 
-    IF(ALLOCATED(REGULAR_MESH%NUMBER_OF_ELEMENTS_XI)) THEN
-      num_dims=SIZE(REGULAR_MESH%NUMBER_OF_ELEMENTS_XI)
+    IF(ALLOCATED(REGULAR_MESH%numberOfElementsXi)) THEN
+      num_dims=SIZE(REGULAR_MESH%numberOfElementsXi)
       IF(num_dims==2) THEN
-        NUMBER_OF_ELEMENTS_XI(1:2)=REGULAR_MESH%NUMBER_OF_ELEMENTS_XI(1:2)
+        NUMBER_OF_ELEMENTS_XI(1:2)=REGULAR_MESH%numberOfElementsXi(1:2)
         NUMBER_OF_ELEMENTS_XI(3)=1
       ELSE IF (num_dims==1) THEN
-        NUMBER_OF_ELEMENTS_XI(1)=REGULAR_MESH%NUMBER_OF_ELEMENTS_XI(1)
+        NUMBER_OF_ELEMENTS_XI(1)=REGULAR_MESH%numberOfElementsXi(1)
         NUMBER_OF_ELEMENTS_XI(2)=1
         NUMBER_OF_ELEMENTS_XI(3)=1
       ELSE
-        NUMBER_OF_ELEMENTS_XI=REGULAR_MESH%NUMBER_OF_ELEMENTS_XI
+        NUMBER_OF_ELEMENTS_XI=REGULAR_MESH%numberOfElementsXi
       ENDIF
-      IF(ASSOCIATED(REGULAR_MESH%BASES(MESH_COMPONENT)%PTR)) THEN
-        BASIS=>REGULAR_MESH%BASES(MESH_COMPONENT)%PTR
+      IF(ASSOCIATED(REGULAR_MESH%bases(MESH_COMPONENT)%PTR)) THEN
+        BASIS=>REGULAR_MESH%bases(MESH_COMPONENT)%PTR
         IF(.NOT.ALLOCATED(SURFACE_NODES)) THEN
           !Node that simplex bases have an extra area coordinate so size of number_of_nodes_xic=num_dims+1
           NUMBER_OF_NODES_XI(1:num_dims)=BASIS%NUMBER_OF_NODES_XIC(1:num_dims)
@@ -4111,12 +4235,12 @@ CONTAINS
 
           ! build indices first (some of these are dummy arguments)
           CALL GENERATED_MESH_REGULAR_BUILD_NODE_INDICES(NUMBER_OF_ELEMENTS_XI,NUMBER_OF_NODES_XI, &
-              & REGULAR_MESH%MAXIMUM_EXTENT,TOTAL_NUMBER_OF_NODES,TOTAL_NUMBER_OF_ELEMENTS,NIDX,EIDX,DELTA,DELTAI,ERR,ERROR,*999)
+              & REGULAR_MESH%maximumExtent,TOTAL_NUMBER_OF_NODES,TOTAL_NUMBER_OF_ELEMENTS,NIDX,EIDX,DELTA,DELTAI,err,error,*999)
           node_counter=0
           SELECT CASE(SURFACE_TYPE)
           CASE(GENERATED_MESH_REGULAR_LEFT_SURFACE)
-            ALLOCATE(SURFACE_NODES((SIZE(NIDX,2))*(SIZE(NIDX,3))),STAT=ERR)
-            IF(ERR/=0) CALL FLAG_ERROR("Could not allocate NODES array.",ERR,ERROR,*999)
+            ALLOCATE(SURFACE_NODES((SIZE(NIDX,2))*(SIZE(NIDX,3))),STAT=err)
+            IF(err/=0) CALL FlagError("Could not allocate NODES array.",err,error,*999)
             DO k=1,SIZE(NIDX,3)
               DO j=1,SIZE(NIDX,2)
                 node_counter=node_counter+1
@@ -4125,8 +4249,8 @@ CONTAINS
             ENDDO
             NORMAL_XI=-1
           CASE(GENERATED_MESH_REGULAR_RIGHT_SURFACE)
-            ALLOCATE(SURFACE_NODES((SIZE(NIDX,2))*(SIZE(NIDX,3))),STAT=ERR)
-            IF(ERR/=0) CALL FLAG_ERROR("Could not allocate NODES array.",ERR,ERROR,*999)
+            ALLOCATE(SURFACE_NODES((SIZE(NIDX,2))*(SIZE(NIDX,3))),STAT=err)
+            IF(err/=0) CALL FlagError("Could not allocate NODES array.",err,error,*999)
             DO k=1,SIZE(NIDX,3)
               DO j=1,SIZE(NIDX,2)
                 node_counter=node_counter+1
@@ -4135,8 +4259,8 @@ CONTAINS
             ENDDO
             NORMAL_XI=1
           CASE(GENERATED_MESH_REGULAR_TOP_SURFACE)
-            ALLOCATE(SURFACE_NODES((SIZE(NIDX,1))*(SIZE(NIDX,2))),STAT=ERR)
-            IF(ERR/=0) CALL FLAG_ERROR("Could not allocate NODES array.",ERR,ERROR,*999)
+            ALLOCATE(SURFACE_NODES((SIZE(NIDX,1))*(SIZE(NIDX,2))),STAT=err)
+            IF(err/=0) CALL FlagError("Could not allocate NODES array.",err,error,*999)
             DO j=1,SIZE(NIDX,2)
               DO i=1,SIZE(NIDX,1)
                 node_counter=node_counter+1
@@ -4145,8 +4269,8 @@ CONTAINS
             ENDDO
             NORMAL_XI=3
           CASE(GENERATED_MESH_REGULAR_BOTTOM_SURFACE)
-            ALLOCATE(SURFACE_NODES((SIZE(NIDX,1))*(SIZE(NIDX,2))),STAT=ERR)
-            IF(ERR/=0) CALL FLAG_ERROR("Could not allocate NODES array.",ERR,ERROR,*999)
+            ALLOCATE(SURFACE_NODES((SIZE(NIDX,1))*(SIZE(NIDX,2))),STAT=err)
+            IF(err/=0) CALL FlagError("Could not allocate NODES array.",err,error,*999)
             DO j=1,SIZE(NIDX,2)
               DO i=1,SIZE(NIDX,1)
                 node_counter=node_counter+1
@@ -4155,8 +4279,8 @@ CONTAINS
             ENDDO
             NORMAL_XI=-3
           CASE(GENERATED_MESH_REGULAR_FRONT_SURFACE)
-            ALLOCATE(SURFACE_NODES((SIZE(NIDX,1))*(SIZE(NIDX,3))),STAT=ERR)
-            IF(ERR/=0) CALL FLAG_ERROR("Could not allocate NODES array.",ERR,ERROR,*999)
+            ALLOCATE(SURFACE_NODES((SIZE(NIDX,1))*(SIZE(NIDX,3))),STAT=err)
+            IF(err/=0) CALL FlagError("Could not allocate NODES array.",err,error,*999)
             DO j=1,SIZE(NIDX,3)
               DO i=1,SIZE(NIDX,1)
                 node_counter=node_counter+1
@@ -4165,8 +4289,8 @@ CONTAINS
             ENDDO
             NORMAL_XI=-2
           CASE(GENERATED_MESH_REGULAR_BACK_SURFACE)
-            ALLOCATE(SURFACE_NODES((SIZE(NIDX,1))*(SIZE(NIDX,3))),STAT=ERR)
-            IF(ERR/=0) CALL FLAG_ERROR("Could not allocate NODES array.",ERR,ERROR,*999)
+            ALLOCATE(SURFACE_NODES((SIZE(NIDX,1))*(SIZE(NIDX,3))),STAT=err)
+            IF(err/=0) CALL FlagError("Could not allocate NODES array.",err,error,*999)
             DO j=1,SIZE(NIDX,3)
               DO i=1,SIZE(NIDX,1)
                 node_counter=node_counter+1
@@ -4175,40 +4299,40 @@ CONTAINS
             ENDDO
             NORMAL_XI=2
           CASE DEFAULT
-            LOCAL_ERROR="The specified surface type of "//TRIM(NUMBER_TO_VSTRING(SURFACE_TYPE,"*",ERR,ERROR))// &
+            localError="The specified surface type of "//TRIM(NumberToVString(SURFACE_TYPE,"*",err,error))// &
               & " is invalid for a regular mesh."
-            CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+            CALL FlagError(localError,err,error,*999)
           END SELECT
           !Now convert the component node numbering to user numbers if a mesh has multiple components
           DO node_counter=1,SIZE(SURFACE_NODES,1)
-            SELECT CASE(REGULAR_MESH%BASES(MESH_COMPONENT)%PTR%TYPE)
+            SELECT CASE(REGULAR_MESH%bases(MESH_COMPONENT)%PTR%TYPE)
             CASE(BASIS_LAGRANGE_HERMITE_TP_TYPE)
               CALL GENERATED_MESH_REGULAR_COMPONENT_NODE_TO_USER_NUMBER(REGULAR_MESH%GENERATED_MESH,MESH_COMPONENT, &
-                  & SURFACE_NODES(node_counter),NODE_USER_NUMBER,ERR,ERROR,*999)
+                  & SURFACE_NODES(node_counter),NODE_USER_NUMBER,err,error,*999)
               SURFACE_NODES(node_counter)=NODE_USER_NUMBER
             CASE(BASIS_SIMPLEX_TYPE)
               SURFACE_NODES(node_counter)=COMPONENT_NODE_TO_USER_NUMBER(REGULAR_MESH%GENERATED_MESH,MESH_COMPONENT, &
-                  & SURFACE_NODES(node_counter),ERR,ERROR)
-              IF(ERR/=0) GOTO 999
+                  & SURFACE_NODES(node_counter),err,error)
+              IF(err/=0) GOTO 999
             CASE DEFAULT
-              CALL FLAG_ERROR("The basis type of "//TRIM(NUMBER_TO_VSTRING(REGULAR_MESH%BASES(MESH_COMPONENT)%PTR%TYPE, &
-                & "*",ERR,ERROR))//" is not implemented when getting a regular mesh surface.",ERR,ERROR,*999)
+              CALL FlagError("The basis type of "//TRIM(NumberToVString(REGULAR_MESH%bases(MESH_COMPONENT)%PTR%TYPE, &
+                & "*",err,error))//" is not implemented when getting a regular mesh surface.",err,error,*999)
             END SELECT
           END DO
         ELSE
-          CALL FLAG_ERROR("Output SURFACE_NODES array is already allocated.",ERR,ERROR,*999)
+          CALL FlagError("Output SURFACE_NODES array is already allocated.",err,error,*999)
         ENDIF
       ELSE
-        CALL FLAG_ERROR("Regular mesh object does not have a basis associated.",ERR,ERROR,*999)
+        CALL FlagError("Regular mesh object does not have a basis associated.",err,error,*999)
       ENDIF
     ELSE
-      CALL FLAG_ERROR("Regular mesh object does not have number of elements property specified.",ERR,ERROR,*999)
+      CALL FlagError("Regular mesh object does not have number of elements property specified.",err,error,*999)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_REGULAR_SURFACE_GET")
+    CALL Exits("GENERATED_MESH_REGULAR_SURFACE_GET")
     RETURN
-999 CALL ERRORS("GENERATED_MESH_REGULAR_SURFACE_GET",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_REGULAR_SURFACE_GET")
+999 CALL Errors("GENERATED_MESH_REGULAR_SURFACE_GET",err,error)
+    CALL Exits("GENERATED_MESH_REGULAR_SURFACE_GET")
     RETURN 1
   END SUBROUTINE GENERATED_MESH_REGULAR_SURFACE_GET
 
@@ -4217,16 +4341,16 @@ CONTAINS
   !
 
   !>Provides an easy way to grab surfaces for boundary condition assignment
-  SUBROUTINE GENERATED_MESH_CYLINDER_SURFACE_GET(CYLINDER_MESH,MESH_COMPONENT,SURFACE_TYPE,SURFACE_NODES,NORMAL_XI,ERR,ERROR,*)
+  SUBROUTINE GENERATED_MESH_CYLINDER_SURFACE_GET(CYLINDER_MESH,MESH_COMPONENT,SURFACE_TYPE,SURFACE_NODES,NORMAL_XI,err,error,*)
 
     ! Argument variables
-    TYPE(GENERATED_MESH_CYLINDER_TYPE), POINTER :: CYLINDER_MESH !<A pointer to the cylinder mesh object
+    TYPE(GeneratedMeshCylinderType), POINTER :: CYLINDER_MESH !<A pointer to the cylinder mesh object
     INTEGER(INTG), INTENT(IN) :: MESH_COMPONENT !<The mesh component to get the surface for.
-    INTEGER(INTG), INTENT(IN) :: SURFACE_TYPE !<A constant identifying the type of surface to get \see GENERATED_MESH_ROUTINES_GeneratedMeshCylinderSurfaces,GENERATED_MESH_ROUTINES
+    INTEGER(INTG), INTENT(IN) :: SURFACE_TYPE !<A constant identifying the type of surface to get \see GeneratedMeshRoutines_GeneratedMeshCylinderSurfaces,GeneratedMeshRoutines
     INTEGER(INTG), ALLOCATABLE, INTENT(OUT) :: SURFACE_NODES(:) !<On exit, contains the list of nodes belonging to the surface
     INTEGER(INTG), INTENT(OUT) :: NORMAL_XI !<On exit, contains the xi direction of the outward pointing normal of the surface
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     ! Local variables
     TYPE(BASIS_TYPE), POINTER :: BASIS
     INTEGER(INTG),ALLOCATABLE :: NIDX(:,:,:),EIDX(:,:,:)
@@ -4234,86 +4358,86 @@ CONTAINS
     INTEGER(INTG) :: NUMBER_OF_NODES_XI(3) ! Number of nodes per element in each xi direction (basis property)
     INTEGER(INTG) :: total_number_of_nodes,total_number_of_elements
     REAL(DP) :: delta(3),deltai(3)
-    TYPE(VARYING_STRING) :: LOCAL_ERROR
+    TYPE(VARYING_STRING) :: localError
     INTEGER(INTG) :: node_counter,i, j, k
 
-    CALL ENTERS("GENERATED_MESH_CYLINDER_SURFACE_GET",ERR,ERROR,*999)
+    CALL Enters("GENERATED_MESH_CYLINDER_SURFACE_GET",err,error,*999)
 
     ! let's go
-    IF(ALLOCATED(CYLINDER_MESH%NUMBER_OF_ELEMENTS_XI)) THEN
-      NUMBER_OF_ELEMENTS_XI=CYLINDER_MESH%NUMBER_OF_ELEMENTS_XI
-      IF(ASSOCIATED(CYLINDER_MESH%BASES(MESH_COMPONENT)%PTR)) THEN
-        BASIS=>CYLINDER_MESH%BASES(MESH_COMPONENT)%PTR
+    IF(ALLOCATED(CYLINDER_MESH%numberOfElementsXi)) THEN
+      NUMBER_OF_ELEMENTS_XI=CYLINDER_MESH%numberOfElementsXi
+      IF(ASSOCIATED(CYLINDER_MESH%bases(MESH_COMPONENT)%PTR)) THEN
+        BASIS=>CYLINDER_MESH%bases(MESH_COMPONENT)%PTR
         IF(.NOT.ALLOCATED(SURFACE_NODES)) THEN
           NUMBER_OF_NODES_XI=BASIS%NUMBER_OF_NODES_XIC
           ! build indices first (some of these are dummy arguments)
           CALL GENERATED_MESH_CYLINDER_BUILD_NODE_INDICES(NUMBER_OF_ELEMENTS_XI,NUMBER_OF_NODES_XI, &
               & cylinder_mesh%cylinder_extent,total_number_of_nodes,total_number_of_elements,NIDX,EIDX, &
-              & delta,deltai,ERR,ERROR,*999)
+              & delta,deltai,err,error,*999)
           node_counter=0
           SELECT CASE(SURFACE_TYPE)
           CASE(GENERATED_MESH_CYLINDER_INNER_SURFACE)
-            ALLOCATE(SURFACE_NODES((SIZE(NIDX,2))*(SIZE(NIDX,3))),STAT=ERR)
-            IF(ERR/=0) CALL FLAG_ERROR("Could not allocate NODES array.",ERR,ERROR,*999)
+            ALLOCATE(SURFACE_NODES((SIZE(NIDX,2))*(SIZE(NIDX,3))),STAT=err)
+            IF(err/=0) CALL FlagError("Could not allocate NODES array.",err,error,*999)
             DO k=1,SIZE(NIDX,3)
               DO j=1,SIZE(NIDX,2)
                 node_counter=node_counter+1
                 SURFACE_NODES(node_counter)=COMPONENT_NODE_TO_USER_NUMBER(CYLINDER_MESH%GENERATED_MESH,MESH_COMPONENT, &
-                    & NIDX(1,j,k),ERR,ERROR)
+                    & NIDX(1,j,k),err,error)
               ENDDO
             ENDDO
             NORMAL_XI=-1
           CASE(GENERATED_MESH_CYLINDER_OUTER_SURFACE)
-            ALLOCATE(SURFACE_NODES((SIZE(NIDX,2))*(SIZE(NIDX,3))),STAT=ERR)
-            IF(ERR/=0) CALL FLAG_ERROR("Could not allocate NODES array.",ERR,ERROR,*999)
+            ALLOCATE(SURFACE_NODES((SIZE(NIDX,2))*(SIZE(NIDX,3))),STAT=err)
+            IF(err/=0) CALL FlagError("Could not allocate NODES array.",err,error,*999)
             DO k=1,SIZE(NIDX,3)
               DO j=1,SIZE(NIDX,2)
                 node_counter=node_counter+1
                 SURFACE_NODES(node_counter)=COMPONENT_NODE_TO_USER_NUMBER(CYLINDER_MESH%GENERATED_MESH,MESH_COMPONENT, &
-                    & NIDX(SIZE(NIDX,1),j,k),ERR,ERROR)
+                    & NIDX(SIZE(NIDX,1),j,k),err,error)
               ENDDO
             ENDDO
             NORMAL_XI=1
           CASE(GENERATED_MESH_CYLINDER_TOP_SURFACE)
-            ALLOCATE(SURFACE_NODES((SIZE(NIDX,1))*(SIZE(NIDX,2))),STAT=ERR)
-            IF(ERR/=0) CALL FLAG_ERROR("Could not allocate NODES array.",ERR,ERROR,*999)
+            ALLOCATE(SURFACE_NODES((SIZE(NIDX,1))*(SIZE(NIDX,2))),STAT=err)
+            IF(err/=0) CALL FlagError("Could not allocate NODES array.",err,error,*999)
             DO j=1,SIZE(NIDX,2)
               DO i=1,SIZE(NIDX,1)
                 node_counter=node_counter+1
                 SURFACE_NODES(node_counter)=COMPONENT_NODE_TO_USER_NUMBER(CYLINDER_MESH%GENERATED_MESH,MESH_COMPONENT, &
-                    & NIDX(i,j,SIZE(NIDX,3)),ERR,ERROR)
+                    & NIDX(i,j,SIZE(NIDX,3)),err,error)
               ENDDO
             ENDDO
             NORMAL_XI=3
           CASE(GENERATED_MESH_CYLINDER_BOTTOM_SURFACE)
-            ALLOCATE(SURFACE_NODES((SIZE(NIDX,1))*(SIZE(NIDX,2))),STAT=ERR)
-            IF(ERR/=0) CALL FLAG_ERROR("Could not allocate NODES array.",ERR,ERROR,*999)
+            ALLOCATE(SURFACE_NODES((SIZE(NIDX,1))*(SIZE(NIDX,2))),STAT=err)
+            IF(err/=0) CALL FlagError("Could not allocate NODES array.",err,error,*999)
             DO j=1,SIZE(NIDX,2)
               DO i=1,SIZE(NIDX,1)
                 node_counter=node_counter+1
                 SURFACE_NODES(node_counter)=COMPONENT_NODE_TO_USER_NUMBER(CYLINDER_MESH%GENERATED_MESH,MESH_COMPONENT, &
-                    & NIDX(i,j,1),ERR,ERROR)
+                    & NIDX(i,j,1),err,error)
               ENDDO
             ENDDO
             NORMAL_XI=-3
           CASE DEFAULT
-            LOCAL_ERROR="The specified surface type of "//TRIM(NUMBER_TO_VSTRING(SURFACE_TYPE,"*",ERR,ERROR))//" is invalid."
-            CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+            localError="The specified surface type of "//TRIM(NumberToVString(SURFACE_TYPE,"*",err,error))//" is invalid."
+            CALL FlagError(localError,err,error,*999)
           END SELECT
         ELSE
-          CALL FLAG_ERROR("Output SURFACE_NODES array is already allocated.",ERR,ERROR,*999)
+          CALL FlagError("Output SURFACE_NODES array is already allocated.",err,error,*999)
         ENDIF
       ELSE
-        CALL FLAG_ERROR("Cylinder mesh object does not have a basis associated.",ERR,ERROR,*999)
+        CALL FlagError("Cylinder mesh object does not have a basis associated.",err,error,*999)
       ENDIF
     ELSE
-      CALL FLAG_ERROR("Cylinder mesh object does not have number of elements property specified.",ERR,ERROR,*999)
+      CALL FlagError("Cylinder mesh object does not have number of elements property specified.",err,error,*999)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_CYLINDER_SURFACE_GET")
+    CALL Exits("GENERATED_MESH_CYLINDER_SURFACE_GET")
     RETURN
-999 CALL ERRORS("GENERATED_MESH_CYLINDER_SURFACE_GET",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_CYLINDER_SURFACE_GET")
+999 CALL Errors("GENERATED_MESH_CYLINDER_SURFACE_GET",err,error)
+    CALL Exits("GENERATED_MESH_CYLINDER_SURFACE_GET")
     RETURN 1
   END SUBROUTINE GENERATED_MESH_CYLINDER_SURFACE_GET
   !
@@ -4321,16 +4445,16 @@ CONTAINS
   !
 
   !>Provides an easy way to grab surfaces for boundary condition assignment
-  SUBROUTINE GENERATED_MESH_ELLIPSOID_SURFACE_GET(ELLIPSOID_MESH,MESH_COMPONENT,SURFACE_TYPE,SURFACE_NODES,NORMAL_XI,ERR,ERROR,*)
+  SUBROUTINE GENERATED_MESH_ELLIPSOID_SURFACE_GET(ELLIPSOID_MESH,MESH_COMPONENT,SURFACE_TYPE,SURFACE_NODES,NORMAL_XI,err,error,*)
 
     ! Argument variables
-    TYPE(GENERATED_MESH_ELLIPSOID_TYPE), POINTER :: ELLIPSOID_MESH !<A pointer to the ellipsoid mesh object
+    TYPE(GeneratedMeshEllipsoidType), POINTER :: ELLIPSOID_MESH !<A pointer to the ellipsoid mesh object
     INTEGER(INTG), INTENT(IN) :: MESH_COMPONENT !<The mesh component to get the surface for.
-    INTEGER(INTG), INTENT(IN) :: SURFACE_TYPE !<A constant identifying the type of surface to get \see GENERATED_MESH_ROUTINES_GeneratedMeshEllipsoidSurfaces,GENERATED_MESH_ROUTINES
+    INTEGER(INTG), INTENT(IN) :: SURFACE_TYPE !<A constant identifying the type of surface to get \see GeneratedMeshRoutines_GeneratedMeshEllipsoidSurfaces,GeneratedMeshRoutines
     INTEGER(INTG), ALLOCATABLE, INTENT(OUT) :: SURFACE_NODES(:) !<On exit, contains the list of nodes belonging to the surface
     INTEGER(INTG), INTENT(OUT) :: NORMAL_XI !<On exit, contains the xi direction of the outward pointing normal of the surface
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     ! Local variables
     TYPE(BASIS_TYPE), POINTER :: BASIS
     INTEGER(INTG),ALLOCATABLE :: NIDX(:,:,:),EIDX(:,:,:),CORNER_NODES(:,:,:)
@@ -4338,20 +4462,20 @@ CONTAINS
     INTEGER(INTG) :: NUMBER_OF_NODES_XI(3) ! Number of nodes per element in each xi direction (basis property)
     INTEGER(INTG) :: total_number_of_nodes,total_number_of_elements
     REAL(DP) :: delta(3),deltai(3)
-    TYPE(VARYING_STRING) :: LOCAL_ERROR
+    TYPE(VARYING_STRING) :: localError
     INTEGER(INTG) :: node_counter,i, j, k
 
-    CALL ENTERS("GENERATED_MESH_ELLIPSOID_SURFACE_GET",ERR,ERROR,*999)
+    CALL Enters("GENERATED_MESH_ELLIPSOID_SURFACE_GET",err,error,*999)
 
     ! let's go
-    IF(ALLOCATED(ELLIPSOID_MESH%NUMBER_OF_ELEMENTS_XI)) THEN
-      NUMBER_OF_ELEMENTS_XI=ELLIPSOID_MESH%NUMBER_OF_ELEMENTS_XI
-      IF(ALLOCATED(ELLIPSOID_MESH%BASES)) THEN
+    IF(ALLOCATED(ELLIPSOID_MESH%numberOfElementsXi)) THEN
+      NUMBER_OF_ELEMENTS_XI=ELLIPSOID_MESH%numberOfElementsXi
+      IF(ALLOCATED(ELLIPSOID_MESH%bases)) THEN
 
 !         !Below, there is an issue:
-!         !  BASIS=>ELLIPSOID_MESH%BASES(MESH_COMPONENT)%PTR does not account for the fact that:
-!         !  in 'GENERATED_MESH_ELLIPSOID_CREATE_FINISH' the following is done:
-!         !  CALL MESH_NUMBER_OF_COMPONENTS_SET(GENERATED_MESH%MESH,SIZE(ELLIPSOID_MESH%BASES)/2,ERR,ERROR,*999)
+!         !  BASIS=>ELLIPSOID_MESH%bases(MESH_COMPONENT)%PTR does not account for the fact that:
+!         !  in 'GeneratedMeshEllipsoidCreateFinish' the following is done:
+!         !  CALL MESH_NUMBER_OF_COMPONENTS_SET(GENERATED_MESH%MESH,SIZE(ELLIPSOID_MESH%bases)/2,err,error,*999)
 !         !A temporary work around is the following (although this bug may need to be fixed in several places):
 !
 !         IF(MESH_COMPONENT==2) THEN
@@ -4360,35 +4484,35 @@ CONTAINS
 !           BASIS_COMPONENT = MESH_COMPONENT
 !         ENDIF
 !
-!         IF(ASSOCIATED(ELLIPSOID_MESH%BASES(BASIS_COMPONENT)%PTR)) THEN
-!           BASIS=>ELLIPSOID_MESH%BASES(BASIS_COMPONENT)%PTR
+!         IF(ASSOCIATED(ELLIPSOID_MESH%bases(BASIS_COMPONENT)%PTR)) THEN
+!           BASIS=>ELLIPSOID_MESH%bases(BASIS_COMPONENT)%PTR
 
-        IF(ASSOCIATED(ELLIPSOID_MESH%BASES(MESH_COMPONENT)%PTR)) THEN
-          BASIS=>ELLIPSOID_MESH%BASES(MESH_COMPONENT)%PTR
+        IF(ASSOCIATED(ELLIPSOID_MESH%bases(MESH_COMPONENT)%PTR)) THEN
+          BASIS=>ELLIPSOID_MESH%bases(MESH_COMPONENT)%PTR
           IF(.NOT.ALLOCATED(SURFACE_NODES)) THEN
             NUMBER_OF_NODES_XI=BASIS%NUMBER_OF_NODES_XIC
             ! build indices first (some of these are dummy arguments)
             CALL GENERATED_MESH_ELLIPSOID_BUILD_NODE_INDICES(NUMBER_OF_ELEMENTS_XI,NUMBER_OF_NODES_XI, &
                 & ellipsoid_mesh%ellipsoid_extent,total_number_of_nodes,total_number_of_elements,NIDX, &
-                & CORNER_NODES,EIDX,delta,deltai,ERR,ERROR,*999)
+                & CORNER_NODES,EIDX,delta,deltai,err,error,*999)
             node_counter=0
 
             SELECT CASE(SURFACE_TYPE)
 
             CASE(GENERATED_MESH_ELLIPSOID_INNER_SURFACE)
-              ALLOCATE(SURFACE_NODES((SIZE(NIDX,1))*(SIZE(NIDX,2)-1)+1),STAT=ERR)
-              IF(ERR/=0) CALL FLAG_ERROR("Could not allocate NODES array.",ERR,ERROR,*999)
+              ALLOCATE(SURFACE_NODES((SIZE(NIDX,1))*(SIZE(NIDX,2)-1)+1),STAT=err)
+              IF(err/=0) CALL FlagError("Could not allocate NODES array.",err,error,*999)
               j=1
               i=1
               node_counter=node_counter+1
               SURFACE_NODES(node_counter)=COMPONENT_NODE_TO_USER_NUMBER(ELLIPSOID_MESH%GENERATED_MESH,MESH_COMPONENT, &
-                  NIDX(i,j,1),ERR,ERROR)
+                  NIDX(i,j,1),err,error)
               DO j=2,SIZE(NIDX,2)
                 DO i=1, SIZE(NIDX,1)
                   node_counter=node_counter+1
                   IF (NIDX(i,j,1)/=0) THEN
                     SURFACE_NODES(node_counter)=COMPONENT_NODE_TO_USER_NUMBER(ELLIPSOID_MESH%GENERATED_MESH,MESH_COMPONENT, &
-                        & NIDX(i,j,1),ERR,ERROR)
+                        & NIDX(i,j,1),err,error)
                   ELSE
                     node_counter=node_counter-1
                   ENDIF
@@ -4397,19 +4521,19 @@ CONTAINS
               NORMAL_XI=-3
 
             CASE(GENERATED_MESH_ELLIPSOID_OUTER_SURFACE)
-              ALLOCATE(SURFACE_NODES((SIZE(NIDX,1))*(SIZE(NIDX,2)-1)+1),STAT=ERR)
-              IF(ERR/=0) CALL FLAG_ERROR("Could not allocate NODES array.",ERR,ERROR,*999)
+              ALLOCATE(SURFACE_NODES((SIZE(NIDX,1))*(SIZE(NIDX,2)-1)+1),STAT=err)
+              IF(err/=0) CALL FlagError("Could not allocate NODES array.",err,error,*999)
               j=1
               i=1
               node_counter=node_counter+1
               SURFACE_NODES(node_counter)=COMPONENT_NODE_TO_USER_NUMBER(ELLIPSOID_MESH%GENERATED_MESH,MESH_COMPONENT, &
-                  & NIDX(i,j,SIZE(NIDX,3)),ERR,ERROR)
+                  & NIDX(i,j,SIZE(NIDX,3)),err,error)
               DO j=2,SIZE(NIDX,2)
                 DO i=1, SIZE(NIDX,1)
                   node_counter=node_counter+1
                   IF (NIDX(i,j,SIZE(NIDX,3))/=0) THEN
                     SURFACE_NODES(node_counter)=COMPONENT_NODE_TO_USER_NUMBER(ELLIPSOID_MESH%GENERATED_MESH,MESH_COMPONENT, &
-                        & NIDX(i,j,SIZE(NIDX,3)),ERR,ERROR)
+                        & NIDX(i,j,SIZE(NIDX,3)),err,error)
                   ELSE
                     node_counter=node_counter-1
                   ENDIF
@@ -4418,14 +4542,14 @@ CONTAINS
               NORMAL_XI=3
 
             CASE(GENERATED_MESH_ELLIPSOID_TOP_SURFACE)
-              ALLOCATE(SURFACE_NODES((SIZE(NIDX,1))*(SIZE(NIDX,3))),STAT=ERR)
-              IF(ERR/=0) CALL FLAG_ERROR("Could not allocate NODES array.",ERR,ERROR,*999)
+              ALLOCATE(SURFACE_NODES((SIZE(NIDX,1))*(SIZE(NIDX,3))),STAT=err)
+              IF(err/=0) CALL FlagError("Could not allocate NODES array.",err,error,*999)
               DO k=1,SIZE(NIDX,3)
                 DO i=1, SIZE(NIDX,1)
                   node_counter=node_counter+1
                   IF (NIDX(i,SIZE(NIDX,2),k)/=0) THEN
                     SURFACE_NODES(node_counter)=COMPONENT_NODE_TO_USER_NUMBER(ELLIPSOID_MESH%GENERATED_MESH,MESH_COMPONENT, &
-                        & NIDX(i,SIZE(NIDX,2),k),ERR,ERROR)
+                        & NIDX(i,SIZE(NIDX,2),k),err,error)
                   ELSE
                     node_counter=node_counter-1
                   ENDIF
@@ -4433,26 +4557,26 @@ CONTAINS
               ENDDO
               NORMAL_XI=2
             CASE DEFAULT
-              LOCAL_ERROR="The specified surface type of "//TRIM(NUMBER_TO_VSTRING(SURFACE_TYPE,"*",ERR,ERROR))//" is invalid."
-              CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+              localError="The specified surface type of "//TRIM(NumberToVString(SURFACE_TYPE,"*",err,error))//" is invalid."
+              CALL FlagError(localError,err,error,*999)
             END SELECT
           ELSE
-            CALL FLAG_ERROR("Output SURFACE_NODES array is already allocated.",ERR,ERROR,*999)
+            CALL FlagError("Output SURFACE_NODES array is already allocated.",err,error,*999)
           ENDIF
         ELSE
-          CALL FLAG_ERROR("Ellipsoid mesh object does not have the first basis associated.",ERR,ERROR,*999)
+          CALL FlagError("Ellipsoid mesh object does not have the first basis associated.",err,error,*999)
         ENDIF
       ELSE
-        CALL FLAG_ERROR("Ellipsoid mesh object does not have bases allocated.",ERR,ERROR,*999)
+        CALL FlagError("Ellipsoid mesh object does not have bases allocated.",err,error,*999)
       ENDIF
     ELSE
-      CALL FLAG_ERROR("Ellipsoid mesh object does not have number of elements property specified.",ERR,ERROR,*999)
+      CALL FlagError("Ellipsoid mesh object does not have number of elements property specified.",err,error,*999)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_ELLIPSOID_SURFACE_GET")
+    CALL Exits("GENERATED_MESH_ELLIPSOID_SURFACE_GET")
     RETURN
-999 CALL ERRORS("GENERATED_MESH_ELLIPSOID_SURFACE_GET",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_ELLIPSOID_SURFACE_GET")
+999 CALL Errors("GENERATED_MESH_ELLIPSOID_SURFACE_GET",err,error)
+    CALL Exits("GENERATED_MESH_ELLIPSOID_SURFACE_GET")
     RETURN 1
   END SUBROUTINE GENERATED_MESH_ELLIPSOID_SURFACE_GET
 
@@ -4462,7 +4586,7 @@ CONTAINS
 
   !>Calculates the mesh topology information for a given regular mesh (Not to be called by user)
   SUBROUTINE GENERATED_MESH_REGULAR_BUILD_NODE_INDICES(NUMBER_ELEMENTS_XI,NUMBER_OF_NODES_XIC,MAXIMUM_EXTENT, &
-      & TOTAL_NUMBER_OF_NODES,TOTAL_NUMBER_OF_ELEMENTS,NIDX,EIDX,DELTA,DELTAi,ERR,ERROR,*)
+      & TOTAL_NUMBER_OF_NODES,TOTAL_NUMBER_OF_ELEMENTS,NIDX,EIDX,DELTA,DELTAi,err,error,*)
 
     ! Argument variables
     INTEGER(INTG),INTENT(IN) :: NUMBER_ELEMENTS_XI(3) !<Specified number of elements in each xi direction
@@ -4481,7 +4605,7 @@ CONTAINS
     INTEGER(INTG) :: xi_idx,ne1,ne2,ne3,nn1,nn2,nn3,NN,NE
     INTEGER(INTG) :: TOTAL_NUMBER_NODES_XI(3) !<Total number of nodes per element in each xi direction for this basis
 
-    CALL ENTERS("GENERATED_MESH_REGULAR_BUILD_NODE_INDICES",ERR,ERROR,*999)
+    CALL Enters("GENERATED_MESH_REGULAR_BUILD_NODE_INDICES",err,error,*999)
 
     IF(.NOT.ALLOCATED(NIDX)) THEN
       IF(.NOT.ALLOCATED(EIDX)) THEN
@@ -4500,8 +4624,8 @@ CONTAINS
         TOTAL_NUMBER_OF_ELEMENTS=PRODUCT(NUMBER_ELEMENTS_XI)
 
         ! calculate NIDX first
-        ALLOCATE(NIDX(TOTAL_NUMBER_NODES_XI(1),TOTAL_NUMBER_NODES_XI(2),TOTAL_NUMBER_NODES_XI(3)),STAT=ERR)
-        IF(ERR/=0) CALL FLAG_ERROR("Could not allocate NIDX array.",ERR,ERROR,*999)
+        ALLOCATE(NIDX(TOTAL_NUMBER_NODES_XI(1),TOTAL_NUMBER_NODES_XI(2),TOTAL_NUMBER_NODES_XI(3)),STAT=err)
+        IF(err/=0) CALL FlagError("Could not allocate NIDX array.",err,error,*999)
         NN=0
         DO nn3=1,TOTAL_NUMBER_NODES_XI(3)
           DO nn2=1,TOTAL_NUMBER_NODES_XI(2)
@@ -4514,8 +4638,8 @@ CONTAINS
         TOTAL_NUMBER_OF_NODES=NN
 
         ! now do EIDX
-        ALLOCATE(EIDX(NUMBER_ELEMENTS_XI(1),NUMBER_ELEMENTS_XI(2),NUMBER_ELEMENTS_XI(3)),STAT=ERR)
-        IF(ERR/=0) CALL FLAG_ERROR("Could not allocate EIDX array.",ERR,ERROR,*999)
+        ALLOCATE(EIDX(NUMBER_ELEMENTS_XI(1),NUMBER_ELEMENTS_XI(2),NUMBER_ELEMENTS_XI(3)),STAT=err)
+        IF(err/=0) CALL FlagError("Could not allocate EIDX array.",err,error,*999)
         NE=0
         DO ne3=1,NUMBER_ELEMENTS_XI(3)
           DO ne2=1,NUMBER_ELEMENTS_XI(2)
@@ -4528,16 +4652,16 @@ CONTAINS
         TOTAL_NUMBER_OF_ELEMENTS=NE
 
       ELSE
-        CALL FLAG_ERROR("NIDX array is already allocated.",ERR,ERROR,*999)
+        CALL FlagError("NIDX array is already allocated.",err,error,*999)
       ENDIF
     ELSE
-      CALL FLAG_ERROR("EIDX array is already allocated.",ERR,error,*999)
+      CALL FlagError("EIDX array is already allocated.",ERR,error,*999)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_REGULAR_BUILD_NODE_INDICES")
+    CALL Exits("GENERATED_MESH_REGULAR_BUILD_NODE_INDICES")
     RETURN
-999 CALL ERRORS("GENERATED_MESH_REGULAR_BUILD_NODE_INDICES",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_REGULAR_BUILD_NODE_INDICES")
+999 CALL Errors("GENERATED_MESH_REGULAR_BUILD_NODE_INDICES",err,error)
+    CALL Exits("GENERATED_MESH_REGULAR_BUILD_NODE_INDICES")
     RETURN 1
   END SUBROUTINE GENERATED_MESH_REGULAR_BUILD_NODE_INDICES
 
@@ -4547,7 +4671,7 @@ CONTAINS
 
   !>Calculates the mesh topology information for a given cylinder (Not to be called by user)
   SUBROUTINE GENERATED_MESH_CYLINDER_BUILD_NODE_INDICES(NUMBER_ELEMENTS_XI,NUMBER_OF_NODES_XIC,CYLINDER_EXTENT, &
-      & TOTAL_NUMBER_OF_NODES,TOTAL_NUMBER_OF_ELEMENTS,NIDX,EIDX,DELTA,DELTAi,ERR,ERROR,*)
+      & TOTAL_NUMBER_OF_NODES,TOTAL_NUMBER_OF_ELEMENTS,NIDX,EIDX,DELTA,DELTAi,err,error,*)
 
     ! Argument variables
     INTEGER(INTG),INTENT(IN) :: NUMBER_ELEMENTS_XI(3) !<Specified number of elements in each xi direction
@@ -4566,7 +4690,7 @@ CONTAINS
     INTEGER(INTG) :: xi_idx,ne1,ne2,ne3,nn1,nn2,nn3,NN,NE
     INTEGER(INTG) :: TOTAL_NUMBER_NODES_XI(3) ! total number of nodes in each xi direction
 
-    CALL ENTERS("GENERATED_MESH_CYLINDER_BUILD_NODE_INDICES",ERR,ERROR,*999)
+    CALL Enters("GENERATED_MESH_CYLINDER_BUILD_NODE_INDICES",err,error,*999)
 
     ! Can skip most of the testing as this subroutine is only to be called by
     ! GENERATED_MESH_CYLINDER_CREATE_FINISH, which tests the input params.
@@ -4588,8 +4712,8 @@ CONTAINS
         !TOTAL_NUMBER_OF_ELEMENTS=PRODUCT(NUMBER_ELEMENTS_XI)
 
         ! calculate NIDX first
-        ALLOCATE(NIDX(TOTAL_NUMBER_NODES_XI(1),TOTAL_NUMBER_NODES_XI(2),TOTAL_NUMBER_NODES_XI(3)),STAT=ERR)
-        IF(ERR/=0) CALL FLAG_ERROR("Could not allocate NIDX array.",ERR,ERROR,*999)
+        ALLOCATE(NIDX(TOTAL_NUMBER_NODES_XI(1),TOTAL_NUMBER_NODES_XI(2),TOTAL_NUMBER_NODES_XI(3)),STAT=err)
+        IF(err/=0) CALL FlagError("Could not allocate NIDX array.",err,error,*999)
         NN=0
         DO nn3=1,TOTAL_NUMBER_NODES_XI(3)
           DO nn2=1,TOTAL_NUMBER_NODES_XI(2)
@@ -4602,8 +4726,8 @@ CONTAINS
         TOTAL_NUMBER_OF_NODES=NN
 
         ! now do EIDX
-        ALLOCATE(EIDX(NUMBER_ELEMENTS_XI(1),NUMBER_ELEMENTS_XI(2),NUMBER_ELEMENTS_XI(3)),STAT=ERR)
-        IF(ERR/=0) CALL FLAG_ERROR("Could not allocate EIDX array.",ERR,ERROR,*999)
+        ALLOCATE(EIDX(NUMBER_ELEMENTS_XI(1),NUMBER_ELEMENTS_XI(2),NUMBER_ELEMENTS_XI(3)),STAT=err)
+        IF(err/=0) CALL FlagError("Could not allocate EIDX array.",err,error,*999)
         NE=0
         DO ne3=1,NUMBER_ELEMENTS_XI(3)
           DO ne2=1,NUMBER_ELEMENTS_XI(2)
@@ -4616,16 +4740,16 @@ CONTAINS
         TOTAL_NUMBER_OF_ELEMENTS=NE
 
       ELSE
-        CALL FLAG_ERROR("NIDX array is already allocated.",ERR,ERROR,*999)
+        CALL FlagError("NIDX array is already allocated.",err,error,*999)
       ENDIF
     ELSE
-      CALL FLAG_ERROR("EIDX array is already allocated.",ERR,error,*999)
+      CALL FlagError("EIDX array is already allocated.",ERR,error,*999)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_CYLINDER_BUILD_NODE_INDICES")
+    CALL Exits("GENERATED_MESH_CYLINDER_BUILD_NODE_INDICES")
     RETURN
-999 CALL ERRORS("GENERATED_MESH_CYLINDER_BUILD_NODE_INDICES",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_CYLINDER_BUILD_NODE_INDICES")
+999 CALL Errors("GENERATED_MESH_CYLINDER_BUILD_NODE_INDICES",err,error)
+    CALL Exits("GENERATED_MESH_CYLINDER_BUILD_NODE_INDICES")
     RETURN 1
   END SUBROUTINE GENERATED_MESH_CYLINDER_BUILD_NODE_INDICES
 
@@ -4635,7 +4759,7 @@ CONTAINS
 
   !>Calculate the mesh topology information for a given ellipsoid (Not to be called by user)
   SUBROUTINE GENERATED_MESH_ELLIPSOID_BUILD_NODE_INDICES(NUMBER_ELEMENTS_XI,NUMBER_OF_NODES_XI,ELLIPSOID_EXTENT, &
-    & TOTAL_NUMBER_OF_NODES,TOTAL_NUMBER_OF_ELEMENTS,NIDX,CORNER_NODES,EIDX,DELTA,DELTAi,ERR,ERROR,*)
+    & TOTAL_NUMBER_OF_NODES,TOTAL_NUMBER_OF_ELEMENTS,NIDX,CORNER_NODES,EIDX,DELTA,DELTAi,err,error,*)
 
     ! Argument variables
     INTEGER(INTG),INTENT(IN) :: NUMBER_ELEMENTS_XI(3) !<Specified number of elements in each xi direction
@@ -4655,10 +4779,10 @@ CONTAINS
     INTEGER(INTG) :: xi_idx,ne1,ne2,ne3,nn1,nn2,nn3,tn1,tn2,tn3,NN,NE
     INTEGER(INTG) :: TOTAL_NUMBER_NODES_XI(3) ! total number of nodes in each xi direction
 
-    CALL ENTERS("GENERATED_MESH_ELLIPSOID_BUILD_NODE_INDICES",ERR,ERROR,*999)
+    CALL Enters("GENERATED_MESH_ELLIPSOID_BUILD_NODE_INDICES",err,error,*999)
 
     ! Can skip most of the testing as this subroutine is only to be called by
-    ! GENERATED_MESH_ELLIPSOID_CREATE_FINISH, which tests the input params.
+    ! GeneratedMeshEllipsoidCreateFinish, which tests the input params.
     IF(.NOT.ALLOCATED(NIDX)) THEN
       IF(.NOT.ALLOCATED(EIDX)) THEN
         ! calculate DELTA and DELTAi
@@ -4677,10 +4801,10 @@ CONTAINS
         TOTAL_NUMBER_OF_ELEMENTS=PRODUCT(NUMBER_ELEMENTS_XI)
 
         ! calculate NIDX first
-        ALLOCATE(NIDX(TOTAL_NUMBER_NODES_XI(1),TOTAL_NUMBER_NODES_XI(2),TOTAL_NUMBER_NODES_XI(3)),STAT=ERR)
-        IF(ERR/=0) CALL FLAG_ERROR("Could not allocate NIDX array.",ERR,ERROR,*999)
-        ALLOCATE(CORNER_NODES(NUMBER_ELEMENTS_XI(1),NUMBER_ELEMENTS_XI(2)+1,NUMBER_ELEMENTS_XI(3)+1),STAT=ERR)
-        IF(ERR/=0) CALL FLAG_ERROR("Could not allocate NIDX array.",ERR,ERROR,*999)
+        ALLOCATE(NIDX(TOTAL_NUMBER_NODES_XI(1),TOTAL_NUMBER_NODES_XI(2),TOTAL_NUMBER_NODES_XI(3)),STAT=err)
+        IF(err/=0) CALL FlagError("Could not allocate NIDX array.",err,error,*999)
+        ALLOCATE(CORNER_NODES(NUMBER_ELEMENTS_XI(1),NUMBER_ELEMENTS_XI(2)+1,NUMBER_ELEMENTS_XI(3)+1),STAT=err)
+        IF(err/=0) CALL FlagError("Could not allocate NIDX array.",err,error,*999)
 
         !nn: node number inside element in certain direction
         !ne: element number in certain direction
@@ -4754,8 +4878,8 @@ CONTAINS
         TOTAL_NUMBER_OF_NODES=NN
 
         ! now do EIDX
-        ALLOCATE(EIDX(NUMBER_ELEMENTS_XI(1),NUMBER_ELEMENTS_XI(2),NUMBER_ELEMENTS_XI(3)),STAT=ERR)
-        IF(ERR/=0) CALL FLAG_ERROR("Could not allocate EIDX array.",ERR,ERROR,*999)
+        ALLOCATE(EIDX(NUMBER_ELEMENTS_XI(1),NUMBER_ELEMENTS_XI(2),NUMBER_ELEMENTS_XI(3)),STAT=err)
+        IF(err/=0) CALL FlagError("Could not allocate EIDX array.",err,error,*999)
         NE=0
         DO ne3=1,NUMBER_ELEMENTS_XI(3)
           DO ne2=1,NUMBER_ELEMENTS_XI(2)
@@ -4768,16 +4892,16 @@ CONTAINS
         TOTAL_NUMBER_OF_ELEMENTS=NE
 
       ELSE
-        CALL FLAG_ERROR("NIDX array is already allocated.",ERR,ERROR,*999)
+        CALL FlagError("NIDX array is already allocated.",err,error,*999)
       ENDIF
     ELSE
-      CALL FLAG_ERROR("EIDX array is already allocated.",ERR,error,*999)
+      CALL FlagError("EIDX array is already allocated.",ERR,error,*999)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_ELLIPSOID_BUILD_NODE_INDICES")
+    CALL Exits("GENERATED_MESH_ELLIPSOID_BUILD_NODE_INDICES")
     RETURN
-999 CALL ERRORS("GENERATED_MESH_ELLIPSOID_BUILD_NODE_INDICES",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_ELLIPSOID_BUILD_NODE_INDICES")
+999 CALL Errors("GENERATED_MESH_ELLIPSOID_BUILD_NODE_INDICES",err,error)
+    CALL Exits("GENERATED_MESH_ELLIPSOID_BUILD_NODE_INDICES")
     RETURN 1
   END SUBROUTINE GENERATED_MESH_ELLIPSOID_BUILD_NODE_INDICES
 
@@ -4787,9 +4911,9 @@ CONTAINS
 
   !>Calculates the user node numbers for an array of nodes numbered using one basis
   SUBROUTINE COMPONENT_NODES_TO_USER_NUMBERS(GENERATED_MESH,BASIS_INDEX,NODE_COMPONENT_NUMBERS, &
-      & NODE_USER_NUMBERS,ERR,ERROR,*)
+      & NODE_USER_NUMBERS,err,error,*)
 
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH   !<A pointer to the generated mesh object
+    TYPE(GeneratedMeshType), POINTER :: GENERATED_MESH   !<A pointer to the generated mesh object
     INTEGER(INTG),INTENT(IN) :: BASIS_INDEX                !<The number of the basis being used
     INTEGER(INTG),INTENT(IN) :: NODE_COMPONENT_NUMBERS(:)  !<The node numbers for this component basis
     INTEGER(INTG),INTENT(INOUT) :: NODE_USER_NUMBERS(:)    !<On return, the corresponding user numbers
@@ -4798,21 +4922,21 @@ CONTAINS
     !local variables
     INTEGER(INTG) :: node_idx
 
-    CALL ENTERS("COMPONENT_NODES_TO_USER_NUMBERS",ERR,ERROR,*999)
+    CALL Enters("COMPONENT_NODES_TO_USER_NUMBERS",err,error,*999)
 
     IF(SIZE(NODE_USER_NUMBERS)==SIZE(NODE_COMPONENT_NUMBERS)) THEN
       DO node_idx=1,SIZE(NODE_COMPONENT_NUMBERS)
         NODE_USER_NUMBERS(node_idx)=COMPONENT_NODE_TO_USER_NUMBER(GENERATED_MESH,BASIS_INDEX, &
-            NODE_COMPONENT_NUMBERS(node_idx),ERR,ERROR)
+            NODE_COMPONENT_NUMBERS(node_idx),err,error)
       ENDDO
     ELSE
-      CALL FLAG_ERROR("NODE_COMPONENT_NUMBERS and NODE_USER_NUMBERS arrays have different sizes.",ERR,ERROR,*999)
+      CALL FlagError("NODE_COMPONENT_NUMBERS and NODE_USER_NUMBERS arrays have different sizes.",err,error,*999)
     ENDIF
 
-    CALL EXITS("COMPONENT_NODES_TO_USER_NUMBERS")
+    CALL Exits("COMPONENT_NODES_TO_USER_NUMBERS")
     RETURN
-999 CALL ERRORS("COMPONENT_NODES_TO_USER_NUMBERS",ERR,ERROR)
-    CALL EXITS("COMPONENT_NODES_TO_USER_NUMBERS")
+999 CALL Errors("COMPONENT_NODES_TO_USER_NUMBERS",err,error)
+    CALL Exits("COMPONENT_NODES_TO_USER_NUMBERS")
     RETURN 1
   END SUBROUTINE COMPONENT_NODES_TO_USER_NUMBERS
 
@@ -4821,8 +4945,8 @@ CONTAINS
   !
 
   !>Calculates the user node number for a node numbered using one basis
-  FUNCTION COMPONENT_NODE_TO_USER_NUMBER(GENERATED_MESH,BASIS_INDEX,NODE_COMPONENT_NUMBER,ERR,ERROR)
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH  !<A pointer to the generated mesh object
+  FUNCTION COMPONENT_NODE_TO_USER_NUMBER(GENERATED_MESH,BASIS_INDEX,NODE_COMPONENT_NUMBER,err,error)
+    TYPE(GeneratedMeshType), POINTER :: GENERATED_MESH  !<A pointer to the generated mesh object
     INTEGER(INTG),INTENT(IN) :: BASIS_INDEX                  !<The number of the basis being used
     INTEGER(INTG),INTENT(IN) :: NODE_COMPONENT_NUMBER           !<The node number for this component basis
     INTEGER(INTG) :: ERR          !<The error code
@@ -4837,9 +4961,9 @@ CONTAINS
     TYPE(BASIS_TYPE), POINTER :: BASIS
     TYPE(BASIS_PTR_TYPE), POINTER :: BASES(:)
     LOGICAL :: CORNER_NODE,FINISHED_COUNT
-    TYPE(VARYING_STRING) :: LOCAL_ERROR
+    TYPE(VARYING_STRING) :: localError
 
-    CALL ENTERS("COMPONENT_NODE_TO_USER_NUMBER",ERR,ERROR,*999)
+    CALL Enters("COMPONENT_NODE_TO_USER_NUMBER",err,error,*999)
 
     NULLIFY(BASIS)
     NULLIFY(BASES)
@@ -4851,42 +4975,42 @@ CONTAINS
     POS2=0
 
     IF(ASSOCIATED(GENERATED_MESH)) THEN
-      SELECT CASE(GENERATED_MESH%GENERATED_TYPE)
+      SELECT CASE(GENERATED_MESH%generatedType)
       CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
-        IF(ASSOCIATED(GENERATED_MESH%REGULAR_MESH)) THEN
-          NUM_BASES=SIZE(GENERATED_MESH%REGULAR_MESH%BASES)
-          NUM_DIMS=GENERATED_MESH%REGULAR_MESH%MESH_DIMENSION
-          BASES=>GENERATED_MESH%REGULAR_MESH%BASES
-          NUMBER_OF_ELEMENTS_XI=>GENERATED_MESH%REGULAR_MESH%NUMBER_OF_ELEMENTS_XI
+        IF(ASSOCIATED(GENERATED_MESH%regularMesh)) THEN
+          NUM_BASES=SIZE(GENERATED_MESH%regularMesh%bases)
+          NUM_DIMS=GENERATED_MESH%regularMesh%meshDimension
+          BASES=>GENERATED_MESH%regularMesh%bases
+          NUMBER_OF_ELEMENTS_XI=>GENERATED_MESH%regularMesh%numberOfElementsXi
         ELSE
-          CALL FLAG_ERROR("The regular mesh for this generated mesh is not associated.",ERR,ERROR,*999)
+          CALL FlagError("The regular mesh for this generated mesh is not associated.",err,error,*999)
         ENDIF
       CASE(GENERATED_MESH_POLAR_MESH_TYPE)
-        CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
+        CALL FlagError("Not implemented.",err,error,*999)
       CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
-        CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
+        CALL FlagError("Not implemented.",err,error,*999)
       CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
-        IF(ASSOCIATED(GENERATED_MESH%CYLINDER_MESH)) THEN
-          NUM_BASES=SIZE(GENERATED_MESH%CYLINDER_MESH%BASES)
-          NUM_DIMS=GENERATED_MESH%CYLINDER_MESH%MESH_DIMENSION
-          BASES=>GENERATED_MESH%CYLINDER_MESH%BASES
-          NUMBER_OF_ELEMENTS_XI=>GENERATED_MESH%CYLINDER_MESH%NUMBER_OF_ELEMENTS_XI
+        IF(ASSOCIATED(GENERATED_MESH%cylinderMesh)) THEN
+          NUM_BASES=SIZE(GENERATED_MESH%cylinderMesh%bases)
+          NUM_DIMS=GENERATED_MESH%cylinderMesh%meshDimension
+          BASES=>GENERATED_MESH%cylinderMesh%bases
+          NUMBER_OF_ELEMENTS_XI=>GENERATED_MESH%cylinderMesh%numberOfElementsXi
         ELSE
-          CALL FLAG_ERROR("The cylinder mesh for this generated mesh is not associated.",ERR,ERROR,*999)
+          CALL FlagError("The cylinder mesh for this generated mesh is not associated.",err,error,*999)
         ENDIF
       CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
-        IF(ASSOCIATED(GENERATED_MESH%ELLIPSOID_MESH)) THEN
-          NUM_BASES=SIZE(GENERATED_MESH%ELLIPSOID_MESH%BASES)
-          NUM_DIMS=GENERATED_MESH%ELLIPSOID_MESH%MESH_DIMENSION
-          BASES=>GENERATED_MESH%ELLIPSOID_MESH%BASES
-          NUMBER_OF_ELEMENTS_XI=>GENERATED_MESH%ELLIPSOID_MESH%NUMBER_OF_ELEMENTS_XI
+        IF(ASSOCIATED(GENERATED_MESH%ellipsoidMesh)) THEN
+          NUM_BASES=SIZE(GENERATED_MESH%ellipsoidMesh%bases)
+          NUM_DIMS=GENERATED_MESH%ellipsoidMesh%meshDimension
+          BASES=>GENERATED_MESH%ellipsoidMesh%bases
+          NUMBER_OF_ELEMENTS_XI=>GENERATED_MESH%ellipsoidMesh%numberOfElementsXi
         ELSE
-        CALL FLAG_ERROR("The ellipsoid mesh for this generated mesh is not associated.",ERR,ERROR,*999)
+        CALL FlagError("The ellipsoid mesh for this generated mesh is not associated.",err,error,*999)
         ENDIF
       CASE DEFAULT
-        LOCAL_ERROR="The generated mesh generated type of "// &
-            & TRIM(NUMBER_TO_VSTRING(GENERATED_MESH%GENERATED_TYPE,"*",ERR,ERROR))//" is invalid."
-        CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+        localError="The generated mesh generated type of "// &
+            & TRIM(NumberToVString(GENERATED_MESH%generatedType,"*",err,error))//" is invalid."
+        CALL FlagError(localError,err,error,*999)
       END SELECT
       IF(BASIS_INDEX<=NUM_BASES) THEN
         IF(NUM_BASES==1) THEN
@@ -4904,17 +5028,17 @@ CONTAINS
             ENDIF
           ENDDO
           !Adjust for other mesh types
-          IF(GENERATED_MESH%GENERATED_TYPE==GENERATED_MESH_CYLINDER_MESH_TYPE) THEN
+          IF(GENERATED_MESH%generatedType==GENERATED_MESH_CYLINDER_MESH_TYPE) THEN
             CORNER_NODE_FACTOR(3)=CORNER_NODE_FACTOR(3)-NUMBER_OF_ELEMENTS_XI(1)-1
             NUM_CORNER_NODES=NUM_CORNER_NODES-(NUMBER_OF_ELEMENTS_XI(1)+1)*(NUMBER_OF_ELEMENTS_XI(3)+1)
-          ELSE IF(GENERATED_MESH%GENERATED_TYPE==GENERATED_MESH_ELLIPSOID_MESH_TYPE) THEN
+          ELSE IF(GENERATED_MESH%generatedType==GENERATED_MESH_ELLIPSOID_MESH_TYPE) THEN
             CORNER_NODE_FACTOR(3)=CORNER_NODE_FACTOR(3)-NUMBER_OF_ELEMENTS_XI(1)-NUMBER_OF_ELEMENTS_XI(2)
             CORNER_NODE_FACTOR(2)=CORNER_NODE_FACTOR(2)-1
             NUM_CORNER_NODES=NUM_CORNER_NODES-(NUMBER_OF_ELEMENTS_XI(2)+1)*(NUMBER_OF_ELEMENTS_XI(3)+1)- &
                 & (NUMBER_OF_ELEMENTS_XI(1)-1)*(NUMBER_OF_ELEMENTS_XI(3)+1)
           ENDIF
           NODE_OFFSET=NUM_CORNER_NODES
-          IF(GENERATED_MESH%GENERATED_TYPE==GENERATED_MESH_ELLIPSOID_MESH_TYPE) THEN
+          IF(GENERATED_MESH%generatedType==GENERATED_MESH_ELLIPSOID_MESH_TYPE) THEN
             !Every second mesh component is the collapsed node version
             STEP=2
           ELSE
@@ -4927,10 +5051,10 @@ CONTAINS
               BASIS_NUM_NODES=BASIS_NUM_NODES*(NUMBER_OF_ELEMENTS_XI(ni)*(BASIS%NUMBER_OF_NODES_XIC(ni)-1)+1)
             ENDDO
             !Adjust for other mesh types
-            IF(GENERATED_MESH%GENERATED_TYPE==GENERATED_MESH_CYLINDER_MESH_TYPE) THEN
+            IF(GENERATED_MESH%generatedType==GENERATED_MESH_CYLINDER_MESH_TYPE) THEN
               BASIS_NUM_NODES=BASIS_NUM_NODES-(NUMBER_OF_ELEMENTS_XI(1)+1)*(BASIS%NUMBER_OF_nodes_xic(1)-1)* &
                   & (NUMBER_OF_ELEMENTS_XI(3)+1)*(BASIS%NUMBER_OF_nodes_xic(3)-1)
-            ELSE IF(GENERATED_MESH%GENERATED_TYPE==GENERATED_MESH_ELLIPSOID_MESH_TYPE) THEN
+            ELSE IF(GENERATED_MESH%generatedType==GENERATED_MESH_ELLIPSOID_MESH_TYPE) THEN
               BASIS_NUM_NODES=BASIS_NUM_NODES-(NUMBER_OF_ELEMENTS_XI(2)*(BASIS%NUMBER_OF_NODES_XIC(2)-1)+1)* &
                 & (NUMBER_OF_ELEMENTS_XI(3)*(BASIS%NUMBER_OF_NODES_XIC(3)-1)+1)- &
                 & (NUMBER_OF_ELEMENTS_XI(1)*(BASIS%NUMBER_OF_NODES_XIC(1)-1)-1)* &
@@ -4950,12 +5074,12 @@ CONTAINS
             ENDIF
           ENDDO
           !Adjust for other mesh types
-          IF(GENERATED_MESH%GENERATED_TYPE==GENERATED_MESH_CYLINDER_MESH_TYPE) THEN
+          IF(GENERATED_MESH%generatedType==GENERATED_MESH_CYLINDER_MESH_TYPE) THEN
             !subtract nodes along line where y wraps around
             BASIS_NODE_FACTOR(3)=BASIS_NODE_FACTOR(3)-NUMBER_OF_ELEMENTS_XI(1)*(BASIS%NUMBER_OF_NODES_XIC(1)-1)-1
             BASIS_ELEMENT_FACTOR(3)=BASIS_ELEMENT_FACTOR(3)-(NUMBER_OF_ELEMENTS_XI(1)* &
                 & (BASIS%NUMBER_OF_NODES_XIC(1)-1)+1)*(BASIS%NUMBER_OF_NODES_XIC(3)-1)
-          ELSE IF(GENERATED_MESH%GENERATED_TYPE==GENERATED_MESH_ELLIPSOID_MESH_TYPE) THEN
+          ELSE IF(GENERATED_MESH%generatedType==GENERATED_MESH_ELLIPSOID_MESH_TYPE) THEN
             !subtract missing nodes at apex
             BASIS_NODE_FACTOR(3)=BASIS_NODE_FACTOR(3)-NUMBER_OF_ELEMENTS_XI(1)*(BASIS%NUMBER_OF_NODES_XIC(1)-1)+1
             BASIS_ELEMENT_FACTOR(3)=BASIS_ELEMENT_FACTOR(3)-(NUMBER_OF_ELEMENTS_XI(1)* &
@@ -4979,7 +5103,7 @@ CONTAINS
             IF(MOD(POS(3),BASIS%NUMBER_OF_NODES_XIC(3)-1)/=0) CORNER_NODE=.FALSE.
           ENDIF
           IF(NUM_DIMS>1) THEN
-            IF(GENERATED_MESH%GENERATED_TYPE==GENERATED_MESH_ELLIPSOID_MESH_TYPE) THEN
+            IF(GENERATED_MESH%generatedType==GENERATED_MESH_ELLIPSOID_MESH_TYPE) THEN
               !Need to account for missing nodes at apex
               IF(REMAINDER>0) THEN
                 REMAINDER=REMAINDER+NUMBER_OF_ELEMENTS_XI(1)*(BASIS%NUMBER_OF_NODES_XIC(1)-1)-1
@@ -4998,7 +5122,7 @@ CONTAINS
           IF(CORNER_NODE) THEN
             COMPONENT_NODE_TO_USER_NUMBER=POS2(1)*CORNER_NODE_FACTOR(1)+POS2(2)*CORNER_NODE_FACTOR(2)+ &
                 & POS2(3)*CORNER_NODE_FACTOR(3)
-            IF(GENERATED_MESH%GENERATED_TYPE==GENERATED_MESH_ELLIPSOID_MESH_TYPE.AND.POS2(2)/=0) THEN
+            IF(GENERATED_MESH%generatedType==GENERATED_MESH_ELLIPSOID_MESH_TYPE.AND.POS2(2)/=0) THEN
               !Subtract off non-existent nodes at apex
               COMPONENT_NODE_TO_USER_NUMBER=COMPONENT_NODE_TO_USER_NUMBER-(NUMBER_OF_ELEMENTS_XI(1)-1)
             ENDIF
@@ -5022,7 +5146,7 @@ CONTAINS
               ELSE
                 NUM_PREVIOUS_CORNERS=NUM_PREVIOUS_CORNERS+CORNER_NODE_FACTOR(2)*POS2(2)
               ENDIF
-              IF(GENERATED_MESH%GENERATED_TYPE==GENERATED_MESH_ELLIPSOID_MESH_TYPE) THEN
+              IF(GENERATED_MESH%generatedType==GENERATED_MESH_ELLIPSOID_MESH_TYPE) THEN
                 NUM_PREVIOUS_CORNERS=NUM_PREVIOUS_CORNERS-(NUMBER_OF_ELEMENTS_XI(1)-1)
               ENDIF
             ENDIF
@@ -5038,18 +5162,18 @@ CONTAINS
           ENDIF
         ENDIF
       ELSE
-        LOCAL_ERROR="Mesh component must be less than or equal to "//(NUMBER_TO_VSTRING(NUM_BASES,"*",ERR,ERROR))// &
-            & " but it is "//(NUMBER_TO_VSTRING(BASIS_INDEX,"*",ERR,ERROR))//"."
-        CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+        localError="Mesh component must be less than or equal to "//(NumberToVString(NUM_BASES,"*",err,error))// &
+            & " but it is "//(NumberToVString(BASIS_INDEX,"*",err,error))//"."
+        CALL FlagError(localError,err,error,*999)
       ENDIF
     ELSE
-      CALL FLAG_ERROR("Generated mesh is not associated",ERR,ERROR,*999)
+      CALL FlagError("Generated mesh is not associated",err,error,*999)
     ENDIF
 
-    CALL EXITS("COMPONENT_NODE_TO_USER_NUMBER")
+    CALL Exits("COMPONENT_NODE_TO_USER_NUMBER")
     RETURN
-999 CALL ERRORS("COMPONENT_NODE_TO_USER_NUMBER",ERR,ERROR)
-    CALL EXITS("COMPONENT_NODE_TO_USER_NUMBER")
+999 CALL Errors("COMPONENT_NODE_TO_USER_NUMBER",err,error)
+    CALL Exits("COMPONENT_NODE_TO_USER_NUMBER")
     RETURN
   END FUNCTION COMPONENT_NODE_TO_USER_NUMBER
 
@@ -5075,10 +5199,10 @@ CONTAINS
   !basis.--> finish.
 
   SUBROUTINE GENERATED_MESH_REGULAR_COMPONENT_NODES_TO_USER_NUMBERS(GENERATED_MESH,BASIS_INDEX, &
-      & NODE_COMPONENT_NUMBERS,NODE_USER_NUMBERS,ERR,ERROR,*)
+      & NODE_COMPONENT_NUMBERS,NODE_USER_NUMBERS,err,error,*)
 
     !Argument variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH   !<A pointer to the generated mesh object
+    TYPE(GeneratedMeshType), POINTER :: GENERATED_MESH   !<A pointer to the generated mesh object
     INTEGER(INTG),INTENT(IN) :: BASIS_INDEX                !<The number of the basis being used
     INTEGER(INTG),INTENT(IN) :: NODE_COMPONENT_NUMBERS(:)  !<The node numbers for this component basis
     INTEGER(INTG),INTENT(INOUT) :: NODE_USER_NUMBERS(:)    !<On return, the corresponding user numbers
@@ -5098,21 +5222,21 @@ CONTAINS
     INTEGER(INTG) :: NUMBER_OF_NODES_LAYER
     LOGICAL::BASIS_APPEARED
 
-    CALL ENTERS("GENERATED_MESH_REGULAR_COMPONENT_NODES_TO_USER_NUMBERS",ERR,ERROR,*999)
+    CALL Enters("GENERATED_MESH_REGULAR_COMPONENT_NODES_TO_USER_NUMBERS",err,error,*999)
 
     IF(SIZE(NODE_USER_NUMBERS)==SIZE(NODE_COMPONENT_NUMBERS)) THEN
       NODE_USER_NUMBERS=0
       IF(ASSOCIATED(GENERATED_MESH)) THEN
-        IF(ASSOCIATED(GENERATED_MESH%REGULAR_MESH)) THEN
-          NUM_BASES=SIZE(GENERATED_MESH%REGULAR_MESH%BASES)
-          NUM_DIMS=GENERATED_MESH%REGULAR_MESH%MESH_DIMENSION
-          BASES=>GENERATED_MESH%REGULAR_MESH%BASES
+        IF(ASSOCIATED(GENERATED_MESH%regularMesh)) THEN
+          NUM_BASES=SIZE(GENERATED_MESH%regularMesh%bases)
+          NUM_DIMS=GENERATED_MESH%regularMesh%meshDimension
+          BASES=>GENERATED_MESH%regularMesh%bases
           NUMBER_OF_ELEMENTS_XI=1
           DO xi_idx=1,NUM_DIMS
-            NUMBER_OF_ELEMENTS_XI(xi_idx)=GENERATED_MESH%REGULAR_MESH%NUMBER_OF_ELEMENTS_XI(xi_idx)
+            NUMBER_OF_ELEMENTS_XI(xi_idx)=GENERATED_MESH%regularMesh%numberOfElementsXi(xi_idx)
           ENDDO
         ELSE
-        CALL FLAG_ERROR("The regular mesh for this generated mesh is not associated.",ERR,ERROR,*999)
+        CALL FlagError("The regular mesh for this generated mesh is not associated.",err,error,*999)
         ENDIF
 
         !Number of nodes in each xi direction
@@ -5471,15 +5595,15 @@ CONTAINS
           ENDDO !nn3
         ENDIF
       ELSE
-        CALL FLAG_ERROR("Generated mesh is not associated",ERR,ERROR,*999)
+        CALL FlagError("Generated mesh is not associated",err,error,*999)
       ENDIF
     ELSE
-      CALL FLAG_ERROR("NODE_COMPONENT_NUMBERS and NODE_USER_NUMBERS arrays have different sizes.",ERR,ERROR,*999)
+      CALL FlagError("NODE_COMPONENT_NUMBERS and NODE_USER_NUMBERS arrays have different sizes.",err,error,*999)
     ENDIF
-    CALL EXITS("GENERATED_MESH_REGULAR_COMPONENT_NODES_TO_USER_NUMBERS")
+    CALL Exits("GENERATED_MESH_REGULAR_COMPONENT_NODES_TO_USER_NUMBERS")
     RETURN
-999 CALL ERRORS("GENERATED_MESH_REGULAR_COMPONENT_NODES_TO_USER_NUMBERS",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_REGULAR_COMPONENT_NODES_TO_USER_NUMBERS")
+999 CALL Errors("GENERATED_MESH_REGULAR_COMPONENT_NODES_TO_USER_NUMBERS",err,error)
+    CALL Exits("GENERATED_MESH_REGULAR_COMPONENT_NODES_TO_USER_NUMBERS")
     RETURN 1
   END SUBROUTINE GENERATED_MESH_REGULAR_COMPONENT_NODES_TO_USER_NUMBERS
 
@@ -5490,10 +5614,10 @@ CONTAINS
   !>Retrieve the user node number for a component number in a regular generated mesh
   !>This routine only works for Lagrange/Hermite elements
   SUBROUTINE GENERATED_MESH_REGULAR_COMPONENT_NODE_TO_USER_NUMBER(GENERATED_MESH,BASIS_INDEX, &
-      & NODE_COMPONENT_NUMBER,NODE_USER_NUMBER,ERR,ERROR,*)
+      & NODE_COMPONENT_NUMBER,NODE_USER_NUMBER,err,error,*)
 
     !Argument variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH  !<A pointer to the generated mesh object
+    TYPE(GeneratedMeshType), POINTER :: GENERATED_MESH  !<A pointer to the generated mesh object
     INTEGER(INTG),INTENT(IN) :: BASIS_INDEX  !<The number of the basis being used
     INTEGER(INTG),INTENT(IN) :: NODE_COMPONENT_NUMBER  !<The node numbers for this component basis
     INTEGER(INTG),INTENT(OUT) :: NODE_USER_NUMBER  !<On return, the corresponding user numbers
@@ -5505,16 +5629,16 @@ CONTAINS
     INTEGER(INTG) :: NUM_BASES,NUM_DIMS,ELEMENT_NO,LOCAL_NODE_NO,NUMBER_OF_NODES_LAYER,xi_idx
     INTEGER(INTG) :: ELEM_IDX(3),NODE_IDX(3),NUMBER_OF_NODES_XIC(3),NUMBER_OF_ELEMENTS_XI(3),REMINDER_TEMP
 
-    CALL ENTERS("GENERATED_MESH_REGULAR_COMPONENT_NODE_TO_USER_NUMBER",ERR,ERROR,*999)
+    CALL Enters("GENERATED_MESH_REGULAR_COMPONENT_NODE_TO_USER_NUMBER",err,error,*999)
 
     IF(ASSOCIATED(GENERATED_MESH)) THEN
-      IF(ASSOCIATED(GENERATED_MESH%REGULAR_MESH)) THEN
-        NUM_BASES=SIZE(GENERATED_MESH%REGULAR_MESH%BASES)
-        NUM_DIMS=GENERATED_MESH%REGULAR_MESH%MESH_DIMENSION
-        BASES=>GENERATED_MESH%REGULAR_MESH%BASES
+      IF(ASSOCIATED(GENERATED_MESH%regularMesh)) THEN
+        NUM_BASES=SIZE(GENERATED_MESH%regularMesh%bases)
+        NUM_DIMS=GENERATED_MESH%regularMesh%meshDimension
+        BASES=>GENERATED_MESH%regularMesh%bases
         NUMBER_OF_ELEMENTS_XI=1
         DO xi_idx=1,NUM_DIMS
-          NUMBER_OF_ELEMENTS_XI(xi_idx)=GENERATED_MESH%REGULAR_MESH%NUMBER_OF_ELEMENTS_XI(xi_idx)
+          NUMBER_OF_ELEMENTS_XI(xi_idx)=GENERATED_MESH%regularMesh%numberOfElementsXi(xi_idx)
         ENDDO
         !Number of nodes in each xi direction
         NUMBER_OF_NODES_XIC=1
@@ -5522,7 +5646,7 @@ CONTAINS
           NUMBER_OF_NODES_XIC(xi_idx)=BASES(BASIS_INDEX)%PTR%NUMBER_OF_NODES_XIC(xi_idx)
         ENDDO
       ELSE
-        CALL FLAG_ERROR("The regular mesh for this generated mesh is not associated.",ERR,ERROR,*999)
+        CALL FlagError("The regular mesh for this generated mesh is not associated.",err,error,*999)
       ENDIF
 
       !Calculate current element/node indices/number
@@ -5609,17 +5733,17 @@ CONTAINS
         NODE_USER_NUMBER=GENERATED_MESH%MESH%TOPOLOGY(BASIS_INDEX)%PTR%ELEMENTS%ELEMENTS(ELEMENT_NO)% &
           & USER_ELEMENT_NODES(LOCAL_NODE_NO)
       ELSE
-        CALL FLAG_ERROR("The mesh for this generated mesh is not associated.",ERR,ERROR,*999)
+        CALL FlagError("The mesh for this generated mesh is not associated.",err,error,*999)
       ENDIF
 
     ELSE
-        CALL FLAG_ERROR("Generated mesh is not associated",ERR,ERROR,*999)
+        CALL FlagError("Generated mesh is not associated",err,error,*999)
     ENDIF
 
-    CALL EXITS("GENERATED_MESH_REGULAR_COMPONENT_NODE_TO_USER_NUMBER")
+    CALL Exits("GENERATED_MESH_REGULAR_COMPONENT_NODE_TO_USER_NUMBER")
     RETURN
-999 CALL ERRORS("GENERATED_MESH_REGULAR_COMPONENT_NODE_TO_USER_NUMBER",ERR,ERROR)
-    CALL EXITS("GENERATED_MESH_REGULAR_COMPONENT_NODE_TO_USER_NUMBER")
+999 CALL Errors("GENERATED_MESH_REGULAR_COMPONENT_NODE_TO_USER_NUMBER",err,error)
+    CALL Exits("GENERATED_MESH_REGULAR_COMPONENT_NODE_TO_USER_NUMBER")
     RETURN 1
   END SUBROUTINE GENERATED_MESH_REGULAR_COMPONENT_NODE_TO_USER_NUMBER
 
@@ -5629,8 +5753,8 @@ CONTAINS
 
   !>Calculates the user node number for a node numbered using one basis.
   !>This is currently only used for cylinder meshes, other mesh types don't require this.
-  FUNCTION USER_NUMBER_TO_COMPONENT_NODE(GENERATED_MESH,BASIS_INDEX,NODE_USER_NUMBER,ERR,ERROR)
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH        !<A pointer to the generated mesh object
+  FUNCTION USER_NUMBER_TO_COMPONENT_NODE(GENERATED_MESH,BASIS_INDEX,NODE_USER_NUMBER,err,error)
+    TYPE(GeneratedMeshType), POINTER :: GENERATED_MESH        !<A pointer to the generated mesh object
     INTEGER(INTG),INTENT(IN) :: BASIS_INDEX                     !<The number of the basis being used
     INTEGER(INTG),INTENT(IN) :: NODE_USER_NUMBER                !<The corresponding user node number
     INTEGER(INTG) :: ERR          !<The error code
@@ -5644,9 +5768,9 @@ CONTAINS
     TYPE(BASIS_TYPE), POINTER :: BASIS
     TYPE(BASIS_PTR_TYPE), POINTER :: BASES(:)
     LOGICAL :: FINISHED_COUNT,OFF_EDGE
-    TYPE(VARYING_STRING) :: LOCAL_ERROR
+    TYPE(VARYING_STRING) :: localError
 
-    CALL ENTERS("USER_NUMBER_TO_COMPONENT_NODE",ERR,ERROR,*999)
+    CALL Enters("USER_NUMBER_TO_COMPONENT_NODE",err,error,*999)
 
     NULLIFY(BASIS)
     NULLIFY(BASES)
@@ -5657,28 +5781,28 @@ CONTAINS
     IF(ASSOCIATED(GENERATED_MESH)) THEN
       !Only cylinder mesh type uses this now, although it was previously used by regular
       !meshes so some things relate to that.
-      SELECT CASE(GENERATED_MESH%GENERATED_TYPE)
+      SELECT CASE(GENERATED_MESH%generatedType)
       CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
-        CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
+        CALL FlagError("Not implemented.",err,error,*999)
       CASE(GENERATED_MESH_POLAR_MESH_TYPE)
-        CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
+        CALL FlagError("Not implemented.",err,error,*999)
       CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
-        CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
+        CALL FlagError("Not implemented.",err,error,*999)
       CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
-        IF(ASSOCIATED(GENERATED_MESH%CYLINDER_MESH)) THEN
-          NUM_BASES=SIZE(GENERATED_MESH%CYLINDER_MESH%BASES)
-          NUM_DIMS=GENERATED_MESH%CYLINDER_MESH%MESH_DIMENSION
-          BASES=>GENERATED_MESH%CYLINDER_MESH%BASES
-          NUMBER_OF_ELEMENTS_XI=>GENERATED_MESH%CYLINDER_MESH%NUMBER_OF_ELEMENTS_XI
+        IF(ASSOCIATED(GENERATED_MESH%cylinderMesh)) THEN
+          NUM_BASES=SIZE(GENERATED_MESH%cylinderMesh%bases)
+          NUM_DIMS=GENERATED_MESH%cylinderMesh%meshDimension
+          BASES=>GENERATED_MESH%cylinderMesh%bases
+          NUMBER_OF_ELEMENTS_XI=>GENERATED_MESH%cylinderMesh%numberOfElementsXi
         ELSE
-          CALL FLAG_ERROR("The cylinder mesh for this generated mesh is not associated.",ERR,ERROR,*999)
+          CALL FlagError("The cylinder mesh for this generated mesh is not associated.",err,error,*999)
         ENDIF
       CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
-        CALL FLAG_ERROR("Not implemented.",ERR,ERROR,*999)
+        CALL FlagError("Not implemented.",err,error,*999)
       CASE DEFAULT
-        LOCAL_ERROR="The generated mesh generated type of "// &
-            & TRIM(NUMBER_TO_VSTRING(GENERATED_MESH%GENERATED_TYPE,"*",ERR,ERROR))//" is invalid."
-        CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+        localError="The generated mesh generated type of "// &
+            & TRIM(NumberToVString(GENERATED_MESH%generatedType,"*",err,error))//" is invalid."
+        CALL FlagError(localError,err,error,*999)
       END SELECT
       IF(BASIS_INDEX<=NUM_BASES) THEN
         IF(NUM_BASES==1) THEN
@@ -5696,7 +5820,7 @@ CONTAINS
             ENDIF
           ENDDO
           !Adjust for other mesh types
-          IF(GENERATED_MESH%GENERATED_TYPE==GENERATED_MESH_CYLINDER_MESH_TYPE) THEN
+          IF(GENERATED_MESH%generatedType==GENERATED_MESH_CYLINDER_MESH_TYPE) THEN
             CORNER_NODE_FACTOR(3)=CORNER_NODE_FACTOR(3)-NUMBER_OF_ELEMENTS_XI(1)-1
             NUM_CORNER_NODES=NUM_CORNER_NODES-(NUMBER_OF_ELEMENTS_XI(1)+1)*(NUMBER_OF_ELEMENTS_XI(3)+1)
           ENDIF
@@ -5708,7 +5832,7 @@ CONTAINS
               BASIS_NUM_NODES=BASIS_NUM_NODES*(NUMBER_OF_ELEMENTS_XI(ni)*(BASIS%NUMBER_OF_NODES_XIC(ni)-1)+1)
             ENDDO
             !Adjust for other mesh types
-            IF(GENERATED_MESH%GENERATED_TYPE==GENERATED_MESH_CYLINDER_MESH_TYPE) THEN
+            IF(GENERATED_MESH%generatedType==GENERATED_MESH_CYLINDER_MESH_TYPE) THEN
               BASIS_NUM_NODES=BASIS_NUM_NODES-(NUMBER_OF_ELEMENTS_XI(1)+1)*(BASIS%NUMBER_OF_nodes_xic(1)-1)* &
                   & (NUMBER_OF_ELEMENTS_XI(3)+1)*(BASIS%NUMBER_OF_nodes_xic(3)-1)
             ENDIF
@@ -5724,7 +5848,7 @@ CONTAINS
             ENDIF
           ENDDO
           !Adjust for other mesh types
-          IF(GENERATED_MESH%GENERATED_TYPE==GENERATED_MESH_CYLINDER_MESH_TYPE) THEN
+          IF(GENERATED_MESH%generatedType==GENERATED_MESH_CYLINDER_MESH_TYPE) THEN
             !subtract nodes along line where y wraps around
             BASIS_ELEMENT_FACTOR(3)=BASIS_ELEMENT_FACTOR(3)-(NUMBER_OF_ELEMENTS_XI(1)* &
                 & (BASIS%NUMBER_OF_NODES_XIC(1)-1)+1)*(BASIS%NUMBER_OF_NODES_XIC(3)-1)
@@ -5752,10 +5876,10 @@ CONTAINS
             FINISHED_COUNT=.FALSE.
             OFF_EDGE=.FALSE.
             IF(NUM_DIMS>2) THEN
-              IF(GENERATED_MESH%GENERATED_TYPE==GENERATED_MESH_CYLINDER_MESH_TYPE.AND. &
+              IF(GENERATED_MESH%generatedType==GENERATED_MESH_CYLINDER_MESH_TYPE.AND. &
                   & (MOD(REMAINDER,BASIS_ELEMENT_FACTOR(3)) > BASIS_ELEMENT_FACTOR(2)*NUMBER_OF_ELEMENTS_XI(2)-1)) THEN
                 OFF_EDGE=.TRUE.
-              ELSE IF(GENERATED_MESH%GENERATED_TYPE==GENERATED_MESH_REGULAR_MESH_TYPE.AND. &
+              ELSE IF(GENERATED_MESH%generatedType==GENERATED_MESH_REGULAR_MESH_TYPE.AND. &
                   & MOD(REMAINDER,BASIS_ELEMENT_FACTOR(3)) > (BASIS_ELEMENT_FACTOR(2)*NUMBER_OF_ELEMENTS_XI(2)+ &
                   & BASIS_ELEMENT_FACTOR(1)*NUMBER_OF_ELEMENTS_XI(1)-1)) THEN
                 OFF_EDGE=.TRUE.
@@ -5786,22 +5910,22 @@ CONTAINS
             NODE_OFFSET=NODE_OFFSET-NUM_PREVIOUS_CORNERS
             USER_NUMBER_TO_COMPONENT_NODE=NODE_USER_NUMBER-NODE_OFFSET
           ELSE
-            CALL FLAG_ERROR("Invalid node number specified.",ERR,ERROR,*999)
+            CALL FlagError("Invalid node number specified.",err,error,*999)
           ENDIF
         ENDIF
       ELSE
-        LOCAL_ERROR="Mesh component must be less than or equal to "//(NUMBER_TO_VSTRING(NUM_BASES,"*",ERR,ERROR))// &
-            & " but it is "//(NUMBER_TO_VSTRING(BASIS_INDEX,"*",ERR,ERROR))//"."
-        CALL FLAG_ERROR(LOCAL_ERROR,ERR,ERROR,*999)
+        localError="Mesh component must be less than or equal to "//(NumberToVString(NUM_BASES,"*",err,error))// &
+            & " but it is "//(NumberToVString(BASIS_INDEX,"*",err,error))//"."
+        CALL FlagError(localError,err,error,*999)
       ENDIF
     ELSE
-      CALL FLAG_ERROR("Generated mesh is not associated",ERR,ERROR,*999)
+      CALL FlagError("Generated mesh is not associated",err,error,*999)
     ENDIF
 
-    CALL EXITS("USER_NUMBER_TO_COMPONENT_NODE")
+    CALL Exits("USER_NUMBER_TO_COMPONENT_NODE")
     RETURN
-999 CALL ERRORS("USER_NUMBER_TO_COMPONENT_NODE",ERR,ERROR)
-    CALL EXITS("USER_NUMBER_TO_COMPONENT_NODE")
+999 CALL Errors("USER_NUMBER_TO_COMPONENT_NODE",err,error)
+    CALL Exits("USER_NUMBER_TO_COMPONENT_NODE")
     RETURN
   END FUNCTION USER_NUMBER_TO_COMPONENT_NODE
 
@@ -5809,5 +5933,5 @@ CONTAINS
   !================================================================================================================================
   !
 
-END MODULE GENERATED_MESH_ROUTINES
+END MODULE GeneratedMeshRoutines
 

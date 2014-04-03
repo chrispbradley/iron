@@ -537,69 +537,70 @@ MODULE TYPES
   ! Generated Mesh types
   !
 
+!!<todo MERGE THE MESHES BELOW
+  
   !>Contains information on a generated regular mesh
-  TYPE GENERATED_MESH_REGULAR_TYPE
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<A pointer to the generated mesh
-    TYPE(BASIS_PTR_TYPE), ALLOCATABLE :: BASES(:) !<The pointers to the bases used in the regular mesh.
-    INTEGER(INTG) :: COORDINATE_DIMENSION !<The number of coordinates for the regular mesh.
-    INTEGER(INTG) :: MESH_DIMENSION !<The dimension/number of Xi directions of the regular mesh.
-    REAL(DP), ALLOCATABLE :: ORIGIN(:) !<ORIGIN(coordinate_idx). The position of the origin (first) corner of the regular mesh
-    REAL(DP), ALLOCATABLE :: MAXIMUM_EXTENT(:) !<MAXIMUM_EXTENT(coordinate_idx). The extent/size in each nj'th direction of the regular mesh.
-    REAL(DP), ALLOCATABLE :: BASE_VECTORS(:,:) !<MESH_BASE_VECTORS(coordinate_idx,xi_idx). The base vectors indicating the geometric direction of the xi_idx mesh coordinate.
-    INTEGER(INTG), ALLOCATABLE :: NUMBER_OF_ELEMENTS_XI(:) !<NUMBER_OF_ELEMENTS_XI(xi_idx). The number of elements in the xi_idx'th Xi direction for the mesh.
-  END TYPE GENERATED_MESH_REGULAR_TYPE
+  TYPE GeneratedMeshRegularType
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh
+    TYPE(BASIS_PTR_TYPE), ALLOCATABLE :: bases(:) !<The pointers to the bases used in the regular mesh.
+    INTEGER(INTG) :: meshDimension !<The dimension/number of Xi directions of the regular mesh.
+    REAL(DP), ALLOCATABLE :: origin(:) !<origin(coordinateIdx). The position of the origin (first) corner of the regular mesh
+    REAL(DP), ALLOCATABLE :: maximumExtent(:) !<maximumExtent(coordinateIdx). The extent/size in each coordinateIdx'th direction of the regular mesh.
+    REAL(DP), ALLOCATABLE :: baseVectors(:,:) !<baseVectors(coordinateIdx,xiidx). The base vectors indicating the geometric direction of the xiIdx mesh coordinate.
+    INTEGER(INTG), ALLOCATABLE :: numberOfElements(:) !<numberOfElements(xiIdx). The number of elements in the xiIdx'th xi direction for the mesh.
+  END TYPE GeneratedMeshRegularType
 
-  !>Contains information of a generated cylinder mesh
-  !>Allows only a 3D cylinder mesh with xi directions (r,theta,z)
-  TYPE GENERATED_MESH_CYLINDER_TYPE
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<A pointer to the generated mesh.
-    REAL(DP), ALLOCATABLE :: ORIGIN(:) !<ORIGIN(nj). The position of the origin (centre) of lower face of cylinder mesh.
-    REAL(DP), ALLOCATABLE :: CYLINDER_EXTENT(:) !<CYLINDER_EXTENT(nj). The size of inner & outer radii and height of cylinder.
-    INTEGER(INTG) :: MESH_DIMENSION !<The dimension/number of Xi directions of the cylinder mesh.
-    INTEGER(INTG), ALLOCATABLE :: NUMBER_OF_ELEMENTS_XI(:) !<NUMBER_OF_ELEMENTS(ni). The number of elements in radial, circumferential and axial directions
-    TYPE(BASIS_PTR_TYPE), ALLOCATABLE :: BASES(:) !<The pointers to the bases used in the regular mesh.
+  !>Contains information of a generated cylindrical mesh
+  TYPE GeneratedMeshCylinderType
+    TYPE(GENERATED_MESH_TYPE), POINTER :: generatedMesh !<A pointer to the generated mesh.
+    TYPE(BASIS_PTR_TYPE), ALLOCATABLE :: bases(:) !<The pointers to the bases used in the regular mesh.
+    INTEGER(INTG) :: meshDimension !<The dimension/number of Xi directions of the cylinder mesh.
+    REAL(DP), ALLOCATABLE :: orgin(:) !<origin(coordinateIdx). The position of the origin (centre) of lower face of cylinder mesh.
+    REAL(DP), ALLOCATABLE :: cylinderExtent(:) !<cylinderExtent(coordinateIdx). The size of inner & outer radii and height of cylinder.
+    REAL(DP), ALLOCATABLE :: baseVectors(:,:) !<baseVectors(coordinateIdx,xiIdx). The base vectors indicating the geometric direction of the xiIdx mesh coordinate.
+    INTEGER(INTG), ALLOCATABLE :: numberOfElementsXi(:) !<numberOfElementsXi(xiIdx). The number of elements in radial, circumferential and axial directions
     LOGICAL :: APPEND_LINEAR_COMPONENT=.FALSE. !<True when two mesh components are needed
- END TYPE GENERATED_MESH_CYLINDER_TYPE
+  END TYPE GeneratedMeshCylinderType
  
   !>Contains information of a generated ellipsoid mesh
   !>Allows only a 3D ellipsoid mesh
- TYPE GENERATED_MESH_ELLIPSOID_TYPE
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<A pointer to the generated mesh.
-    REAL(DP), ALLOCATABLE :: ORIGIN(:) !<ORIGIN(nj). The position of the origin (centre) of lower face of ellipsoid mesh.
-    REAL(DP), ALLOCATABLE :: ELLIPSOID_EXTENT(:) !<ELLIPSOID_EXTENT(nj). The size of long axis, short axis, wall thickness and cut off angle of ellipsoid.
-    INTEGER(INTG) :: MESH_DIMENSION !<The dimension/number of Xi directions of the ellipsoid mesh.
-    INTEGER(INTG), ALLOCATABLE :: NUMBER_OF_ELEMENTS_XI(:) !<NUMBER_OF_ELEMENTS(ni). The number of elements in circumferential, longitudinal and transmural directions
-    TYPE(BASIS_PTR_TYPE), ALLOCATABLE :: BASES(:) !<The pointers to the bases used in the ellipsoid mesh
+  TYPE GeneratedMeshEllipsoidType
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh.
+    TYPE(BASIS_PTR_TYPE), ALLOCATABLE :: bases(:) !<bases(basisIdx). The pointers to the bases used in the ellipsoid mesh
+    INTEGER(INTG) :: meshDimension !<The dimension/number of Xi directions of the ellipsoid mesh.
+    REAL(DP), ALLOCATABLE :: origin(:) !<origin(coordinateIdx). The position of the origin (centre) of lower face of ellipsoid mesh.
+    REAL(DP), ALLOCATABLE :: ellipsoidExtent(:) !<ellipsoidExtent(coordinateIdx). The size of long axis, short axis, wall thickness and cut off angle of ellipsoid.
+    INTEGER(INTG), ALLOCATABLE :: numberOfElementsXi(:) !numberOfElementsXi<(xiIdx). The number of elements in circumferential, longitudinal and transmural directions
     LOGICAL :: APPEND_LINEAR_COMPONENT=.FALSE. !<True when two mesh components are needed 
-END TYPE GENERATED_MESH_ELLIPSOID_TYPE
+  END TYPE GeneratedMeshEllipsoidType
 
   !>Contains information on a generated mesh. \see OPENCMISS::CMISSGeneratedMeshType
-  TYPE GENERATED_MESH_TYPE
-    INTEGER(INTG) :: USER_NUMBER !<The user number of the generated mesh. The user number must be unique.
-    INTEGER(INTG) :: GLOBAL_NUMBER !<The corresponding global number for the generated mesh.
-    TYPE(GENERATED_MESHES_TYPE), POINTER :: GENERATED_MESHES !<Is .TRUE. if the generated mesh has finished being created, .FALSE. if not.
-    LOGICAL :: GENERATED_MESH_FINISHED !<Is .TRUE. if the generated mesh has finished being created, .FALSE. if not.
-    TYPE(REGION_TYPE), POINTER :: REGION !<A pointer to the region containing the generated mesh. If the generated mesh is in an interface rather than a region then this pointer will be NULL and the interface pointer should be used.
-    TYPE(INTERFACE_TYPE), POINTER :: INTERFACE !<A pointer to the interface containing the generated mesh. If the generated mesh is in a region rather than an interface then this pointer will be NULL and the interface pointer should be used.
-    INTEGER(INTG) :: GENERATED_TYPE !<The type of the generated mesh. \see GENERATED_MESH_ROUTINES_GeneratedMeshTypes,GENERATED_MESH_ROUTINES
-    TYPE(GENERATED_MESH_REGULAR_TYPE), POINTER :: REGULAR_MESH !<A pointer to the regular generated mesh information if the generated mesh is a regular mesh, NULL if not.
-    TYPE(GENERATED_MESH_CYLINDER_TYPE), POINTER :: CYLINDER_MESH !<A pointer to the cylinder generate mesh information if the generated mesh is a cylinder mesh, NULL if not.
-    TYPE(GENERATED_MESH_ELLIPSOID_TYPE), POINTER :: ELLIPSOID_MESH !<A pointer to the ellipsoid generate mesh information if the generated mesh is a ellipsoid mesh, NULL if not.
-    TYPE(MESH_TYPE), POINTER :: MESH !<A pointer to the mesh that has been generated.
-  END TYPE GENERATED_MESH_TYPE
+  TYPE GeneratedMeshType
+    INTEGER(INTG) :: userNumber !<The user number of the generated mesh. The user number must be unique.
+    INTEGER(INTG) :: globalNumber !<The corresponding global number for the generated mesh.
+    TYPE(GeneratedMeshesType), POINTER :: generatedMeshes !<A pointer to the generated meshes containing this generated mesh
+    LOGICAL :: generatedMeshFinished !<Is .TRUE. if the generated mesh has finished being created, .FALSE. if not.
+    TYPE(REGION_TYPE), POINTER :: region !<A pointer to the region containing the generated mesh. If the generated mesh is in an interface rather than a region then this pointer will be NULL and the interface pointer should be used.
+    TYPE(INTERFACE_TYPE), POINTER :: interface !<A pointer to the interface containing the generated mesh. If the generated mesh is in a region rather than an interface then this pointer will be NULL and the interface pointer should be used.
+    INTEGER(INTG) :: generatedType !<The type of the generated mesh. \see GENERATED_MESH_ROUTINES_GeneratedMeshTypes,GENERATED_MESH_ROUTINES
+    TYPE(GeneratedMeshRegularType), POINTER :: regularMesh !<A pointer to the regular generated mesh information if the generated mesh is a regular mesh, NULL if not.
+    TYPE(GeneratedMeshCylinderType), POINTER :: cylinderMesh !<A pointer to the cylinder generate mesh information if the generated mesh is a cylinder mesh, NULL if not.
+    TYPE(GeneratedMeshEllipsoidType), POINTER :: ellipsoidMesh !<A pointer to the ellipsoid generate mesh information if the generated mesh is a ellipsoid mesh, NULL if not.
+    TYPE(MESH_TYPE), POINTER :: mesh !<A pointer to the mesh that has been generated.
+  END TYPE GeneratedMeshType
   
-  !>A buffer type to allow for an array of pointers to a GENERATED_MESH_TYPE.
-  TYPE GENERATED_MESH_PTR_TYPE
-    TYPE(GENERATED_MESH_TYPE), POINTER :: PTR !<The pointer to the generated mesh.
-  END TYPE GENERATED_MESH_PTR_TYPE
+  !>A buffer type to allow for an array of pointers to a GeneratedMeshType.
+  TYPE GeneratedMeshPtrType
+    TYPE(GeneratedMeshType), POINTER :: ptr !<The pointer to the generated mesh.
+  END TYPE GeneratedMeshPtrType
        
   !>Contains information on the generated meshes defined on a region.
-  TYPE GENERATED_MESHES_TYPE
-    TYPE(REGION_TYPE), POINTER :: REGION !<A pointer to the region containing the generated meshes. If the generated meshes are in an interface rather than a region then this pointer will be NULL and the interface pointer should be used.
-    TYPE(INTERFACE_TYPE), POINTER :: INTERFACE !<A pointer to the interface containing the generated meshes. If the generated meshes are in a region rather than an interface then this pointer will be NULL and the interface pointer should be used.
-    INTEGER(INTG) :: NUMBER_OF_GENERATED_MESHES !<The number of generated meshes defined.
-    TYPE(GENERATED_MESH_PTR_TYPE), POINTER :: GENERATED_MESHES(:) !<The array of pointers to the generated meshes.
-   END TYPE GENERATED_MESHES_TYPE
+  TYPE GeneratedMeshesType
+    TYPE(REGION_TYPE), POINTER :: region !<A pointer to the region containing the generated meshes. If the generated meshes are in an interface rather than a region then this pointer will be NULL and the interface pointer should be used.
+    TYPE(INTERFACE_TYPE), POINTER :: interface !<A pointer to the interface containing the generated meshes. If the generated meshes are in a region rather than an interface then this pointer will be NULL and the interface pointer should be used.
+    INTEGER(INTG) :: numberOfGeneratedMeshes !<The number of generated meshes defined.
+    TYPE(GeneratedMeshPtrType), ALLOCATABLE :: generatedMeshes(:) !<generatedMeshes(generatedMeshIdx). The array of pointers to the generated meshes.
+  END TYPE GeneratedMeshesType
   
   !
   !================================================================================================================================
