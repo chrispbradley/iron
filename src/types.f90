@@ -505,7 +505,7 @@ MODULE TYPES
     TYPE(MESHES_TYPE), POINTER :: MESHES !<A pointer to the meshes for this mesh.
     TYPE(REGION_TYPE), POINTER :: REGION !<A pointer to the region containing the mesh. If the mesh is in an interface rather than a region then this pointer will be NULL and the interface pointer should be used.
     TYPE(INTERFACE_TYPE), POINTER :: INTERFACE !<A pointer to the interface containing the mesh. If the mesh is in a region rather than an interface then this pointer will be NULL and the interface pointer should be used.
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<A pointer to the generated mesh generate this mesh.
+    TYPE(GeneratedMeshType), POINTER :: GENERATED_MESH !<A pointer to the generated mesh generate this mesh.
     INTEGER(INTG) :: NUMBER_OF_DIMENSIONS !<The number of dimensions (Xi directions) for this mesh.
     INTEGER(INTG) :: NUMBER_OF_COMPONENTS !<The number of mesh components in this mesh.
     LOGICAL :: MESH_EMBEDDED !<Is .TRUE. if the mesh is embedded in another mesh, .FALSE. if not.
@@ -543,19 +543,21 @@ MODULE TYPES
   TYPE GeneratedMeshRegularType
     TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh
     TYPE(BASIS_PTR_TYPE), ALLOCATABLE :: bases(:) !<The pointers to the bases used in the regular mesh.
+    INTEGER(INTG) :: coordinateDimension !<The coordinate dimension of the regular mesh.
     INTEGER(INTG) :: meshDimension !<The dimension/number of Xi directions of the regular mesh.
     REAL(DP), ALLOCATABLE :: origin(:) !<origin(coordinateIdx). The position of the origin (first) corner of the regular mesh
     REAL(DP), ALLOCATABLE :: maximumExtent(:) !<maximumExtent(coordinateIdx). The extent/size in each coordinateIdx'th direction of the regular mesh.
     REAL(DP), ALLOCATABLE :: baseVectors(:,:) !<baseVectors(coordinateIdx,xiidx). The base vectors indicating the geometric direction of the xiIdx mesh coordinate.
-    INTEGER(INTG), ALLOCATABLE :: numberOfElements(:) !<numberOfElements(xiIdx). The number of elements in the xiIdx'th xi direction for the mesh.
+    INTEGER(INTG), ALLOCATABLE :: numberOfElementsXi(:) !<numberOfElements(xiIdx). The number of elements in the xiIdx'th xi direction for the mesh.
   END TYPE GeneratedMeshRegularType
 
   !>Contains information of a generated cylindrical mesh
   TYPE GeneratedMeshCylinderType
-    TYPE(GENERATED_MESH_TYPE), POINTER :: generatedMesh !<A pointer to the generated mesh.
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh.
     TYPE(BASIS_PTR_TYPE), ALLOCATABLE :: bases(:) !<The pointers to the bases used in the regular mesh.
     INTEGER(INTG) :: meshDimension !<The dimension/number of Xi directions of the cylinder mesh.
-    REAL(DP), ALLOCATABLE :: orgin(:) !<origin(coordinateIdx). The position of the origin (centre) of lower face of cylinder mesh.
+    INTEGER(INTG) :: coordinateDimension !<The coordinate dimension of the regular mesh.
+    REAL(DP), ALLOCATABLE :: origin(:) !<origin(coordinateIdx). The position of the origin (centre) of lower face of cylinder mesh.
     REAL(DP), ALLOCATABLE :: cylinderExtent(:) !<cylinderExtent(coordinateIdx). The size of inner & outer radii and height of cylinder.
     REAL(DP), ALLOCATABLE :: baseVectors(:,:) !<baseVectors(coordinateIdx,xiIdx). The base vectors indicating the geometric direction of the xiIdx mesh coordinate.
     INTEGER(INTG), ALLOCATABLE :: numberOfElementsXi(:) !<numberOfElementsXi(xiIdx). The number of elements in radial, circumferential and axial directions
@@ -568,6 +570,7 @@ MODULE TYPES
     TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh.
     TYPE(BASIS_PTR_TYPE), ALLOCATABLE :: bases(:) !<bases(basisIdx). The pointers to the bases used in the ellipsoid mesh
     INTEGER(INTG) :: meshDimension !<The dimension/number of Xi directions of the ellipsoid mesh.
+    INTEGER(INTG) :: coordinateDimension !<The coordinate dimension of the regular mesh.
     REAL(DP), ALLOCATABLE :: origin(:) !<origin(coordinateIdx). The position of the origin (centre) of lower face of ellipsoid mesh.
     REAL(DP), ALLOCATABLE :: ellipsoidExtent(:) !<ellipsoidExtent(coordinateIdx). The size of long axis, short axis, wall thickness and cut off angle of ellipsoid.
     INTEGER(INTG), ALLOCATABLE :: numberOfElementsXi(:) !numberOfElementsXi<(xiIdx). The number of elements in circumferential, longitudinal and transmural directions
@@ -2230,7 +2233,7 @@ MODULE TYPES
     TYPE(DATA_POINTS_TYPE), POINTER :: DATA_POINTS  !<A pointer to the data points defined in an interface.
     TYPE(NODES_TYPE), POINTER :: NODES !<A pointer to the nodes in an interface
     TYPE(MESHES_TYPE), POINTER :: MESHES !<A pointer to the mesh in an interface.
-    TYPE(GENERATED_MESHES_TYPE), POINTER :: GENERATED_MESHES !<A pointer to the generated meshes in an interface.
+    TYPE(GeneratedMeshesType), POINTER :: GENERATED_MESHES !<A pointer to the generated meshes in an interface.
     TYPE(FIELDS_TYPE), POINTER :: FIELDS !<A pointer to the fields defined over an interface.
     TYPE(INTERFACE_CONDITIONS_TYPE), POINTER :: INTERFACE_CONDITIONS !<The pointer to the interface conditions for this interface
   END TYPE INTERFACE_TYPE
@@ -3187,7 +3190,7 @@ MODULE TYPES
     TYPE(DATA_POINTS_TYPE), POINTER :: DATA_POINTS  !<A pointer to the data points defined on the region.          
     TYPE(NODES_TYPE), POINTER :: NODES !<A pointer to the nodes defined on the region.
     TYPE(MESHES_TYPE), POINTER :: MESHES !<A pointer to the meshes defined on the region.
-    TYPE(GENERATED_MESHES_TYPE), POINTER :: GENERATED_MESHES !<A pointer to the generated meshes defined on the region.
+    TYPE(GeneratedMeshesType), POINTER :: GENERATED_MESHES !<A pointer to the generated meshes defined on the region.
     TYPE(FIELDS_TYPE), POINTER :: FIELDS !<A pointer to the fields defined on the region.
     TYPE(EQUATIONS_SETS_TYPE), POINTER :: EQUATIONS_SETS !<A pointer to the equation sets defined on the region.
     TYPE(CELLML_ENVIRONMENTS_TYPE), POINTER :: CELLML_ENVIRONMENTS !<A pointer to the CellML environments for the region.

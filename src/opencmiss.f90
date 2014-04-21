@@ -76,7 +76,7 @@ MODULE OPENCMISS
 #endif
   USE FIELD_IO_ROUTINES
   USE FINITE_ELASTICITY_ROUTINES
-  USE GENERATED_MESH_ROUTINES
+  USE GeneratedMeshRoutines
   USE HAMILTON_JACOBI_EQUATIONS_ROUTINES
   USE HISTORY_ROUTINES
   USE INPUT_OUTPUT
@@ -189,7 +189,7 @@ MODULE OPENCMISS
   !>Contains information on a generated mesh.
   TYPE CMISSGeneratedMeshType
     PRIVATE
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh
   END TYPE CMISSGeneratedMeshType
 
   !>Contains information about a history file for a control loop.
@@ -7713,8 +7713,8 @@ CONTAINS
 
     CALL ENTERS("CMISSGeneratedMesh_Finalise",err,error,*999)
 
-    IF(ASSOCIATED(CMISSGeneratedMesh%GENERATED_MESH))  &
-      & CALL GENERATED_MESH_DESTROY(CMISSGeneratedMesh%GENERATED_MESH,err,error,*999)
+    IF(ASSOCIATED(CMISSGeneratedMesh%generatedMesh))  &
+      & CALL GeneratedMeshDestroy(CMISSGeneratedMesh%generatedMesh,err,error,*999)
 
     CALL EXITS("CMISSGeneratedMesh_Finalise")
     RETURN
@@ -7739,7 +7739,7 @@ CONTAINS
 
     CALL ENTERS("CMISSGeneratedMesh_Initialise",err,error,*999)
 
-    NULLIFY(CMISSGeneratedMesh%GENERATED_MESH)
+    NULLIFY(CMISSGeneratedMesh%generatedMesh)
 
     CALL EXITS("CMISSGeneratedMesh_Initialise")
     RETURN
@@ -35154,7 +35154,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
     TYPE(BASIS_PTR_TYPE), POINTER :: BASES(:)
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh
     TYPE(REGION_TYPE), POINTER :: REGION
     TYPE(VARYING_STRING) :: LOCAL_ERROR
     INTEGER(INTG) :: basis_idx,NumBases
@@ -35162,14 +35162,14 @@ CONTAINS
     CALL ENTERS("CMISSGeneratedMesh_BasisGetNumber",err,error,*999)
 
     NULLIFY(REGION)
-    NULLIFY(GENERATED_MESH)
+    NULLIFY(generatedMesh)
     NULLIFY(BASES)
 
     CALL REGION_USER_NUMBER_FIND(regionUserNumber,REGION,err,error,*999)
     IF(ASSOCIATED(REGION)) THEN
-      CALL GENERATED_MESH_USER_NUMBER_FIND(generatedMeshUserNumber,REGION,GENERATED_MESH,err,error,*999)
-      IF(ASSOCIATED(GENERATED_MESH)) THEN
-        CALL GENERATED_MESH_BASIS_GET(GENERATED_MESH,BASES,err,error,*999)
+      CALL GeneratedMeshUserNumberFind(generatedMeshUserNumber,REGION,generatedMesh,err,error,*999)
+      IF(ASSOCIATED(generatedMesh)) THEN
+        CALL GeneratedMeshBasisGet(generatedMesh,BASES,err,error,*999)
         IF(ASSOCIATED(BASES)) THEN
           NumBases=SIZE(BASES)
           IF(SIZE(basisUserNumbers)<NumBases) THEN
@@ -35234,7 +35234,7 @@ CONTAINS
 
     NULLIFY(BASIS_PTRS)
 
-    CALL GENERATED_MESH_BASIS_GET(generatedMesh%GENERATED_MESH,BASIS_PTRS,err,error,*999)
+    CALL GeneratedMeshBasisGet(generatedMesh%generatedMesh,BASIS_PTRS,err,error,*999)
     IF(ASSOCIATED(BASIS_PTRS)) THEN
       NumBases=SIZE(BASIS_PTRS)
       IF(SIZE(bases)<NumBases) THEN
@@ -35276,26 +35276,26 @@ CONTAINS
     !Local variables
     TYPE(BASIS_PTR_TYPE), POINTER :: BASES(:)
     TYPE(BASIS_TYPE), POINTER :: BASIS
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh
     TYPE(REGION_TYPE), POINTER :: REGION
     TYPE(VARYING_STRING) :: LOCAL_ERROR
 
     CALL ENTERS("CMISSGeneratedMesh_BasisSetNumber0",err,error,*999)
 
     NULLIFY(REGION)
-    NULLIFY(GENERATED_MESH)
+    NULLIFY(generatedMesh)
     NULLIFY(BASIS)
 
     CALL REGION_USER_NUMBER_FIND(regionUserNumber,REGION,err,error,*999)
     IF(ASSOCIATED(REGION)) THEN
-      CALL GENERATED_MESH_USER_NUMBER_FIND(generatedMeshUserNumber,REGION,GENERATED_MESH,err,error,*999)
-      IF(ASSOCIATED(GENERATED_MESH)) THEN
+      CALL GeneratedMeshUserNumberFind(generatedMeshUserNumber,REGION,generatedMesh,err,error,*999)
+      IF(ASSOCIATED(generatedMesh)) THEN
         CALL BASIS_USER_NUMBER_FIND(basisUserNumber,BASIS,err,error,*999)
         IF(ASSOCIATED(BASIS)) THEN
           ALLOCATE(BASES(1),STAT=err)
           IF(err/=0) CALL FLAG_ERROR("Could not allocate bases.",err,error,*999)
           BASES(1)%PTR=>BASIS
-          CALL GENERATED_MESH_BASIS_SET(GENERATED_MESH,BASES,err,error,*999)
+          CALL GeneratedMeshBasisSet(generatedMesh,BASES,err,error,*999)
         ELSE
           LOCAL_ERROR="A basis with an user number of "//TRIM(NUMBER_TO_VSTRING(basisUserNumber,"*",err,error))// &
             & " does not exist."
@@ -35336,7 +35336,7 @@ CONTAINS
     !Local variables
     TYPE(BASIS_PTR_TYPE), POINTER :: BASES(:)
     TYPE(BASIS_TYPE), POINTER :: BASIS
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh
     TYPE(REGION_TYPE), POINTER :: REGION
     TYPE(VARYING_STRING) :: LOCAL_ERROR
     INTEGER(INTG) :: basis_idx,NumBases
@@ -35344,7 +35344,7 @@ CONTAINS
     CALL ENTERS("CMISSGeneratedMesh_BasisSetNumber1",err,error,*999)
 
     NULLIFY(REGION)
-    NULLIFY(GENERATED_MESH)
+    NULLIFY(generatedMesh)
     NULLIFY(BASES)
 
     NumBases=SIZE(basisUserNumbers)
@@ -35353,8 +35353,8 @@ CONTAINS
 
     CALL REGION_USER_NUMBER_FIND(regionUserNumber,REGION,err,error,*999)
     IF(ASSOCIATED(REGION)) THEN
-      CALL GENERATED_MESH_USER_NUMBER_FIND(generatedMeshUserNumber,REGION,GENERATED_MESH,err,error,*999)
-      IF(ASSOCIATED(GENERATED_MESH)) THEN
+      CALL GeneratedMeshUserNumberFind(generatedMeshUserNumber,REGION,generatedMesh,err,error,*999)
+      IF(ASSOCIATED(generatedMesh)) THEN
         DO basis_idx=1,NumBases
           NULLIFY(BASIS)
           CALL BASIS_USER_NUMBER_FIND(basisUserNumbers(basis_idx),BASIS,err,error,*999)
@@ -35366,7 +35366,7 @@ CONTAINS
             CALL FLAG_ERROR(LOCAL_ERROR,err,error,*999)
           END IF
         END DO
-        CALL GENERATED_MESH_BASIS_SET(GENERATED_MESH,BASES,err,error,*999)
+        CALL GeneratedMeshBasisSet(generatedMesh,BASES,err,error,*999)
       ELSE
         LOCAL_ERROR="A generated mesh with an user number of "//TRIM(NUMBER_TO_VSTRING(generatedMeshUserNumber,"*",err,error))// &
           & " does not exist on the region with a user number of "//TRIM(NUMBER_TO_VSTRING(regionUserNumber,"*",err,error))//"."
@@ -35442,7 +35442,7 @@ CONTAINS
       END IF
     END DO
 
-    CALL GENERATED_MESH_BASIS_SET(generatedMesh%GENERATED_MESH,BASIS_PTRS,err,error,*999)
+    CALL GeneratedMeshBasisSet(generatedMesh%generatedMesh,BASIS_PTRS,err,error,*999)
 
     CALL EXITS("CMISSGeneratedMesh_BasisSetObj1")
     RETURN
@@ -35466,19 +35466,19 @@ CONTAINS
     REAL(DP), INTENT(IN) :: baseVectors(:,:) !<baseVectors(coordinate_idx,xi_idx). The base vectors to set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh
     TYPE(REGION_TYPE), POINTER :: REGION
     TYPE(VARYING_STRING) :: LOCAL_ERROR
 
     CALL ENTERS("CMISSGeneratedMesh_BaseVectorsSetNumber",err,error,*999)
 
     NULLIFY(REGION)
-    NULLIFY(GENERATED_MESH)
+    NULLIFY(generatedMesh)
     CALL REGION_USER_NUMBER_FIND(regionUserNumber,REGION,err,error,*999)
     IF(ASSOCIATED(REGION)) THEN
-      CALL GENERATED_MESH_USER_NUMBER_FIND(generatedMeshUserNumber,REGION,GENERATED_MESH,err,error,*999)
-      IF(ASSOCIATED(GENERATED_MESH)) THEN
-        CALL GENERATED_MESH_BASE_VECTORS_SET(GENERATED_MESH,baseVectors,err,error,*999)
+      CALL GeneratedMeshUserNumberFind(generatedMeshUserNumber,REGION,generatedMesh,err,error,*999)
+      IF(ASSOCIATED(generatedMesh)) THEN
+        CALL GeneratedMeshBaseVectorsSet(generatedMesh,baseVectors,err,error,*999)
       ELSE
         LOCAL_ERROR="A generated mesh with an user number of "//TRIM(NUMBER_TO_VSTRING(generatedMeshUserNumber,"*",err,error))// &
           & " does not exist on the region with a user number of "//TRIM(NUMBER_TO_VSTRING(regionUserNumber,"*",err,error))//"."
@@ -35514,7 +35514,7 @@ CONTAINS
 
     CALL ENTERS("CMISSGeneratedMesh_BaseVectorsSetObj",err,error,*999)
 
-    CALL GENERATED_MESH_BASE_VECTORS_SET(generatedMesh%GENERATED_MESH,baseVectors,err,error,*999)
+    CALL GeneratedMeshBaseVectorsSet(generatedMesh%generatedMesh,baseVectors,err,error,*999)
 
     CALL EXITS("CMISSGeneratedMesh_BaseVectorsSetObj")
     RETURN
@@ -35539,20 +35539,20 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
     TYPE(MESH_TYPE), POINTER :: MESH
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh
     TYPE(REGION_TYPE), POINTER :: REGION
     TYPE(VARYING_STRING) :: LOCAL_ERROR
 
     CALL ENTERS("CMISSGeneratedMesh_CreateFinishNumber",err,error,*999)
 
     NULLIFY(REGION)
-    NULLIFY(GENERATED_MESH)
+    NULLIFY(generatedMesh)
     NULLIFY(MESH)
     CALL REGION_USER_NUMBER_FIND(regionUserNumber,REGION,err,error,*999)
     IF(ASSOCIATED(REGION)) THEN
-      CALL GENERATED_MESH_USER_NUMBER_FIND(generatedMeshUserNumber,REGION,GENERATED_MESH,err,error,*999)
-      IF(ASSOCIATED(GENERATED_MESH)) THEN
-        CALL GENERATED_MESH_CREATE_FINISH(GENERATED_MESH,meshUserNumber,MESH,err,error,*999)
+      CALL GeneratedMeshUserNumberFind(generatedMeshUserNumber,REGION,generatedMesh,err,error,*999)
+      IF(ASSOCIATED(generatedMesh)) THEN
+        CALL GeneratedMeshCreateFinish(generatedMesh,meshUserNumber,MESH,err,error,*999)
       ELSE
         LOCAL_ERROR="A generated mesh with an user number of "//TRIM(NUMBER_TO_VSTRING(generatedMeshUserNumber,"*",err,error))// &
           & " does not exist on the region with a user number of "//TRIM(NUMBER_TO_VSTRING(regionUserNumber,"*",err,error))//"."
@@ -35593,7 +35593,7 @@ CONTAINS
 
     CALL ENTERS("CMISSGeneratedMesh_CreateFinishObj",err,error,*999)
 
-    CALL GENERATED_MESH_CREATE_FINISH(generatedMesh%GENERATED_MESH,meshUserNumber,mesh%MESH,err,error,*999)
+    CALL GeneratedMeshCreateFinish(generatedMesh%generatedMesh,meshUserNumber,mesh%MESH,err,error,*999)
 
 #ifdef TAUPROF
     CALL TAU_STATIC_PHASE_STOP('Generated Mesh Create')
@@ -35620,7 +35620,7 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: regionUserNumber !<The user number of the region to create the generated mesh in.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh
     TYPE(REGION_TYPE), POINTER :: REGION
     TYPE(VARYING_STRING) :: LOCAL_ERROR
 
@@ -35631,10 +35631,10 @@ CONTAINS
 #endif
 
     NULLIFY(REGION)
-    NULLIFY(GENERATED_MESH)
+    NULLIFY(generatedMesh)
     CALL REGION_USER_NUMBER_FIND(regionUserNumber,REGION,err,error,*999)
     IF(ASSOCIATED(REGION)) THEN
-      CALL GENERATED_MESH_CREATE_START(generatedMeshUserNumber,REGION,GENERATED_MESH,err,error,*999)
+      CALL GeneratedMeshCreateStart(generatedMeshUserNumber,REGION,generatedMesh,err,error,*999)
     ELSE
       LOCAL_ERROR="A region with an user number of "//TRIM(NUMBER_TO_VSTRING(regionUserNumber,"*",err,error))// &
         & " does not exist."
@@ -35666,7 +35666,7 @@ CONTAINS
 
     CALL ENTERS("CMISSGeneratedMesh_CreateStartInterfaceObj",err,error,*999)
 
-    CALL GENERATED_MESH_CREATE_START(generatedMeshUserNumber,interface%interface,generatedMesh%GENERATED_MESH,err,error,*999)
+    CALL GeneratedMeshCreateStart(generatedMeshUserNumber,interface%interface,generatedMesh%generatedMesh,err,error,*999)
 
     CALL EXITS("CMISSGeneratedMesh_CreateStartInterfaceObj")
     RETURN
@@ -35697,7 +35697,7 @@ CONTAINS
     CALL TAU_STATIC_PHASE_START('Generated Mesh Create')
 #endif
 
-    CALL GENERATED_MESH_CREATE_START(generatedMeshUserNumber,REGION%region,generatedMesh%GENERATED_MESH,err,error,*999)
+    CALL GeneratedMeshCreateStart(generatedMeshUserNumber,REGION%region,generatedMesh%generatedMesh,err,error,*999)
 
     CALL EXITS("CMISSGeneratedMesh_CreateStartRegionObj")
     RETURN
@@ -35720,19 +35720,19 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: generatedMeshUserNumber !<The user number of the generated mesh to destroy.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh
     TYPE(REGION_TYPE), POINTER :: REGION
     TYPE(VARYING_STRING) :: LOCAL_ERROR
 
     CALL ENTERS("CMISSGeneratedMesh_DestroyNumber",err,error,*999)
 
     NULLIFY(REGION)
-    NULLIFY(GENERATED_MESH)
+    NULLIFY(generatedMesh)
     CALL REGION_USER_NUMBER_FIND(regionUserNumber,REGION,err,error,*999)
     IF(ASSOCIATED(REGION)) THEN
-      CALL GENERATED_MESH_USER_NUMBER_FIND(generatedMeshUserNumber,REGION,GENERATED_MESH,err,error,*999)
-      IF(ASSOCIATED(GENERATED_MESH)) THEN
-        CALL GENERATED_MESH_DESTROY(GENERATED_MESH,err,error,*999)
+      CALL GeneratedMeshUserNumberFind(generatedMeshUserNumber,REGION,generatedMesh,err,error,*999)
+      IF(ASSOCIATED(generatedMesh)) THEN
+        CALL GeneratedMeshDestroy(generatedMesh,err,error,*999)
       ELSE
         LOCAL_ERROR="A generated mesh with an user number of "//TRIM(NUMBER_TO_VSTRING(generatedMeshUserNumber,"*",err,error))// &
           & " does not exist on the region with a user number of "//TRIM(NUMBER_TO_VSTRING(regionUserNumber,"*",err,error))//"."
@@ -35767,7 +35767,7 @@ CONTAINS
 
     CALL ENTERS("CMISSGeneratedMesh_DestroyObj",err,error,*999)
 
-    CALL GENERATED_MESH_DESTROY(generatedMesh%GENERATED_MESH,err,error,*999)
+    CALL GeneratedMeshDestroy(generatedMesh%generatedMesh,err,error,*999)
 
     CALL EXITS("CMISSGeneratedMesh_DestroyObj")
     RETURN
@@ -35790,19 +35790,19 @@ CONTAINS
     REAL(DP), INTENT(OUT) :: extent(:) !<extent(i). On return, the extent for the i'th dimension of the generated mesh.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh
     TYPE(REGION_TYPE), POINTER :: REGION
     TYPE(VARYING_STRING) :: LOCAL_ERROR
 
     CALL ENTERS("CMISSGeneratedMesh_ExtentGetNumber",err,error,*999)
 
     NULLIFY(REGION)
-    NULLIFY(GENERATED_MESH)
+    NULLIFY(generatedMesh)
     CALL REGION_USER_NUMBER_FIND(regionUserNumber,REGION,err,error,*999)
     IF(ASSOCIATED(REGION)) THEN
-      CALL GENERATED_MESH_USER_NUMBER_FIND(generatedMeshUserNumber,REGION,GENERATED_MESH,err,error,*999)
-      IF(ASSOCIATED(GENERATED_MESH)) THEN
-        CALL GENERATED_MESH_EXTENT_GET(GENERATED_MESH,extent,err,error,*999)
+      CALL GeneratedMeshUserNumberFind(generatedMeshUserNumber,REGION,generatedMesh,err,error,*999)
+      IF(ASSOCIATED(generatedMesh)) THEN
+        CALL GeneratedMeshExtentGet(generatedMesh,extent,err,error,*999)
       ELSE
         LOCAL_ERROR="A generated mesh with an user number of "//TRIM(NUMBER_TO_VSTRING(generatedMeshUserNumber,"*",err,error))// &
           & " does not exist on the region with a user number of "//TRIM(NUMBER_TO_VSTRING(regionUserNumber,"*",err,error))//"."
@@ -35838,7 +35838,7 @@ CONTAINS
 
     CALL ENTERS("CMISSGeneratedMesh_ExtentGetObj",err,error,*999)
 
-    CALL GENERATED_MESH_EXTENT_GET(generatedMesh%GENERATED_MESH,extent,err,error,*999)
+    CALL GeneratedMeshExtentGet(generatedMesh%generatedMesh,extent,err,error,*999)
 
     CALL EXITS("CMISSGeneratedMesh_ExtentGetObj")
     RETURN
@@ -35862,19 +35862,19 @@ CONTAINS
     REAL(DP), INTENT(IN) :: extent(:) !<extent(i). The extent for the i'th dimension of the generated mesh to set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh
     TYPE(REGION_TYPE), POINTER :: REGION
     TYPE(VARYING_STRING) :: LOCAL_ERROR
 
     CALL ENTERS("CMISSGeneratedMesh_ExtentSetNumber",err,error,*999)
 
     NULLIFY(REGION)
-    NULLIFY(GENERATED_MESH)
+    NULLIFY(generatedMesh)
     CALL REGION_USER_NUMBER_FIND(regionUserNumber,REGION,err,error,*999)
     IF(ASSOCIATED(REGION)) THEN
-      CALL GENERATED_MESH_USER_NUMBER_FIND(generatedMeshUserNumber,REGION,GENERATED_MESH,err,error,*999)
-      IF(ASSOCIATED(GENERATED_MESH)) THEN
-        CALL GENERATED_MESH_EXTENT_SET(GENERATED_MESH,extent,err,error,*999)
+      CALL GeneratedMeshUserNumberFind(generatedMeshUserNumber,REGION,generatedMesh,err,error,*999)
+      IF(ASSOCIATED(generatedMesh)) THEN
+        CALL GeneratedMeshExtentSet(generatedMesh,extent,err,error,*999)
       ELSE
         LOCAL_ERROR="A generated mesh with an user number of "//TRIM(NUMBER_TO_VSTRING(generatedMeshUserNumber,"*",err,error))// &
           & " does not exist on the region with a user number of "//TRIM(NUMBER_TO_VSTRING(regionUserNumber,"*",err,error))//"."
@@ -35910,7 +35910,7 @@ CONTAINS
 
     CALL ENTERS("CMISSGeneratedMesh_ExtentSetObj",err,error,*999)
 
-    CALL GENERATED_MESH_EXTENT_SET(generatedMesh%GENERATED_MESH,extent,err,error,*999)
+    CALL GeneratedMeshExtentSet(generatedMesh%generatedMesh,extent,err,error,*999)
 
     CALL EXITS("CMISSGeneratedMesh_ExtentSetObj")
     RETURN
@@ -35934,19 +35934,19 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: numberOfElements(:) !<numberOfElements(i). On return, the number of elements in the i'th dimension of the generated mesh.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh
     TYPE(REGION_TYPE), POINTER :: REGION
     TYPE(VARYING_STRING) :: LOCAL_ERROR
 
     CALL ENTERS("CMISSGeneratedMesh_NumberOfElementsGetNumber",err,error,*999)
 
     NULLIFY(REGION)
-    NULLIFY(GENERATED_MESH)
+    NULLIFY(generatedMesh)
     CALL REGION_USER_NUMBER_FIND(regionUserNumber,REGION,err,error,*999)
     IF(ASSOCIATED(REGION)) THEN
-      CALL GENERATED_MESH_USER_NUMBER_FIND(generatedMeshUserNumber,REGION,GENERATED_MESH,err,error,*999)
-      IF(ASSOCIATED(GENERATED_MESH)) THEN
-        CALL GENERATED_MESH_NUMBER_OF_ELEMENTS_GET(GENERATED_MESH,numberOfElements,err,error,*999)
+      CALL GeneratedMeshUserNumberFind(generatedMeshUserNumber,REGION,generatedMesh,err,error,*999)
+      IF(ASSOCIATED(generatedMesh)) THEN
+        CALL GeneratedMeshNumberOfElementsGet(generatedMesh,numberOfElements,err,error,*999)
       ELSE
         LOCAL_ERROR="A generated mesh with an user number of "//TRIM(NUMBER_TO_VSTRING(generatedMeshUserNumber,"*",err,error))// &
           & " does not exist on the region with a user number of "//TRIM(NUMBER_TO_VSTRING(regionUserNumber,"*",err,error))//"."
@@ -35982,7 +35982,7 @@ CONTAINS
 
     CALL ENTERS("CMISSGeneratedMesh_NumberOfElementsGetObj",err,error,*999)
 
-    CALL GENERATED_MESH_NUMBER_OF_ELEMENTS_GET(generatedMesh%GENERATED_MESH,numberOfElements,err,error,*999)
+    CALL GeneratedMeshNumberOfElementsGet(generatedMesh%generatedMesh,numberOfElements,err,error,*999)
 
     CALL EXITS("CMISSGeneratedMesh_NumberOfElementsGetObj")
     RETURN
@@ -36006,19 +36006,19 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: numberOfElements(:) !<numberOfElements(i). The number of elements in the i'th dimension of the generated mesh to set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh
     TYPE(REGION_TYPE), POINTER :: REGION
     TYPE(VARYING_STRING) :: LOCAL_ERROR
 
     CALL ENTERS("CMISSGeneratedMesh_NumberOfElementsSetNumber",err,error,*999)
 
     NULLIFY(REGION)
-    NULLIFY(GENERATED_MESH)
+    NULLIFY(generatedMesh)
     CALL REGION_USER_NUMBER_FIND(regionUserNumber,REGION,err,error,*999)
     IF(ASSOCIATED(REGION)) THEN
-      CALL GENERATED_MESH_USER_NUMBER_FIND(generatedMeshUserNumber,REGION,GENERATED_MESH,err,error,*999)
-      IF(ASSOCIATED(GENERATED_MESH)) THEN
-        CALL GENERATED_MESH_NUMBER_OF_ELEMENTS_SET(GENERATED_MESH,numberOfElements,err,error,*999)
+      CALL GeneratedMeshUserNumberFind(generatedMeshUserNumber,REGION,generatedMesh,err,error,*999)
+      IF(ASSOCIATED(generatedMesh)) THEN
+        CALL GeneratedMeshNumberOfElementsSet(generatedMesh,numberOfElements,err,error,*999)
       ELSE
         LOCAL_ERROR="A generated mesh with an user number of "//TRIM(NUMBER_TO_VSTRING(generatedMeshUserNumber,"*",err,error))// &
           & " does not exist on the region with a user number of "//TRIM(NUMBER_TO_VSTRING(regionUserNumber,"*",err,error))//"."
@@ -36054,7 +36054,7 @@ CONTAINS
 
     CALL ENTERS("CMISSGeneratedMesh_NumberOfElementsSetObj",err,error,*999)
 
-    CALL GENERATED_MESH_NUMBER_OF_ELEMENTS_SET(generatedMesh%GENERATED_MESH,numberOfElements,err,error,*999)
+    CALL GeneratedMeshNumberOfElementsSet(generatedMesh%generatedMesh,numberOfElements,err,error,*999)
 
     CALL EXITS("CMISSGeneratedMesh_NumberOfElementsSetObj")
     RETURN
@@ -36078,19 +36078,19 @@ CONTAINS
     REAL(DP), INTENT(OUT) :: origin(:) !<origin(i). On return, the origin of the i'th dimension of the generated mesh.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh
     TYPE(REGION_TYPE), POINTER :: REGION
     TYPE(VARYING_STRING) :: LOCAL_ERROR
 
     CALL ENTERS("CMISSGeneratedMesh_OriginGetNumber",err,error,*999)
 
     NULLIFY(REGION)
-    NULLIFY(GENERATED_MESH)
+    NULLIFY(generatedMesh)
     CALL REGION_USER_NUMBER_FIND(regionUserNumber,REGION,err,error,*999)
     IF(ASSOCIATED(REGION)) THEN
-      CALL GENERATED_MESH_USER_NUMBER_FIND(generatedMeshUserNumber,REGION,GENERATED_MESH,err,error,*999)
-      IF(ASSOCIATED(GENERATED_MESH)) THEN
-        CALL GENERATED_MESH_ORIGIN_GET(GENERATED_MESH,origin,err,error,*999)
+      CALL GeneratedMeshUserNumberFind(generatedMeshUserNumber,REGION,generatedMesh,err,error,*999)
+      IF(ASSOCIATED(generatedMesh)) THEN
+        CALL GeneratedMeshOriginGet(generatedMesh,origin,err,error,*999)
       ELSE
         LOCAL_ERROR="A generated mesh with an user number of "//TRIM(NUMBER_TO_VSTRING(generatedMeshUserNumber,"*",err,error))// &
           & " does not exist on the region with a user number of "//TRIM(NUMBER_TO_VSTRING(regionUserNumber,"*",err,error))//"."
@@ -36126,7 +36126,7 @@ CONTAINS
 
     CALL ENTERS("CMISSGeneratedMesh_OriginGetObj",err,error,*999)
 
-    CALL GENERATED_MESH_ORIGIN_GET(generatedMesh%GENERATED_MESH,origin,err,error,*999)
+    CALL GeneratedMeshOriginGet(generatedMesh%generatedMesh,origin,err,error,*999)
 
     CALL EXITS("CMISSGeneratedMesh_OriginGetObj")
     RETURN
@@ -36150,19 +36150,19 @@ CONTAINS
     REAL(DP), INTENT(IN) :: origin(:) !<origin(i). The origin of the i'th dimension of the generated mesh to set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh
     TYPE(REGION_TYPE), POINTER :: REGION
     TYPE(VARYING_STRING) :: LOCAL_ERROR
 
     CALL ENTERS("CMISSGeneratedMesh_OriginSetNumber",err,error,*999)
 
     NULLIFY(REGION)
-    NULLIFY(GENERATED_MESH)
+    NULLIFY(generatedMesh)
     CALL REGION_USER_NUMBER_FIND(regionUserNumber,REGION,err,error,*999)
     IF(ASSOCIATED(REGION)) THEN
-      CALL GENERATED_MESH_USER_NUMBER_FIND(generatedMeshUserNumber,REGION,GENERATED_MESH,err,error,*999)
-      IF(ASSOCIATED(GENERATED_MESH)) THEN
-        CALL GENERATED_MESH_ORIGIN_SET(GENERATED_MESH,origin,err,error,*999)
+      CALL GeneratedMeshUserNumberFind(generatedMeshUserNumber,REGION,generatedMesh,err,error,*999)
+      IF(ASSOCIATED(generatedMesh)) THEN
+        CALL GeneratedMeshOriginSet(generatedMesh,origin,err,error,*999)
       ELSE
         LOCAL_ERROR="A generated mesh with an user number of "//TRIM(NUMBER_TO_VSTRING(generatedMeshUserNumber,"*",err,error))// &
           & " does not exist on the region with a user number of "//TRIM(NUMBER_TO_VSTRING(regionUserNumber,"*",err,error))//"."
@@ -36198,7 +36198,7 @@ CONTAINS
 
     CALL ENTERS("CMISSGeneratedMesh_OriginSetObj",err,error,*999)
 
-    CALL GENERATED_MESH_ORIGIN_SET(generatedMesh%GENERATED_MESH,origin,err,error,*999)
+    CALL GeneratedMeshOriginSet(generatedMesh%generatedMesh,origin,err,error,*999)
 
     CALL EXITS("CMISSGeneratedMesh_OriginSetObj")
     RETURN
@@ -36214,27 +36214,27 @@ CONTAINS
   !
 
   !>Returns the type of a generated mesh on a region identified by a user number.
-  SUBROUTINE CMISSGeneratedMesh_TypeGetNumber(regionUserNumber,generatedMeshUserNumber,generatedMeshType,err)
+  SUBROUTINE CMISSGeneratedMesh_TypeGetNumber(regionUserNumber,generatedMeshUserNumber,genMeshType,err)
 
     !Argument variables
     INTEGER(INTG), INTENT(IN) :: regionUserNumber !<The user number of the region containing the generated mesh to get the type for.
     INTEGER(INTG), INTENT(IN) :: generatedMeshUserNumber !<The user number of the generated mesh to get the type for.
-    INTEGER(INTG), INTENT(OUT) :: generatedMeshType !<On return, the type of the generated mesh. \see OPENCMISS_GeneratedMeshTypes
+    INTEGER(INTG), INTENT(OUT) :: genMeshType !<On return, the type of the generated mesh. \see OPENCMISS_GeneratedMeshTypes
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh
     TYPE(REGION_TYPE), POINTER :: REGION
     TYPE(VARYING_STRING) :: LOCAL_ERROR
 
     CALL ENTERS("CMISSGeneratedMesh_TypeGetNumber",err,error,*999)
 
     NULLIFY(REGION)
-    NULLIFY(GENERATED_MESH)
+    NULLIFY(generatedMesh)
     CALL REGION_USER_NUMBER_FIND(regionUserNumber,REGION,err,error,*999)
     IF(ASSOCIATED(REGION)) THEN
-      CALL GENERATED_MESH_USER_NUMBER_FIND(generatedMeshUserNumber,REGION,GENERATED_MESH,err,error,*999)
-      IF(ASSOCIATED(GENERATED_MESH)) THEN
-        CALL GENERATED_MESH_TYPE_GET(GENERATED_MESH,generatedMeshType,err,error,*999)
+      CALL GeneratedMeshUserNumberFind(generatedMeshUserNumber,REGION,generatedMesh,err,error,*999)
+      IF(ASSOCIATED(generatedMesh)) THEN
+        CALL GeneratedMeshTypeGet(generatedMesh,genMeshType,err,error,*999)
       ELSE
         LOCAL_ERROR="A generated mesh with an user number of "//TRIM(NUMBER_TO_VSTRING(generatedMeshUserNumber,"*",err,error))// &
           & " does not exist on the region with a user number of "//TRIM(NUMBER_TO_VSTRING(regionUserNumber,"*",err,error))//"."
@@ -36260,17 +36260,17 @@ CONTAINS
   !
 
   !>Returns the type of a generated mesh identified by an object.
-  SUBROUTINE CMISSGeneratedMesh_TypeGetObj(generatedMesh,generatedMeshType,err)
+  SUBROUTINE CMISSGeneratedMesh_TypeGetObj(generatedMesh,genMeshType,err)
 
     !Argument variables
     TYPE(CMISSGeneratedMeshType), INTENT(IN) :: generatedMesh !<The generated mesh to get the generated mesh type for.
-    INTEGER(INTG), INTENT(OUT) :: generatedMeshType !<On return, the type of the generated mesh. \see OPENCMISS_GeneratedMeshTypes
+    INTEGER(INTG), INTENT(OUT) :: genMeshType !<On return, the type of the generated mesh. \see OPENCMISS_GeneratedMeshTypes
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
 
     CALL ENTERS("CMISSGeneratedMesh_TypeGetObj",err,error,*999)
 
-    CALL GENERATED_MESH_TYPE_GET(generatedMesh%GENERATED_MESH,generatedMeshType,err,error,*999)
+    CALL GeneratedMeshTypeGet(generatedMesh%generatedMesh,genMeshType,err,error,*999)
 
     CALL EXITS("CMISSGeneratedMesh_TypeGetObj")
     RETURN
@@ -36286,27 +36286,27 @@ CONTAINS
   !
 
   !>Sets/changes the type of a generated mesh on a region identified by a user number.
-  SUBROUTINE CMISSGeneratedMesh_TypeSetNumber(regionUserNumber,generatedMeshUserNumber,generatedMeshType,err)
+  SUBROUTINE CMISSGeneratedMesh_TypeSetNumber(regionUserNumber,generatedMeshUserNumber,genMeshType,err)
 
     !Argument variables
     INTEGER(INTG), INTENT(IN) :: regionUserNumber !<The user number of the region containing the generated mesh to set the type for.
     INTEGER(INTG), INTENT(IN) :: generatedMeshUserNumber !<The user number of the generated mesh to set the type for.
-    INTEGER(INTG), INTENT(IN) :: generatedMeshType !<The type of the generated mesh to set. \see OPENCMISS_GeneratedMeshTypes
+    INTEGER(INTG), INTENT(IN) :: genMeshType !<The type of the generated mesh to set. \see OPENCMISS_GeneratedMeshTypes
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh
     TYPE(REGION_TYPE), POINTER :: REGION
     TYPE(VARYING_STRING) :: LOCAL_ERROR
 
     CALL ENTERS("CMISSGeneratedMesh_TypeSetNumber",err,error,*999)
 
     NULLIFY(REGION)
-    NULLIFY(GENERATED_MESH)
+    NULLIFY(generatedMesh)
     CALL REGION_USER_NUMBER_FIND(regionUserNumber,REGION,err,error,*999)
     IF(ASSOCIATED(REGION)) THEN
-      CALL GENERATED_MESH_USER_NUMBER_FIND(generatedMeshUserNumber,REGION,GENERATED_MESH,err,error,*999)
-      IF(ASSOCIATED(GENERATED_MESH)) THEN
-        CALL GENERATED_MESH_TYPE_SET(GENERATED_MESH,generatedMeshType,err,error,*999)
+      CALL GeneratedMeshUserNumberFind(generatedMeshUserNumber,REGION,generatedMesh,err,error,*999)
+      IF(ASSOCIATED(generatedMesh)) THEN
+        CALL GeneratedMeshTypeSet(generatedMesh,genMeshType,err,error,*999)
       ELSE
         LOCAL_ERROR="A generated mesh with an user number of "//TRIM(NUMBER_TO_VSTRING(generatedMeshUserNumber,"*",err,error))// &
           & " does not exist on a region with an user number of "//TRIM(NUMBER_TO_VSTRING(regionUserNumber,"*",err,error))//"."
@@ -36332,17 +36332,17 @@ CONTAINS
   !
 
   !>Sets/changes the type of a generated mesh identified by an object.
-  SUBROUTINE CMISSGeneratedMesh_TypeSetObj(generatedMesh,generatedMeshType,err)
+  SUBROUTINE CMISSGeneratedMesh_TypeSetObj(generatedMesh,genMeshType,err)
 
     !Argument variables
     TYPE(CMISSGeneratedMeshType), INTENT(IN) :: generatedMesh !<The generated mesh to set the generated mesh type for.
-    INTEGER(INTG), INTENT(IN) :: generatedMeshType !<The type of the generated mesh to set. \see OPENCMISS_GeneratedMeshTypes
+    INTEGER(INTG), INTENT(IN) :: genMeshType !<The type of the generated mesh to set. \see OPENCMISS_GeneratedMeshTypes
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
 
     CALL ENTERS("CMISSGeneratedMesh_TypeSetObj",err,error,*999)
 
-    CALL GENERATED_MESH_TYPE_SET(generatedMesh%GENERATED_MESH,generatedMeshType,err,error,*999)
+    CALL GeneratedMeshTypeSet(generatedMesh%generatedMesh,genMeshType,err,error,*999)
 
     CALL EXITS("CMISSGeneratedMesh_TypeSetObj")
     RETURN
@@ -36368,7 +36368,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
     TYPE(FIELD_TYPE), POINTER :: FIELD
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh
     TYPE(REGION_TYPE), POINTER :: REGION
     TYPE(VARYING_STRING) :: LOCAL_ERROR
 
@@ -36376,14 +36376,14 @@ CONTAINS
 
     NULLIFY(REGION)
     NULLIFY(FIELD)
-    NULLIFY(GENERATED_MESH)
+    NULLIFY(generatedMesh)
     CALL REGION_USER_NUMBER_FIND(regionUserNumber,REGION,err,error,*999)
     IF(ASSOCIATED(REGION)) THEN
       CALL FIELD_USER_NUMBER_FIND(fieldUserNumber,REGION,FIELD,err,error,*999)
       IF(ASSOCIATED(FIELD)) THEN
-        CALL GENERATED_MESH_USER_NUMBER_FIND(generatedMeshUserNumber,REGION,GENERATED_MESH,err,error,*999)
-        IF(ASSOCIATED(GENERATED_MESH)) THEN
-          CALL GENERATED_MESH_GEOMETRIC_PARAMETERS_CALCULATE(FIELD,GENERATED_MESH,err,error,*999)
+        CALL GeneratedMeshUserNumberFind(generatedMeshUserNumber,REGION,generatedMesh,err,error,*999)
+        IF(ASSOCIATED(generatedMesh)) THEN
+          CALL GeneratedMeshGeometricParametersCalculate(generatedMesh,FIELD,err,error,*999)
         ELSE
           LOCAL_ERROR="A generated mesh with an user number of "//TRIM(NUMBER_TO_VSTRING(generatedMeshUserNumber,"*",err,error))// &
             & " does not exist."
@@ -36424,7 +36424,7 @@ CONTAINS
 
     CALL ENTERS("CMISSGeneratedMesh_GeometricParametersCalculateObj",err,error,*999)
 
-    CALL GENERATED_MESH_GEOMETRIC_PARAMETERS_CALCULATE(field%FIELD,generatedMesh%GENERATED_MESH,err,error,*999)
+    CALL GeneratedMeshGeometricParametersCalculate(generatedMesh%generatedMesh,field%FIELD,err,error,*999)
 
     CALL EXITS("CMISSGeneratedMesh_GeometricParametersCalculateObj")
     RETURN
@@ -36451,19 +36451,19 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
     TYPE(REGION_TYPE), POINTER :: REGION
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh
     TYPE(VARYING_STRING) :: LOCAL_ERROR
 
     CALL ENTERS("CMISSGeneratedMesh_SurfaceGetNumber0",err,error,*999)
 
     NULLIFY(REGION)
-    NULLIFY(GENERATED_MESH)
+    NULLIFY(generatedMesh)
 
     CALL REGION_USER_NUMBER_FIND(regionUserNumber,REGION,err,error,*999)
     IF(ASSOCIATED(REGION)) THEN
-      CALL GENERATED_MESH_USER_NUMBER_FIND(generatedMeshUserNumber,REGION,GENERATED_MESH,err,error,*999)
-      IF(ASSOCIATED(GENERATED_MESH)) THEN
-          CALL GENERATED_MESH_SURFACE_GET(GENERATED_MESH,1,surfaceType,surfaceNodes,normalXi,err,error,*999)
+      CALL GeneratedMeshUserNumberFind(generatedMeshUserNumber,REGION,generatedMesh,err,error,*999)
+      IF(ASSOCIATED(generatedMesh)) THEN
+          CALL GeneratedMeshSurfaceGet(generatedMesh,1,surfaceType,surfaceNodes,normalXi,err,error,*999)
       ELSE
         LOCAL_ERROR="A generated mesh with an user number of "//TRIM(NUMBER_TO_VSTRING(generatedMeshUserNumber,"*",err,error))// &
             & " does not exist."
@@ -36501,19 +36501,19 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
     TYPE(REGION_TYPE), POINTER :: REGION
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh
     TYPE(VARYING_STRING) :: LOCAL_ERROR
 
     CALL ENTERS("CMISSGeneratedMesh_SurfaceGetNumber1",err,error,*999)
 
     NULLIFY(REGION)
-    NULLIFY(GENERATED_MESH)
+    NULLIFY(generatedMesh)
 
     CALL REGION_USER_NUMBER_FIND(regionUserNumber,REGION,err,error,*999)
     IF(ASSOCIATED(REGION)) THEN
-      CALL GENERATED_MESH_USER_NUMBER_FIND(generatedMeshUserNumber,REGION,GENERATED_MESH,err,error,*999)
-      IF(ASSOCIATED(GENERATED_MESH)) THEN
-          CALL GENERATED_MESH_SURFACE_GET(GENERATED_MESH,meshComponent,surfaceType,surfaceNodes,normalXi,err,error,*999)
+      CALL GeneratedMeshUserNumberFind(generatedMeshUserNumber,REGION,generatedMesh,err,error,*999)
+      IF(ASSOCIATED(generatedMesh)) THEN
+          CALL GeneratedMeshSurfaceGet(generatedMesh,meshComponent,surfaceType,surfaceNodes,normalXi,err,error,*999)
       ELSE
         LOCAL_ERROR="A generated mesh with an user number of "//TRIM(NUMBER_TO_VSTRING(generatedMeshUserNumber,"*",err,error))// &
             & " does not exist."
@@ -36549,7 +36549,7 @@ CONTAINS
 
     CALL ENTERS("CMISSGeneratedMesh_SurfaceGetObj0",err,error,*999)
 
-    CALL GENERATED_MESH_SURFACE_GET(generatedMesh%GENERATED_MESH,1,surfaceType,surfaceNodes,normalXi,err,error,*999)
+    CALL GeneratedMeshSurfaceGet(generatedMesh%generatedMesh,1,surfaceType,surfaceNodes,normalXi,err,error,*999)
 
     CALL EXITS("CMISSGeneratedMesh_SurfaceGetObj0")
     RETURN
@@ -36576,7 +36576,7 @@ CONTAINS
 
     CALL ENTERS("CMISSGeneratedMesh_SurfaceGetObj1",err,error,*999)
 
-    CALL GENERATED_MESH_SURFACE_GET(generatedMesh%GENERATED_MESH,meshComponent,surfaceType,surfaceNodes,normalXi,err,error,*999)
+    CALL GeneratedMeshSurfaceGet(generatedMesh%generatedMesh,meshComponent,surfaceType,surfaceNodes,normalXi,err,error,*999)
 
     CALL EXITS("CMISSGeneratedMesh_SurfaceGetObj1")
     RETURN
