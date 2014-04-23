@@ -935,11 +935,12 @@ CONTAINS
   !
 
   !>Starts the creation of a generic generated mesh.
-  SUBROUTINE GeneratedMeshCreateStartGeneric(generatedMeshes,userNumber,generatedMesh,err,error,*)
+  SUBROUTINE GeneratedMeshCreateStartGeneric(generatedMeshes,userNumber,coordinateSystem,generatedMesh,err,error,*)
 
     !Argument variables
     TYPE(GeneratedMeshesType), POINTER :: generatedMeshes !<A pointer to the generated meshes
     INTEGER(INTG), INTENT(IN) :: userNumber !<The user number of the generated mesh to create
+    TYPE(COORDINATE_SYSTEM_TYPE), POINTER :: coordinateSystem !<A pointer to the coordinate system to create the generated mesh in.
     TYPE(GeneratedMeshType), POINTER :: generatedMesh !<On exit, a pointer to the created generated mesh. Must not be associated on entry.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
@@ -957,23 +958,27 @@ CONTAINS
       IF(ASSOCIATED(generatedMesh)) THEN
         CALL FlagError("Generated mesh is already associated.",err,error,*997)
       ELSE
-        !Initialise generated mesh
-        CALL GeneratedMeshInitialise(newGeneratedMesh,err,error,*999)
-        !Set default generated mesh values
-        newGeneratedMesh%userNumber=userNumber
-        newGeneratedMesh%globalNumber=generatedMeshes%numberOfGeneratedMeshes+1
-        newGeneratedMesh%generatedMeshes=>generatedMeshes
-        !Add new generated mesh into list of generated meshes
-        ALLOCATE(newGeneratedMeshes(generatedMeshes%numberOfGeneratedMeshes+1),STAT=err)
-        IF(err/=0) CALL FlagError("Could not allocate new generated meshes.",err,error,*999)
-        DO generatedMeshIdx=1,generatedMeshes%numberOfGeneratedMeshes
-          newGeneratedMeshes(generatedMeshIdx)%ptr=>generatedMeshes%generatedMeshes(generatedMeshIdx)%ptr
-        ENDDO !generatedMeshIdx
-        newGeneratedMeshes(generatedMeshes%numberOfGeneratedMeshes+1)%ptr=>newGeneratedMesh
-        CALL MOVE_ALLOC(newGeneratedMeshes,generatedMeshes%generatedMeshes)
-        generatedMeshes%numberOfGeneratedMeshes=generatedMeshes%numberOfGeneratedMeshes+1
-        !Return the pointer
-        generatedMesh=>newGeneratedMesh
+        IF(ASSOCIATED(coordianteSystem)) THEN
+          !Initialise generated mesh
+          CALL GeneratedMeshInitialise(coordinateSystem,newGeneratedMesh,err,error,*999)
+          !Set default generated mesh values
+          newGeneratedMesh%userNumber=userNumber
+          newGeneratedMesh%globalNumber=generatedMeshes%numberOfGeneratedMeshes+1
+          newGeneratedMesh%generatedMeshes=>generatedMeshes
+          !Add new generated mesh into list of generated meshes
+          ALLOCATE(newGeneratedMeshes(generatedMeshes%numberOfGeneratedMeshes+1),STAT=err)
+          IF(err/=0) CALL FlagError("Could not allocate new generated meshes.",err,error,*999)
+          DO generatedMeshIdx=1,generatedMeshes%numberOfGeneratedMeshes
+            newGeneratedMeshes(generatedMeshIdx)%ptr=>generatedMeshes%generatedMeshes(generatedMeshIdx)%ptr
+          ENDDO !generatedMeshIdx
+          newGeneratedMeshes(generatedMeshes%numberOfGeneratedMeshes+1)%ptr=>newGeneratedMesh
+          CALL MOVE_ALLOC(newGeneratedMeshes,generatedMeshes%generatedMeshes)
+          generatedMeshes%numberOfGeneratedMeshes=generatedMeshes%numberOfGeneratedMeshes+1
+          !Return the pointer
+          generatedMesh=>newGeneratedMesh
+        ELSE
+          CALL FlagError("Coordinate system is not associated.",err,error,*999)
+        ENDIF
       ENDIF
     ELSE
       CALL FlagError("Generated meshes is not associated.",err,error,*997)
@@ -1004,7 +1009,10 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
+    TYPE(COORDINATE_SYSTEM), POINTER :: coordinateSystem
     TYPE(VARYING_STRING) :: localError
+
+    NULLIFY(coordinateSystem)
 
     CALL Enters("GeneratedMeshCreateStartInterface",err,error,*999)
 
@@ -1019,8 +1027,10 @@ CONTAINS
             & " has already been used for a generated mesh."
           CALL FlagError(localError,err,error,*999)
         ELSE
-          IF(ASSOCIATED(interface%GENERATED_MESHES)) THEN
-            CALL GeneratedMeshCreateStartGeneric(interface%GENERATED_MESHES,userNumber,generatedMesh,err,error,*999)
+          IF(ASSOCIATED(INTERFACE%GENERATED_MESHES)) THEN
+            CALL INTERFACE_COORDINATE_SYSTEM_GET(INTERFACE,coordinateSystem,err,error,*999)
+            CALL GeneratedMeshCreateStartGeneric(INTERFACE%GENERATED_MESHES,userNumber,coordinateSystem,generatedMesh, &
+              & err,error,*999)
             generatedMesh%interface=>interface
           ELSE
             CALL FlagError("Interface generated meshes is not associated.",err,error,*999)
@@ -1053,8 +1063,11 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
+    TYPE(COORDINATE_SYSTEM), POINTER :: coordinateSystem
     TYPE(VARYING_STRING) :: localError
 
+    NULLIFY(coordinateSystem)
+    
     CALL Enters("GeneratedMeshCreateStartRegion",err,error,*999)
 
     IF(ASSOCIATED(region)) THEN
@@ -1069,7 +1082,9 @@ CONTAINS
           CALL FlagError(localError,err,error,*999)
         ELSE
           IF(ASSOCIATED(region%GENERATED_MESHES)) THEN
-            CALL GeneratedMeshCreateStartGeneric(region%GENERATED_MESHES,userNumber,generatedMesh,err,error,*999)
+            CALL REGION_COORDINATE_SYSTEM_GET(region,coordinateSystem,err,error,*999)
+            CALL GeneratedMeshCreateStartGeneric(region%GENERATED_MESHES,userNumber,coordinateSystem,generatedMesh, &
+              & err,error,*999)
             generatedMesh%region=>region
           ELSE
             CALL FlagError("Region generated meshes is not associated.",err,error,*999)
@@ -1589,43 +1604,62 @@ CONTAINS
   !
 
   !>Initialises a generated mesh.
-  SUBROUTINE GeneratedMeshInitialise(generatedMesh,err,error,*)
+  SUBROUTINE GeneratedMeshInitialise(coordinateSystem,generatedMesh,err,error,*)
 
     !Argument variables
+    TYPE(COORDINATE_SYSTEM), POINTER :: coordinateSystem !<A point to the coordinate system to initialise the generated mesh in.
     TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh to initialise
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
+    INTEGER(INTG) :: coordinateDimension,coordinateIdx,dummyErr
+    TYPE(VARYING_STRING) :: dummyError
 
-    CALL Enters("GeneratedMeshInitialise",err,error,*999)
+    CALL Enters("GeneratedMeshInitialise",err,error,*998)
 
-    IF(ASSOCIATED(generatedMesh)) THEN
-      CALL FlagError("Generated mesh is already associated.",err,error,*999)
+    IF(ASSOCIATED(coordinateSystem)) THEN
+      IF(ASSOCIATED(generatedMesh)) THEN
+        CALL FlagError("Generated mesh is already associated.",err,error,*998)
+      ELSE
+        NULLIFY(generatedMesh)
+        CALL COORDINATE_SYSTEM_DIMENSION_GET(coordinateSystem,coordinateDimension,err,error,*999)
+        ALLOCATE(generatedMesh,STAT=err)
+        IF(err/=0) CALL FlagError("Could not allocate generated mesh.",err,error,*999)
+        generatedMesh%userNumber=0
+        generatedMesh%globalNumber=0
+        generatedMesh%generatedMeshFinished=.FALSE.
+        NULLIFY(generatedMesh%region)
+        NULLIFY(generatedMesh%INTERFACE)
+        generatedMesh%generatedType=0
+        NULLIFY(generatedMesh%regularMesh)
+        NULLIFY(generatedMesh%polarMesh)
+        NULLIFY(generatedMesh%cylinderMesh)
+        NULLIFY(generatedMesh%ellipsoidMesh)
+        NULLIFY(generatedMesh%fractalTreeMesh)
+        ALLOCATE(generatedMesh%origin(coordinateDimension),STAT=err)
+        IF(err/=0) CALL FlagError("Could not allocate origin.",err,error,*998)
+        generatedMesh%origin=0.0_DP
+        generatedMesh%coordinateDimension=coordinateDimension
+        ALLOCATE(generatedMesh%baseVectors(coordinateDimension,coordinateDimension),STAT=err)
+        IF(err/=0) CALL FlagError("Could not allocate base Vectors.",err,error,*998)
+        generatedMesh%baseVectors=0.0_DP
+        DO coordinateIdx=1,coordinateDimension
+           generatedMesh%baseVectors(coordinateIdx,coordinateIdx)=1.0_DP
+        ENDDO !coordinateidx
+        generatedMesh%meshDimension=0
+        generatedMesh%numberOfMeshComponents=0
+        NULLIFY(generatedMesh%mesh)
+        !Default to a regular mesh.
+        CALL GeneratedMeshRegularInitialise(generatedMesh,err,error,*999)
+      ENDIF
     ELSE
-      ALLOCATE(generatedMesh,STAT=err)
-      IF(err/=0) CALL FlagError("Could not allocate generated mesh.",err,error,*999)
-      generatedMesh%userNumber=0
-      generatedMesh%globalNumber=0
-      generatedMesh%generatedMeshFinished=.FALSE.
-      NULLIFY(generatedMesh%region)
-      NULLIFY(generatedMesh%interface)
-      generatedMesh%generatedType=0
-      NULLIFY(generatedMesh%regularMesh)
-      NULLIFY(generatedMesh%polarMesh)
-      NULLIFY(generatedMesh%cylinderMesh)
-      NULLIFY(generatedMesh%ellipsoidMesh)
-      NULLIFY(generatedMesh%fractalTreeMesh)
-      generatedMesh%coordinateDimension=0
-      generatedMesh%meshDimension=0
-      generatedMesh%numberOfMeshComponents=0
-      NULLIFY(generatedMesh%mesh)
-      !Default to a regular mesh.
-      CALL GeneratedMeshRegularInitialise(generatedMesh,err,error,*999)
+      CALL FlagError("Coordinate system is not associated.",err,error,*998)
     ENDIF
-
+      
     CALL Exits("GeneratedMeshInitialise")
     RETURN
-999 CALL Errors("GeneratedMeshInitialise",err,error)
+999 CALL GeneratedMeshFinalise(generatedMesh,dummyErr,dummyError,*998)
+998 CALL Errors("GeneratedMeshInitialise",err,error)
     CALL Exits("GeneratedMeshInitialise")
     RETURN 1
     
@@ -3180,10 +3214,8 @@ CONTAINS
     CALL Enters("GeneratedMeshCylinderFinalise",err,error,*999)
 
     IF(ASSOCIATED(cylinderMesh)) THEN
-      IF(ALLOCATED(cylinderMesh%origin)) DEALLOCATE(cylinderMesh%origin)
       IF(ALLOCATED(cylinderMesh%cylinderExtent)) DEALLOCATE(cylinderMesh%cylinderExtent)
       IF(ALLOCATED(cylinderMesh%numberOfElementsXi)) DEALLOCATE(cylinderMesh%numberOfElementsXi)
-      IF(ALLOCATED(cylinderMesh%bases)) DEALLOCATE(cylinderMesh%bases)
       DEALLOCATE(cylinderMesh)
     ENDIF
 
@@ -3211,7 +3243,7 @@ CONTAINS
     INTEGER(INTG) :: dummyErr
     TYPE(VARYING_STRING) :: dummyError
 
-    CALL Enters("GeneratedMeshCylinderInitialise",err,error,*999)
+    CALL Enters("GeneratedMeshCylinderInitialise",err,error,*998)
 
     IF(ASSOCIATED(generatedMesh)) THEN
       IF(ASSOCIATED(generatedMesh%cylinderMesh)) THEN
@@ -3221,6 +3253,10 @@ CONTAINS
         IF(err/=0) CALL FlagError("Could not allocate cylinder generated mesh.",err,error,*999)
         generatedMesh%cylinderMesh%generatedMesh=>generatedMesh
         generatedMesh%generatedType=GENERATED_MESH_CYLINDER_MESH_TYPE
+        !Set defaults
+        generatedMesh%closed=.TRUE.
+        ALLOCATE(generatedMesh%cylinderMesh%cylinderExtent(1:generatedMesh%coordinateDimension),STAT=err)
+        IF(err/=0) CALL FlagError("Could not allocate cylinder mesh cylinder extent",
       ENDIF
     ELSE
       CALL FlagError("Generated mesh is not associated.",err,error,*998)
@@ -3332,10 +3368,8 @@ CONTAINS
     CALL Enters("GeneratedMeshEllipsoidFinalise",err,error,*999)
 
     IF(ASSOCIATED(ellipsoidMesh)) THEN
-      IF(ALLOCATED(ellipsoidMesh%origin)) DEALLOCATE(ellipsoidMesh%origin)
       IF(ALLOCATED(ellipsoidMesh%ellipsoidExtent)) DEALLOCATE(ellipsoidMesh%ellipsoidExtent)
       IF(ALLOCATED(ellipsoidMesh%numberOfElementsXi)) DEALLOCATE(ellipsoidMesh%numberOfElementsXi)
-      IF(ALLOCATED(ellipsoidMesh%bases)) DEALLOCATE(ellipsoidMesh%bases)
       DEALLOCATE(ellipsoidMesh)
     ENDIF
 
@@ -3444,13 +3478,13 @@ CONTAINS
           CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
             CALL GeneratedMeshRegularInitialise(generatedMesh,err,error,*999)
           CASE(GENERATED_MESH_POLAR_MESH_TYPE)
-            CALL FlagError("Not implemented.",err,error,*999)
-          CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
-            CALL FlagError("Not implemented.",err,error,*999)
+            CALL GeneratedMeshPolarInitialise(generatedMesh,err,error,*999)
           CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
             CALL GeneratedMeshCylinderInitialise(generatedMesh,err,error,*999)
           CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
             CALL GeneratedMeshEllipsoidInitialise(generatedMesh,err,error,*999)
+          CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
+            CALL GeneratedMeshFractalTreeInitialise(generatedMesh,err,error,*999)
           CASE DEFAULT
             localError="The specified generated mesh mesh type of "//TRIM(NumberToVString(meshType,"*",err,error))// &
               & " is invalid."
@@ -3461,13 +3495,13 @@ CONTAINS
           CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
             CALL GeneratedMeshRegularFinalise(generatedMesh%regularMesh,err,error,*999)
           CASE(GENERATED_MESH_POLAR_MESH_TYPE)
-            CALL FlagError("Not implemented.",err,error,*999)
-          CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
-            CALL FlagError("Not implemented.",err,error,*999)
+            CALL GeneratedMeshPolarFinalise(generatedMesh%polarMesh,err,error,*999)
           CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
             CALL GeneratedMeshCylinderFinalise(generatedMesh%cylinderMesh,err,error,*999)
           CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
             CALL GeneratedMeshEllipsoidFinalise(generatedMesh%ellipsoidMesh,err,error,*999)
+          CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
+            CALL GeneratedMeshFractalTreeFinalise(generatedMesh%fractalTreeMesh,err,error,*999)
           CASE DEFAULT
             localError="The generated mesh mesh type of "//TRIM(NumberToVString(oldMeshType,"*",err,error))// &
               & " is invalid."
@@ -3776,13 +3810,13 @@ CONTAINS
                 CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
                   CALL GeneratedMeshRegularGeometricParametersCalculate(generatedMesh%regularMesh,geometricField,err,error,*999)
                 CASE(GENERATED_MESH_POLAR_MESH_TYPE)
-                  CALL FlagError("Not implemented.",err,error,*999)
-                CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
-                  CALL FlagError("Not implemented.",err,error,*999)
+                  CALL GeneratedMeshPolarGeometricParametersCalculate(generatedMesh%polarMesh,geometricField,err,error,*999)
                 CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
                   CALL GeneratedMeshCylinderGeometricParametersCalculate(generatedMesh%cylinderMesh,geometricField,err,error,*999)
                 CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
                   CALL GeneratedMeshEllipsoidGeometricParametersCalculate(generatedMesh%ellipsoidMesh,geometricField,err,error,*999)
+                CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
+                  CALL FlagError("Not implemented.",err,error,*999)
                 CASE DEFAULT
                   localError="The generated mesh mesh type of "// &
                     & TRIM(NumberToVString(generatedMesh%generatedType,"*",err,error))// &
