@@ -3989,6 +3989,12 @@ MODULE OPENCMISS
     MODULE PROCEDURE CMISSGeneratedMesh_BasisGetObj
   END INTERFACE !CMISSGeneratedMesh_BasisGet
 
+  !>Returns the number of bases used in a generated mesh.
+  INTERFACE CMISSGeneratedMesh_NumberOfBasisGet
+    MODULE PROCEDURE CMISSGeneratedMesh_NumberOfBasisGetNumber
+    MODULE PROCEDURE CMISSGeneratedMesh_NumberOfBasisGetObj
+  END INTERFACE CMISSGeneratedMesh_NumberOfBasisGet
+
   !>Sets/changes the basis for a generated mesh.
   INTERFACE CMISSGeneratedMesh_BasisSet
     MODULE PROCEDURE CMISSGeneratedMesh_BasisSetNumber0
@@ -4141,6 +4147,8 @@ MODULE OPENCMISS
     & CMISS_GENERATED_MESH_REGULAR_BACK_SURFACE
 
   PUBLIC CMISSGeneratedMesh_BasisGet,CMISSGeneratedMesh_BasisSet
+
+  PUBLIC CMISSGeneratedMesh_NumberOfBasisGet
 
   PUBLIC CMISSGeneratedMesh_BaseVectorsSet
 
@@ -35260,6 +35268,82 @@ CONTAINS
     RETURN
 
   END SUBROUTINE CMISSGeneratedMesh_BasisGetObj
+
+  !
+  !================================================================================================================================
+  !
+
+  !>Returns the number of bases used in a generated mesh on a region identified by a user number.
+  SUBROUTINE CMISSGeneratedMesh_NumberOfBasisGetNumber(regionUserNumber,generatedMeshUserNumber,numberOfBases,err)
+
+    !Argument variables
+    INTEGER(INTG), INTENT(IN) :: regionUserNumber !<The user number of the region containing the generated mesh to get the number of bases for.
+    INTEGER(INTG), INTENT(IN) :: generatedMeshUserNumber !<The user number of the generated mesh to get the number of bases for.
+    INTEGER(INTG), INTENT(OUT) :: numberOfBases !<On return, the numbers of bases in the generated mesh.
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code.
+    !Local variables
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh
+    TYPE(REGION_TYPE), POINTER :: region
+    TYPE(VARYING_STRING) :: localError
+
+    NULLIFY(region)
+    NULLIFY(generatedMesh)
+
+    CALL Enters("CMISSGeneratedMesh_NumberOfBasisGetNumber",err,error,*999)
+
+    CALL REGION_USER_NUMBER_FIND(regionUserNumber,region,err,error,*999)
+    IF(ASSOCIATED(REGION)) THEN
+      CALL GeneratedMeshUserNumberFind(generatedMeshUserNumber,region,generatedMesh,err,error,*999)
+      IF(ASSOCIATED(generatedMesh)) THEN
+        CALL GeneratedMeshNumberOfBasisGet(generatedMesh,numberOfBases,err,error,*999)
+      ELSE
+        localError="A generated mesh with an user number of "//TRIM(NumberToVString(generatedMeshUserNumber,"*",err,error))// &
+          & " does not exist on the region with a user number of "//TRIM(NumberToVString(regionUserNumber,"*",err,error))//"."
+        CALL FlagError(localError,err,error,*999)
+      END IF
+    ELSE
+      localError="A region with an user number of "//TRIM(NumberToVString(regionUserNumber,"*",err,error))// &
+        & " does not exist."
+      CALL FlagError(localError,err,error,*999)
+    END IF
+
+    CALL Exits("CMISSGeneratedMesh_NumberOfBasisGetNumber")
+    RETURN
+999 CALL Errors("CMISSGeneratedMesh_NumberOfBasisGetNumber",err,error)
+    CALL Exits("CMISSGeneratedMesh_NumberOfBasisGetNumber")
+    CALL CMISS_HANDLE_ERROR(err,error)
+    RETURN
+
+  END SUBROUTINE CMISSGeneratedMesh_NumberOfBasisGetNumber
+
+  !
+  !================================================================================================================================
+  !
+
+
+  !>Returns the number of bases used in a generated mesh identified by an object.
+  SUBROUTINE CMISSGeneratedMesh_NumberOfBasisGetObj(generatedMesh,numberOfBases,err)
+
+    !Argument variables
+    TYPE(CMISSGeneratedMeshType), INTENT(IN) :: generatedMesh !<The generated mesh to get the number of bases for.
+    INTEGER(INTG), INTENT(OUT) !<On return, the number of bases used in the generated mesh.
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code.
+    !Local variables
+    TYPE(VARYING_STRING) :: localError
+
+    CALL Enters("CMISSGeneratedMesh_NumberOfBasisGetObj",err,error,*999)
+
+
+    CALL GeneratedMeshNumberOfBasisGet(generatedMesh%generatedMesh,numberOfBases,err,error,*999)
+
+    CALL Exits("CMISSGeneratedMesh_NumberOfBasisGetObj")
+    RETURN
+999 CALL Errors("CMISSGeneratedMesh_NumberOfBasisGetObj",err,error)
+    CALL Exits("CMISSGeneratedMesh_NumberOfBasisGetObj")
+    CALL CMISS_HANDLE_ERROR(err,error)
+    RETURN
+
+  END SUBROUTINE CMISSGeneratedMesh_NumberOfBasisGetObj
 
   !
   !================================================================================================================================

@@ -542,41 +542,44 @@ MODULE TYPES
   !>Contains information on a generated regular mesh
   TYPE GeneratedMeshRegularType
     TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh
-    TYPE(BASIS_PTR_TYPE), ALLOCATABLE :: bases(:) !<The pointers to the bases used in the regular mesh.
-    INTEGER(INTG) :: coordinateDimension !<The coordinate dimension of the regular mesh.
-    INTEGER(INTG) :: meshDimension !<The dimension/number of Xi directions of the regular mesh.
-    REAL(DP), ALLOCATABLE :: origin(:) !<origin(coordinateIdx). The position of the origin (first) corner of the regular mesh
-    REAL(DP), ALLOCATABLE :: maximumExtent(:) !<maximumExtent(coordinateIdx). The extent/size in each coordinateIdx'th direction of the regular mesh.
-    REAL(DP), ALLOCATABLE :: baseVectors(:,:) !<baseVectors(coordinateIdx,xiidx). The base vectors indicating the geometric direction of the xiIdx mesh coordinate.
+    REAL(DP), ALLOCATABLE :: maximumExtent(:) !<maximumExtent(coordinateIdx). The extent/size in each coordinateIdx'th direction of the generated mesh.
     INTEGER(INTG), ALLOCATABLE :: numberOfElementsXi(:) !<numberOfElements(xiIdx). The number of elements in the xiIdx'th xi direction for the mesh.
   END TYPE GeneratedMeshRegularType
 
+  !>Contains information of a generated polar mesh
+  TYPE GeneratedMeshPolarType
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh.
+    LOGICAL :: spherical !<Flag to indicate type of polar mesh. If .TRUE. mesh is spherical shells. If .FALSE. mesh is circular layers.
+    REAL(DP), ALLOCATABLE :: polarExtent(:) !<polarExtent(radiusIdx). The radius of the radiusIdx'th polar shell. 
+    INTEGER(INTG), ALLOCATABLE :: numberOfElementsXi(:) !<numberOfElementsXi(xiIdx). If the mesh is spherical the number of elements in circumferential, azimuthal and radial directions. If the mesh is circular (i.e., not spherical), the number of elements in the circumferential and radial directions. 
+  END TYPE GeneratedMeshPolarType
+ 
   !>Contains information of a generated cylindrical mesh
   TYPE GeneratedMeshCylinderType
     TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh.
-    TYPE(BASIS_PTR_TYPE), ALLOCATABLE :: bases(:) !<The pointers to the bases used in the regular mesh.
-    INTEGER(INTG) :: meshDimension !<The dimension/number of Xi directions of the cylinder mesh.
-    INTEGER(INTG) :: coordinateDimension !<The coordinate dimension of the regular mesh.
-    REAL(DP), ALLOCATABLE :: origin(:) !<origin(coordinateIdx). The position of the origin (centre) of lower face of cylinder mesh.
-    REAL(DP), ALLOCATABLE :: cylinderExtent(:) !<cylinderExtent(coordinateIdx). The size of inner & outer radii and height of cylinder.
-    REAL(DP), ALLOCATABLE :: baseVectors(:,:) !<baseVectors(coordinateIdx,xiIdx). The base vectors indicating the geometric direction of the xiIdx mesh coordinate.
-    INTEGER(INTG), ALLOCATABLE :: numberOfElementsXi(:) !<numberOfElementsXi(xiIdx). The number of elements in radial, circumferential and axial directions
-    LOGICAL :: APPEND_LINEAR_COMPONENT=.FALSE. !<True when two mesh components are needed
+    LOGICAL :: closed !<Flag to indicate if the cylinder is closed or not. If .TRUE. the mesh is closed at the ends of the cylinder. If .FALSE. the mesh is open.
+    REAL(DP), ALLOCATABLE :: cylinderExtent(:) !<cylinderExtent(extentIdx). cylinderExtent(1) is the length of the cylinder. cylinderExtent(radiusIdx + 1) is the radius of the radiusIdx'th cylindrical shell.
+    INTEGER(INTG), ALLOCATABLE :: numberOfElementsXi(:) !<numberOfElementsXi(xiIdx). The number of elements in circumferential, axial and radial directions
   END TYPE GeneratedMeshCylinderType
  
   !>Contains information of a generated ellipsoid mesh
   !>Allows only a 3D ellipsoid mesh
   TYPE GeneratedMeshEllipsoidType
     TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh.
-    TYPE(BASIS_PTR_TYPE), ALLOCATABLE :: bases(:) !<bases(basisIdx). The pointers to the bases used in the ellipsoid mesh
-    INTEGER(INTG) :: meshDimension !<The dimension/number of Xi directions of the ellipsoid mesh.
-    INTEGER(INTG) :: coordinateDimension !<The coordinate dimension of the regular mesh.
-    REAL(DP), ALLOCATABLE :: origin(:) !<origin(coordinateIdx). The position of the origin (centre) of lower face of ellipsoid mesh.
-    REAL(DP), ALLOCATABLE :: ellipsoidExtent(:) !<ellipsoidExtent(coordinateIdx). The size of long axis, short axis, wall thickness and cut off angle of ellipsoid.
-    INTEGER(INTG), ALLOCATABLE :: numberOfElementsXi(:) !numberOfElementsXi<(xiIdx). The number of elements in circumferential, longitudinal and transmural directions
-    LOGICAL :: APPEND_LINEAR_COMPONENT=.FALSE. !<True when two mesh components are needed 
+    LOGICAL :: closed !<Flag to indicate if the ellipsoid is closed or not. If .TRUE. the mesh is closed at the top and bottom of the ellipsoid. If .FALSE. the mesh is open at the top of the ellipsoid but closed at the bottom.
+    REAL(DP), ALLOCATABLE :: ellipsoidExtent(:) !<ellipsoidExtent(extentIdx). ellipsoidExtent(1) is the size of long axis. ellipsoidExtent(2) is the size of the short axis. If the ellipsoid is not closed then ellipsoidExtent(3) is the cut off angle of ellipsoid. ellipsoidExtent(radiusIdx + 2 or 3) radius of the radiusIdx'th ellipsoid shell.
+    INTEGER(INTG), ALLOCATABLE :: numberOfElementsXi(:) !numberOfElementsXi(xiIdx). The number of elements in circumferential, azimuthal and transmural directions
   END TYPE GeneratedMeshEllipsoidType
 
+  !>Contains information of a generated fractal tree mesh
+  TYPE GeneratedMeshFractalTreeType
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh.
+    INTEGER(INTG) :: fractalTreeType !<The type of fractal tree
+    LOGICAL :: symmetric !<The symmetry of the tree. .TRUE. if the tree is symmetric, .FALSE. if not.
+    INTEGER(INTG) :: numberOfGenerations !<The number of generations in the fractal tree
+    INTEGER(INTG), ALLOCATABLE :: numberOfElementsGeneration(:) !<numberOfElementsGeneration(generationIdx). The number of elements in the gnerationIdx'th generation.
+  END TYPE GeneratedMeshFractalTreeType
+ 
   !>Contains information on a generated mesh. \see OPENCMISS::CMISSGeneratedMeshType
   TYPE GeneratedMeshType
     INTEGER(INTG) :: userNumber !<The user number of the generated mesh. The user number must be unique.
@@ -587,8 +590,16 @@ MODULE TYPES
     TYPE(INTERFACE_TYPE), POINTER :: interface !<A pointer to the interface containing the generated mesh. If the generated mesh is in a region rather than an interface then this pointer will be NULL and the interface pointer should be used.
     INTEGER(INTG) :: generatedType !<The type of the generated mesh. \see GENERATED_MESH_ROUTINES_GeneratedMeshTypes,GENERATED_MESH_ROUTINES
     TYPE(GeneratedMeshRegularType), POINTER :: regularMesh !<A pointer to the regular generated mesh information if the generated mesh is a regular mesh, NULL if not.
-    TYPE(GeneratedMeshCylinderType), POINTER :: cylinderMesh !<A pointer to the cylinder generate mesh information if the generated mesh is a cylinder mesh, NULL if not.
-    TYPE(GeneratedMeshEllipsoidType), POINTER :: ellipsoidMesh !<A pointer to the ellipsoid generate mesh information if the generated mesh is a ellipsoid mesh, NULL if not.
+   TYPE(GeneratedMeshPolarTypeType), POINTER :: polarMesh !<A pointer to the polar generated mesh information if the generated mesh is a polar mesh, NULL if not.
+    TYPE(GeneratedMeshCylinderType), POINTER :: cylinderMesh !<A pointer to the cylinder generated mesh information if the generated mesh is a cylinder mesh, NULL if not.
+    TYPE(GeneratedMeshEllipsoidType), POINTER :: ellipsoidMesh !<A pointer to the ellipsoid generated mesh information if the generated mesh is a ellipsoid mesh, NULL if not.
+    TYPE(GeneratedMeshFractalTreeType), POINTER :: fractalTreeMesh !<A pointer to the fractal tree generated mesh information if the generated mesh is a fractal tree mesh, NULL if not.    
+    TYPE(BASIS_PTR_TYPE), ALLOCATABLE :: bases(:) !<The pointers to the bases used in the generated mesh.
+    INTEGER(INTG) :: coordinateDimension !<The coordinate dimension of the space containing the generated mesh
+    INTEGER(INTG) :: meshDimension !<The dimension/number of Xi directions of the generated mesh.
+    INTEGER(INTG) :: numberOfMeshComponents !<The number of mesh components in the generated mesh.
+    REAL(DP), ALLOCATABLE :: origin(:) !<origin(coordinateIdx). The position of the origin of the generated mesh
+    REAL(DP), ALLOCATABLE :: baseVectors(:,:) !<baseVectors(coordinateIdx,xiIdx). The base vectors indicating the geometric direction of the xiIdx mesh coordinate.
     TYPE(MESH_TYPE), POINTER :: mesh !<A pointer to the mesh that has been generated.
   END TYPE GeneratedMeshType
   
