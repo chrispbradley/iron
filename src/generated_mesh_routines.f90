@@ -895,15 +895,15 @@ CONTAINS
             !Finish the specific mesh type
             SELECT CASE(generatedMesh%generatedType)
             CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
-              CALL GeneratedMeshRegularCreateFinish(generatedMesh,meshUserNumber,err,error,*999)
+              CALL GeneratedMeshRegularCreateFinish(generatedMesh%regularMesh,meshUserNumber,err,error,*999)
             CASE(GENERATED_MESH_POLAR_MESH_TYPE)
-              CALL GeneratedMeshPolarCreateFinish(generatedMesh,meshUserNumber,err,error,*999)
+              CALL GeneratedMeshPolarCreateFinish(generatedMesh%polarMesh,meshUserNumber,err,error,*999)
             CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
-              CALL GeneratedMeshCylinderCreateFinish(generatedMesh,meshUserNumber,err,error,*999)
+              CALL GeneratedMeshCylinderCreateFinish(generatedMesh%cylinderMesh,meshUserNumber,err,error,*999)
             CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
-              CALL GeneratedMeshEllipsoidCreateFinish(generatedMesh,meshUserNumber,err,error,*999)
+              CALL GeneratedMeshEllipsoidCreateFinish(generatedMesh%ellipsoidMesh,meshUserNumber,err,error,*999)
             CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
-              CALL GeneratedMeshFractalTreeCreateFinish(generatedMesh,meshUserNumber,err,error,*999)
+              CALL GeneratedMeshFractalTreeCreateFinish(generatedMesh%fractalTreeMesh,meshUserNumber,err,error,*999)
             CASE DEFAULT
               localError="The generated mesh mesh type of "// &
                 & TRIM(NumberToVString(generatedMesh%generatedType,"*",err,error))//" is invalid."
@@ -1986,11 +1986,11 @@ CONTAINS
   !================================================================================================================================
   !
 
-  !>Start to create the regular generated mesh type
-  SUBROUTINE GeneratedMeshRegularCreateFinish(generatedMesh,meshUserNumber,err,error,*)
+  !>Finishes the creation of a regular generated mesh.
+  SUBROUTINE GeneratedMeshRegularCreateFinish(regularMesh,meshUserNumber,err,error,*)
 
     !Argument variables
-    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh
+    TYPE(GeneratedMeshRegularType), POINTER :: regularMesh !<A pointer to the regular generated mesh to finish.
     INTEGER(INTG), INTENT(IN) :: meshUserNumber !<The user number for the mesh to generate
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
@@ -2002,7 +2002,7 @@ CONTAINS
     INTEGER(INTG), ALLOCATABLE :: elementNodes(:),elementNodesUserNumbers(:)
     TYPE(BASIS_TYPE), POINTER :: basis
     TYPE(COORDINATE_SYSTEM_TYPE), POINTER :: coordinateSystem
-    TYPE(GeneratedMeshRegularType), POINTER :: regularMesh
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh
     TYPE(INTERFACE_TYPE), POINTER :: interface
     TYPE(MeshComponentElementsType), POINTER :: meshElements
     TYPE(NODES_TYPE), POINTER :: nodes
@@ -2013,13 +2013,13 @@ CONTAINS
     
     CALL Enters("GeneratedMeshRegularCreateFinish",err,error,*999)
 
-    IF(ASSOCIATED(generatedMesh)) THEN
-      CALL GeneratedMeshCoordinateSystemGet(generatedMesh,coordinateSystem,err,error,*999)
-      CALL COORDINATE_SYSTEM_TYPE_GET(coordinateSystem,coordinateType,err,error,*999)
-      region=>generatedMesh%region
-      interface=>generatedMesh%interface
-      regularMesh=>generatedMesh%regularMesh
-      IF(ASSOCIATED(regularMesh)) THEN
+    IF(ASSOCIATED(regularMesh)) THEN
+      generatedMesh=>regularMesh%generatedMesh
+      IF(ASSOCIATED(generatedMesh)) THEN
+        CALL GeneratedMeshCoordinateSystemGet(generatedMesh,coordinateSystem,err,error,*999)
+        CALL COORDINATE_SYSTEM_TYPE_GET(coordinateSystem,coordinateType,err,error,*999)
+        region=>generatedMesh%region
+        INTERFACE=>generatedMesh%INTERFACE
         SELECT CASE(coordinateType)
         CASE(COORDINATE_RECTANGULAR_CARTESIAN_TYPE)
           IF(ALLOCATED(generatedMesh%bases)) THEN
@@ -2259,8 +2259,8 @@ CONTAINS
                                 END SELECT
                               CASE(3)
                                 !Tetrahedra element
-                                !Break the grid cube element into 6 tetrahedra (so that we have a break down the main diagonal of the
-                                !cube in order to allow for the middle node in quadratics to be included). The 6 tetrahedra are
+                                !Break the grid cube element into 6 tetrahedra (so that we have a break down the main diagonal of
+                                !the cube in order to allow for the middle node in quadratics to be included). The 6 tetrahedra are
                                 !Element 1: vertices {(0,0,0);(1,0,0);(1,1,0);(1,1,1)}
                                 !Element 2: vertices {(0,0,0);(1,1,0);(0,1,0);(1,1,1)}
                                 !Element 3: vertices {(0,0,0);(1,0,1);(1,0,0);(1,1,1)}
@@ -2737,22 +2737,97 @@ CONTAINS
           CALL FlagError(localError,err,error,*999)
         END SELECT
       ELSE
-        CALL FlagError("Regular mesh is not associated.",err,error,*999)
+        CALL FlagError("Regular mesh generated Mesh is not associated.",err,error,*999)
       ENDIF
     ELSE
-      CALL FlagError("Generated Mesh is not associated.",err,error,*999)
+      CALL FlagError("Regular mesh is not associated.",err,error,*999)
     ENDIF
-
+    
     IF(ALLOCATED(elementNodes)) DEALLOCATE(elementNodes)
-
+    
     CALL Exits("GeneratedMeshRegularCreateFinish")
     RETURN
-    ! TODO invalidate other associations
 999 IF(ALLOCATED(elementNodes)) DEALLOCATE(elementNodes)
     CALL Errors("GeneratedMeshRegularCreateFinish",err,error)
     CALL Exits("GeneratedMeshRegularCreateFinish")
     RETURN 1
+    
   END SUBROUTINE GeneratedMeshRegularCreateFinish
+
+  !
+  !================================================================================================================================
+  !
+
+  !>Finish the creation of a polar generated mesh.
+  SUBROUTINE GeneratedMeshPolarCreateFinish(polarMesh,meshUserNumber,err,error,*)
+
+    !Argument variables
+    TYPE(GeneratedPolarMeshType), POINTER :: polarMesh !<A pointer to the polar generated mesh to finish.
+    INTEGER(INTG), INTENT(IN) :: meshUserNumber !<The user number of the mesh to generate.
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+    TYPE(COORDINATE_SYSTEM_TYPE), POINTER :: coordinateSystem
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh
+    TYPE(MeshComponentElementsType), POINTER :: meshElements
+    TYPE(NODES_TYPE), POINTER :: nodes
+    TYPE(REGION_TYPE), POINTER :: region
+
+    NULLIFY(coordinateSystem)
+    
+    CALL Enters("GeneratedMeshPolarCreateFinish",err,error,*999)
+
+    IF(ASSOCIATED(polarMesh)) THEN
+      generatedMesh=>polarMesh%generatedMesh
+      IF(ASSOCIATED(generatedMesh)) THEN
+        IF(ALLOCATED(generatedMesh%bases)) THEN
+          CALL GeneratedMeshCoordinateSystemGet(generatedMesh,coordinateSystem,err,error,*999)
+          CALL COORDINATE_SYSTEM_TYPE_GET(coordinateSystem,coordinateType,err,error,*999)
+          region=>generatedMesh%region
+          INTERFACE=>generatedMesh%INTERFACE
+          SELECT CASE(coordinateType)
+          CASE(COORDINATE_RECTANGULAR_CARTESIAN_TYPE)
+            meshDimension=generatedMesh%meshDimension
+            !Use first basis to get the basis type
+            basis=>regularMesh%bases(1)%ptr
+            SELECT CASE(basis%TYPE)
+            CASE(BASIS_LAGRANGE_HERMITE_TP_TYPE,BASIS_SIMPLEX_TYPE)
+              !Calculate the number of elements
+              gridNumberOfElements=1
+              numberOfElementsXi
+            CASE DEFAULT
+              CALL FlagError("Basis type is either invalid or not implemented.",err,error,*999)
+            END SELECT
+          CASE(COORDINATE_CYLINDRICAL_POLAR_TYPE)
+            CALL FlagError("Not implemented.",err,error,*999)
+          CASE(COORDINATE_SPHERICAL_POLAR_TYPE)
+            CALL FlagError("Not implemented.",err,error,*999)
+          CASE(COORDINATE_PROLATE_SPHEROIDAL_TYPE)
+            CALL FlagError("Not implemented.",err,error,*999)
+          CASE(COORDINATE_OBLATE_SPHEROIDAL_TYPE)
+            CALL FlagError("Not implemented.",err,error,*999)
+          CASE DEFAULT
+            localError="The coordinate system type of "//TRIM(NumberToVString(coordinateType,"*",err,error))// &
+              & " is invalid."
+            CALL FlagError(localError,err,error,*999)
+          END SELECT
+        ELSE
+          CALL FlagError("Generated mesh bases are not allocated.",err,error,*999)
+        ENDIF
+      ELSE
+        CALL FlagError("Polar mesh generated Mesh is not associated.",err,error,*999)
+      ENDIF
+    ELSE
+      CALL FlagError("Polar mesh is not associated.",err,error,*999)
+    ENDIF
+
+    CALL Exits("GeneratedMeshPolarCreateFinish")
+    RETURN
+999 CALL Errors("GeneratedMeshPolarCreateFinish",err,error)
+    CALL Exits("GeneratedMeshPolarCreateFinish")
+    RETURN 1
+    
+  END SUBROUTINE GeneratedMeshPolarCreateFinish
 
   !
   !================================================================================================================================
@@ -3206,7 +3281,7 @@ CONTAINS
   SUBROUTINE GeneratedMeshCylinderFinalise(cylinderMesh,err,error,*)
 
     !Argument variables
-    TYPE(GeneratedMeshCylinderType), POINTER :: cylinderMesh !<A pointer to the generated mesh
+    TYPE(GeneratedMeshCylinderType), POINTER :: cylinderMesh !<A pointer to the cylinder generated mesh to finalise
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
@@ -3249,14 +3324,22 @@ CONTAINS
       IF(ASSOCIATED(generatedMesh%cylinderMesh)) THEN
         CALL FlagError("Cylinder mesh is already associated for this generated mesh.",err,error,*998)
       ELSE
-        ALLOCATE(generatedMesh%cylinderMesh,STAT=err)
-        IF(err/=0) CALL FlagError("Could not allocate cylinder generated mesh.",err,error,*999)
-        generatedMesh%cylinderMesh%generatedMesh=>generatedMesh
-        generatedMesh%generatedType=GENERATED_MESH_CYLINDER_MESH_TYPE
-        !Set defaults
-        generatedMesh%closed=.TRUE.
-        ALLOCATE(generatedMesh%cylinderMesh%cylinderExtent(1:generatedMesh%coordinateDimension),STAT=err)
-        IF(err/=0) CALL FlagError("Could not allocate cylinder mesh cylinder extent",
+        IF(generatedMesh%coordinateDimension==3) THEN
+          ALLOCATE(generatedMesh%cylinderMesh,STAT=err)
+          IF(err/=0) CALL FlagError("Could not allocate cylinder generated mesh.",err,error,*999)
+          generatedMesh%cylinderMesh%generatedMesh=>generatedMesh
+          generatedMesh%generatedType=GENERATED_MESH_CYLINDER_MESH_TYPE
+          !Set defaults
+          generatedMesh%cylinderMesh%closed=.TRUE.
+          ALLOCATE(generatedMesh%cylinderMesh%cylinderExtent(1:generatedMesh%coordinateDimension),STAT=err)
+          IF(err/=0) CALL FlagError("Could not allocate cylinder mesh cylinder extent.",err,error,*999)
+          generatedMesh%cylinderMesh%cylinderExtent(1)=2.0_DP !Length
+          generatedMesh%cylinderMesh%cylinderExtent(2)=1.0_DP !Inner radius
+          generatedMesh%cylinderMesh%cylinderExtent(3)=1.2_DP !Outer radius          
+        ELSE
+          CALL FlagError("Invalid coordinate system for a cylinder generated mesh. Three coordinate dimensions "// &
+            & "are required for a cylinder mesh.",err,error,*998)
+        ENDIF
       ENDIF
     ELSE
       CALL FlagError("Generated mesh is not associated.",err,error,*998)
@@ -3274,6 +3357,85 @@ CONTAINS
   !================================================================================================================================
   !
 
+  !>Finalise the polar mesh type
+  SUBROUTINE GeneratedMeshPolarFinalise(polarMesh,err,error,*)
+
+    !Argument variables
+    TYPE(GeneratedMeshPolarType), POINTER :: polarMesh !<A pointer to the polar generated mesh to finalise
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+
+    CALL Enters("GeneratedMeshPolarFinalise",err,error,*999)
+
+    IF(ASSOCIATED(polarMesh)) THEN
+      IF(ALLOCATED(polarMesh%polarExtent)) DEALLOCATE(polarMesh%polarExtent)
+      IF(ALLOCATED(polarMesh%numberOfElementsXi)) DEALLOCATE(polarMesh%numberOfElementsXi)
+      DEALLOCATE(polarMesh)
+    ENDIF
+
+    CALL Exits("GeneratedMeshPolarFinalise")
+    RETURN
+    ! TODO invalidate other associations
+999 CALL Errors("GeneratedMeshPolarFinalise",err,error)
+    CALL Exits("GeneratedMeshPolarFinalise")
+    RETURN 1
+    
+  END SUBROUTINE GeneratedMeshPolarFinalise
+
+  !
+  !================================================================================================================================
+  !
+
+  !>Initialise the polar generated mesh type
+  SUBROUTINE GeneratedMeshPolarInitialise(generatedMesh,err,error,*)
+
+    !Argument variables
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh to initialise the polar mesh for
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+    INTEGER(INTG) :: dummyErr
+    TYPE(VARYING_STRING) :: dummyError
+
+    CALL Enters("GeneratedMeshPolarInitialise",err,error,*998)
+
+    IF(ASSOCIATED(generatedMesh)) THEN
+      IF(ASSOCIATED(generatedMesh%polarMesh)) THEN
+        CALL FlagError("Polar mesh is already associated for this generated mesh.",err,error,*998)
+      ELSE
+        IF(generatedMesh%coordinateDimension>=2) THEN
+          ALLOCATE(generatedMesh%polarMesh,STAT=err)
+          IF(err/=0) CALL FlagError("Could not allocate polar generated mesh.",err,error,*999)
+          generatedMesh%polarMesh%generatedMesh=>generatedMesh
+          generatedMesh%generatedType=GENERATED_MESH_POLAR_MESH_TYPE
+          !Set defaults
+          generatedMesh%polarMesh%spherical=(generatedMesh%coordinateDimension==3)
+          ALLOCATE(generatedMesh%polarMesh%polarExtent(2),STAT=err)
+          IF(err/=0) CALL FlagError("Could not allocate polar mesh polar extent.",err,error,*999)
+          generatedMesh%polarMesh%polarExtent(1)=1.0_DP !Inner radius
+          generatedMesh%polarMesh%polarExtent(2)=1.2_DP !Outer radius
+        ELSE
+          CALL FlagError("Invalid coordinate system for a polar generated mesh. Two or three coordinate dimensions "// &
+            & "are required for a polar mesh.",err,error,*998)
+        ENDIF
+      ENDIF
+    ELSE
+      CALL FlagError("Generated mesh is not associated.",err,error,*998)
+    ENDIF
+
+    CALL Exits("GeneratedMeshPolarInitialise")
+    RETURN
+999 CALL GeneratedMeshPolarFinalise(generatedMesh%polarMesh,dummyErr,dummyError,*998)
+998 CALL Errors("GeneratedMeshPolarInitialise",err,error)
+    CALL Exits("GeneratedMeshPolarInitialise")
+    RETURN 1
+  END SUBROUTINE GeneratedMeshPolarInitialise
+
+  !
+  !================================================================================================================================
+  !
+
   !>Finalise the regular mesh type
   SUBROUTINE GeneratedMeshRegularFinalise(regularMesh,err,error,*)
 
@@ -3286,11 +3448,8 @@ CONTAINS
     CALL Enters("GeneratedMeshRegularFinalise",err,error,*999)
 
     IF(ASSOCIATED(regularMesh)) THEN
-      IF(ALLOCATED(regularMesh%origin)) DEALLOCATE(regularMesh%origin)
       IF(ALLOCATED(regularMesh%maximumExtent)) DEALLOCATE(regularMesh%maximumExtent)
       IF(ALLOCATED(regularMesh%numberOfElementsXi)) DEALLOCATE(regularMesh%numberOfElementsXi)
-      IF(ALLOCATED(regularMesh%baseVectors)) DEALLOCATE(regularMesh%baseVectors)
-      IF(ALLOCATED(regularMesh%bases)) DEALLOCATE(regularMesh%bases)
       DEALLOCATE(regularMesh)
     ENDIF
 
@@ -3314,31 +3473,23 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
-    INTEGER(INTG) :: coordinateDimension,dummyErr
-    TYPE(COORDINATE_SYSTEM_TYPE), POINTER :: coordinateSystem
+    INTEGER(INTG) :: dummyErr
     TYPE(VARYING_STRING) :: dummyError
     
-    NULLIFY(coordinateSystem)
-
     CALL Enters("GeneratedMeshRegularInitialise",err,error,*998)
 
     IF(ASSOCIATED(generatedMesh)) THEN
       IF(ASSOCIATED(generatedMesh%regularMesh)) THEN
         CALL FlagError("Regular mesh is already associated for this generated mesh.",err,error,*998)
       ELSE
-        CALL GeneratedMeshCoordinateSystemGet(generatedMesh,coordinateSystem,err,error,*999)
-        CALL COORDINATE_SYSTEM_DIMENSION_GET(coordinateSystem,coordinateDimension,err,error,*999)
         ALLOCATE(generatedMesh%regularMesh,STAT=err)
         IF(err/=0) CALL FlagError("Could not allocate regular generated mesh.",err,error,*999)
         generatedMesh%regularMesh%generatedMesh=>generatedMesh        
-        ALLOCATE(generatedMesh%regularMesh%origin(coordinateDimension),STAT=err)
-        IF(err/=0) CALL FlagError("Could not allocate origin.",err,error,*998)
-        generatedMesh%regularMesh%origin=0.0_DP
-        generatedMesh%regularMesh%coordinateDimension=coordinateDimension
-        ALLOCATE(generatedMesh%regularMesh%maximumExtent(coordinateDimension),STAT=err)
-        IF(err/=0) CALL FlagError("Could not allocate maximum extent.",err,error,*998)
-        generatedMesh%regularMesh%maximumExtent=1.0_DP
         generatedMesh%generatedType=GENERATED_MESH_REGULAR_MESH_TYPE
+        !Set defaults
+        ALLOCATE(generatedMesh%regularMesh%maximumExtent(gneratedMesh%coordinateDimension),STAT=err)
+        IF(err/=0) CALL FlagError("Could not allocate maximum extent.",err,error,*999)
+        generatedMesh%regularMesh%maximumExtent=1.0_DP
       ENDIF
     ELSE
       CALL FlagError("Generated mesh is not associated.",err,error,*998)
@@ -3396,18 +3547,30 @@ CONTAINS
     INTEGER(INTG) :: dummyErr
     TYPE(VARYING_STRING) :: dummyError
 
-    CALL Enters("GeneratedMeshEllipsoidInitialise",err,error,*999)
+    CALL Enters("GeneratedMeshEllipsoidInitialise",err,error,*998)
 
     IF(ASSOCIATED(generatedMesh)) THEN
       IF(ASSOCIATED(generatedMesh%ellipsoidMesh)) THEN
         CALL FlagError("Ellipsoid mesh is already associated for this generated mesh.",err,error,*998)
       ELSE
-        ALLOCATE(generatedMesh%ellipsoidMesh,STAT=err)
-        IF(err/=0) CALL FlagError("Could not allocate ellipsoid generated mesh.",err,error,*999)
-        generatedMesh%ellipsoidMesh%generatedMesh=>generatedMesh
-        generatedMesh%generatedType=GENERATED_MESH_ELLIPSOID_MESH_TYPE
-      ENDIF
-    ELSE
+        IF(generatedMesh%coordinateDimension==3) THEN
+          ALLOCATE(generatedMesh%ellipsoidMesh,STAT=err)
+          IF(err/=0) CALL FlagError("Could not allocate ellipsoid generated mesh.",err,error,*999)
+          generatedMesh%ellipsoidMesh%generatedMesh=>generatedMesh
+          generatedMesh%generatedType=GENERATED_MESH_ELLIPSOID_MESH_TYPE
+          !Set defaults
+          generatedMesh%ellipsoidMesh%closed=.TRUE.
+          ALLOCATE(generatedMesh%ellipsoidMesh%ellipsoidExtent(1:generatedMesh%coordinateDimension),STAT=err)
+          IF(err/=0) CALL FlagError("Could not allocate cylinder mesh cylinder extent.",err,error,*999)
+          generatedMesh%ellipsoidMesh%ellipsoidExtent(1)=2.0_DP !Long axis
+          generatedMesh%ellipsoidMesh%ellipsoidExtent(1)=1.0_DP !Short axis inner radius
+          generatedMesh%ellipsoidMesh%ellipsoidExtent(1)=1.2_DP !Short axis outer radius      
+        ENDIF
+      ELSE
+         CALL FlagError("Invalid coordinate system for an ellipsoid generated mesh. Three coordinate dimensions "// &
+           & "are required for an ellipsoid mesh.",err,error,*998)
+       ENDIF
+     ELSE
       CALL FlagError("Generated mesh is not associated.",err,error,*998)
     ENDIF
 
@@ -3418,6 +3581,76 @@ CONTAINS
     CALL Exits("GeneratedMeshEllipsoidInitialise")
     RETURN 1
   END SUBROUTINE GeneratedMeshEllipsoidInitialise
+
+  !
+  !================================================================================================================================
+  !
+
+  !>Finalise the fractal tree mesh type.
+  SUBROUTINE GeneratedMeshFractalTreeFinalise(fractalTreeMesh,err,error,*)
+
+    !Argument variables
+    TYPE(GeneratedMeshFractalTreeType), POINTER :: fractalTreeMesh !<A pointer to the fractal tree generated mesh to finalise.
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+
+    CALL Enters("GeneratedMeshFractalTreeFinalise",err,error,*999)
+
+    IF(ASSOCIATED(fractalTreeMesh)) THEN
+      IF(ALLOCATED(fractalTreeMesh%numberOfElementsGeneration)) DEALLOCATE(fractalTreeMesh%numberOfElementsGeneration)
+      DEALLOCATE(factalTreeMesh)
+    ENDIF
+
+    CALL Exits("GeneratedMeshFractalTreeFinalise")
+    RETURN
+999 CALL Errors("GeneratedMeshFractalTreeFinalise",err,error)
+    CALL Exits("GeneratedMeshFractalTreeFinalise")
+    RETURN 1
+  END SUBROUTINE GeneratedMeshFractalTreeFinalise
+
+  !
+  !================================================================================================================================
+  !
+
+  !>Initialise the fractal tree generated mesh type
+  SUBROUTINE GeneratedMeshFractalTreeInitialise(generatedMesh,err,error,*)
+
+    !Argument variables
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh to initialise the fractal tree mesh for
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+    INTEGER(INTG) :: dummyErr
+    TYPE(VARYING_STRING) :: dummyError
+    
+    CALL Enters("GeneratedMeshFractalTreeInitialise",err,error,*998)
+
+    IF(ASSOCIATED(generatedMesh)) THEN
+      IF(ASSOCIATED(generatedMesh%fractalTreeMesh)) THEN
+        CALL FlagError("Fractal tree mesh is already associated for this generated mesh.",err,error,*998)
+      ELSE
+        ALLOCATE(generatedMesh%fractalTreeMesh,STAT=err)
+        IF(err/=0) CALL FlagError("Could not allocate fractal tree generated mesh.",err,error,*999)
+        generatedMesh%fractalTreeMesh%generatedMesh=>generatedMesh        
+        generatedMesh%generatedType=GENERATED_MESH_FRACTAL_TREE_MESH_TYPE
+        !Set defaults
+        generatedMesh%fractalTreeMesh%fractalTreeType=0
+        generatedMesh%fractalTreeMesh%symmetric=.TRUE.
+        generatedMesh%fractalTreeMesh%numberOfGenerations=0
+      ENDIF
+    ELSE
+      CALL FlagError("Generated mesh is not associated.",err,error,*998)
+    ENDIF
+
+    CALL Exits("GeneratedMeshFractalTreeInitialise")
+    RETURN
+999 CALL GeneratedMeshFractalTreeFinalise(generatedMesh%fractalTreeMesh,dummyErr,dummyError,*998)
+998 CALL Errors("GeneratedMeshFractalTreeInitialise",err,error)
+    CALL Exits("GeneratedMeshFractalTreeInitialise")
+    RETURN 1
+    
+  END SUBROUTINE GeneratedMeshFractalTreeInitialise
 
   !
   !================================================================================================================================
@@ -3816,11 +4049,11 @@ CONTAINS
                 CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
                   CALL GeneratedMeshEllipsoidGeometricParametersCalculate(generatedMesh%ellipsoidMesh,geometricField,err,error,*999)
                 CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
-                  CALL FlagError("Not implemented.",err,error,*999)
+                   CALL GeneratedMeshFractalTreeGeometricParametersCalculate(generatedMesh%fractalTreeMesh,geometricField, &
+                     & err,error,*999)
                 CASE DEFAULT
                   localError="The generated mesh mesh type of "// &
-                    & TRIM(NumberToVString(generatedMesh%generatedType,"*",err,error))// &
-                    & " is invalid."
+                    & TRIM(NumberToVString(generatedMesh%generatedType,"*",err,error))//" is invalid."
                   CALL FlagError(localError,err,error,*999)
                 END SELECT
               ELSE
@@ -4066,6 +4299,218 @@ CONTAINS
     CALL Exits("GeneratedMeshRegularGeometricParametersCalculate")
     RETURN 1
   END SUBROUTINE GeneratedMeshRegularGeometricParametersCalculate
+
+  !
+  !================================================================================================================================
+  !
+
+  !>Updates the geometric field parameters from the initial nodal positions of a polar generated mesh. 
+  SUBROUTINE GeneratedMeshPolarGeometricParametersCalculate(polarMesh,geometricField,err,error,*)
+
+    !Argument variables
+    TYPE(GeneratedMeshPolarType), POINTER :: polarMesh !<A pointer to the polar mesh object to calculate the geometric parameters for.
+    TYPE(FIELD_TYPE), POINTER :: geometricField !<A pointer to the field to update the geometric parameters for
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local variables
+    TYPE(BASIS_TYPE), POINTER :: basis
+    TYPE(COORDINATE_SYSTEM_TYPE), POINTER :: coordinateSystem
+    TYPE(DOMAIN_TYPE),POINTER :: domain
+    TYPE(DOMAIN_NODES_TYPE), POINTER :: domainNodes
+    TYPE(FIELD_VARIABLE_TYPE), POINTER :: fieldVariable
+    TYPE(FIELD_VARIABLE_COMPONENT_TYPE), POINTER :: fieldVariableComponent
+    INTEGER(INTG) :: totalNumberOfNodesXi(3)
+    INTEGER(INTG) :: componentIdx,xiIdx
+    INTEGER(INTG) :: nodeIdx,globalNodeIdx,componentNodeIdx,dofIdx,derivativeIdx
+    INTEGER(INTG) :: numberOfPlanarNodes,scalingType,meshComponent,coordinateType,coordinateDimension
+    INTEGER(INTG) :: nodePositionIdx(3) ! holds r,theta,z indices
+    REAL(DP) :: deltaCoordinate(3),deltaCoordinateXi(3),polarCoordinates(3),rectangularCoordinates(3),deriv
+    TYPE(VARYING_STRING) :: localError
+
+    NULLIFY(coordinateSystem)
+    NULLIFY(fieldVariable)
+
+    CALL Enters("GeneratedMeshPolarGeometricParametersCalculate",err,error,*999)
+
+    IF(ASSOCIATED(polarMesh)) THEN
+      IF(ASSOCIATED(geometricField)) THEN
+        generatedMesh=>polarMesh%generatedMesh
+        IF(ASSOCIATED(generatedMesh)) THEN
+          CALL GeneratedMeshCoordinateSystemGet(generatedMesh,coordinateSystem,err,error,*999)
+          CALL COORDINATE_SYSTEM_TYPE_GET(coordinateSystem,coordinateType,err,error,*999)
+          IF(coordinateType==COORDINATE_RECTANGULAR_CARTESIAN_TYPE) THEN
+            CALL FIELD_SCALING_TYPE_GET(geometricField,scalingType,err,error,*999)
+            CALL FIELD_VARIABLE_TYPE_GET(geometricField,FIELD_U_VARIABLE_TYPE,fieldVariable,err,error,*999)
+            IF(fieldVariable%NUMBER_OF_COMPONENTS==generatedMesh%coordinateDimension) THEN
+              !Get the first basis type
+              basis=>generatedMesh%bases(1)%ptr
+              basisType=basis%type
+              DO componentIdx=1,generatedMesh%coordinateDimension
+                fieldVariableComponent=>fieldVariable%components(componentIdx)
+                meshComponent=fieldVariableComponent%MESH_COMPONENT_NUMBER
+                IF(generatedMesh%coordinateDimension==2) THEN
+                  basisIdx=meshComponent
+                ELSE
+                  
+                ENDIF
+                basis=>generatedMesh%bases(meshComponent)%ptr
+                !Calculate the total number of nodes in each xi direction
+                DO xiIdx=1,3
+                  totalNumberOfNodesXi(xiIdx)=(basis%NUMBER_OF_NODES_XIC(xiIdx)-1)*cylinderMesh%numberOfElementsXi(xiIdx)+1
+                ENDDO !xiIdx
+                totalNumberOfNodesXi(2)=totalNumberOfNodesXi(2)-1 !Theta loops around so slightly different
+                numberOfPlanarNodes=totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)
+                !Calculate delta
+                deltaCoordinate(1)=(cylinderMesh%cylinderExtent(2)-cylinderMesh%cylinderExtent(1))/ &
+                  & cylinderMesh%numberOfElementsXi(1)
+                deltaCoordinate(2)=TWOPI/cylinderMesh%numberOfElementsXi(2)
+                deltaCoordinate(3)=cylinderMesh%cylinderExtent(3)/cylinderMesh%numberOfElementsXi(3)
+                DO xiIdx=1,3
+                  deltaCoordinateXi(xiIdx)=deltaCoordinate(xiIdx)/(basis%NUMBER_OF_NODES_XIC(xiIdx)-1)
+                ENDDO !xiIdx
+                !Update geometric parameters in this computational domain only
+                domain=>fieldVariable%components(meshComponent)%domain
+                domainNodes=>domain%topology%nodes
+                DO nodeIdx=1,domainNodes%NUMBER_OF_NODES
+                  globalNodeIdx=domainNodes%nodes(nodeIdx)%GLOBAL_NUMBER
+                  componentNodeIdx=GeneratedMeshUserNumberToComponentNode(cylinderMesh%generatedMesh,meshComponent, &
+                    & globalNodeIdx,err,error)
+                  !Calculate nodePositionIdx which will be used to calculate (r,theta,z) then (x,y,z)
+                  nodePositionIdx(3)=(componentNodeIdx-1)/numberOfPlanarNodes
+                  nodePositionIdx(2)=(componentNodeIdx-1-(nodePositionIdx(3))*numberOfPlanarNodes)/totalNumberOfNodesXi(1)
+                  nodePositionIdx(1)=MOD(componentNodeIdx-1-(nodePositionIdx(3))*numberOfPlanarNodes,totalNumberOfNodesXi(1))
+                  DO xiIdx=1,3
+                    polarCoordinates(xiIdx)=nodePositionIdx(xiIdx)*deltaCoordinateXi(xiIdx)
+                  ENDDO !xiIdx
+                  polarCoordinates(1)=nodePositionIdx(1)*deltaCoordinateXi(1)+cylinderMesh%cylinderExtent(1) !Add the inner radius
+                  rectangularCoordinates(1)=polarCoordinates(1)*COS(polarCoordinates(2))
+                  rectangularCoordinates(2)=polarCoordinates(1)*SIN(polarCoordinates(2))
+                  rectangularCoordinates(3)=polarCoordinates(3)
+                  rectangularCoordinates=rectangularCoordinates+cylinderMesh%origin
+                  !Default to version 1 of each node derivative
+                  dofIdx=fieldVariableComponent%PARAM_TO_DOF_MAP%NODE_PARAM2DOF_MAP%NODES(nodeIdx)%DERIVATIVES(1)%VERSIONS(1)
+                  CALL FIELD_PARAMETER_SET_UPDATE_LOCAL_DOF(geometricField,FIELD_U_VARIABLE_TYPE,FIELD_VALUES_SET_TYPE,dofIdx, &
+                    & rectangularCoordinates(componentIdx),err,error,*999)
+                  IF(domainNodes%NODES(nodeIdx)%NUMBER_OF_DERIVATIVES>1) THEN
+                    DO derivativeIdx=2,fieldVariableComponent%PARAM_TO_DOF_MAP%NODE_PARAM2DOF_MAP%NODES(nodeIdx)% &
+                      & NUMBER_OF_DERIVATIVES
+                      SELECT CASE(scalingType)
+                      CASE(FIELD_NO_SCALING,FIELD_UNIT_SCALING)
+                        SELECT CASE(domainNodes%nodes(nodeIdx)%derivatives(derivativeIdx)%GLOBAL_DERIVATIVE_INDEX)
+                        CASE(GLOBAL_DERIV_S1)
+                          SELECT CASE(componentIdx)
+                          CASE(1)
+                            DERIV=COS(polarCoordinates(2))*deltaCoordinate(1)
+                          CASE(2)
+                            DERIV=SIN(polarCoordinates(2))*deltaCoordinate(1)
+                          CASE DEFAULT
+                            DERIV=0.0_DP
+                          END SELECT
+                        CASE(GLOBAL_DERIV_S2)
+                          SELECT CASE(componentIdx)
+                          CASE(1)
+                            DERIV=-polarCoordinates(1)*SIN(polarCoordinates(2))*deltaCoordinate(2)
+                          CASE(2)
+                            DERIV=polarCoordinates(1)*COS(polarCoordinates(2))*deltaCoordinate(2)
+                          CASE DEFAULT
+                            DERIV=0.0_DP
+                          END SELECT
+                        CASE(GLOBAL_DERIV_S3)
+                          IF(componentIdx==3) THEN
+                            DERIV=deltaCoordinate(3)
+                          ELSE
+                            DERIV=0.0_DP
+                          ENDIF
+                        CASE(GLOBAL_DERIV_S1_S2)
+                          SELECT CASE(componentIdx)
+                          CASE(1)
+                            DERIV=-SIN(polarCoordinates(2))*deltaCoordinate(1)*deltaCoordinate(2)
+                          CASE(2)
+                            DERIV=COS(polarCoordinates(2))*deltaCoordinate(1)*deltaCoordinate(2)
+                          CASE DEFAULT
+                            DERIV=0.0_DP
+                          END SELECT
+                        CASE DEFAULT  ! all other non-xy-planar cross derivatives
+                          DERIV=0.0_DP
+                        END SELECT
+                      CASE(FIELD_ARC_LENGTH_SCALING,FIELD_ARITHMETIC_MEAN_SCALING, &
+                        & FIELD_GEOMETRIC_MEAN_SCALING,FIELD_HARMONIC_MEAN_SCALING)
+                        SELECT CASE(domainNodes%NODES(nodeIdx)%DERIVATIVES(derivativeIdx)%GLOBAL_DERIVATIVE_INDEX)
+                        CASE(GLOBAL_DERIV_S1)
+                          SELECT CASE(componentIdx)
+                          CASE(1)
+                            DERIV=COS(polarCoordinates(2))
+                          CASE(2)
+                            DERIV=SIN(polarCoordinates(2))
+                          CASE DEFAULT
+                            DERIV=0.0_DP
+                          END SELECT
+                        CASE(GLOBAL_DERIV_S2)
+                          SELECT CASE(componentIdx)
+                          CASE(1)
+                            DERIV=-SIN(polarCoordinates(2))
+                          CASE(2)
+                            DERIV=COS(polarCoordinates(2))
+                          CASE DEFAULT
+                            DERIV=0.0_DP
+                          END SELECT
+                        CASE(GLOBAL_DERIV_S3)
+                          IF(componentIdx==3) THEN
+                            DERIV=1.0_DP
+                          ELSE
+                            DERIV=0.0_DP
+                          ENDIF
+                        CASE(GLOBAL_DERIV_S1_S2)
+                          SELECT CASE(componentIdx)
+                          CASE(1)
+                            DERIV=-SIN(polarCoordinates(2))*deltaCoordinate(1)*deltaCoordinate(2)
+                          CASE(2)
+                            DERIV=COS(polarCoordinates(2))*deltaCoordinate(1)*deltaCoordinate(2)
+                          CASE DEFAULT
+                            DERIV=0.0_DP
+                          END SELECT
+                        CASE DEFAULT  ! all other non-xy-planar cross derivatives
+                          DERIV=0.0_DP
+                        END SELECT
+                      CASE DEFAULT
+                        localError="The field scaling type of "//TRIM(NumberToVString(scalingType,"*",err,error))// &
+                          & " is invalid for field number "//TRIM(NumberToVString(geometricField%USER_NUMBER,"*",err,error))//"."
+                        CALL FlagError(localError,err,error,*999)
+                      END SELECT
+                      !Assign derivative. Default to version 1 of each node derivative
+                      dofIdx=fieldVariableComponent%PARAM_TO_DOF_MAP%NODE_PARAM2DOF_MAP%NODES(nodeIdx)%DERIVATIVES(derivativeIdx)% &
+                        & VERSIONS(1)
+                      CALL FIELD_PARAMETER_SET_UPDATE_LOCAL_DOF(geometricField,FIELD_U_VARIABLE_TYPE,FIELD_VALUES_SET_TYPE, &
+                        & dofIdx,DERIV,err,error,*999)
+                    ENDDO !derivativeIdx
+                  ENDIF !derivatives
+                ENDDO !nodeIdx
+              ELSE
+                CALL FlagError("All field variable components must have node-based interpolation.",err,error,*999)
+              ENDIF
+            ENDDO !componentIdx
+            CALL FIELD_PARAMETER_SET_UPDATE_START(geometricField,FIELD_U_VARIABLE_TYPE,FIELD_VALUES_SET_TYPE,err,error,*999)
+            CALL FIELD_PARAMETER_SET_UPDATE_FINISH(geometricField,FIELD_U_VARIABLE_TYPE,FIELD_VALUES_SET_TYPE,err,error,*999)
+          ELSE
+            CALL FlagError("Geometric field must be three dimensional.",err,error,*999)
+          ENDIF
+        ELSE
+          CALL FlagError("Only rectangular cartesian coordinates are implemented.",err,error,*999)
+        ENDIF
+      ELSE
+        CALL FlagError("Geometric field is not associated.",err,error,*999)
+      ENDIF
+    ELSE
+      CALL FlagError("Polar mesh is not associated.",err,error,*999)
+    ENDIF
+    
+    CALL EXITS("GeneratedMeshPolarGeometricParametersCalculate")
+    RETURN
+999 CALL ERRORS("GeneratedMeshPolarGeometricParametersCalculate",err,error)
+    CALL EXITS("GeneratedMeshPolarGeometricParametersCalculate")
+    RETURN 1
+
+  END SUBROUTINE GeneratedMeshPolarGeometricParametersCalculate
 
   !
   !================================================================================================================================
