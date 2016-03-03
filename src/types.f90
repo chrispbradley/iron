@@ -137,7 +137,7 @@ MODULE TYPES
   ! Quadrature types
   !
 
-  !>Contains information for a particular quadrature scheme. \see OPENCMISS::CMISSQuadratureSchemeType \todo Also evaluate the product of the basis functions at gauss points for speed???
+  !>Contains information for a particular quadrature scheme. \see OpenCMISS::Iron::cmfe_QuadratureSchemeType \todo Also evaluate the product of the basis functions at gauss points for speed???
   TYPE QUADRATURE_SCHEME_TYPE
     INTEGER(INTG) :: GLOBAL_NUMBER !<The global number of the quadrature scheme in the list of quadrature schemes for a particular quadrature.
     TYPE(QUADRATURE_TYPE), POINTER :: QUADRATURE !<The pointer back to the quadrature for a particular quadrature scheme
@@ -157,7 +157,7 @@ MODULE TYPES
     TYPE(QUADRATURE_SCHEME_TYPE), POINTER :: PTR !<A pointer to the quadrature scheme
   END TYPE QUADRATURE_SCHEME_PTR_TYPE
 
-  !>Contains information on the quadrature to be used for integrating a basis. \see OPENCMISS::CMISSQuadratureType
+  !>Contains information on the quadrature to be used for integrating a basis. \see OpenCMISS::Iron::cmfe_QuadratureType
   TYPE QUADRATURE_TYPE
     INTEGER(INTG) :: TYPE !<The type of the quadrature \see BASIS_ROUTINES_QuadratureTypes
     TYPE(BASIS_TYPE), POINTER :: BASIS !<The pointer back to the basis
@@ -328,7 +328,7 @@ MODULE TYPES
     REAL(DP), ALLOCATABLE :: WEIGHTS(:) !<Weights of the data point, has the size of region dimension the data point belongs to.
   END TYPE DATA_POINT_TYPE
 
-  !>Contains information on the data points defined on a region. \see OPENCMISS::CMISSDataPointsType
+  !>Contains information on the data points defined on a region. \see OpenCMISS::Iron::cmfe_DataPointsType
   TYPE DATA_POINTS_TYPE
     TYPE(REGION_TYPE), POINTER :: REGION !<A pointer to the region containing the data points. If the data points are in an interface rather than a region then this pointer will be NULL and the interface pointer should be used.
     TYPE(INTERFACE_TYPE), POINTER :: INTERFACE !<A pointer to the interface containing the data points. If the data points are in a region rather than an interface then this pointer will be NULL and the interface pointer should be used.
@@ -354,7 +354,7 @@ MODULE TYPES
     TYPE(VARYING_STRING) :: LABEL !<A string label for the node
   END TYPE NODE_TYPE
 
-  !>Contains information on the nodes defined on a region. \see OPENCMISS::CMISSNodesType
+  !>Contains information on the nodes defined on a region. \see OpenCMISS::Iron::cmfe_NodesType
   TYPE NODES_TYPE
     TYPE(REGION_TYPE), POINTER :: REGION !<A pointer to the region containing the nodes. If the nodes are in an interface rather than a region then this pointer will be NULL and the interface pointer should be used.
     TYPE(INTERFACE_TYPE), POINTER :: INTERFACE !<A pointer to the interface containing the nodes. If the nodes are in a region rather than an interface then this pointer will be NULL and the region pointer should be used.
@@ -498,7 +498,7 @@ MODULE TYPES
   END TYPE MESH_EMBEDDING_TYPE
 
 
-  !>Contains information on a mesh defined on a region. \see OPENCMISS::CMISSMeshType
+  !>Contains information on a mesh defined on a region. \see OpenCMISS::Iron::cmfe_MeshType
   TYPE MESH_TYPE
     INTEGER(INTG) :: USER_NUMBER !<The user number of the mesh. The user number must be unique.
     INTEGER(INTG) :: GLOBAL_NUMBER !<The corresponding global number for the mesh.
@@ -506,7 +506,7 @@ MODULE TYPES
     TYPE(MESHES_TYPE), POINTER :: MESHES !<A pointer to the meshes for this mesh.
     TYPE(REGION_TYPE), POINTER :: REGION !<A pointer to the region containing the mesh. If the mesh is in an interface rather than a region then this pointer will be NULL and the interface pointer should be used.
     TYPE(INTERFACE_TYPE), POINTER :: INTERFACE !<A pointer to the interface containing the mesh. If the mesh is in a region rather than an interface then this pointer will be NULL and the interface pointer should be used.
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<A pointer to the generated mesh generate this mesh.
+    TYPE(GeneratedMeshType), POINTER :: GENERATED_MESH !<A pointer to the generated mesh generate this mesh.
     INTEGER(INTG) :: NUMBER_OF_DIMENSIONS !<The number of dimensions (Xi directions) for this mesh.
     INTEGER(INTG) :: NUMBER_OF_COMPONENTS !<The number of mesh components in this mesh.
     LOGICAL :: MESH_EMBEDDED !<Is .TRUE. if the mesh is embedded in another mesh, .FALSE. if not.
@@ -538,69 +538,93 @@ MODULE TYPES
   ! Generated Mesh types
   !
 
+!!<todo MERGE THE MESHES BELOW
+  
   !>Contains information on a generated regular mesh
-  TYPE GENERATED_MESH_REGULAR_TYPE
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<A pointer to the generated mesh
-    TYPE(BASIS_PTR_TYPE), ALLOCATABLE :: BASES(:) !<The pointers to the bases used in the regular mesh.
-    INTEGER(INTG) :: COORDINATE_DIMENSION !<The number of coordinates for the regular mesh.
-    INTEGER(INTG) :: MESH_DIMENSION !<The dimension/number of Xi directions of the regular mesh.
-    REAL(DP), ALLOCATABLE :: ORIGIN(:) !<ORIGIN(coordinate_idx). The position of the origin (first) corner of the regular mesh
-    REAL(DP), ALLOCATABLE :: MAXIMUM_EXTENT(:) !<MAXIMUM_EXTENT(coordinate_idx). The extent/size in each nj'th direction of the regular mesh.
-    REAL(DP), ALLOCATABLE :: BASE_VECTORS(:,:) !<MESH_BASE_VECTORS(coordinate_idx,xi_idx). The base vectors indicating the geometric direction of the xi_idx mesh coordinate.
-    INTEGER(INTG), ALLOCATABLE :: NUMBER_OF_ELEMENTS_XI(:) !<NUMBER_OF_ELEMENTS_XI(xi_idx). The number of elements in the xi_idx'th Xi direction for the mesh.
-  END TYPE GENERATED_MESH_REGULAR_TYPE
+  TYPE GeneratedMeshRegularType
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh
+    REAL(DP), ALLOCATABLE :: maximumExtent(:) !<maximumExtent(coordinateIdx). The extent/size in each coordinateIdx'th direction of the generated mesh.
+    INTEGER(INTG), ALLOCATABLE :: numberOfElementsXi(:) !<numberOfElements(xiIdx). The number of elements in the xiIdx'th xi direction for the mesh.
+  END TYPE GeneratedMeshRegularType
 
-  !>Contains information of a generated cylinder mesh
-  !>Allows only a 3D cylinder mesh with xi directions (r,theta,z)
-  TYPE GENERATED_MESH_CYLINDER_TYPE
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<A pointer to the generated mesh.
-    REAL(DP), ALLOCATABLE :: ORIGIN(:) !<ORIGIN(nj). The position of the origin (centre) of lower face of cylinder mesh.
-    REAL(DP), ALLOCATABLE :: CYLINDER_EXTENT(:) !<CYLINDER_EXTENT(nj). The size of inner & outer radii and height of cylinder.
-    INTEGER(INTG) :: MESH_DIMENSION !<The dimension/number of Xi directions of the cylinder mesh.
-    INTEGER(INTG), ALLOCATABLE :: NUMBER_OF_ELEMENTS_XI(:) !<NUMBER_OF_ELEMENTS(ni). The number of elements in radial, circumferential and axial directions
-    TYPE(BASIS_PTR_TYPE), ALLOCATABLE :: BASES(:) !<The pointers to the bases used in the regular mesh.
-    LOGICAL :: APPEND_LINEAR_COMPONENT=.FALSE. !<True when two mesh components are needed
- END TYPE GENERATED_MESH_CYLINDER_TYPE
+  !>Contains information of a generated polar mesh
+  TYPE GeneratedMeshPolarType
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh.
+    LOGICAL :: spherical !<Flag to indicate type of polar mesh. If .TRUE. mesh is spherical shells. If .FALSE. mesh is circular layers.
+    REAL(DP), ALLOCATABLE :: polarExtent(:) !<polarExtent(radiusIdx). The radius of the radiusIdx'th polar shell. 
+    INTEGER(INTG), ALLOCATABLE :: numberOfElementsXi(:) !<numberOfElementsXi(xiIdx). If the mesh is spherical the number of elements in circumferential, azimuthal and radial directions. If the mesh is circular (i.e., not spherical), the number of elements in the circumferential and radial directions. 
+  END TYPE GeneratedMeshPolarType
+ 
+  !>Contains information of a generated cylindrical mesh
+  TYPE GeneratedMeshCylinderType
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh.
+    LOGICAL :: closed !<Flag to indicate if the cylinder is closed or not. If .TRUE. the mesh is closed at the ends of the cylinder. If .FALSE. the mesh is open.
+    REAL(DP), ALLOCATABLE :: cylinderExtent(:) !<cylinderExtent(extentIdx). cylinderExtent(1) is the length of the cylinder. cylinderExtent(radiusIdx + 1) is the radius of the radiusIdx'th cylindrical shell.
+    INTEGER(INTG), ALLOCATABLE :: numberOfElementsXi(:) !<numberOfElementsXi(xiIdx). The number of elements in circumferential, axial and radial directions
+  END TYPE GeneratedMeshCylinderType
  
   !>Contains information of a generated ellipsoid mesh
   !>Allows only a 3D ellipsoid mesh
- TYPE GENERATED_MESH_ELLIPSOID_TYPE
-    TYPE(GENERATED_MESH_TYPE), POINTER :: GENERATED_MESH !<A pointer to the generated mesh.
-    REAL(DP), ALLOCATABLE :: ORIGIN(:) !<ORIGIN(nj). The position of the origin (centre) of lower face of ellipsoid mesh.
-    REAL(DP), ALLOCATABLE :: ELLIPSOID_EXTENT(:) !<ELLIPSOID_EXTENT(nj). The size of long axis, short axis, wall thickness and cut off angle of ellipsoid.
-    INTEGER(INTG) :: MESH_DIMENSION !<The dimension/number of Xi directions of the ellipsoid mesh.
-    INTEGER(INTG), ALLOCATABLE :: NUMBER_OF_ELEMENTS_XI(:) !<NUMBER_OF_ELEMENTS(ni). The number of elements in circumferential, longitudinal and transmural directions
-    TYPE(BASIS_PTR_TYPE), ALLOCATABLE :: BASES(:) !<The pointers to the bases used in the ellipsoid mesh
-    LOGICAL :: APPEND_LINEAR_COMPONENT=.FALSE. !<True when two mesh components are needed 
-END TYPE GENERATED_MESH_ELLIPSOID_TYPE
+  TYPE GeneratedMeshEllipsoidType
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh.
+    LOGICAL :: closed !<Flag to indicate if the ellipsoid is closed or not. If .TRUE. the mesh is closed at the top and bottom of the ellipsoid. If .FALSE. the mesh is open at the top of the ellipsoid but closed at the bottom.
+    REAL(DP), ALLOCATABLE :: ellipsoidExtent(:) !<ellipsoidExtent(extentIdx). ellipsoidExtent(1) is the size of long axis. ellipsoidExtent(2) is the size of the short axis. If the ellipsoid is not closed then ellipsoidExtent(3) is the cut off angle of ellipsoid. ellipsoidExtent(radiusIdx + 2 or 3) radius of the radiusIdx'th ellipsoid shell.
+    INTEGER(INTG), ALLOCATABLE :: numberOfElementsXi(:) !numberOfElementsXi(xiIdx). The number of elements in circumferential, azimuthal and transmural directions
+  END TYPE GeneratedMeshEllipsoidType
 
-  !>Contains information on a generated mesh. \see OPENCMISS::CMISSGeneratedMeshType
-  TYPE GENERATED_MESH_TYPE
-    INTEGER(INTG) :: USER_NUMBER !<The user number of the generated mesh. The user number must be unique.
-    INTEGER(INTG) :: GLOBAL_NUMBER !<The corresponding global number for the generated mesh.
-    TYPE(GENERATED_MESHES_TYPE), POINTER :: GENERATED_MESHES !<Is .TRUE. if the generated mesh has finished being created, .FALSE. if not.
-    LOGICAL :: GENERATED_MESH_FINISHED !<Is .TRUE. if the generated mesh has finished being created, .FALSE. if not.
-    TYPE(REGION_TYPE), POINTER :: REGION !<A pointer to the region containing the generated mesh. If the generated mesh is in an interface rather than a region then this pointer will be NULL and the interface pointer should be used.
-    TYPE(INTERFACE_TYPE), POINTER :: INTERFACE !<A pointer to the interface containing the generated mesh. If the generated mesh is in a region rather than an interface then this pointer will be NULL and the interface pointer should be used.
-    INTEGER(INTG) :: GENERATED_TYPE !<The type of the generated mesh. \see GENERATED_MESH_ROUTINES_GeneratedMeshTypes,GENERATED_MESH_ROUTINES
-    TYPE(GENERATED_MESH_REGULAR_TYPE), POINTER :: REGULAR_MESH !<A pointer to the regular generated mesh information if the generated mesh is a regular mesh, NULL if not.
-    TYPE(GENERATED_MESH_CYLINDER_TYPE), POINTER :: CYLINDER_MESH !<A pointer to the cylinder generate mesh information if the generated mesh is a cylinder mesh, NULL if not.
-    TYPE(GENERATED_MESH_ELLIPSOID_TYPE), POINTER :: ELLIPSOID_MESH !<A pointer to the ellipsoid generate mesh information if the generated mesh is a ellipsoid mesh, NULL if not.
-    TYPE(MESH_TYPE), POINTER :: MESH !<A pointer to the mesh that has been generated.
-  END TYPE GENERATED_MESH_TYPE
+  !>Contains information of a generated fractal tree mesh
+  TYPE GeneratedMeshFractalTreeType
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh.
+    INTEGER(INTG) :: fractalTreeType !<The type of fractal tree
+    LOGICAL :: symmetric !<The symmetry of the tree. .TRUE. if the tree is symmetric, .FALSE. if not.
+    INTEGER(INTG) :: numberOfGenerations !<The number of generations in the fractal tree
+    INTEGER(INTG), ALLOCATABLE :: numberOfElementsGeneration(:) !<numberOfElementsGeneration(generationIdx). The number of elements in the gnerationIdx'th generation.
+  END TYPE GeneratedMeshFractalTreeType
+
+  !>Contains information on a block topology type for a generated mesh.
+  TYPE GeneratedMeshTopologyType
+    TYPE(BASIS_PTR_TYPE), ALLOCATABLE :: bases(:) !<The pointers to the bases used in this topology for a generated mesh.
+    INTEGER(INTG) :: maximumNumberOfNodes !<The maximum number of nodes for this topology. 
+  END TYPE GeneratedMeshTopologyType
+ 
+  !>Contains information on a generated mesh. \see OpenCMISS::Iron::cmfe_GeneratedMeshType
+  TYPE GeneratedMeshType
+    INTEGER(INTG) :: userNumber !<The user number of the generated mesh. The user number must be unique.
+    INTEGER(INTG) :: globalNumber !<The corresponding global number for the generated mesh.
+    TYPE(GeneratedMeshesType), POINTER :: generatedMeshes !<A pointer to the generated meshes containing this generated mesh
+    LOGICAL :: generatedMeshFinished !<Is .TRUE. if the generated mesh has finished being created, .FALSE. if not.
+    TYPE(REGION_TYPE), POINTER :: region !<A pointer to the region containing the generated mesh. If the generated mesh is in an interface rather than a region then this pointer will be NULL and the interface pointer should be used.
+    TYPE(INTERFACE_TYPE), POINTER :: interface !<A pointer to the interface containing the generated mesh. If the generated mesh is in a region rather than an interface then this pointer will be NULL and the interface pointer should be used.
+    INTEGER(INTG) :: coordinateDimension !<The coordinate dimension of the space containing the generated mesh
+    INTEGER(INTG) :: meshDimension !<The dimension/number of Xi directions of the generated mesh.
+    INTEGER(INTG) :: numberOfMeshComponents !<The number of mesh components in the generated mesh.
+    INTEGER(INTG) :: numberOfTopologies !<The number of different generated mesh topologies e.g., for an open prolate heart the ring of apex elements would be one topology and the rest of the heart another.
+    TYPE(GeneratedMeshTopologyType), ALLOCATABLE :: topologies(:) !<topologies(topologyIdx). Information on the topologyIdx'th generated mesh topology.
+    TYPE(BASIS_PTR_TYPE), ALLOCATABLE :: bases(:) !<The pointers to the bases used in the generated mesh.
+    INTEGER(INTG), ALLOCATABLE :: maxNodeBases(:) !<maxNodeBases(componentIdx). The maximum node number for the componentIdx'th meshComponent.
+    INTEGER(INTG) :: generatedType !<The type of the generated mesh. \see GENERATED_MESH_ROUTINES_GeneratedMeshTypes,GENERATED_MESH_ROUTINES
+    TYPE(GeneratedMeshRegularType), POINTER :: regularMesh !<A pointer to the regular generated mesh information if the generated mesh is a regular mesh, NULL if not.
+   TYPE(GeneratedMeshPolarTypeType), POINTER :: polarMesh !<A pointer to the polar generated mesh information if the generated mesh is a polar mesh, NULL if not.
+    TYPE(GeneratedMeshCylinderType), POINTER :: cylinderMesh !<A pointer to the cylinder generated mesh information if the generated mesh is a cylinder mesh, NULL if not.
+    TYPE(GeneratedMeshEllipsoidType), POINTER :: ellipsoidMesh !<A pointer to the ellipsoid generated mesh information if the generated mesh is a ellipsoid mesh, NULL if not.
+    TYPE(GeneratedMeshFractalTreeType), POINTER :: fractalTreeMesh !<A pointer to the fractal tree generated mesh information if the generated mesh is a fractal tree mesh, NULL if not.    
+    REAL(DP), ALLOCATABLE :: origin(:) !<origin(coordinateIdx). The position of the origin of the generated mesh
+    REAL(DP), ALLOCATABLE :: baseVectors(:,:) !<baseVectors(coordinateIdx,xiIdx). The base vectors indicating the geometric direction of the xiIdx mesh coordinate.
+    TYPE(MESH_TYPE), POINTER :: mesh !<A pointer to the mesh that has been generated.
+  END TYPE GeneratedMeshType
   
-  !>A buffer type to allow for an array of pointers to a GENERATED_MESH_TYPE.
-  TYPE GENERATED_MESH_PTR_TYPE
-    TYPE(GENERATED_MESH_TYPE), POINTER :: PTR !<The pointer to the generated mesh.
-  END TYPE GENERATED_MESH_PTR_TYPE
+  !>A buffer type to allow for an array of pointers to a GeneratedMeshType.
+  TYPE GeneratedMeshPtrType
+    TYPE(GeneratedMeshType), POINTER :: ptr !<The pointer to the generated mesh.
+  END TYPE GeneratedMeshPtrType
        
   !>Contains information on the generated meshes defined on a region.
-  TYPE GENERATED_MESHES_TYPE
-    TYPE(REGION_TYPE), POINTER :: REGION !<A pointer to the region containing the generated meshes. If the generated meshes are in an interface rather than a region then this pointer will be NULL and the interface pointer should be used.
-    TYPE(INTERFACE_TYPE), POINTER :: INTERFACE !<A pointer to the interface containing the generated meshes. If the generated meshes are in a region rather than an interface then this pointer will be NULL and the interface pointer should be used.
-    INTEGER(INTG) :: NUMBER_OF_GENERATED_MESHES !<The number of generated meshes defined.
-    TYPE(GENERATED_MESH_PTR_TYPE), POINTER :: GENERATED_MESHES(:) !<The array of pointers to the generated meshes.
-   END TYPE GENERATED_MESHES_TYPE
+  TYPE GeneratedMeshesType
+    TYPE(REGION_TYPE), POINTER :: region !<A pointer to the region containing the generated meshes. If the generated meshes are in an interface rather than a region then this pointer will be NULL and the interface pointer should be used.
+    TYPE(INTERFACE_TYPE), POINTER :: interface !<A pointer to the interface containing the generated meshes. If the generated meshes are in a region rather than an interface then this pointer will be NULL and the interface pointer should be used.
+    INTEGER(INTG) :: numberOfGeneratedMeshes !<The number of generated meshes defined.
+    TYPE(GeneratedMeshPtrType), ALLOCATABLE :: generatedMeshes(:) !<generatedMeshes(generatedMeshIdx). The array of pointers to the generated meshes.
+  END TYPE GeneratedMeshesType
   
   !
   !================================================================================================================================
@@ -1058,7 +1082,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     TYPE(DecompositionDataPointsType), POINTER :: dataPoints !<The pointer to the topology information for the data of this decomposition.
   END TYPE DECOMPOSITION_TOPOLOGY_TYPE
 
-  !>Contains information on the mesh decomposition. \see OPENCMISS::CMISSDecompositionType
+  !>Contains information on the mesh decomposition. \see OpenCMISS::Iron::cmfe_DecompositionType
   TYPE DECOMPOSITION_TYPE
     INTEGER(INTG) :: USER_NUMBER !<The user defined identifier for the domain decomposition. The user number must be unique.
     INTEGER(INTG) :: GLOBAL_NUMBER !<The global number of the domain decomposition in the list of domain decompositions for a particular mesh.
@@ -1341,7 +1365,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     LOGICAL, ALLOCATABLE :: MESH_COMPONENT_NUMBER_LOCKED(:,:) !<MESH_COMPONENT_NUMBER_LOCKED(component_idx,variable_type_idx). Is .TRUE. if the mesh component number of the component_idx'th component of the variable_type_idx'th varible type has been locked, .FALSE. if not.
   END TYPE FIELD_CREATE_VALUES_CACHE_TYPE
 
-  !>Contains information for a field defined on a region. \see OPENCMISS::CMISSFieldType
+  !>Contains information for a field defined on a region. \see OpenCMISS::Iron::cmfe_FieldType
   TYPE FIELD_TYPE
     INTEGER(INTG) :: GLOBAL_NUMBER !<The global number of the field in the list of fields for a region.
     INTEGER(INTG) :: USER_NUMBER !<The user defined identifier for the field. The user number must be unique.
@@ -1730,7 +1754,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     TYPE(FIELD_INTERPOLATED_POINT_METRICS_PTR_TYPE), POINTER :: FIBRE_INTERP_POINT_METRICS(:) !<FIBRE_INTERP_POINT_METRICS(field_variable_type). A pointer to the field_variable_type'th fibre interpolated point metrics information 
   END TYPE EQUATIONS_INTERPOLATION_TYPE
 
-  !>Contains information about the equations in an equations set. \see OPENCMISS::CMISSEquationsType
+  !>Contains information about the equations in an equations set. \see OpenCMISS::Iron::cmfe_EquationsType
   TYPE EQUATIONS_TYPE
     TYPE(EQUATIONS_SET_TYPE), POINTER :: EQUATIONS_SET !<A pointer to the equations_set
     LOGICAL :: EQUATIONS_FINISHED !<Is .TRUE. if the equations have finished being created, .FALSE. if not.
@@ -1775,7 +1799,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     TYPE(BOUNDARY_CONDITIONS_VARIABLE_TYPE), POINTER :: PTR !<A pointer to the boundary conditions variable
   END TYPE BOUNDARY_CONDITIONS_VARIABLE_PTR_TYPE
 
-  !>Contains information on the boundary conditions for the solver equations. \see OPENCMISS::CMISSBoundaryConditionsType
+  !>Contains information on the boundary conditions for the solver equations. \see OpenCMISS::Iron::cmfe_BoundaryConditionsType
   TYPE BOUNDARY_CONDITIONS_TYPE
     TYPE(SOLVER_EQUATIONS_TYPE), POINTER :: SOLVER_EQUATIONS !<A pointer to the solver equations.
     LOGICAL :: BOUNDARY_CONDITIONS_FINISHED !<Is .TRUE. if the boundary conditions for the equations set has finished being created, .FALSE. if not.
@@ -1936,7 +1960,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     TYPE(FIELD_TYPE), POINTER :: EQUATIONS_SET_FIELD_FIELD !<A pointer to the equations set field for the equations set.
   END TYPE EQUATIONS_SET_EQUATIONS_SET_FIELD_TYPE
 
-  !>Contains information on an equations set. \see OPENCMISS::CMISSEquationsSetType
+  !>Contains information on an equations set. \see OpenCMISS::Iron::cmfe_EquationsSetType
   TYPE EQUATIONS_SET_TYPE
     INTEGER(INTG) :: USER_NUMBER !<The user identifying number of the equations set
     INTEGER(INTG) :: GLOBAL_NUMBER !<The global index of the equations set in the region.
@@ -2239,7 +2263,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     TYPE(DATA_POINTS_TYPE), POINTER :: DATA_POINTS  !<A pointer to the data points defined in an interface.
     TYPE(NODES_TYPE), POINTER :: NODES !<A pointer to the nodes in an interface
     TYPE(MESHES_TYPE), POINTER :: MESHES !<A pointer to the mesh in an interface.
-    TYPE(GENERATED_MESHES_TYPE), POINTER :: GENERATED_MESHES !<A pointer to the generated meshes in an interface.
+    TYPE(GeneratedMeshesType), POINTER :: GENERATED_MESHES !<A pointer to the generated meshes in an interface.
     TYPE(FIELDS_TYPE), POINTER :: FIELDS !<A pointer to the fields defined over an interface.
     TYPE(INTERFACE_CONDITIONS_TYPE), POINTER :: INTERFACE_CONDITIONS !<The pointer to the interface conditions for this interface
   END TYPE INTERFACE_TYPE
@@ -2447,7 +2471,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
   ! Solver equations types
   !
 
-  !>Contains information about the solver equations for a solver. \see OPENCMISS::CMISSSolverEquationsType
+  !>Contains information about the solver equations for a solver. \see OpenCMISS::Iron::cmfe_SolverEquationsType
   TYPE SOLVER_EQUATIONS_TYPE
     TYPE(SOLVER_TYPE), POINTER :: SOLVER !<A pointer to the solver
     LOGICAL :: SOLVER_EQUATIONS_FINISHED !<Is .TRUE. if the solver equations have finished being created, .FALSE. if not.
@@ -2772,7 +2796,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     TYPE(SOLVER_TYPE), POINTER :: PTR
   END TYPE SOLVER_PTR_TYPE
 
- !>Contains information on the type of solver to be used. \see OPENCMISS::CMISSSolverType
+ !>Contains information on the type of solver to be used. \see OpenCMISS::Iron::cmfe_SolverType
   TYPE SOLVER_TYPE
     TYPE(SOLVERS_TYPE), POINTER :: SOLVERS !<A pointer to the control loop solvers. Note that if this is a linked solver this will be NULL and solvers should be accessed through the linking solver.
     INTEGER(INTG) :: GLOBAL_NUMBER !<The global number of the solver in the list of solvers
@@ -3113,7 +3137,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
   ! History types
   !
 
-  !>Contains information about a history file for a control loop. \see OPENCMISS::CMISSHistoryType
+  !>Contains information about a history file for a control loop. \see OpenCMISS::Iron::cmfe_HistoryType
   TYPE HISTORY_TYPE
     TYPE(CONTROL_LOOP_TYPE), POINTER :: CONTROL_LOOP !<A pointer to the control loop for the history file
     LOGICAL :: HISTORY_FINISHED !<Is .TRUE. if the history file has finished being created, .FALSE. if not.
@@ -3179,7 +3203,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     TYPE(CONTROL_LOOP_TYPE), POINTER :: PTR !<The pointer to the control loop
   END TYPE CONTROL_LOOP_PTR_TYPE
 
-  !>Contains information on a control loop. \see OPENCMISS::CMISSControlLoopType
+  !>Contains information on a control loop. \see OpenCMISS::Iron::cmfe_ControlLoopType
   TYPE CONTROL_LOOP_TYPE
     TYPE(PROBLEM_TYPE), POINTER :: PROBLEM !<A pointer back to the problem for the control loop
     TYPE(CONTROL_LOOP_TYPE), POINTER :: PARENT_LOOP !<A pointer back to the parent control loop if this is a sub loop
@@ -3215,7 +3239,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     INTEGER(INTG) :: ACTION_TYPE !<The action type \see PROBLEM_CONSTANTS_SetupActionTypes,CONSTANTS_ROUTINES
   END TYPE PROBLEM_SETUP_TYPE
   
-  !>Contains information for a problem. \see OPENCMISS::CMISSProblemType
+  !>Contains information for a problem. \see OpenCMISS::Iron::cmfe_ProblemType
   TYPE PROBLEM_TYPE
     INTEGER(INTG) :: USER_NUMBER !<The user defined identifier for the problem. The user number must be unique.
     INTEGER(INTG) :: GLOBAL_NUMBER !<The global number of the problem in the list of problems.
@@ -3246,7 +3270,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     TYPE(REGION_TYPE), POINTER :: PTR !<The pointer to the region.
   END TYPE REGION_PTR_TYPE
      
-  !>Contains information for a region. \see OPENCMISS::CMISSRegionType
+  !>Contains information for a region. \see OpenCMISS::Iron::cmfe_RegionType
   TYPE REGION_TYPE 
     INTEGER(INTG) :: USER_NUMBER !<The user defined identifier for the region. The user number must be unique.
     LOGICAL :: REGION_FINISHED !<Is .TRUE. if the region has finished being created, .FALSE. if not.
@@ -3255,7 +3279,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     TYPE(DATA_POINTS_TYPE), POINTER :: DATA_POINTS  !<A pointer to the data points defined on the region.          
     TYPE(NODES_TYPE), POINTER :: NODES !<A pointer to the nodes defined on the region.
     TYPE(MESHES_TYPE), POINTER :: MESHES !<A pointer to the meshes defined on the region.
-    TYPE(GENERATED_MESHES_TYPE), POINTER :: GENERATED_MESHES !<A pointer to the generated meshes defined on the region.
+    TYPE(GeneratedMeshesType), POINTER :: GENERATED_MESHES !<A pointer to the generated meshes defined on the region.
     TYPE(FIELDS_TYPE), POINTER :: FIELDS !<A pointer to the fields defined on the region.
     TYPE(EQUATIONS_SETS_TYPE), POINTER :: EQUATIONS_SETS !<A pointer to the equation sets defined on the region.
     TYPE(CELLML_ENVIRONMENTS_TYPE), POINTER :: CELLML_ENVIRONMENTS !<A pointer to the CellML environments for the region.
