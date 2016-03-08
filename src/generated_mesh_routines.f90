@@ -2065,23 +2065,29 @@ CONTAINS
     IF(ASSOCIATED(regularMesh)) THEN
       generatedMesh=>regularMesh%generatedMesh
       IF(ASSOCIATED(generatedMesh)) THEN
-        CALL GeneratedMesh_CoordinateSystemGet(generatedMesh,coordinateSystem,err,error,*999)
-        CALL COORDINATE_SYSTEM_TYPE_GET(coordinateSystem,coordinateType,err,error,*999)
-        region=>generatedMesh%region
-        INTERFACE=>generatedMesh%INTERFACE
-        SELECT CASE(coordinateType)
-        CASE(COORDINATE_RECTANGULAR_CARTESIAN_TYPE)
-          IF(ALLOCATED(generatedMesh%bases)) THEN
-            !Use first basis to get the basis type
-            basis=>regularMesh%bases(1)%ptr
-            SELECT CASE(basis%TYPE)
-            CASE(BASIS_LAGRANGE_HERMITE_TP_TYPE,BASIS_SIMPLEX_TYPE)
-              !Calculate what interpolation in a xi direction the bases share.
-              DO basisIdx=2,generatedMesh%numberOfBases
-                basis=>generatedMesh%bases(basisIdx)%ptr
-                IF(ASSOCIATED(basis)) THEN
-                  DO xicIdx=1,basis%NUMBER_OF_XIC  
-                    basis2: DO basisIdx2=1,basisIdx-1
+        generatedMesh%numberOfTopologies=1
+        ALLOCATE(generatedMesh%topologies(1),STAT=err)
+        IF(err/=0) CALL FLagError("Could not allocated generated mesh topologies.",err,error,*999)
+        
+        IF(generatedMesh%numberOfTOPO==1) THEN
+          
+          CALL GeneratedMesh_CoordinateSystemGet(generatedMesh,coordinateSystem,err,error,*999)
+          CALL COORDINATE_SYSTEM_TYPE_GET(coordinateSystem,coordinateType,err,error,*999)
+          region=>generatedMesh%region
+          INTERFACE=>generatedMesh%INTERFACE
+            SELECT CASE(coordinateType)
+            CASE(COORDINATE_RECTANGULAR_CARTESIAN_TYPE)
+              IF(ALLOCATED(generatedMesh%bases)) THEN
+                !Use first basis to get the basis type
+                basis=>regularMesh%bases(1)%ptr
+                SELECT CASE(basis%TYPE)
+                CASE(BASIS_LAGRANGE_HERMITE_TP_TYPE,BASIS_SIMPLEX_TYPE)
+                  !Calculate what interpolation in a xi direction the bases share.
+                  DO basisIdx=2,generatedMesh%numberOfBases
+                    basis=>generatedMesh%bases(basisIdx)%ptr
+                    IF(ASSOCIATED(basis)) THEN
+                      DO xicIdx=1,basis%NUMBER_OF_XIC  
+                        basis2: DO basisIdx2=1,basisIdx-1
                       basis2=>generatedMesh%bases(basisIdx2)%ptr
                       IF(ASSOCIATED(basis2)) THEN
                         IF(basis%NUMBER_OF_NODES_XIC(xicIdx)==basis2%NUMBER_OF_NODES_XIC(xicIdx)) THEN
@@ -3724,6 +3730,305 @@ CONTAINS
     RETURN 1
     
   END SUBROUTINE GeneratedMesh_FractalTreeInitialise
+
+  !
+  !================================================================================================================================
+  !
+
+  !>Finialises a regular topology for a generated mesh and deallocates all memory
+  SUBROUTINE GeneratedMesh_RegularTopologyFinalise(regularTopology,err,error,*)
+
+    !Argument variables
+    TYPE(GeneratedMeshRegularTopologyType), POINTER :: regularTopology !<A pointer to the generated mesh regular topology to finalise
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+
+    ENTERS("GeneratedMesh_RegularTopologyFinalise",err,error,*998)
+
+    IF(ASSOCIATED(regularTopology)) THEN
+      IF(ALLOCATED(regularTopolgy%maximumExtent)) DEALLOCATE(regularTopology%maximumExtent)
+      IF(ALLOCATED(regularTopology%topologies)) THEN
+        DO topologyIdx=1,SIZE(regularTopology%topologies,1)
+          CALL GeneratedMesh_TopologyFinalise(regularTopology%topologies(topologyIdx),err,error,*999)
+        ENDDO !topologyIdx
+        DEALLOCATE(regularTopology%topologies)
+      ENDIF
+      DEALLOCATE(regularTopology)
+    ENDIF
+    
+    EXITS("GeneratedMesh_RegularTopologyFinalise")
+    RETURN
+999 ERRORS("GeneratedMesh_RegularTopologyFinalise",err,error)
+    EXITS("GeneratedMesh_RegularTopologyFinalise")
+    RETURN 1
+    
+  END SUBROUTINE GeneratedMesh_RegularTopologyFinalise
+
+  !
+  !================================================================================================================================
+  !
+
+  !>Initialises the regular topologies for a generated mesh
+  SUBROUTINE GeneratedMesh_RegularTopologyInitialise(generatedMesh,numberOfTopologies,wrappedTopology,err,error,*)
+
+    !Argument variables
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh to initialise the topologies for
+    INTEGER(INTG), INTENT(IN) :: numberOfTopologies !<The number of seperate topologies in the generated mesh
+    LOGICAL, INTENT(IN) :: wrappedTopology !<.TRUE. if the topologies are wrapped.
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+
+    ENTERS("GeneratedMesh_RegularTopologyInitialise",err,error,*998)
+
+    IF(ASSOCIATED(generatedMesh)) THEN
+      IF(.NOT.ASSOCIATED(generatedMesh%regularTopology)) THEN
+        IF(numberOfTopologies>0) THEN
+          numberOfBases=SIZE(generatedMesh%bases,1)
+          IF(numberOfBases>=numberOfTopologies) THEN
+            basis=>generatedMesh%bases(1)%ptr
+            IF(ASSOCIATED(basis)) THEN
+              IF(MOD(numberOfBases,numberOfTopologies)==0) THEN
+                !Allocate regular topology
+                ALLOCATE(generatedMesh%regularTopology,STAT=err)
+                IF(err/=0) CALL FlagError("Could not allocate generated mesh regular topology.",err,error,*999)
+                !Initialise
+                generatedMesh%regularTopology%meshDimension=0
+                generatedMesh%regularTopology%numberOfMeshComponents=0
+                generatedMesh%regularTopology%numberOfTopologies=0
+                generatedMesh%regularTopology%wrappedTopology=.FALSE.
+                !Set up the regular topology
+                generatedMesh%regularTopology%meshDimension=basis%NUMBER_OF_XI
+                generatedMesh%regularTopology%numberOfMeshComponents=NINT(numberOfBases/numberOfTopologies)
+                !Set up the individual topologies
+                ALLOCATE(generatedMesh%regularTopology%topologies(numberOfTopologies),STAT=err)
+                IF(err/=0) CALL FlagError("Could not allocate regular topology topologies.",err,error,*999)
+                generatedMesh%regularTopology%numberOfTopologies=numberOfTopologies
+                DO topologyIdx=1,numberOfTopologies
+                  CALL GeneratedMesh_RegularTopologyInitialise(generatedMesh,topologyIdx,err,error,*999)
+                ENDDO !topologyIdx
+                generatedMesh%regularTopology%wrappedTopology=wrappedTopology
+              ELSE
+                localError="The number of bases of "//TRIM(NumberToVString(numberOfBases,"*",err,error))// &
+                  & " is invalid. The number of bases should be a multiple of "// &
+                  & TRIM(NumberToVString(numberOfTopologies,"*",err,error))//"."
+                CALL FlagError(localError,err,error,*999)
+              ENDIF
+            ELSE
+              CALL FlagError("The first generated mesh basis is not associated.",err,error,*999)
+            ENDIF
+          ELSE
+            localError="The number of generated mesh bases of "//TRIM(NumberToVString(numberOfBases,"*",err,error))// &
+              & " is invalid. It must be >= than the number of topologies of "// &
+              & TRIM(NumberToVString(numberOfTopologies,"*",err,error))//"."
+            CALL FlagError(localError,err,error,*999)
+          ENDIF
+        ELSE
+          localError="The number of topologies of "//TRIM(NumberToVString(numberOfTopologies,"*",err,error))// &
+            & " is invalid. The number must be > 0."
+          CALL FLagError(localError,err,error,*998)
+        ENDIF
+      ELSE
+        CALL FlagError("Generated mesh regular topology is already associated.",err,error,*998)
+      ENDIF
+    ELSE
+      CALL FlagError("Generated mesh is not associated.",err,error,*998)
+    ENDIF
+    
+    EXITS("GeneratedMesh_RegularTopologyInitialise")
+    RETURN
+999 IF(ALLOCATED(generatedMesh%regularTopology)) CALL GeneratedMesh_RegularTopologyFinalise(generatedMesh,err,error,*998)
+998 ERRORS("GeneratedMesh_RegularTopologyInitialise",err,error)
+    EXITS("GeneratedMesh_RegularTopologyInitialise")
+    RETURN 1
+    
+  END SUBROUTINE GeneratedMesh_RegularTopologyInitialise
+
+  !
+  !================================================================================================================================
+  !
+
+  !>Finialises a topology for a generated mesh and deallocates all memory
+  SUBROUTINE GeneratedMesh_RegularTopologyFinalise(topology,err,error,*)
+
+    !Argument variables
+    TYPE(GeneratedMeshRegularTopologyType) :: topology !<The generated mesh topology to finalise
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+
+    ENTERS("GeneratedMesh_RegularTopologyFinalise",err,error,*998)
+
+    IF(ALLOCATED(topolgy%bases)) DEALLOCATE(topology%Bases)
+    IF(ALLOCATED(topology%maximumNumberOfNodes)) DEALLOCATE(topology%maximumNumberOfNodes)
+    IF(ALLOCATED(topology%numberOfElementsXi)) DEALLOCATE(topology%numberOfElementsXi)
+    IF(ALLOCATED(topology%localNodeMap)) DEALLOCATE(topology%localNodeMap)
+    
+    EXITS("GeneratedMesh_RegularTopologyFinalise")
+    RETURN
+999 ERRORS("GeneratedMesh_RegularTopologyFinalise",err,error)
+    EXITS("GeneratedMesh_RegularTopologyFinalise")
+    RETURN 1
+    
+  END SUBROUTINE GeneratedMesh_RegularTopologyFinalise
+
+  !
+  !================================================================================================================================
+  !
+
+  !>Initialises a topology for a generated mesh 
+  SUBROUTINE GeneratedMesh_RegularTopologyInitialise(generatedMesh,topologyIdx,err,error,*)
+
+    !Argument variables
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh to initialise the topology for
+    INTEGER(INTG) :: topologyIdx !<The topology index to initialise
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+    INTEGER(INTG) :: totalNumberOfLocalNodesXi(3)
+    LOGICAL :: basisOrderPresetnt(3,3)
+
+    ENTERS("GeneratedMesh_RegularTopologyInitialise",err,error,*998)
+
+    IF(ASSOCIATED(generatedMesh)) THEN
+      IF(ASSOCIATED(generatedMesh%regularTopology)) THEN
+        IF(topologyIdx>0.AND.topologyIdx<=numberOfTopologies) THEN
+          numberOfTopologies=generatedMesh%regularTopology%numberOfTopologies
+          numberOfComponents=generatedMesh%regularTopology%numberOfMeshComponents
+          numberOfXi=generatedMesh%regularTopology%meshDimension
+          ALLOCATE(generatedMesh%regularTopology%topologies(topologyIdx)%totalNumberOfLocalNodes(numberOfXi),STAT=err)
+          IF(err/=0) CALL FlagError("Could not allocate regular topology total number of local nodes.",err,error,*999)
+          generatedMesh%regularTopology%topologies(topologyIdx)%totalNumberOfLocalNodes=0
+          ALLOCATE(generatedMesh%regularTopology%topologies(topologyIdx)%bases(numberOfComponents),STAT=err)
+          IF(err/=0) CALL FlagError("Could not allocate regular topology bases.",err,error,*999)
+          ALLOCATE(generatedMesh%regularTopology%topologies(topologyIdx)%localNodeMap(64,3,numberOfComponents),STAT=err)
+          IF(err/=0) CALL FlagError("Could not allocate regular topology local node map.",err,error,*999)
+          generatedMesh%regularTopology%topologies(topologyIdx)%localNodeMap=0
+          DO componentIdx=1,numberOfComponents
+            generatedMesh%regularTopology%topologies(topologyIdx)%bases(componentIdx)%ptr=> &
+              & generatedMesh%bases(componentIdx+(topologyIdx-1)*numberOfComponents)%ptr
+          ENDDO !basisIdx
+          basisOrderPresent=.FALSE.
+          generatedMesh%regularTopology%topologies(topologyIdx)%totalNumberOfLocalNodes=1
+          totalNumberOfLocalNodesXi=0
+          numberOfNodesXi=0
+          DO xiIdx=1,numberOfXi
+            DO componentIdx=1,numberOfComponents
+              basis=>generatedMesh%regularTopology%topologies(topologyIdx)%bases(componentIdx)%ptr
+              SELECT CASE(basis%INTERPOLATION_XI(xiIdx))
+              CASE(BASIS_LINEAR_LAGRANGE_INTERPOLATION,BASIS_CUBIC_HERMITE_INTERPOLATION, &
+                & BASIS_QUADRATIC1_HERMITE_INTERPOLATION,BASIS_QUADRATIC2_HERMITE_INTERPOLATION, &
+                & BASIS_LINEAR_SIMPLEX_INTERPOLATION)
+                basisOrderPresent(1,xiIdx)=.TRUE.
+                numberOfNodesXi(xiIdx)=2
+              CASE(BASIS_QUADRATIC_LAGRANGE_INTERPOLATION,BASIS_QUADRATIC_SIMPLEX_INTERPOLATION)
+                basisOrderPresent(2,xiIdx)=.TRUE.
+                numberOfNodesXi(xiIdx)=3
+              CASE(BASIS_CUBIC_LAGRANGE_INTERPOLATION,BASIS_CUBIC_SIMPLEX_INTERPOLATION)
+                basisOrderPresent(3,xiIdx)=.TRUE.
+                numberOfNodesXi(xiIdx)=4
+              CASE DEFAULT
+                localError="The interpolation xi of "//TRIM(NumberToVString(basis%INTERPOLATION_XI(xiIdx),"*",err,error))// &
+                  & " for xi direction "//TRIM(NumberToVString(xiIdx,"*",err,error))//" of mesh component "// &
+                  & TRIM(NumberToVString(componentIdx,"*",err,error))//" is invalid."
+                CALL FlagError(localError,err,error,*999)
+              END SELECT
+            ENDDO !componentIdx
+            totalNumberOfLocalNodesXi(xiIdx)=2
+            IF(basisOrderPresent(2,xiIdx)) totalNumberOfLocalNodesXi(xiIdx) = totalNumberOfLocalNodesXi(xiIdx)+1
+            IF(basisOrderPresent(3,xiIdx)) totalNumberOfLocalNodesXi(xiIdx) = totalNumberOfLocalNodesXi(xiIdx)+2
+            generatedMesh%regularTopology%topologies(topologyIdx)%totalNumberOfLocalNodes=generatedMesh%regularTopology% &
+              & topologies(topologyIdx)%totalNumberOfLocalNodes*totalNumberOfLocalNodesXi(xiIdx)
+            generatedMesh%regularTopology%topologies(topologyIdx)%totalNumberOfLocalNodesXi(xiIdx)=totalNumberOfLocalNodesXi(xiIdx)
+          ENDDO !xiIdx
+          DO componentIdx=1,numberOfComponents
+             basis=>generatedMesh%regularTopology%topologies(topologyIdx)%bases(componentIdx)%ptr
+             localNode=0
+             totalLocalNode=0
+             DO localNodeIdx3=1,numberOfNodesXi(3)
+               DO localNodeIdx2=1,numberOfNodesXi(2)
+                 !Handle first local node in xi 1
+                 localNode=localNode+1
+                 totalLocalNode=totalLocalNode+1
+                 generatedMesh%regularTopology%topologies(topologyIdx)%localNodeMap(localNode,componentIdx)=totalLocalNode
+                 IF(numberOfNodesXi(1)==3) THEN
+                   !Quadratic
+                   IF(basisOrderPresent(3,1)) THEN
+                     !Cubic present so skip second cubic node
+                     totalLocalNode=totalLocalNode+1
+                   ENDIF
+                   !Handle second quadratic node
+                   localNode=localNode+1
+                   totalLocalNode=totalLocalNode+1
+                   generatedMesh%regularTopology%topologies(topologyIdx)%localNodeMap(localNode,componentIdx)=totalLocalNode
+                   IF(basisOrderPresent(3,1)) THEN
+                     !Skip third cubic node
+                     totalLocalNode=totalLocalNode+1
+                   ENDIF
+                 ELSE IF(numberOfNodesXi(1)==4) THEN
+                   !Cubic
+                   !Handle second cubic node
+                   localNode=localNode+1
+                   totalLocalNode=totalLocalNode+1
+                   generatedMesh%regularTopology%topologies(topologyIdx)%localNodeMap(localNode,componentIdx)=totalLocalNode
+                   IF(basisOrderPresent(3,1)) THEN
+                     !Quadratic present so skip second quadratic node
+                     totalLocalNode=totalLocalNode+1
+                   ENDIF
+                   !Handle third cubic node
+                   localNode=localNode+1
+                   totalLocalNode=totalLocalNode+1
+                   generatedMesh%regularTopology%topologies(topologyIdx)%localNodeMap(localNode,componentIdx)=totalLocalNode
+                 ENDIF
+                 !Handle last local node in xi 1
+                 localNode=localNode+1
+                 totalLocalNode=totalLocalNode+1
+                 generatedMesh%regularTopology%topologies(topologyIdx)%localNodeMap(localNode,componentIdx)=totalLocalNode
+                 !Increment xi 1
+                 IF(localNodeIdx2==1) THEN
+                   
+                 ENDIF
+               ENDDO !localNodeIdx2
+             ENDDO !localNodeIdx3
+             DO xiIdx=1,numberOfXi
+               SELECT CASE(basis%INTERPOLATION_XI(xiIdx))
+               CASE(BASIS_LINEAR_LAGRANGE_INTERPOLATION,BASIS_CUBIC_HERMITE_INTERPOLATION, &
+                 & BASIS_QUADRATIC1_HERMITE_INTERPOLATION,BASIS_QUADRATIC2_HERMITE_INTERPOLATION, &
+                 & BASIS_LINEAR_SIMPLEX_INTERPOLATION)
+                 basisOrderPresent(1,xiIdx)=.TRUE.
+               CASE(BASIS_QUADRATIC_LAGRANGE_INTERPOLATION,BASIS_QUADRATIC_SIMPLEX_INTERPOLATION)
+                 basisOrderPresent(2,xiIdx)=.TRUE.
+               CASE(BASIS_CUBIC_LAGRANGE_INTERPOLATION,BASIS_CUBIC_SIMPLEX_INTERPOLATION)
+                 basisOrderPresent(3,xiIdx)=.TRUE.
+               CASE DEFAULT
+                 localError="The interpolation xi of "//TRIM(NumberToVString(basis%INTERPOLATION_XI(xiIdx),"*",err,error))// &
+                   & " for xi direction "//TRIM(NumberToVString(xiIdx,"*",err,error))//" of mesh component "// &
+                   & TRIM(NumberToVString(componentIdx,"*",err,error))//" is invalid."
+                 CALL FlagError(localError,err,error,*999)
+               END SELECT
+             ENDDO !xiIdx
+          ENDDO !componentIdx
+        ELSE
+          localError="The specified topology index of "//TRIM(NumberToVString(topologyIdx,"*",err,error))// &
+            & " is invalid. The index must be > 0 and <= "// &
+            & TRIM(NumberToVString(generatedMesh%regularTopology%numberOfTopologies,"*",err,error))//"."
+          CALL FlagError(localError,err,error,*999)
+        ENDIF
+      ELSE
+        CALL FlagError("Generated mesh regular topology is not associated.",err,error,*999)
+      ENDIF
+    ELSE
+      CALL FlagError("Generated mesh is not associated.",err,error,*999)
+    ENDIF
+    
+    EXITS("GeneratedMesh_RegularTopologyInitialise")
+    RETURN
+999 ERRORS("GeneratedMesh_RegularTopologyInitialise",err,error)
+    EXITS("GeneratedMesh_RegularTopologyInitialise")
+    RETURN 1
+    
+  END SUBROUTINE GeneratedMesh_RegularTopologyInitialise
 
   !
   !================================================================================================================================
@@ -6212,10 +6517,8 @@ CONTAINS
             bases=>generatedMesh%subMeshes(subMeshIndex)%bases
             !Number of nodes in each xi direction
             numberOfNodesXic=1
-            DO xiIdx=1,meshDimension
-              numberOfNodesXic(xiIdx)=bases(componentIndex)%ptr%NUMBER_OF_NODES_XIC(xiIdx)
-            ENDDO !xiIdx
-        
+            numberOfNodesXic(1:meshDimension)=bases(componentIndex)%ptr%NUMBER_OF_NODES_XIC(1:meshDimension)
+              
             !If not the first basis, check if previous basis have same interpolation order in each xi direction
             !sameBasis(3) is initialised to have zeros in all entries. If an interpolation scheme has been
             !found to have appeared in previous basis, then record the basis number in the corresponding

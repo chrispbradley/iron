@@ -540,6 +540,29 @@ MODULE TYPES
 
 !!<todo MERGE THE MESHES BELOW
   
+  !>Contains information on a block topology type for a generated mesh.
+  TYPE GeneratedMeshRegularTopologyType
+    TYPE(BASIS_PTR_TYPE), ALLOCATABLE :: bases(:) !<The pointers to the bases used in this topology for a generated mesh.
+    INTEGER(INTG) :: maximumNumberOfNodes !<The maximum number of nodes for this topology.
+    INTEGER(INTG), ALLOCATABLE :: totalNumberOfNodesXi(:) !<totalNumberOfNodesXi(xiIdx). The total number of nodes (across all components) in the xiIdx'th direction.
+    INTEGER(INTG), ALLOCATABLE :: totalNumberOfLocalNodes !<The total number of local nodes (across all components) in the element topology.
+    INTEGER(INTG), ALLOCATABLE :: totalNumberOfLocalNodesXi(:) !<totalNumberOfLocalNodesXi(xiIdx). The total number of local nodes (across all components) in the xiIdx'th direction.
+    INTEGER(INTG), ALLOCATABLE :: localNodeMap(:,:) !<localNodeMap(localNodeIdx,componentIdx). The mapping of the actual local node in the element for the localNodeIdx'th local node of the componentIdx'th mesh component.
+  END TYPE GeneratedMeshRegularTopologyType
+ 
+  !>Contains information on the regular topologies for a generated mesh.
+  TYPE GeneratedMeshRegularTopologiesType
+    REAL(DP), ALLOCATABLE :: maximumExtent(:) !<maximumExtent(coordinateIdx). The extent/size in each coordinateIdx'th direction of the generated mesh.
+    INTEGER(INTG) :: meshDimension !<The dimension/number of Xi directions of the generated mesh.
+    INTEGER(INTG) :: numberOfMeshComponents !<The number of mesh components in the generated mesh.
+    INTEGER(INTG), ALLOCATABLE :: numberOfElementsXi(:) !<numberOfElements(xiIdx). The number of elements in the xiIdx'th xi direction for the mesh.
+    INTEGER(INTG) :: numberOfSurfaceElements(:) !<numberOfSurfaceElements(surfaceIdx). The number of elements in the surfaceIdx'th surface.
+    INTEGER(INTG) :: numberOfSurfaceNodes(:,:) !<numberOfSurfaceNodes(surfaceIdx,componentIdx). The number of nodes in the surfaceIdx'th surface for the componentIdx'th mesh component.
+    INTEGER(INTG) :: numberOfTopologies !<The number of different generated mesh topologies e.g., for an open prolate heart the ring of apex elements would be one topology and the rest of the heart another.
+    TYPE(GeneratedMeshTopologyType), ALLOCATABLE :: topologies(:) !<topologies(topologyIdx). Information on the topologyIdx'th generated mesh topology.
+    LOGICAL :: wrappedTopology !<.TRUE. if the xi 1 direction is wrapped e.g. as in a cylindral mesh, .FALSE. if not
+  END TYPE GeneratedMeshRegularTopologiesType
+  
   !>Contains information on a generated regular mesh
   TYPE GeneratedMeshRegularType
     TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh
@@ -581,12 +604,6 @@ MODULE TYPES
     INTEGER(INTG), ALLOCATABLE :: numberOfElementsGeneration(:) !<numberOfElementsGeneration(generationIdx). The number of elements in the gnerationIdx'th generation.
   END TYPE GeneratedMeshFractalTreeType
 
-  !>Contains information on a block topology type for a generated mesh.
-  TYPE GeneratedMeshTopologyType
-    TYPE(BASIS_PTR_TYPE), ALLOCATABLE :: bases(:) !<The pointers to the bases used in this topology for a generated mesh.
-    INTEGER(INTG) :: maximumNumberOfNodes !<The maximum number of nodes for this topology. 
-  END TYPE GeneratedMeshTopologyType
- 
   !>Contains information on a generated mesh. \see OpenCMISS::Iron::cmfe_GeneratedMeshType
   TYPE GeneratedMeshType
     INTEGER(INTG) :: userNumber !<The user number of the generated mesh. The user number must be unique.
@@ -596,10 +613,6 @@ MODULE TYPES
     TYPE(REGION_TYPE), POINTER :: region !<A pointer to the region containing the generated mesh. If the generated mesh is in an interface rather than a region then this pointer will be NULL and the interface pointer should be used.
     TYPE(INTERFACE_TYPE), POINTER :: interface !<A pointer to the interface containing the generated mesh. If the generated mesh is in a region rather than an interface then this pointer will be NULL and the interface pointer should be used.
     INTEGER(INTG) :: coordinateDimension !<The coordinate dimension of the space containing the generated mesh
-    INTEGER(INTG) :: meshDimension !<The dimension/number of Xi directions of the generated mesh.
-    INTEGER(INTG) :: numberOfMeshComponents !<The number of mesh components in the generated mesh.
-    INTEGER(INTG) :: numberOfTopologies !<The number of different generated mesh topologies e.g., for an open prolate heart the ring of apex elements would be one topology and the rest of the heart another.
-    TYPE(GeneratedMeshTopologyType), ALLOCATABLE :: topologies(:) !<topologies(topologyIdx). Information on the topologyIdx'th generated mesh topology.
     TYPE(BASIS_PTR_TYPE), ALLOCATABLE :: bases(:) !<The pointers to the bases used in the generated mesh.
     INTEGER(INTG), ALLOCATABLE :: maxNodeBases(:) !<maxNodeBases(componentIdx). The maximum node number for the componentIdx'th meshComponent.
     INTEGER(INTG) :: generatedType !<The type of the generated mesh. \see GENERATED_MESH_ROUTINES_GeneratedMeshTypes,GENERATED_MESH_ROUTINES
@@ -608,6 +621,7 @@ MODULE TYPES
     TYPE(GeneratedMeshCylinderType), POINTER :: cylinderMesh !<A pointer to the cylinder generated mesh information if the generated mesh is a cylinder mesh, NULL if not.
     TYPE(GeneratedMeshEllipsoidType), POINTER :: ellipsoidMesh !<A pointer to the ellipsoid generated mesh information if the generated mesh is a ellipsoid mesh, NULL if not.
     TYPE(GeneratedMeshFractalTreeType), POINTER :: fractalTreeMesh !<A pointer to the fractal tree generated mesh information if the generated mesh is a fractal tree mesh, NULL if not.    
+    TYPE(GeneratedMeshRegularTopologyType), POINTER :: regularTopology !<A pointer to the regular topology information.
     REAL(DP), ALLOCATABLE :: origin(:) !<origin(coordinateIdx). The position of the origin of the generated mesh
     REAL(DP), ALLOCATABLE :: baseVectors(:,:) !<baseVectors(coordinateIdx,xiIdx). The base vectors indicating the geometric direction of the xiIdx mesh coordinate.
     TYPE(MESH_TYPE), POINTER :: mesh !<A pointer to the mesh that has been generated.
