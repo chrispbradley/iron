@@ -214,7 +214,8 @@ if (WITH_Python_BINDINGS)
         # environment.
         add_custom_target(install_venv
             DEPENDS collect_python_binding_files
-            COMMAND ${VENV_BINDIR}/pip install --upgrade "${NATIVE_CMAKE_CURRENT_BINARY_DIR}"
+            #COMMAND ${VENV_BINDIR}/pip install --upgrade "${NATIVE_CMAKE_CURRENT_BINARY_DIR}"
+            COMMAND pip install --upgrade "${NATIVE_CMAKE_CURRENT_BINARY_DIR}"
             WORKING_DIRECTORY "${INSTALL_TO_VIRTUALENV}"
             COMMENT "Installing: opencmiss.iron package for Python virtual environment ..."
         )

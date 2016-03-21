@@ -81,7 +81,7 @@ MODULE OpenCMISS_Iron
 #endif
   USE FIELD_IO_ROUTINES
   USE FINITE_ELASTICITY_ROUTINES
-  USE GENERATED_MESH_ROUTINES
+  USE GeneratedMeshRoutines
   USE HAMILTON_JACOBI_EQUATIONS_ROUTINES
   USE HISTORY_ROUTINES
   USE INPUT_OUTPUT
@@ -4044,7 +4044,7 @@ MODULE OpenCMISS_Iron
 
 !!==================================================================================================================================
 !!
-!! GENERATED_MESH_ROUTINES
+!! GeneratedMeshRoutines
 !!
 !!==================================================================================================================================
 
@@ -36445,7 +36445,7 @@ CONTAINS
 
 !!==================================================================================================================================
 !!
-!! GENERATED_MESH_ROUTINES
+!! GeneratedMeshRoutines
 !!
 !!==================================================================================================================================
 

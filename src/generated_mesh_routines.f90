@@ -67,15 +67,39 @@ MODULE GeneratedMeshRoutines
 
   !Module parameters
 
-  !> \addtogroup GeneratedMeshRoutines_GeneratedMeshTypes GeneratedMeshRoutines::GeneratedMeshTypes
-  !> \brief Generated mesh types.
-  !> \see GeneratedMeshRoutines,OPENCMISS_GeneratedMeshTypes
+  !> \addtogroup GeneratedMeshRoutines_GeneratedMeshClasses GeneratedMeshRoutines::GeneratedMeshClasses
+  !> \brief Generated mesh classes.
+  !> \see GeneratedMeshRoutines,OPENCMISS_GeneratedMeshClasses
   !>@{
-  INTEGER(INTG), PARAMETER :: GENERATED_MESH_REGULAR_MESH_TYPE=1 !<A regular generated mesh. \see GeneratedMeshRoutines_GeneratedMeshTypes,GeneratedMeshRoutines
-  INTEGER(INTG), PARAMETER :: GENERATED_MESH_POLAR_MESH_TYPE=2 !<A polar generated mesh. \see GeneratedMeshRoutines_GeneratedMeshTypes,GeneratedMeshRoutines
-  INTEGER(INTG), PARAMETER :: GENERATED_MESH_CYLINDER_MESH_TYPE=3 !<A cylinder generated mesh. \see GeneratedMeshRoutines_GeneratedMeshTypes,GeneratedMeshRoutines
-  INTEGER(INTG), PARAMETER :: GENERATED_MESH_ELLIPSOID_MESH_TYPE=4 !<An ellipsoid generated mesh. \see GeneratedMeshRoutines_GeneratedMeshTypes,GeneratedMeshRoutines
-  INTEGER(INTG), PARAMETER :: GENERATED_MESH_FRACTAL_TREE_MESH_TYPE=5 !<A fractal tree generated mesh. \see GeneratedMeshRoutines_GeneratedMeshTypes,GeneratedMeshRoutines
+  INTEGER(INTG), PARAMETER :: GENERATED_MESH_REGULAR_TOPOLOGIES_CLASS=1 !<The generated mesh has regular topologies. \see GeneratedMeshRoutines_GeneratedMeshClasses,GeneratedMeshRoutines
+  INTEGER(INTG), PARAMETER :: GENERATED_MESH_BRANCHING_TOPOLOGIES_CLASS=2 !<The generated mesh has branching topologies. \see GeneratedMeshRoutines_GeneratedMeshClasses,GeneratedMeshRoutines
+  !>@}
+
+  !> \addtogroup GeneratedMeshRoutines_RegularTopologyTypes GeneratedMeshRoutines::RegularTopologyTypes
+  !> \brief The type of regular topology
+  !> \see GeneratedMeshRoutines
+  !>@{
+  INTEGER(INTG), PARAMETER :: GENERATED_MESH_REGULAR_TOPOLOGY_MAIN_BLOCK=1 !<The main topology block. \see GeneratedMeshRoutines_RegularTopologyTypes,GeneratedMeshRoutines
+  INTEGER(INTG), PARAMETER :: GENERATED_MESH_REGULAR_TOPOLOGY_BOTTOM_BLOCK=2 !<The bottom topology block. \see GeneratedMeshRoutines_RegularTopologyTypes,GeneratedMeshRoutines
+  INTEGER(INTG), PARAMETER :: GENERATED_MESH_REGULAR_TOPOLOGY_TOP_BLOCK=3 !<The top topology block. \see GeneratedMeshRoutines_RegularTopologyTypes,GeneratedMeshRoutines
+  !>@}
+
+  !> \addtogroup GeneratedMeshRoutines_RegularTopologiesTypes GeneratedMeshRoutines::GeneratedMeshRegularTopologiesTypes
+  !> \brief Generated mesh types for regular topologies.
+  !> \see GeneratedMeshRoutines,OPENCMISS_GeneratedMeshRegularTopologiesType
+  !>@{
+  INTEGER(INTG), PARAMETER :: GENERATED_MESH_REGULAR_MESH_TYPE=1 !<A regular generated mesh. \see GeneratedMeshRoutines_RegularTopolgiesTypes,GeneratedMeshRoutines
+  INTEGER(INTG), PARAMETER :: GENERATED_MESH_POLAR_MESH_TYPE=2 !<A polar generated mesh. \see GeneratedMeshRoutines_RegularTopologiesTypes,GeneratedMeshRoutines
+  INTEGER(INTG), PARAMETER :: GENERATED_MESH_CYLINDER_MESH_TYPE=3 !<A cylinder generated mesh. \see GeneratedMeshRoutines_RegularTopologiesTypes,GeneratedMeshRoutines
+  INTEGER(INTG), PARAMETER :: GENERATED_MESH_ELLIPSOID_MESH_TYPE=4 !<An ellipsoid generated mesh. \see GeneratedMeshRoutines_RegularTopologiesTypes,GeneratedMeshRoutines
+  INTEGER(INTG), PARAMETER :: GENERATED_MESH_PROLATE_MESH_TYPE=5 !<An prolate generated mesh. \see GeneratedMeshRoutines_RegularTopologiesTypes,GeneratedMeshRoutines
+  !>@}
+
+  !> \addtogroup GeneratedMeshRoutines_BranchingTopologiesTypes GeneratedMeshRoutines::GeneratedMeshBranchingTopologiesTypes
+  !> \brief Generated mesh types for branching topologies.
+  !> \see GeneratedMeshRoutines,OPENCMISS_GeneratedMeshBranchingTopologiesType
+  !>@{
+  INTEGER(INTG), PARAMETER :: GENERATED_MESH_FRACTAL_TREE_MESH_TYPE=6 !<A fractal tree generated mesh. \see GeneratedMeshRoutines_BranchingTopologiesTypes,GeneratedMeshRoutines
   !>@}
 
   !> \addtogroup GeneratedMeshRoutines_GeneratedMeshCylinderSurfaces GeneratedMeshRoutines::GeneratedMeshCylinderSurfaces
@@ -115,12 +139,12 @@ MODULE GeneratedMeshRoutines
     MODULE PROCEDURE GeneratedMesh_CreateStartInterface
     MODULE PROCEDURE GeneratedMesh_CreateStartRegion
   END INTERFACE GeneratedMesh_CreateStart
-
+g
   !>Initialises the generated meshes for a region or interface.
   INTERFACE GeneratedMeshes_Initialise
     MODULE PROCEDURE GeneratedMeshes_InitialiseInterface
     MODULE PROCEDURE GeneratedMeshes_InitialiseRegion 
-  END INTERFACE GeneratedMeshesInitialise
+  END INTERFACE GeneratedMeshes_Initialise
 
   !>Finds a generated mesh in a list of generated meshes in a region or interface.
   INTERFACE GeneratedMesh_UserNumberFind
@@ -129,7 +153,7 @@ MODULE GeneratedMeshRoutines
   END INTERFACE GeneratedMesh_UserNumberFind
 
   PUBLIC GENERATED_MESH_REGULAR_MESH_TYPE,GENERATED_MESH_POLAR_MESH_TYPE,GENERATED_MESH_CYLINDER_MESH_TYPE, &
-    & GENERATED_MESH_ELLIPSOID_MESH_TYPEGENERATED_MESH_FRACTAL_TREE_MESH_TYPE
+    & GENERATED_MESH_ELLIPSOID_MESH_TYPE,GENERATED_MESH_PROLATE_MESH_TYPE,GENERATED_MESH_FRACTAL_TREE_MESH_TYPE
   
   PUBLIC GENERATED_MESH_REGULAR_LEFT_SURFACE,GENERATED_MESH_REGULAR_RIGHT_SURFACE
   PUBLIC GENERATED_MESH_REGULAR_TOP_SURFACE,GENERATED_MESH_REGULAR_BOTTOM_SURFACE
@@ -145,13 +169,15 @@ MODULE GeneratedMeshRoutines
 
   PUBLIC GeneratedMesh_BaseVectorsSet
 
+  PUBLIC GeneratedMesh_BasisSet,GeneratedMesh_BasisGet
+
+  PUBLIC GeneratedMesh_ClassGet,GeneratedMesh_ClassSet
+
   PUBLIC GeneratedMesh_CoordinateSystemGet
 
   PUBLIC GeneratedMesh_CreateStart,GeneratedMesh_CreateFinish
 
   PUBLIC GeneratedMesh_Destroy
-
-  PUBLIC GeneratedMesh_BasisSet,GeneratedMesh_BasisGet
 
   PUBLIC GeneratedMesh_NumberOfBasisGet
 
@@ -201,7 +227,7 @@ CONTAINS
                   & " in the specified bases array is already associated."
                 CALL FlagError(localError,err,error,*999)
               ELSE                    
-                bases(basisIdx)%ptr=>generatedMesh%regularMesh%bases(basisIdx)%ptr
+                bases(basisIdx)%ptr=>generatedMesh%bases(basisIdx)%ptr
               ENDIF
             ENDDO !basisIdx
           ELSE
@@ -302,7 +328,7 @@ CONTAINS
               IF(bases(basisIdx)%ptr%NUMBER_OF_XI<=generatedMesh%coordinateDimension) THEN
                 IF(basisIdx == 1) THEN
                   numberOfXi=bases(1)%ptr%NUMBER_OF_XI
-                  basisType=bases(1)%ptr%type
+                  basisType=bases(1)%ptr%TYPE
                 ELSE                  
                   IF(bases(basisIdx)%ptr%NUMBER_OF_XI /= numberOfXi) THEN
                     CALL FlagError("All bases must have the same number of xi directions.",err,error,*999)
@@ -324,147 +350,55 @@ CONTAINS
               CALL FlagError(localError,err,error,*999)
             ENDIF
           ENDDO !basisIdx
-          newMeshDimension=numberOfXi
-          SELECT CASE(generatedMesh%generatedType)
-          CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
-            !Check the bases are not collapsed
-            DO basisIdx=1,numberOfBases
-              IF(.NOT.ALL(bases(basisIdx)%ptr%COLLAPSED_XI==BASIS_NOT_COLLAPSED)) THEN
-                localError="Specified basis number "//TRIM(NumberToVString(basisIdx,"*",err,error))// &
-                  & " is invalid. The bases must not be collapsed for a regular mesh."
+          newMeshDimension=numberOfXi          
+          SELECT CASE(generatedMesh%generatedClass)
+          CASE(GENERATED_MESH_REGULAR_TOPOLOGIES_CLASS)
+            regularTopologies=>generatedMesh%regularTopologies
+            IF(ASSOCIATED(regularTopologies)) THEN
+              !Check the type of bases
+              SELECT CASE(basisType)
+              CASE(BASIS_LAGRANGE_HERMITE_TP_TYPE,BASIS_SIMPLEX_TYPE)
+                !OK
+              CASE DEFAULT
+                localError="The specfied bases type of "//TRIM(NumberToVString(basisType,"*",err,error))// &
+                  & " is invalid for a regular topology generated mesh. Only Lagrange-Hermite and Simplex bases are supported."
                 CALL FlagError(localError,err,error,*999)
-              ENDIF
-            ENDDO !basisIdx
-            !All bases are OK
-            IF(ASSOCIATED(generatedMesh%regularMesh)) THEN
-              !Reset the number of elements in each xi direction
-              ALLOCATE(newNumberOfElementsXi(newMeshDimension),STAT=err)
-              IF(err/=0) CALL FlagError("Could not allocate new number of elements xi.",err,error,*999)
-              IF(generatedMesh%meshDimension==0) THEN
-                !First time, default attributes
-                newNumberOfElementsXi(1:newMeshDimension)=1
-              ELSE IF(generatedMesh%meshDimension>newMeshDimension) THEN
-                !New mesh dimension is less than the old mesh dimension
-                newNumberOfElementsXi(1:numberOfXi)=generatedMesh%regularMesh%numberOfElementsXi(1:numberOfXi)
-              ELSE
-                !New mesh dimension is more than the old mesh dimension
-                newNumberOfElementsXi(1:generatedMesh%meshDimension)= &
-                  & generatedMesh%regularMesh%numberOfElementsXi(1:generatedMesh%meshDimension)
-                newNumberOfElementsXi(generatedMesh%meshDimension+1:newMeshDimension)=1
-              ENDIF
-              CALL MOVE_ALLOC(newNumberOfElementsXi,generatedMesh%regularMesh%numberOfElementsXi)
-            ELSE
-              CALL FlagError("Regular generated mesh is not associated.",err,error,*999)
-            ENDIF
-          CASE(GENERATED_MESH_POLAR_MESH_TYPE)
-            IF(ASSOCIATED(generatedMesh%polarMesh)) THEN
-              !Check supplied bases
-              IF(newMeshDimension==1) THEN
-                !With one xi direction the mesh must be a circle.
-                spherical=.FALSE.
-              ELSE
-                IF(newMeshDimension==2) THEN
-                  !Need to determine if the mesh is circular of spherical. Check if there are any collapsed bases.
-                  spherical=.FALSE.
-                  DO basisIdx=1,numberOfBases
-                    IF((bases(basisIdx)%ptr%COLLAPSED_XI(1)/=BASIS_NOT_COLLAPSED).OR.&
-                      & (bases(basisIdx)%ptr%COLLAPSED_XI(2)/=BASIS_NOT_COLLAPSED)) THEN
-                      spherical=.TRUE.
-                      EXIT
-                    ENDIF
-                  ENDDO !basisIdx
-                ELSE
-                  spherical=.TRUE.                  
-                ENDIF
-              ENDIF
-              IF(spherical) THEN
-                !Mesh is spherical shells rather than circular
-                IF(MOD(numberOfBases,3)/=0) THEN
-                  localError="The number of supplied bases of "//TRIM(NumberToVString(numberOfBases,"*",err,error))// &
-                    & " is invalid. The number of bases must be divisiable by 3 for wall, lower and upper apex bases."
-                  CALL FlagError(localError,err,error,*999)
-                ELSE
-                  numberOfBasisSets=numberOfBases/3
-                  !Check the collapse of the bases
-                  DO basisSetIdx=1,numberOfBasisSets
-                    !Wall basis
-                    basisIdx=(basisSetIdx-1)*3+1
-                    IF((bases(basisIdx)%ptr%COLLAPSED_XI(1)/=BASIS_NOT_COLLAPSED).OR.&
-                      & (bases(basisIdx)%ptr%COLLAPSED_XI(2)/=BASIS_NOT_COLLAPSED)) THEN
-                      localError=="Specified basis number "//TRIM(NumberToVString(basisIdx,"*",err,error))// &
-                        & " is invalid. The wall bases must not be collapsed in a polar mesh."
-                      CALL FlagError(localError,err,error,*999)
-                    ENDIF
-                    !Bottom apex basis
-                    basisIdx=(basisSetIdx-1)*3+2
-                    IF((bases(basisIdx)%ptr%COLLAPSED_XI(1)/=BASIS_XI_COLLAPSED).OR.&
-                      & (bases(basisIdx)%ptr%COLLAPSED_XI(2)/=BASIS_COLLAPSED_AT_XI0)) THEN
-                      localError="Specified basis number "//TRIM(NumberToVString(basisIdx,"*",err,error))// &
-                        & " is invalid. The top apex bases must be collapsed correctly in a polar mesh."
-                      CALL FlagError(localError,err,error,*999)
-                    ENDIF
-                    !Top apex basis
-                    basisIdx=(basisSetIdx-1)*3+3
-                    IF((bases(basisIdx)%ptr%COLLAPSED_XI(1)/=BASIS_XI_COLLAPSED).OR.&
-                      & (bases(basisIdx)%ptr%COLLAPSED_XI(2)/=BASIS_COLLAPSED_AT_XI1)) THEN
-                      localError="Specified basis number "//TRIM(NumberToVString(basisIdx,"*",err,error))// &
-                        & " is invalid. The bottom apex bases must be collapsed correctly in a polar mesh."
-                      CALL FlagError(localError,err,error,*999)
-                    ENDIF
-                  ENDDO !basisSetIdx
-                  IF(newMeshDimension==3) THEN
-                    DO basisIdx=1,numberOfBases
-                      IF(bases(basisIdx)%ptr%COLLAPSED_XI(3)/=BASIS_NOT_COLLAPSED) THEN
-                        localError="Specified basis number "//TRIM(NumberToVString(basisIdx,"*",err,error))// &
-                          & " is invalid. The bases must not be collapsed in the radial direction in a polar mesh."
-                        CALL FlagError(localError,err,error,*999)
-                      ENDIF
-                    ENDDO !basisIdx
-                  ENDIF
-                ENDIF
-                numberOfMeshComponents=numberOfBasisSets
-              ELSE
-                numberOfMeshComponents=numberOfBases                  
-              ENDIF
-            ELSE
-              CALL FlagError("Polar generated mesh is not associated.",err,error,*999)
-            ENDIF
-            !All bases are OK
-            !Reset the number of elements in each xi direction
-            ALLOCATE(newNumberOfElementsXi(newMeshDimension),STAT=err)
-            IF(err/=0) CALL FlagError("Could not allocate new number of elements xi.",err,error,*999)
-            IF(generatedMesh%meshDimension==0) THEN
-              !First time, default attributes
-              newNumberOfElementsXi(1:newMeshDimension)=1
-            ELSE IF(generatedMesh%meshDimension>newMeshDimension) THEN
-              !New mesh dimension is less than the old mesh dimension
-              newNumberOfElementsXi(1:newMeshDimension)=generatedMesh%regularMesh%numberOfElementsXi(1:newMeshDimension)
-            ELSE
-              !New mesh dimension is more than the old mesh dimension
-              newNumberOfElementsXi(1:generatedMesh%meshDimension)= &
-                & generatedMesh%polarMesh%numberOfElementsXi(1:generatedMesh%meshDimension)
-              newNumberOfElementsXi(generatedMesh%meshDimension+1:newMeshDimension)=1
-            ENDIF
-            CALL MOVE_ALLOC(newNumberOfElementsXi,generatedMesh%polarMesh%numberOfElementsXi)
-            !Set the spherical nature of the mesh.
-            generatedMesh%polarMesh%spherical=spherical
-          CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
-            !Check supplied bases
-            IF(newMeshDimension<2) THEN
-              CALL FlagError("The specified bases must have at least two xi directions for a cylindrical mesh.",err,error,*999)
-            ELSE                
-              IF(ASSOCIATED(generatedMesh%cylindricalMesh)) THEN
-                !Need to determine if the mesh is open or closed. Check if there are any collapsed bases.
-                closed=.FALSE.
+              END SELECT              
+              SELECT CASE(regularTopologies%generatedType)
+              CASE(GENERATED_MESH_REGULAR_MESH_TYPE)                
+                !Check the bases are not collapsed
                 DO basisIdx=1,numberOfBases
-                  IF((bases(basisIdx)%ptr%COLLAPSED_XI(1)/=BASIS_NOT_COLLAPSED).OR.&
-                    & (bases(basisIdx)%ptr%COLLAPSED_XI(2)/=BASIS_NOT_COLLAPSED)) THEN
-                    closed=.TRUE.
-                    EXIT
+                  IF(.NOT.ALL(bases(basisIdx)%ptr%COLLAPSED_XI==BASIS_NOT_COLLAPSED)) THEN
+                    localError="Specified basis number "//TRIM(NumberToVString(basisIdx,"*",err,error))// &
+                      & " is invalid. The bases must not be collapsed for a regular mesh."
+                    CALL FlagError(localError,err,error,*999)
                   ENDIF
                 ENDDO !basisIdx
-                IF(closed) THEN
-                  !Mesh is a closed cylinder
+                regularTopologies%numberOfTopologies=1
+                topologyBlocks(1)=GENERATED_MESH_REGULAR_TOPOLOGY_MAIN_BLOCK
+                wrappedTopology=.FALSE.
+              CASE(GENERATED_MESH_POLAR_MESH_TYPE)                
+                !Check supplied bases
+                IF(newMeshDimension==1) THEN
+                  !With one xi direction the mesh must be a circle.
+                  spherical=.FALSE.
+                ELSE
+                  IF(newMeshDimension==2) THEN
+                    !Need to determine if the mesh is circular of spherical. Check if there are any collapsed bases.
+                    spherical=.FALSE.
+                    DO basisIdx=1,numberOfBases
+                      IF((bases(basisIdx)%ptr%COLLAPSED_XI(1)/=BASIS_NOT_COLLAPSED).OR.&
+                        & (bases(basisIdx)%ptr%COLLAPSED_XI(2)/=BASIS_NOT_COLLAPSED)) THEN
+                        spherical=.TRUE.
+                        EXIT
+                      ENDIF
+                    ENDDO !basisIdx
+                  ELSE
+                    spherical=.TRUE.                  
+                  ENDIF
+                ENDIF
+                IF(spherical) THEN
+                  !Mesh is spherical shells rather than circular
                   IF(MOD(numberOfBases,3)/=0) THEN
                     localError="The number of supplied bases of "//TRIM(NumberToVString(numberOfBases,"*",err,error))// &
                       & " is invalid. The number of bases must be divisiable by 3 for wall, lower and upper apex bases."
@@ -478,7 +412,7 @@ CONTAINS
                       IF((bases(basisIdx)%ptr%COLLAPSED_XI(1)/=BASIS_NOT_COLLAPSED).OR.&
                         & (bases(basisIdx)%ptr%COLLAPSED_XI(2)/=BASIS_NOT_COLLAPSED)) THEN
                         localError=="Specified basis number "//TRIM(NumberToVString(basisIdx,"*",err,error))// &
-                          & " is invalid. The wall bases must not be collapsed in a cylindrical mesh."
+                          & " is invalid. The wall bases must not be collapsed in a polar mesh."
                         CALL FlagError(localError,err,error,*999)
                       ENDIF
                       !Bottom apex basis
@@ -486,7 +420,7 @@ CONTAINS
                       IF((bases(basisIdx)%ptr%COLLAPSED_XI(1)/=BASIS_XI_COLLAPSED).OR.&
                         & (bases(basisIdx)%ptr%COLLAPSED_XI(2)/=BASIS_COLLAPSED_AT_XI0)) THEN
                         localError="Specified basis number "//TRIM(NumberToVString(basisIdx,"*",err,error))// &
-                          & " is invalid. The bottom apex bases must be collapsed correctly in a cylindrical mesh."
+                          & " is invalid. The top apex bases must be collapsed correctly in a polar mesh."
                         CALL FlagError(localError,err,error,*999)
                       ENDIF
                       !Top apex basis
@@ -494,7 +428,7 @@ CONTAINS
                       IF((bases(basisIdx)%ptr%COLLAPSED_XI(1)/=BASIS_XI_COLLAPSED).OR.&
                         & (bases(basisIdx)%ptr%COLLAPSED_XI(2)/=BASIS_COLLAPSED_AT_XI1)) THEN
                         localError="Specified basis number "//TRIM(NumberToVString(basisIdx,"*",err,error))// &
-                          & " is invalid. The top apex bases must be collapsed correctly in a cylindrical mesh."
+                          & " is invalid. The bottom apex bases must be collapsed correctly in a polar mesh."
                         CALL FlagError(localError,err,error,*999)
                       ENDIF
                     ENDDO !basisSetIdx
@@ -502,44 +436,112 @@ CONTAINS
                       DO basisIdx=1,numberOfBases
                         IF(bases(basisIdx)%ptr%COLLAPSED_XI(3)/=BASIS_NOT_COLLAPSED) THEN
                           localError="Specified basis number "//TRIM(NumberToVString(basisIdx,"*",err,error))// &
-                            & " is invalid. The bases must not be collapsed in the radial direction in a cylindrical mesh."
+                            & " is invalid. The bases must not be collapsed in the radial direction in a polar mesh."
                           CALL FlagError(localError,err,error,*999)
                         ENDIF
                       ENDDO !basisIdx
                     ENDIF
                   ENDIF
                   numberOfMeshComponents=numberOfBasisSets
+                  numberOfTopologies=3
+                  topologyBlocks(1:3)=[GENERATED_MESH_REGULAR_TOPOLOGY_MAIN_BLOCK, &
+                    & GENERATED_MESH_REGULAR_TOPOLOGY_BOTTOM_BLOCK, &
+                    & GENERATED_MESH_REGULAR_TOPOLOGY_TOP_BLOCK]
                 ELSE
-                  numberOfMeshComponents=numberOfBases                  
+                  numberOfMeshComponents=numberOfBases
+                  numberOfTopologies=1
+                  topologyBlocks(1)=GENERATED_MESH_REGULAR_TOPOLOGY_MAIN_BLOCK
                 ENDIF
-              ELSE
-                CALL FlagError("Cylindrical generated mesh is not associated.",err,error,*999)                
-              ENDIF
-              !All bases are OK
-              !Reset the number of elements in each xi direction
-              ALLOCATE(newNumberOfElementsXi(newMeshDimension),STAT=err)
-              IF(err/=0) CALL FlagError("Could not allocate new number of elements xi.",err,error,*999)
-              IF(generatedMesh%meshDimension==0) THEN
-                !First time, default attributes
-                newNumberOfElementsXi(1:newMeshDimension)=1
-              ELSE IF(generatedMesh%meshDimension>newMeshDimension) THEN
-                !New mesh dimension is less than the old mesh dimension
-                newNumberOfElementsXi(1:newMeshDimension)=generatedMesh%cylinderMesh%numberOfElementsXi(1:newMeshDimension)
-              ELSE
-                !New mesh dimension is more than the old mesh dimension
-                newNumberOfElementsXi(1:generatedMesh%meshDimension)= &
-                  & generatedMesh%cylinderMesh%numberOfElementsXi(1:generatedMesh%meshDimension)
-                newNumberOfElementsXi(generatedMesh%meshDimension+1:newMeshDimension)=1
-              ENDIF
-              CALL MOVE_ALLOC(newNumberOfElementsXi,generatedMesh%cylinderMesh%numberOfElementsXi)
-              !Set the closed nature of the mesh.
-              generatedMesh%cylinderMesh%closed=closed              
-            CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
-              !Check supplied bases
-              IF(newMeshDimension<2) THEN
-                CALL FlagError("The specified bases must have at least two xi directions for an ellipsoid mesh.",err,error,*999)
-              ELSE                
-                IF(ASSOCIATED(generatedMesh%ellipsoidMesh)) THEN
+                wrappedTopology=.TRUE.
+                IF(ASSOCIATEDregularTopologies%polarMesh)) THEN
+                  !Set the spherical nature of the mesh.
+                  regularTopologies%polarMesh%spherical=spherical
+                ELSE
+                  CALL FLagError("Generated mesh regular topologies polar mesh is not associated.",err,error,*999)
+                ENDIF                
+              CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)                
+                !Check supplied bases
+                IF(newMeshDimension<2) THEN
+                  CALL FlagError("The specified bases must have at least two xi directions for a cylindrical mesh.",err,error,*999)
+                ELSE                
+                  !Need to determine if the mesh is open or closed. Check if there are any collapsed bases.
+                  closed=.FALSE.
+                  DO basisIdx=1,numberOfBases
+                    IF((bases(basisIdx)%ptr%COLLAPSED_XI(1)/=BASIS_NOT_COLLAPSED).OR.&
+                      & (bases(basisIdx)%ptr%COLLAPSED_XI(2)/=BASIS_NOT_COLLAPSED)) THEN
+                      closed=.TRUE.
+                      EXIT
+                    ENDIF
+                  ENDDO !basisIdx
+                  IF(closed) THEN
+                    !Mesh is a closed cylinder
+                    IF(MOD(numberOfBases,3)/=0) THEN
+                      localError="The number of supplied bases of "//TRIM(NumberToVString(numberOfBases,"*",err,error))// &
+                        & " is invalid. The number of bases must be divisiable by 3 for wall, lower and upper apex bases."
+                      CALL FlagError(localError,err,error,*999)
+                    ELSE
+                      numberOfBasisSets=numberOfBases/3
+                      !Check the collapse of the bases
+                      DO basisSetIdx=1,numberOfBasisSets
+                        !Wall basis
+                        basisIdx=(basisSetIdx-1)*3+1
+                        IF((bases(basisIdx)%ptr%COLLAPSED_XI(1)/=BASIS_NOT_COLLAPSED).OR.&
+                          & (bases(basisIdx)%ptr%COLLAPSED_XI(2)/=BASIS_NOT_COLLAPSED)) THEN
+                          localError=="Specified basis number "//TRIM(NumberToVString(basisIdx,"*",err,error))// &
+                            & " is invalid. The wall bases must not be collapsed in a cylindrical mesh."
+                          CALL FlagError(localError,err,error,*999)
+                        ENDIF
+                        !Bottom apex basis
+                        basisIdx=(basisSetIdx-1)*3+2
+                        IF((bases(basisIdx)%ptr%COLLAPSED_XI(1)/=BASIS_XI_COLLAPSED).OR.&
+                          & (bases(basisIdx)%ptr%COLLAPSED_XI(2)/=BASIS_COLLAPSED_AT_XI0)) THEN
+                          localError="Specified basis number "//TRIM(NumberToVString(basisIdx,"*",err,error))// &
+                            & " is invalid. The bottom apex bases must be collapsed correctly in a cylindrical mesh."
+                          CALL FlagError(localError,err,error,*999)
+                        ENDIF
+                        !Top apex basis
+                        basisIdx=(basisSetIdx-1)*3+3
+                        IF((bases(basisIdx)%ptr%COLLAPSED_XI(1)/=BASIS_XI_COLLAPSED).OR.&
+                          & (bases(basisIdx)%ptr%COLLAPSED_XI(2)/=BASIS_COLLAPSED_AT_XI1)) THEN
+                          localError="Specified basis number "//TRIM(NumberToVString(basisIdx,"*",err,error))// &
+                            & " is invalid. The top apex bases must be collapsed correctly in a cylindrical mesh."
+                          CALL FlagError(localError,err,error,*999)
+                        ENDIF
+                      ENDDO !basisSetIdx
+                      IF(newMeshDimension==3) THEN
+                        DO basisIdx=1,numberOfBases
+                          IF(bases(basisIdx)%ptr%COLLAPSED_XI(3)/=BASIS_NOT_COLLAPSED) THEN
+                            localError="Specified basis number "//TRIM(NumberToVString(basisIdx,"*",err,error))// &
+                              & " is invalid. The bases must not be collapsed in the radial direction in a cylindrical mesh."
+                            CALL FlagError(localError,err,error,*999)
+                          ENDIF
+                        ENDDO !basisIdx
+                      ENDIF
+                    ENDIF
+                    numberOfMeshComponents=numberOfBasisSets
+                    numberOfTopologies=3
+                    topologyBlocks(1:3)=[GENERATED_MESH_REGULAR_TOPOLOGY_MAIN_BLOCK, &
+                      & GENERATED_MESH_REGULAR_TOPOLOGY_BOTTOM_BLOCK, &
+                      & GENERATED_MESH_REGULAR_TOPOLOGY_TOP_BLOCK]
+                  ELSE
+                    numberOfMeshComponents=numberOfBases
+                    numberOfTopologies=1
+                    topologyBlocks(1)=GENERATED_MESH_REGULAR_TOPOLOGY_MAIN_BLOCK
+                  ENDIF
+                ENDIF
+                wrappedTopology=.TRUE.
+                IF(ASSOCIATED(regularTopologies%cylinderMesh)) THEN
+                  !Set the closed nature of the mesh.
+                  regularTopologies%cylinderMesh%closed=closed  
+                ELSE
+                  CALL FLagError("Generated mesh regular topologies cylinder mesh is not associated.",err,error,*999)
+                ENDIF                
+              CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)                
+                !Check supplied bases
+                IF(newMeshDimension<2) THEN
+                  CALL FlagError("The specified bases must have at least two xi directions for an ellipsoid mesh.", &
+                    & err,error,*999)
+                ELSE                
                   !Need to determine if the mesh is open or closed. Check if we have a top apex basis
                   closed=.FALSE.
                   numberOfBasesInASet=2
@@ -554,8 +556,8 @@ CONTAINS
                   IF(closed) THEN
                     IF(MOD(numberOfBases,3)/=0) THEN
                       localError="The number of supplied bases of "//TRIM(NumberToVString(numberOfBases,"*",err,error))// &
-                        & " is invalid. The number of bases must be divisiable by 3 for wall, lower and upper apex bases for "// &
-                        & "a closed ellipsoid mesh."
+                        & " is invalid. The number of bases must be divisiable by 3 for wall, lower and upper apex "// &
+                        & " bases for a closed ellipsoid mesh."
                       CALL FlagError(localError,err,error,*999)
                     ENDIF
                   ELSE
@@ -607,76 +609,127 @@ CONTAINS
                   ENDIF
                 ENDIF
                 numberOfMeshComponents=numberOfBasisSets
+                IF(closed) THEN
+                  numberOfTopologies=3
+                  topologyBlocks(1:3)=[GENERATED_MESH_REGULAR_TOPOLOGY_MAIN_BLOCK, &
+                    & GENERATED_MESH_REGULAR_TOPOLOGY_BOTTOM_BLOCK, &
+                    & GENERATED_MESH_REGULAR_TOPOLOGY_TOP_BLOCK]
+                ELSE
+                  numberOfTopologies=2
+                  topologyBlocks(1:2)=[GENERATED_MESH_REGULAR_TOPOLOGY_MAIN_BLOCK, &
+                    & GENERATED_MESH_REGULAR_TOPOLOGY_BOTTOM_BLOCK]
+                ENDIF
+                wrappedTopology=.TRUE.                
+                IF(ASSOCIATED(regularTopologies%ellipsoidMesh)) THEN
+                  !Set the closed nature of the mesh.
+                  regularTopologies%ellipsoidMesh%closed=closed  
+                ELSE
+                  CALL FLagError("Generated mesh regular topologies ellipsoid mesh is not associated.",err,error,*999)
+                ENDIF                
+              CASE DEFAULT                
+                localError="The generated mesh type of "//TRIM(NumberToVString(regularTopologies% &
+                  & generatedType,"*",err,error))//" is invalid for a regular topologies generated class."
+                CALL FlagError(localError,err,error,*999)                
+              END SELECT
+              !All bases are OK
+              !Reset the number of elements in each xi direction
+              ALLOCATE(newNumberOfElementsXi(newMeshDimension),STAT=err)
+              IF(err/=0) CALL FlagError("Could not allocate new number of elements xi.",err,error,*999)
+              IF(regularTopologies%meshDimension==0) THEN
+                !First time, default attributes
+                newNumberOfElementsXi(1:newMeshDimension)=1
+              ELSE IF(regularTopologies%meshDimension>newMeshDimension) THEN
+                !New mesh dimension is less than the old mesh dimension
+                newNumberOfElementsXi(1:numberOfXi)=regularTopologies%numberOfElementsXi(1:numberOfXi)
               ELSE
-                CALL FlagError("Ellipsoid generated mesh is not associated.",err,error,*999)                
+                !New mesh dimension is more than the old mesh dimension
+                newNumberOfElementsXi(1:regularTopologies%meshDimension)= &
+                  & regularTopologies%numberOfElementsXi(1:regularTopologies%meshDimension)
+                newNumberOfElementsXi(regularTopologies%meshDimension+1:newMeshDimension)=1
               ENDIF
-            ENDIF
-            !All bases are OK
-            !Reset the number of elements in each xi direction
-            ALLOCATE(newNumberOfElementsXi(newMeshDimension),STAT=err)
-            IF(err/=0) CALL FlagError("Could not allocate new number of elements xi.",err,error,*999)
-            IF(generatedMesh%meshDimension==0) THEN
-              !First time, default attributes
-              newNumberOfElementsXi(1:newMeshDimension)=1
-            ELSE IF(generatedMesh%meshDimension>newMeshDimension) THEN
-              !New mesh dimension is less than the old mesh dimension
-              newNumberOfElementsXi(1:newMeshDimension)=generatedMesh%ellipsoidMesh%numberOfElementsXi(1:newMeshDimension)
+              CALL MOVE_ALLOC(newNumberOfElementsXi,regularTopologies%numberOfElementsXi)
+              !Reset the base vectors given the new mesh dimension
+              IF(newMeshDimension/=regularTopologies%meshDimension) THEN
+                IF(ALLOCATED(regularTopologies%baseVectors)) THEN
+                  ALLOCATE(newBaseVectors(generatedMesh%coordinateDimension,newMeshDimension),STAT=err)
+                  IF(err/=0) CALL FlagError("Could not allocate new base vectors.",err,error,*999)
+                  IF(regularTopologies%meshDimension>newMeshDimension) THEN
+                    !New number of xi is less than the old number of xi
+                    newBaseVectors(1:generatedMesh%coordinateDimension,1:newMeshDimension)= &
+                      & regularTopologies%baseVectors(1:generatedMesh%coordinateDimension,1:newMeshDimension)
+                  ELSE
+                    !New number of xi is more than the old number of xi
+                    newBaseVectors(1:generatedMesh%coordinateDimension,1:regularTopologies%meshDimension)= &
+                      & regularTopologies%baseVectors(1:generatedMesh%coordinateDimension,1:regularTopologies%meshDimension)
+                    newBaseVectors(1:generatedMesh%coordinateDimension,regularTopologies%meshDimension+1: &
+                      & newMeshDimension)=0.0_DP
+                  ENDIF
+                  CALL MOVE_ALLOC(newBaseVectors,regularTopologies%baseVectors)
+                ENDIF
+              ENDIF
+              !Store the bases
+              IF(ALLOCATED(generatedMesh%bases)) DEALLOCATE(generatedMesh%bases)
+              ALLOCATE(generatedMesh%bases(numberOfBases),STAT=err)
+              IF(err/=0) CALL FlagError("Could not allocate bases.",err,error,*999)
+              DO basisIdx=1,numberOfBases
+                generatedMesh%bases(basisIdx)%ptr=>bases(basisIdx)%ptr
+              ENDDO !basisIdx
+              regularTopologies%basisType=basisType
+              !Set the number of mesh components
+              regularTopologies%numberOfMeshComponents=numberOfMeshComponents
+              !Reset the mesh dimension
+              regularTopologies%meshDimension=newMeshDimension
+              !Reset the topologies              
+              IF(ALLOCATED(regularTopologies%topologyBlocks)) DEALLOCATE(regularTopologies%topologyBlocks)
+              ALLOCATE(regularTopologies%topologyBlocks(numberOfTopologies),STAT=err)
+              IF(err/=0) CALL FlagError("Could not allocate regular topologies topology blocks.",err,error,*999)
+              regularTopologies%numberOfTopologies=numberOfTopologies
+              regularTopologies%topologyBlocks(1:numberOfTopologies)=topologyBlocks(1:numberOfTopologies)
+              regularTopologies%wrappedTopology=wrappedTopology
             ELSE
-              !New mesh dimension is more than the old mesh dimension
-              newNumberOfElementsXi(1:generatedMesh%meshDimension)= &
-                & generatedMesh%ellipsoidMesh%numberOfElementsXi(1:generatedMesh%meshDimension)
-              newNumberOfElementsXi(generatedMesh%meshDimension+1:newMeshDimension)=1
-            ENDIF
-            CALL MOVE_ALLOC(newNumberOfElementsXi,generatedMesh%ellipsoidMesh%numberOfElementsXi)
-            !Set the closed nature of the mesh.
-            generatedMesh%EllipsoidMesh%closed=closed              
-          CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
-            !Check supplied bases
-            IF(newMeshDimension==1) THEN
-              CALL FlagError("Not implemented.",err,error,*999)
-            ELSE              
-              CALL FlagError("The specified bases must have one xi direction for a fractal tree mesh.",err,error,*999)
-            ENDIF
-          CASE DEFAULT
-            localError="The generated mesh type of "//TRIM(NumberToVString(generatedMesh%generatedType,"*",err,error))// &
+              CALL FlagError("Generated mesh regular topologies is not associated.",err,error,*999)
+            ENDIF            
+          CASE(GENERATED_MESH_BRANCHING_TOPOLOGIES_CLASS)
+            branchingTopologies=>generatedMesh%branchingTopologies
+            IF(ASSOCIATED(branchingTopologies)) THEN              
+              SELECT CASE(branchingTopologies%generatedType)
+              CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)                
+                !Check supplied bases
+                IF(newMeshDimension==1) THEN
+                  CALL FlagError("Not implemented.",err,error,*999)
+                ELSE              
+                  CALL FlagError("The specified bases must have one xi direction for a fractal tree mesh.",err,error,*999)
+                ENDIF                
+              CASE DEFAULT                
+                localError="The generated mesh type of "//TRIM(NumberToVString(branchingTopologies% &
+                  & generatedType,"*",err,error))//" is invalid for a branching topologies generated class."
+                CALL FlagError(localError,err,error,*999)                
+              END SELECT              
+              !Store the bases
+              IF(ALLOCATED(generatedMesh%bases)) DEALLOCATE(generatedMesh%bases)
+              ALLOCATE(generatedMesh%bases(numberOfBases),STAT=err)
+              IF(err/=0) CALL FlagError("Could not allocate bases.",err,error,*999)
+              DO basisIdx=1,numberOfBases
+                generatedMesh%bases(basisIdx)%ptr=>bases(basisIdx)%ptr
+              ENDDO !basisIdx
+              !Set the number of mesh components
+              branchingTopologies%numberOfMeshComponents=numberOfMeshComponents
+              !Reset the mesh dimension
+              branchingTopologies%meshDimension=newMeshDimension
+            ELSE
+              CALL FlagError("Generated mesh branching topologies is not associated.",err,error,*999)
+            ENDIF            
+          CASE DEFAULT            
+            localError="The generated mesh class of "//TRIM(NumberToVString(generatedMesh%generatedClass,"*",err,error))// &
               & " is invalid."
-            CALL FlagError(localError,err,error,*999)
-          END SELECT
-          !Reset the base vectors given the new mesh dimension
-          IF(newMeshDimension/=generatedMesh%meshDimension) THEN
-            IF(ALLOCATED(generatedMesh%baseVectors)) THEN
-              ALLOCATE(newBaseVectors(generatedMesh%coordinateDimension,newMeshDimension),STAT=err)
-              IF(err/=0) CALL FlagError("Could not allocate new base vectors.",err,error,*999)
-              IF(generatedMesh%meshDimension>newMeshDimension) THEN
-                !New number of xi is less than the old number of xi
-                newBaseVectors(1:generatedMesh%coordinateDimension,1:newMeshDimension)= &
-                  & generatedMesh%baseVectors(1:generatedMesh%coordinateDimension,1:newMeshDimension)
-              ELSE
-                !New number of xi is more than the old number of xi
-                newBaseVectors(1:generatedMesh%coordinateDimension,1:generatedMesh%meshDimension)= &
-                  & generatedMesh%baseVectors(1:generatedMesh%coordinateDimension,1:generatedMesh%meshDimension)
-                newBaseVectors(1:generatedMesh%coordinateDimension,generatedMesh%meshDimension+1:newMeshDimension)=0.0_DP
-              ENDIF
-              CALL MOVE_ALLOC(newBaseVectors,generatedMesh%baseVectors)
-            ENDIF
-          ENDIF
-          !Store the bases
-          IF(ALLOCATED(generatedMesh%bases)) DEALLOCATE(generatedMesh%bases)
-          ALLOCATE(generatedMesh%bases(numberOfBases),STAT=err)
-          IF(err/=0) CALL FlagError("Could not allocate bases.",err,error,*999)
-          DO basisIdx=1,numberOfBases
-            generatedMesh%bases(basisIdx)%ptr=>bases(basisIdx)%ptr
-          ENDDO !basisIdx
-          !Set the number of mesh components
-          generatedMesh%numberOfMeshComponents=numberOfMeshComponents
-          !Reset the mesh dimension
-          generatedMesh%meshDimension=newMeshDimension
+            CALL FlagError(localError,err,error,*999)            
+          END SELECT                    
         ELSE
           CALL FlagError("No bases where supplied.",err,error,*999)
         ENDIF
       ENDIF
     ELSE
-      CALL FlagError("Generated mesh is already associated.",err,error,*999)
+      CALL FlagError("Generated mesh is not associated.",err,error,*999)
     ENDIF
 
     EXITS("GeneratedMesh_BasisSet")
@@ -710,33 +763,55 @@ CONTAINS
       IF(generatedMesh%generatedMeshFinished) THEN
         CALL FlagError("Generated mesh has been finished.",err,error,*999)
       ELSE
-        IF(ALLOCATED(generatedMesh%bases)) THEN
-          !Check the spatial dimension of the base vectors is the same as the coordinate space
-          IF(SIZE(baseVectors,1)==generatedMesh%coordinateDimension) THEN
-            !Check that the number of base vectors is equal to the mesh dimension
-            IF(SIZE(baseVectors,2)==generatedMesh%meshDimension) THEN
-              IF(ALLOCATED(generatedMesh%baseVectors)) DEALLOCATE(generatedMesh%baseVectors)
-              ALLOCATE(generatedMesh%baseVectors(SIZE(baseVectors,1),SIZE(baseVectors,2)),STAT=err)
-              IF(err/=0) CALL FlagError("Could not allocate base vectors.",err,error,*999)
-              generatedMesh%baseVectors(1:generatedMesh%coordinateDimension,1:generatedMesh%meshDimension)= &
-                & baseVectors(1:generatedMesh%coordinateDimension,1:generatedMesh%meshDimension)
+        SELECT CASE(generatedMesh%generatedClass)
+        CASE(GENERATED_MESH_REGULAR_TOPOLOGIES_CLASS)
+          
+          IF(ASSOCIATED(generatedMesh%regularTopologies)) THEN
+            IF(ALLOCATED(generatedMesh%regularTopologies%bases)) THEN
+              !Check the spatial dimension of the base vectors is the same as the coordinate space
+              IF(SIZE(baseVectors,1)==generatedMesh%coordinateDimension) THEN
+                !Check that the number of base vectors is equal to the mesh dimension
+                IF(SIZE(baseVectors,2)==generatedMesh%regularTopologies%meshDimension) THEN
+                  IF(ALLOCATED(generatedMesh%regularTopologies%baseVectors))  &
+                    & DEALLOCATE(generatedMesh%regularTopologies%baseVectors)
+                  ALLOCATE(generatedMesh%regularTopologies%baseVectors(SIZE(baseVectors,1),SIZE(baseVectors,2)),STAT=err)
+                  IF(err/=0) CALL FlagError("Could not allocate base vectors.",err,error,*999)
+                  generatedMesh%regularTopologies%baseVectors(1:generatedMesh%coordinateDimension,1:generatedMesh% &
+                    & regularTopologies%meshDimension)=baseVectors(1:generatedMesh%coordinateDimension,1:generatedMesh% &
+                    & regularTopologies%meshDimension)
+                ELSE
+                  localError="The size of the second dimension of base vectors of "// &
+                    & TRIM(NumberToVString(SIZE(baseVectors,2),"*",err,error))// &
+                    & " is invalid. The second dimension size must match the number of mesh dimensions of "// &
+                    & TRIM(NumberToVString(generatedMesh%regularTopologies%meshDimension,"*",err,error))//"."
+                  CALL FlagError(localError,err,error,*999)
+                ENDIF
+              ELSE
+                localError="The size of the first dimension of base vectors of "// &
+                  & TRIM(NumberToVString(SIZE(baseVectors,1),"*",err,error))// &
+                  & " is invalid. The first dimension size must match the coordinate system dimension of "// &
+                  & TRIM(NumberToVString(coordinateDimension,"*",err,error))//"."
+                CALL FlagError(localError,err,error,*999)
+              ENDIF
             ELSE
-              localError="The size of the second dimension of base vectors of "// &
-                & TRIM(NumberToVString(SIZE(baseVectors,2),"*",err,error))// &
-                & " is invalid. The second dimension size must match the number of mesh dimensions of "// &
-                & TRIM(NumberToVString(generatedMesh%meshDimension,"*",err,error))//"."
-              CALL FlagError(localError,err,error,*999)
+              CALL FlagError("You must set the generated mesh basis before setting base vectors.",err,error,*999)
             ENDIF
           ELSE
-            localError="The size of the first dimension of base vectors of "// &
-              & TRIM(NumberToVString(SIZE(baseVectors,1),"*",err,error))// &
-              & " is invalid. The first dimension size must match the coordinate system dimension of "// &
-              & TRIM(NumberToVString(coordinateDimension,"*",err,error))//"."
-            CALL FlagError(localError,err,error,*999)
+            CALL FlagError("Generated mesh regular topologies is not associated.",err,error,*999)
           ENDIF
-        ELSE
-          CALL FlagError("You must set the generated mesh basis before setting base vectors.",err,error,*999)
-        ENDIF
+          
+        CASE(GENERATED_MESH_BRANCHING_TOPOLOGIES_CLASS)
+          
+          CALL FlagError("Not implemented.",err,error,*999)
+          
+        CASE DEFAULT
+          
+          localError="The generated mesh class of "//TRIM(NumberToVString(generatedMesh%generatedClass,"*",err,error))// &
+            & " is invalid."
+          CALL FlagError(localError,err,error,*999)
+          
+        END SELECT
+        
       ENDIF
     ELSE
       CALL FlagError("Generated mesh is not associated.",err,error,*999)
@@ -749,6 +824,96 @@ CONTAINS
     RETURN 1
     
   END SUBROUTINE GeneratedMesh_BaseVectorsSet
+
+  !
+  !================================================================================================================================
+  !
+
+  !>Gets the class of a generated mesh. \see OpenCMISS::Iron::cmfe_GeneratedMesh_ClassGet
+  SUBROUTINE GeneratedMesh_ClassGet(generatedMesh,meshClass,err,error,*)
+
+    !Argument variables
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh to get the class of
+    INTEGER(INTG), INTENT(OUT) :: meshClass !<On return, the class of mesh to generate \see GeneratedMeshRoutines_GeneratedMeshClasses,GeneratedMeshRoutines
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+
+    ENTERS("GeneratedMesh_ClassGet",err,error,*999)
+
+    IF(ASSOCIATED(generatedMesh)) THEN
+      meshClass=generatedMesh%generatedClass
+    ELSE
+      CALL FlagError("Generated mesh is not associated.",err,error,*999)
+    ENDIF
+
+    EXITS("GeneratedMesh_ClassGet")
+    RETURN
+999 ERRORS("GeneratedMesh_ClassGet",err,error)
+    EXITS("GeneratedMesh_ClassGet")
+    RETURN 1
+    
+  END SUBROUTINE GeneratedMesh_ClassGet
+
+  !
+  !================================================================================================================================
+  !
+
+  !>Sets/changes the class of a generated mesh. \see OpenCMISS::Iron::cmfe_GeneratedMesh_ClassSet
+  SUBROUTINE GeneratedMesh_ClassSet(generatedMesh,meshClass,err,error,*)
+
+    !Argument variables
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh to set the class of
+    INTEGER(INTG), INTENT(IN) :: meshClass !<The class of mesh to generate \see GeneratedMeshRoutines_GeneratedMeshClasses,GeneratedMeshRoutines
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+    INTEGER(INTG) :: oldMeshClass
+    TYPE(VARYING_STRING) :: localError
+
+    ENTERS("GeneratedMesh_ClassSet",err,error,*999)
+
+    IF(ASSOCIATED(generatedMesh)) THEN
+      IF(generatedMesh%generatedMeshFinished) THEN
+        CALL FlagError("Generated mesh has already been finished.",err,error,*999)
+      ELSE
+        oldMeshClass=generatedMesh%generatedClass
+        IF(oldMeshClass/=meshClass) THEN
+          !Initialise the new generated mesh class
+          SELECT CASE(meshClass)
+          CASE(GENERATED_MESH_REGULAR_TOPOLOGIES_CLASS)
+            CALL GeneratedMesh_RegularTopologiesInitialise(generatedMesh,err,error,*999)
+          CASE(GENERATED_MESH_BRANCHING_TOPOLOGIES_CLASS)
+            CALL GeneratedMesh_BranchingTopologiesInitialise(generatedMesh,err,error,*999)
+          CASE DEFAULT
+            localError="The specified generated mesh class of "//TRIM(NumberToVString(meshClass,"*",err,error))// &
+              & " is invalid."
+            CALL FlagError(localError,err,error,*999)
+          END SELECT
+          !Finalise the old generated mesh class
+          SELECT CASE(oldMeshClass)
+          CASE(GENERATED_MESH_REGULAR_TOPOLOGIES_CLASS)
+            CALL GeneratedMesh_RegularTopologiesFinalise(generatedMesh%regularTopologies,err,error,*999)
+          CASE(GENERATED_MESH_BRANCHING_TOPOLOGIES_CLASS)
+            CALL GeneratedMesh_BranchingTopologiesFinalise(generatedMesh%branchingTopologies,err,error,*999)
+          CASE DEFAULT
+            localError="The specified generated mesh class of "//TRIM(NumberToVString(oldMeshClass,"*",err,error))// &
+              & " is invalid."
+            CALL FlagError(localError,err,error,*999)
+          END SELECT
+        ENDIF
+      ENDIF
+    ELSE
+      CALL FlagError("Generated mesh is not associated.",err,error,*999)
+    ENDIF
+
+    EXITS("GeneratedMesh_ClassSet")
+    RETURN
+999 ERRORS("GeneratedMesh_ClassSet",err,error)
+    EXITS("GeneratedMesh_ClassSet")
+    RETURN 1
+    
+  END SUBROUTINE GeneratedMesh_ClassSet
 
   !
   !================================================================================================================================
@@ -840,130 +1005,29 @@ CONTAINS
         IF(ASSOCIATED(mesh)) THEN
           CALL FlagError("Mesh is already associated.",err,error,*999)
         ELSE
-          IF(ALLOCATED(generatedMesh%bases)) THEN
-            IF(.NOT.ALLOCATED(generatedMesh%baseVectors)) THEN
-              !We don't have any base vectors defined so default the values to the extents
-              ALLOCATE(newBaseVectors(generatedMesh%coordinateDimension,generatedMesh%meshDimension),STAT=err)
-              IF(err/=0) CALL FlagError("Could not allocate new base vectors.",err,error,*999)
-              SELECT CASE(generatedMesh%generatedType)
-              CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
-                IF(ASSOCIATED(generatedMesh%regularMesh)) THEN
-                  IF(generatedMesh%meshDimension==1) THEN
-                    !The base vector is just the extent vector
-                    newBaseVectors(1:generatedMesh%coordinateDimension,1)= &
-                      & generatedMesh%regularMesh%maximumExtent(1:generatedMesh%coordinateDimension)
-                  ELSE IF(generatedMesh%meshDimension<generatedMesh%coordinateDimension)             
-                    !Find the first number of mesh dimensions for which the extent is non-zero.
-                    count=0
-                    coordinateIdx=1
-                    DO xiIdx=1,generatedMesh%meshDimension
-                      DO WHILE(ABS(generatedMesh%regularMesh%maximumExtent(coordinateIdx))<=ZERO_TOLERANCE)
-                        coordinateIdx=coordinateIdx+1
-                      ENDDO !While
-                      newBaseVectors(coordinateIdx,xiIdx)=generatedMesh%regularMesh%maximumExtent(coordinateIdx)
-                      coordinateIdx=coordinateIdx+1
-                      count=count+1
-                    ENDDO !xiIdx
-                    IF(count/=generatedMesh%meshDimension)  &
-                      & CALL FlagError("Invalid mesh extent. There number of non-zero components is < the mesh dimension.", &
-                      & err,error,*999)
-                  ELSE
-                    !Number of xi is the same as the number of coordinates
-                    !The default base vectors are aligned with the coordinate vectors
-                    newBaseVectors=0.0_DP
-                    DO coordinateIdx=1,coordinateDimension
-                      newBaseVectors(coordinateIdx,coordinateIdx)=generatedMesh%regularMesh%maximumExtent(coordinateIdx)
-                    ENDDO !coordinate_idx
-                  ENDIF
-                  numberOfSubMeshes=1
-                ELSE
-                  CALL FlagError("Generated mesh regular mesh is not associated.",err,error,*999)
-                ENDIF
-              CASE(GENERATED_MESH_POLAR_MESH_TYPE)
-                !The default base vectors are aligned with the coordinate vectors
-                newBaseVectors=0.0_DP
-                DO xiIdx=1,generatedMesh%meshDimension
-                  newBaseVectors(xiIdx,xiIdx)=1.0_DP
-                ENDDO !xiIdx
-                IF(generatedMesh%meshDimension==2) THEN
-                  IF(generatedMesh%coordinateDimension==2) THEN
-                    numberOfSubMeshes=1
-                  ELSE IF(generatedMesh%coordinateDimension==3) THEN
-                    numberOfSubMeshes=3
-                  ELSE
-                    localError="The coordinate dimension of "// &
-                      & TRIM(NumberToVString(generatedMesh%coordinateDimension,"*",err,error))// &
-                      & " is invalid for a polar generated mesh. The coordinate dimension must be 2 or 3."
-                    CALL FlagError(localError,err,error,*999)
-                  ENDIF
-                ELSE IF(generatedMesh%meshDimension==3) THEN
-                  IF(generatedMesh%coordinateDimension==3) THEN
-                    numberOfSubMeshes=3
-                  ELSE
-                    localError="The coordinate dimension of "// &
-                      & TRIM(NumberToVString(generatedMesh%coordinateDimension,"*",err,error))// &
-                      & " is invalid for a polar generated mesh. The coordinate dimension must be 3."
-                    CALL FlagError(localError,err,error,*999)
-                  ENDIF
-                ELSE
-                  localError="The mesh dimension of "//TRIM(NumberToVString(generatedMesh%meshDimension,"*",err,error))// &
-                    & " is invalid for a polar generated mesh. The mesh dimension must be 2 or 3."
-                  CALL FlagError(localError,err,error,*999)
-                ENDIF
-                numberOfSubMeshes=3
-              CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
-                !The default base vectors are aligned with the coordinate vectors
-                newBaseVectors=0.0_DP
-                DO xiIdx=1,generatedMesh%meshDimension
-                  newBaseVectors(xiIdx,xiIdx)=1.0_DP
-                ENDDO !xiIdx
-              CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
-                !The default base vectors are aligned with the coordinate vectors
-                newBaseVectors=0.0_DP
-                DO xiIdx=1,generatedMesh%meshDimension
-                  newBaseVectors(xiIdx,xiIdx)=1.0_DP
-                ENDDO !xiIdx
-              CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
-                !The default base vectors are aligned with the coordinate vectors
-                newBaseVectors=0.0_DP
-                DO xiIdx=1,generatedMesh%meshDimension
-                  newBaseVectors(xiIdx,xiIdx)=1.0_DP
-                ENDDO !xiIdx
-              CASE DEFAULT
-                localError="The generated mesh type of "//TRIM(NumberToVString(generatedMesh%generatedType,"*",err,error))// &
-                  & " is invalid."
-                CALL FlagError(localError,err,error,*999)
-              END SELECT
-            ENDIF
-            CALL MOVE_ALLOC(newBaseVectors,generatedMesh%baseVectors)
-            !Initialise the mesh topological information
-            ALLOCATE(generatedMesh%maxNodeBases(generatedMesh%numberOfBases,STAT=err)
-            IF(err/=0) CALL FlagError("Could not allocated max node bases.",err,error)
-            generatedMesh%maxNodeBases(1:generatedMesh%numberOfBases)=0
-            !Finish the specific mesh type
-            SELECT CASE(generatedMesh%generatedType)
-            CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
-              CALL GeneratedMesh_RegularCreateFinish(generatedMesh%regularMesh,meshUserNumber,err,error,*999)
-            CASE(GENERATED_MESH_POLAR_MESH_TYPE)
-              CALL GeneratedMesh_PolarCreateFinish(generatedMesh%polarMesh,meshUserNumber,err,error,*999)
-            CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
-              CALL GeneratedMesh_CylinderCreateFinish(generatedMesh%cylinderMesh,meshUserNumber,err,error,*999)
-            CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
-              CALL GeneratedMesh_EllipsoidCreateFinish(generatedMesh%ellipsoidMesh,meshUserNumber,err,error,*999)
-            CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
-              CALL GeneratedMesh_FractalTreeCreateFinish(generatedMesh%fractalTreeMesh,meshUserNumber,err,error,*999)
-            CASE DEFAULT
-              localError="The generated mesh mesh type of "// &
-                & TRIM(NumberToVString(generatedMesh%generatedType,"*",err,error))//" is invalid."
-              CALL FlagError(localError,err,error,*999)
-            END SELECT
-            !Return the pointers
-            mesh=>generatedMesh%mesh
-            mesh%GENERATED_MESH=>generatedMesh
-            generatedMesh%generatedMeshFinished=.TRUE.
-          ELSE
-            CALL FlagError("You must set the generated mesh basis before finishing the generated mesh.",err,error,*999)
-          ENDIF
+          SELECT CASE(generatedMesh%generatedClass)
+          CASE(GENERATED_MESH_REGULAR_TOPOLOGIES_CLASS)
+            
+            CALL GeneratedMesh_RegularTopologiesCreateFinish(generatedMesh%regularTopologies,meshUserNumber, &
+              & mesh,err,error,*999)
+            
+          CASE(GENERATED_MESH_BRANCHING_TOPOLOGIES_CLASS)
+            
+            CALL GeneratedMesh_BranchingTopologiesCreateFinish(generatedMesh%branchingTopologies,meshUserNumber, &
+              & mesh,err,error,*999)
+            
+          CASE DEFAULT
+            
+            localError="The generated mesh class of "//TRIM(NumberToVString(generatedMesh%generatedClass,"*",err,error))// &
+              & " is invalid."
+            CALL FlagError(localError,err,error,*999)
+            
+          END SELECT
+                                
+          !Return the pointers
+          mesh=>generatedMesh%mesh
+          mesh%GENERATED_MESH=>generatedMesh
+          generatedMesh%generatedMeshFinished=.TRUE.
         ENDIF
       ENDIF
     ELSE
@@ -977,6 +1041,278 @@ CONTAINS
     RETURN 1
     
   END SUBROUTINE GeneratedMesh_CreateFinish
+
+  !
+  !================================================================================================================================
+  !
+
+  !>Finishes the creation of a branching topologies generated mesh. 
+  SUBROUTINE GeneratedMesh_BranchingTopologiesCreateFinish(branchingTopologies,meshUserNumber,mesh,err,error,*)
+
+    !Argument variables
+    TYPE(GeneratedMeshBranchingTopologiesType), POINTER :: branchingTopologies !<A pointer to the branching topologies generated mesh to finish the creation of
+    INTEGER(INTG), INTENT(IN) :: meshUserNumber !<The mesh's user number
+    TYPE(MESH_TYPE), POINTER :: mesh !<On exit, a pointer to the generated mesh. Must not be associated on entry
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh
+    TYPE(VARYING_STRING) :: localError
+
+    ENTERS("GeneratedMesh_BranchingTopologiesCreateFinish",err,error,*999)
+
+    IF(ASSOCIATED(branchingTopologies)) THEN
+      generatedMesh=>branchingTopologies%generatedMesh
+      IF(ASSOCIATED(generatedMesh)) THEN
+        !Finish the specific mesh type
+        SELECT CASE(branchingTopologies%generatedType)
+        CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
+          CALL GeneratedMesh_FractalTreeCreateFinish(branchingTopologies%fractalTreeMesh,meshUserNumber,err,error,*999)
+        CASE DEFAULT
+          localError="The generated mesh mesh type of "// &
+            & TRIM(NumberToVString(branchingTopologies%generatedType,"*",err,error))//" is invalid."
+          CALL FlagError(localError,err,error,*999)
+        END SELECT
+      ENDIF
+    ELSE
+      CALL FlagError("Branching topologies is not associated.",err,error,*999)
+    ENDIF
+
+    EXITS("GeneratedMesh_BranchingTopologiesCreateFinish")
+    RETURN
+999 ERRORS("GeneratedMesh_BranchingTopologiesCreateFinish",err,error)
+    EXITS("GeneratedMesh_BranchingTopologiesCreateFinish")
+    RETURN 1
+    
+  END SUBROUTINE GeneratedMesh_BranchingTopologiesCreateFinish
+
+  !
+  !================================================================================================================================
+  !
+
+  !>Finishes the creation of a regular topologies generated mesh. 
+  SUBROUTINE GeneratedMesh_RegularTopologiesCreateFinish(regularTopologies,meshUserNumber,mesh,err,error,*)
+
+    !Argument variables
+    TYPE(GeneratedMeshRegularTopologiesType), POINTER :: regularTopologies !<A pointer to the regularTopologies generated mesh to finish the creation of
+    INTEGER(INTG), INTENT(IN) :: meshUserNumber !<The mesh's user number
+    TYPE(MESH_TYPE), POINTER :: mesh !<On exit, a pointer to the generated mesh. Must not be associated on entry
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh
+    TYPE(VARYING_STRING) :: localError
+
+    ENTERS("GeneratedMesh_RegularTopologiesCreateFinish",err,error,*999)
+
+    IF(ASSOCIATED(regularTopologies)) THEN
+      generatedMesh=>regularTopologies%generatedMesh
+      IF(ASSOCIATED(generatedMesh)) THEN
+        IF(ALLOCATED(generatedMesh%bases)) THEN
+          IF(.NOT.ALLOCATED(regularTopologies%baseVectors)) THEN
+            !We don't have any base vectors defined so default the values to the extents
+            ALLOCATE(newBaseVectors(generatedMesh%coordinateDimension,regularTopologies%meshDimension),STAT=err)
+            IF(err/=0) CALL FlagError("Could not allocate new base vectors.",err,error,*999)
+            IF(regularTopologies%meshDimension==1) THEN
+              !The base vector is just the extent vector
+              newBaseVectors(1:generatedMesh%coordinateDimension,1)= &
+                & regularTopologies%maximumExtent(1:generatedMesh%coordinateDimension)
+            ELSE IF(generatedMesh%meshDimension<generatedMesh%coordinateDimension)             
+              !Find the first number of mesh dimensions for which the extent is non-zero.
+              count=0
+              coordinateIdx=1
+              DO xiIdx=1,regularTopologies%meshDimension
+                DO WHILE(ABS(regularTopologies%maximumExtent(coordinateIdx))<=ZERO_TOLERANCE)
+                  coordinateIdx=coordinateIdx+1
+                ENDDO !While
+                newBaseVectors(coordinateIdx,xiIdx)=regularTopologies%maximumExtent(coordinateIdx)
+                coordinateIdx=coordinateIdx+1
+                count=count+1
+              ENDDO !xiIdx
+              IF(count/=regularTopologies%meshDimension)  &
+                & CALL FlagError("Invalid mesh extent. There number of non-zero components is < the mesh dimension.", &
+                & err,error,*999)
+            ELSE
+              !Number of xi is the same as the number of coordinates
+              !The default base vectors are aligned with the coordinate vectors
+              newBaseVectors=0.0_DP
+              DO coordinateIdx=1,coordinateDimension
+                newBaseVectors(coordinateIdx,coordinateIdx)=regularTopologies%maximumExtent(coordinateIdx)
+              ENDDO !coordinate_idx
+            ENDIF
+          ENDIF
+          CALL MOVE_ALLOC(newBaseVectors,regularTopologies%baseVectors)            
+          !Initialise the mesh topological information
+          ALLOCATE(regularTopologies%topologies(regularTopologies%numberOfTopologies),STAT=err)
+          IF(err/=0) CALL FlagError("Could not allocate regular topologies.",err,error,*999)
+          nodeOffset=0
+          elementOffset=0
+          gridElementOffset=0
+          DO topologyIdx=1,regularTopologies%numberOfTopologies
+            CALL GeneratedMesh_RegularTopologyInitialise(regularTopologies,topologyIdx,err,error,*999)
+            regularTopologies%topologies(topologyIdx)%nodeOffset=nodeOffset
+            regularTopologies%topologies(topologyIdx)%elementOffset=elementOffset
+            regularTopologies%topologies(topologyIdx)%gridElementOffset=gridElementOffset
+            nodeOffset=nodeOffset+regularTopologies%topologies(topologyIdx)%numberOfNodes
+            elementOffset=elementOffset+regularTopologies%topologies(topologyIdx)%numberOfElements
+            gridElementOffset=gridElementOffset+regularTopologies%topologies(topologyIdx)%numberOfGridElements
+          ENDDO !topologyIdx
+          !Calculate the total number of nodes and elements etc.
+          !Create the regular topologies mesh
+          CALL GeneratedMesh_CoordinateSystemGet(generatedMesh,coordinateSystem,err,error,*999)
+          CALL COORDINATE_SYSTEM_TYPE_GET(coordinateSystem,coordinateType,err,error,*999)
+          region=>generatedMesh%region
+          INTERFACE=>generatedMesh%INTERFACE
+          !Calculate the number of nodes and elements across the topologies.
+          totalNumberOfNodes
+          DO topologyIdx=1,regularTopologies%numberOfTopologies
+            
+          ENDDO !topologyIdx
+          !Calculate the sizes of a regular grid of elements with the appropriate number of basis nodes in each dimension of
+          !the grid element
+          totalNumberOfNodes=1
+          gridNumberOfElements=1
+          numberOfElementsXi=1
+          numberOfBases=SIZE(regularMesh%bases)
+          DO xiIdx=1,generatedMesh%meshDimension
+            !Set total number of nodes to corner nodes only
+            totalNumberOfNodes=totalNumberOfNodes*(regularMesh%numberOfElementsXi(xiIdx)+1)
+            numberOfElementsXi(xiIdx)=regularMesh%numberOfElementsXi(xiIdx)
+            gridNumberOfElements=gridNumberOfElements*regularMesh%numberOfElementsXi(xiIdx)
+          ENDDO !xiIdx
+          numberOfCornerNodes=totalNumberOfNodes
+          !Add extra nodes for each basis
+          !Will end up with some duplicate nodes if bases have the same interpolation in one direction
+          DO basisIdx=1,numberOfBases
+            basis=>regularMesh%bases(basisIdx)%ptr
+            basisNumberOfNodes=1
+            DO xiIdx=1,generatedMesh%meshDimension
+              basisNumberofNodes=BasisNumberOfNodes*((basis%NUMBER_OF_NODES_XIC(xiIdx)-1)* &
+                & regularMesh%numberOfElementsXi(xiIdx)+1)
+            ENDDO !xiIdx
+            totalNumberOfNodes=totalNumberOfNodes+basisNumberOfNodes-numberOfCornerNodes
+          ENDDO
+          TOTAL_NUMBER_OF_NODES=MAXVAL(BASIS_NUMBER_OF_NODES)
+          totalNumberOfElements=elementFactor*gridNumberOfElements
+          !Create the default node set
+          NULLIFY(nodes)
+          IF(ASSOCIATED(region)) THEN
+            CALL NODES_CREATE_START(region,totalNumberOfNodes,nodes,err,error,*999)
+          ELSE
+            CALL NODES_CREATE_START(INTERFACE,totalNumberOfNodes,nodes,err,error,*999)
+          ENDIF
+          !Finish the nodes creation
+          CALL NODES_CREATE_FINISH(nodes,err,error,*999)
+          !Create the mesh
+          IF(ASSOCIATED(region)) THEN
+            CALL MESH_CREATE_START(meshUserNumber,region,regularTopologies%meshDimension,generatedMesh%mesh,err,error,*999)
+          ELSE
+            CALL MESH_CREATE_START(meshUserNumber,INTERFACE,regularTopologies%meshDimension,generatedMesh%mesh,err,error,*999)
+          ENDIF
+              !Set the number of mesh components
+              CALL MESH_NUMBER_OF_COMPONENTS_SET(generatedMesh%mesh,generatedMesh%numberOfMeshComponents,err,error,*999)
+              !Create the elements
+              CALL MESH_NUMBER_OF_ELEMENTS_SET(generatedMesh%mesh,totalNumberOfElements,err,error,*999)
+              DO meshComponentIdx=1,generatedMesh%numberOfMeshComponents
+                basisIdx=meshComponentIdx
+                basis=>regularMesh%bases(basisIdx)%ptr
+                !Get number of nodes in each xi direction for this basis
+                DO xiIdx=1,generatedMesh%meshDimension
+                  totalNumberOfNodesXi(xiIdx)=(basis%NUMBER_OF_NODES_XIC(xiIdx)-1)*regularMesh%numberOfElementsXi(xiIdx)+1
+                ENDDO
+                NULLIFY(meshElements)
+                CALL MESH_TOPOLOGY_ELEMENTS_CREATE_START(generatedMesh%mesh,meshComponentIdx,basis,meshElements,err,error,*999)
+                !Set the elements for the regular mesh
+                IF(ALLOCATED(elementNodes)) DEALLOCATE(elementNodes)
+                ALLOCATE(elementNodes(basis%NUMBER_OF_NODES),STAT=err)
+                IF (ALLOCATED(elementNodesUserNumbers)) DEALLOCATE(elementNodesUserNumbers)
+                ALLOCATE(elementNodesUserNumbers(basis%NUMBER_OF_NODES),STAT=err)
+                IF(err/=0) CALL FlagError("Could not allocate element nodes.",err,error,*999)
+                !Step in the xi(3) direction
+                DO elementIdx3=1,numberOfElementsXi(3)+1
+                  DO elementIdx2=1,numberOfElementsXi(2)+1
+                    DO elementIdx1=1,numberOfElementsXi(1)+1
+                      IF(basis%NUMBER_OF_XI<3.OR.elementIdx3<=numberOfElementsXi(3)) THEN
+                        IF(basis%NUMBER_OF_XI<2.OR.elementIdx2<=numberOfElementsXi(2)) THEN
+                          IF(elementIdx1<=numberOfElementsXi(1)) THEN
+                            gridElementIdx=elementIdx1
+                            nodeIdx=1+(elementIdx1-1)*(basis%NUMBER_OF_NODES_XIC(1)-1)
+                            IF(basis%NUMBER_OF_XI>1) THEN
+                              gridElementIdx=gridElementIdx+(elementIdx2-1)*numberOfElementsXi(1)
+                              nodeIdx=nodeIdx+(elementIdx2-1)*totalNumberOfNodesXi(1)*(basis%NUMBER_OF_NODES_XIC(2)-1)
+                              IF(basis%NUMBER_OF_XI>2) THEN
+                                gridElementIdx=gridElementIdx+(elementIdx3-1)*numberOfElementsXi(1)*numberOfElementsXi(2)
+                                nodeIdx=nodeIdx+(elementIdx3-1)*totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)* &
+                                  & (basis%NUMBER_OF_NODES_XIC(3)-1)
+                              ENDIF
+                            ENDIF
+                            IF(BASIS%TYPE==BASIS_LAGRANGE_HERMITE_TP_TYPE) THEN
+                              !Lagrange Hermite TP elements
+                              elementIdx=gridElementIdx
+                              localNodeIdx=0
+                              DO localNodeIdx1=1,basis%NUMBER_OF_NODES_XIC(1)
+                                localNodeIdx=localNodeIdx+1
+                                elementNodes(localNodeIdx)=nodeIdx+(localNodeIdx1-1)
+                              ENDDO !localNodeIdx1
+                              IF(basis%NUMBER_OF_XI>1) THEN
+                                DO localNodeIdx2=2,basis%NUMBER_OF_NODES_XIC(2)
+                                  DO localNodeIdx1=1,basis%NUMBER_OF_NODES_XIC(1)
+                                    localNodeIdx=localNodeIdx+1
+                                    elementNodes(localNodeIdx)=nodeIdx+(localNodeidx1-1)+(localNodeIdx2-1)*totalNumberOfNodesXi(1)
+                                  ENDDO !localNodeIdx1
+                                ENDDO !localNodeIdx2
+                                IF(basis%NUMBER_OF_XI>2) THEN
+                                  DO localNodeIdx3=2,basis%NUMBER_OF_NODES_XIC(3)
+                                    DO localnodeIdx2=1,basis%NUMBER_OF_NODES_XIC(2)
+                                      DO localNodeIdx1=1,basis%NUMBER_OF_NODES_XIC(1)
+                                        localNodeIdx=localNodeidx+1
+                                        elementNodes(localNodeIdx)=nodeIdx+(localNodeIdx1-1)+ &
+                                          & (localnodeIdx2-1)* totalNumberOfNodesXi(1)+ &
+                                          & (localNodeIdx3-1)*totalNumberOfNodesXi(1)*totalNumberOfNodesXi(2)
+                                      ENDDO !localNodeIdx1
+                                    ENDDO !localnodeIdx2
+                                  ENDDO !localNodeIdx3
+                                ENDIF
+                              ENDIF
+                              CALL GeneratedMesh_RegularComponentNodesToUserNumbers(regularMesh%generatedMesh, &
+                                & basisIdx,elementNodes,elementNodesUserNumbers,err,error,*999)
+                              CALL MESH_TOPOLOGY_ELEMENTS_ELEMENT_NODES_SET(elementIdx,meshElements,elementNodesUserNumbers, &
+                                & err,error,*999)
+             !Create the mesh
+          
+          ALLOCATE(generatedMesh%maxNodeBases(generatedMesh%numberOfBases,STAT=err)
+          IF(err/=0) CALL FlagError("Could not allocated max node bases.",err,error)
+          generatedMesh%maxNodeBases(1:generatedMesh%numberOfBases)=0
+          !Finish the specific mesh type
+          SELECT CASE(generatedMesh%generatedType)
+          CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
+            CALL GeneratedMesh_RegularCreateFinish(regularTopologies%regularMesh,meshUserNumber,err,error,*999)
+          CASE(GENERATED_MESH_POLAR_MESH_TYPE)
+            CALL GeneratedMesh_PolarCreateFinish(regularTopologies%polarMesh,meshUserNumber,err,error,*999)
+          CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
+            CALL GeneratedMesh_CylinderCreateFinish(regularTopologies%cylinderMesh,meshUserNumber,err,error,*999)
+          CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
+            CALL GeneratedMesh_EllipsoidCreateFinish(regularTopologies%ellipsoidMesh,meshUserNumber,err,error,*999)
+          CASE DEFAULT
+            localError="The generated mesh mesh type of "// &
+              & TRIM(NumberToVString(generatedMesh%generatedType,"*",err,error))//" is invalid."
+            CALL FlagError(localError,err,error,*999)
+          END SELECT
+        ELSE
+          CALL FlagError("You must set the generated mesh basis before finishing the generated mesh.",err,error,*999)
+        ENDIF
+      ENDIF
+    ELSE
+      CALL FlagError("Regular topologies is not associated.",err,error,*999)
+    ENDIF
+
+    EXITS("GeneratedMesh_RegularTopologiesCreateFinish")
+    RETURN
+999 ERRORS("GeneratedMesh_RegularTopologiesCreateFinish",err,error)
+    EXITS("GeneratedMesh_RegularTopologiesCreateFinish")
+    RETURN 1
+    
+  END SUBROUTINE GeneratedMesh_RegularTopologiesCreateFinish
 
   !
   !================================================================================================================================
@@ -1218,7 +1554,6 @@ CONTAINS
   !================================================================================================================================
   !
 
-  
   !>Gets the extent of a generated mesh. \see OpenCMISS::Iron::cmfe_GeneratedMesh_ExtentGet
   !>\todo Add in routine to return the number of extents
   SUBROUTINE GeneratedMesh_ExtentGet(generatedMesh,extent,err,error,*)
@@ -1229,17 +1564,20 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
+    INTEGER(INTG) :: numberOfExtents
+    TYPE(GeneratedMeshRegularTopologiesType), POINTER :: regularTopologies
     TYPE(VARYING_STRING) :: localError
 
     ENTERS("GeneratedMesh_ExtentGet",err,error,*999)
 
     IF(ASSOCIATED(generatedMesh)) THEN
-      SELECT CASE(generatedMesh%generatedType)
-      CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
-        IF(ASSOCIATED(generatedMesh%regularMesh)) THEN
-          numberOfExtents=SIZE(generatedMesh%polarMesh%polarExtent,1)
+      SELECT CASE(generatedMesh%generatedClass)
+      CASE(GENERATED_MESH_REGULAR_TOPOLOGIES_CLASS)
+        regularTopologies=>generatedMesh%regularTopologies
+        IF(ASSOCIATED(regularTopologies)) THEN
+          numberOfExtents=SIZE(regularTopologies%maximumExtent,1)
           IF(SIZE(extent,1)>=numberOfExtents) THEN
-            extent(1:numberOfExtents)=generatedMesh%regularMesh%maximumExtent(1:numberOfExtents)
+            extent(1:numberOfExtents)=regularTopologies%maximumExtent(1:numberOfExtents)
           ELSE
             localError="The size of extent is too small. The supplied size is "// &
               & TRIM(NumberToVString(SIZE(extent,1),"*",err,error))//" and it needs to be >= "// &
@@ -1247,57 +1585,14 @@ CONTAINS
             CALL FlagError(localError,err,error,*999)
           ENDIF
         ELSE
-          CALL FlagError("Generated mesh regular mesh is not associated.",err,error,*999)
+          CALL FlagError("Generated mesh regular topologies is not associated.",err,error,*999)
         ENDIF
-      CASE(GENERATED_MESH_POLAR_MESH_TYPE)
-        IF(ASSOCIATED(generatedMesh%polarMesh)) THEN
-          numberOfExtents=SIZE(generatedMesh%polarMesh%polarExtent,1)
-          IF(SIZE(extent,1)>=numberOfExtents) THEN
-            extent(1:numberOfExtents)=generatedMesh%polarMesh%polarExtent(1:numberOfExtents)
-          ELSE
-            localError="The size of extent is too small. The supplied size is "// &
-              & TRIM(NumberToVString(SIZE(extent,1),"*",err,error))//" and it needs to be >= "// &
-              & TRIM(NumberToVString(numberOfExtents,"*",err,error))//"."
-            CALL FlagError(localError,err,error,*999)
-          ENDIF
-        ELSE
-          CALL FlagError("Generated mesh polar mesh is not associated.",err,error,*999)
-        ENDIF
+      CASE(GENERATED_MESH_BRANCHING_TOPOLOGIES_CLASS)
         CALL FlagError("Not implemented.",err,error,*999)
-      CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
-        IF(ASSOCIATED(generatedMesh%cylinderMesh)) THEN
-          numberOfExtents=SIZE(generatedMesh%cylinderMesh%cylinderExtent,1)
-          IF(SIZE(extent,1)>=numberOfExtents) THEN
-            extent(1:numberOfExtents)=generatedMesh%cylinderMesh%cylinderExtent(1:numberOfExtents)
-          ELSE
-            localError="The size of extent is too small. The supplied size is "// &
-              & TRIM(NumberToVString(SIZE(extent,1),"*",err,error))//" and it needs to be >= "// &
-              & TRIM(NumberToVString(numberOfExtents,"*",err,error))//"."
-            CALL FlagError(localError,err,error,*999)
-          ENDIF
-        ELSE
-          CALL FlagError("Generated mesh cylinder mesh is not associated.",err,error,*999)
-        ENDIF
-      CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
-        IF(ASSOCIATED(generatedMesh%ellipsoidMesh)) THEN
-          numberOfExtents=SIZE(generatedMesh%ellipsoidMesh%ellipsoidExtent,1)
-          IF(SIZE(extent,1)>=numberOfExtents) THEN
-            extent(1:numberOfExtents)=generatedMesh%ellipsoidMesh%ellipsoidExtent(1:numberOfExtents)
-          ELSE
-            localError="The size of extent is too small. The supplied size is "// &
-              & TRIM(NumberToVString(SIZE(extent,1),"*",err,error))//" and it needs to be >= "// &
-              & TRIM(NumberToVString(numberOfExtents,"*",err,error))//"."
-            CALL FlagError(localError,err,error,*999)
-          ENDIF
-        ELSE
-          CALL FlagError("Generated mesh cylinder mesh is not associated.",err,error,*999)
-        ENDIF
-      CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
-        CALL FlagError("Not implemented.",err,error,*999)
-      CASE DEFAULT
-        localError="The generated mesh mesh type of "//TRIM(NumberToVString(generatedMesh%generatedType,"*",err,error))// &
-          & " is invalid."
-        CALL FlagError(localError,err,error,*999)
+      CASE DEFAULT        
+        localError="The generated mesh type of "//TRIM(NumberToVString(generatedMesh%branchingTopologies% &
+          & generatedType,"*",err,error))//" is invalid for a branching topologies generated class."
+        CALL FlagError(localError,err,error,*999)        
       END SELECT
     ELSE
       CALL FlagError("Generated mesh is not associated",err,error,*999)
@@ -1335,223 +1630,234 @@ CONTAINS
       IF(generatedMesh%generatedMeshFinished) THEN
         CALL FlagError("Generated mesh has been finished.",err,error,*999)
       ELSE
-        SELECT CASE(generatedMesh%generatedType)
-        CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
-          IF(ASSOCIATED(generatedMesh%regularMesh)) THEN
-            IF(SIZE(extent,1)>=generatedMesh%coordinateDimension) THEN
-              IF(L2Norm(extent(1:generatedMesh%coordinateDimension))>ZERO_TOLERANCE) THEN
-                ALLOCATE(newExtents(1:generatedMesh%coordinateDimension),STAT=err)
-                IF(err/=0) CALL FlagError("Could not allocate new extents.",err,error,*999)
-                newExtents(1:generatedMesh%coordinateDimension)=extent(1:generatedMesh%coordinateDimension)
-                CALL MOVE_ALLOC(newExtents,generatedMesh%regularMesh%maximumExtent)
-              ELSE
-                CALL FlagError("The norm of the mesh extent is zero.",err,error,*999)
-              ENDIF
-            ELSE
-              localError="The specified number of extents of "//TRIM(NumberToVString(SIZE(extent,1),"*",err,error))// &
-                & " is invalid. The number of extents must be >= the coordinate system dimension of "// &
-                & TRIM(NumberToVString(generatedMesh%coordinateDimension,"*",err,error))// &
-                & " for a regular generated mesh."
-              CALL FlagError(localError,err,error,*999)
-            ENDIF
-          ELSE
-            CALL FlagError("Regular generated mesh is not associated.",err,error,*999)
-          ENDIF
-        CASE(GENERATED_MESH_POLAR_MESH_TYPE)
-          IF(ASSOCIATED(generatedMesh%polarMesh)) THEN
-            IF(generatedMesh%polarMesh%sperhical) THEN
-              IF(generatedMesh%meshDimension>2) THEN
-                minimumNumberOfExtents=2
-              ELSE
-                minimumNumberOfExtents=1                
-              ENDIF
-            ELSE
-              IF(generatedMesh%meshDimension>1) THEN
-                minimumNumberOfExtents=2
-              ELSE
-                minimumNumberOfExtents=1                
-              ENDIF              
-            ENDIF
-            numberOfExtents=SIZE(extent,1)
-            IF(numberOfExtents>=minimumNumberOfExtents) THEN
-              !Check the extents
-              previousExtent=0.0_DP
-              DO extentIdx=1,numberOfExtents
-                IF(extent(extentIdx)>ZERO_TOLERANCE) THEN
-                  IF(extent(extentIdx)>previousExtent) THEN
-                    previousExtent=extent(extentIdx)+ZERO_TOLERANCE
-                  ELSE
-                    localError="Invalid extents. The specified extent index of "// &
-                      & TRIM(NumberToVString(extentIdx,"*",err,error))// &
-                      & " has an extent of "//TRIM(NumberToVString(extent(extentIdx),"*",err,error))// &
-                      & ". The extent needs to be bigger than the previous extent of "// &
-                      & TRIM(NumberToVString(previousExtent,"*",err,error))//"."
-                    CALL FlagError(localError,err,error,*999)
-                  ENDIF
-                ELSE
-                  localError="Invalid extents. The specified extent index of "// &
-                    & TRIM(NumberToVString(extentIdx,"*",err,error))// &
-                    & " has an extent of "//TRIM(NumberToVString(extent(extentIdx),"*",err,error))// &
-                    & ". The extent needs to be > zero."
-                  CALL FlagError(localError,err,error,*999)                  
+        SELECT CASE(generatedMesh%generatedClass)
+        CASE(GENERATED_MESH_REGULAR_TOPOLOGIES_CLASS)
+          regularTopologies=>generatedMesh%regularTopologies
+          IF(ASSOCIATED(regularTopologies)) THEN
+            SELECT CASE(regularTopologies%generatedType)
+            CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
+              IF(SIZE(extent,1)>=generatedMesh%coordinateDimension) THEN
+                IF(L2Norm(extent(1:generatedMesh%coordinateDimension))<=ZERO_TOLERANCE) THEN
+                  CALL FlagError("The norm of the mesh extent is zero.",err,error,*999)
                 ENDIF
-              ENDDO !extentIdx
-              ALLOCATE(newExtents(1:numberOfExtents),STAT=err)
-              IF(err/=0) CALL FlagError("Could not allocate new extents.",err,error,*999)
-              newExtents(1:numberOfExtents)=extent(1:numberOfExtents)
-              CALL MOVE_ALLOC(newExtents,generatedMesh%polarMesh%polarExtent)
-            ELSE
-              localError="The specified number of extents of "//TRIM(NumberToVString(SIZE(extent,1),"*",err,error))// &
-                & " is invalid. The number of extents must be >= "//TRIM(NumberToVString(minimumNumberOfExtents,"*",err,error))// &
-                & " for a polar generated mesh."
-              CALL FlagError(localError,err,error,*999)
-            ENDIF
-          ELSE
-            CALL FlagError("Regular generated mesh is not associated.",err,error,*999)
-          ENDIF
-        CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
-          IF(ASSOCIATED(generatedMesh%cylinderMesh)) THEN
-            IF(generatedMesh%meshDimension==2) THEN
-              minimumNumberOfExtents=2
-            ELSE IF(generatedMesh%meshDimension==3) THEN
-              minimumNumberOfExtents=3
-            ELSE
-              localError="The mesh dimension of "//TRIM(NumberToVString(generatedMesh%meshDimension,"*",err,error))// &
-                & " is invalid for a cylindrical mesh. The mesh dimension must be either 2 or 3."
-              CALL FlagError(localError,err,error,*999)             
-            ENDIF
-            numberOfExtents=SIZE(extent,1)
-            IF(numberOfExtents>=minimumNumberOfExtents) THEN
-              !Check the extents
-              !Check the length of the cylinder
-              IF(extent(1)<ZERO_TOLERANCE) THEN
-                localError="The first specified extent of "//TRIM(NumberToVString(extent(1),"*",err,error))// &
-                  & " is invalid as the length of a cylinder. The extent must be > 0."
+              ELSE
+                localError="The specified number of extents of "//TRIM(NumberToVString(SIZE(extent,1),"*",err,error))// &
+                  & " is invalid. The number of extents must be >= the coordinate system dimension of "// &
+                  & TRIM(NumberToVString(generatedMesh%coordinateDimension,"*",err,error))// &
+                  & " for a regular generated mesh."
                 CALL FlagError(localError,err,error,*999)
               ENDIF
-              !Check radii
-              previousExtent=0.0_DP
-              DO extentIdx=2,numberOfExtents
-                IF(extent(extentIdx)>ZERO_TOLERANCE) THEN
-                  IF(extent(extentIdx)>previousExtent) THEN
-                    previousExtent=extent(extentIdx)+ZERO_TOLERANCE
+            CASE(GENERATED_MESH_POLAR_MESH_TYPE)
+              polarMesh=>regularTopologies%polarMesh
+              IF(ASSOCIATED(polarMesh)) THEN
+                IF(polarMesh%sperhical) THEN
+                  IF(regularTopologies%meshDimension>2) THEN
+                    minimumNumberOfExtents=2
                   ELSE
-                    localError="The specified extent index of "// &
-                      & TRIM(NumberToVString(extentIdx,"*",err,error))// &
-                      & " which has an extent of "//TRIM(NumberToVString(extent(extentIdx),"*",err,error))// &
-                      & " is invalid as a radius of a cylinder. The extent needs to be bigger than the previous extent of "// &
-                      & TRIM(NumberToVString(previousExtent,"*",err,error))//"."
-                    CALL FlagError(localError,err,error,*999)
+                    minimumNumberOfExtents=1                
                   ENDIF
                 ELSE
-                  localError="The specified extent index of "// &
-                    & TRIM(NumberToVString(extentIdx,"*",err,error))// &
-                    & " which has an extent of "//TRIM(NumberToVString(extent(extentIdx),"*",err,error))// &
-                    & " is invalid as a radius of a cylinder. The extent needs to be > zero."
-                  CALL FlagError(localError,err,error,*999)                  
+                  IF(generatedMesh%meshDimension>1) THEN
+                    minimumNumberOfExtents=2
+                  ELSE
+                    minimumNumberOfExtents=1                
+                  ENDIF
                 ENDIF
-              ENDDO !extentIdx
-              ALLOCATE(newExtents(1:numberOfExtents),STAT=err)
-              IF(err/=0) CALL FlagError("Could not allocate new extents.",err,error,*999)
-              newExtents(1:numberOfExtents)=extent(1:numberOfExtents)
-              CALL MOVE_ALLOC(newExtents,generatedMesh%cylinderMesh%polarExtent)
-            ELSE
-              localError="The extent size of "//TRIM(NumberToVString(SIZE(extent,1),"*",err,error))// &
-                & " is invalid. The extent size must >= the mesh dimension of "// &
-                & TRIM(NumberToVString(meshDimension,"*",err,error))//"."
-              CALL FlagError(localError,err,error,*999)
-            ENDIF
-          ELSE
-            CALL FlagError("Cylinder generated mesh is not associated.",err,error,*999)
-          ENDIF
-        CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
-          IF(ASSOCIATED(generatedMesh%ellipsoidMesh)) THEN
-            IF(generatedMesh%meshDimension==2) THEN
-              IF(generatedMesh%ellipsoidMesh%closed) THEN
-                minimumNumberOfExtents=2
-                shortAxisExtentStart=2
-              ELSE
-                minimumNumberOfExtents=3
-                shortAxisExtentStart=3
-               ENDIF
-            ELSE IF(generatedMesh%meshDimension==3) THEN
-              IF(generatedMesh%ellipsoidMesh%closed) THEN
-                minimumNumberOfExtents=3
-                shortAxisExtentStart=2
-              ELSE
-                minimumNumberOfExtents=4
-                shortAxisExtentStart=3
-              ENDIF
-            ELSE
-              localError="The mesh dimension of "//TRIM(NumberToVString(generatedMesh%meshDimension,"*",err,error))// &
-                & " is invalid for an ellipsoid mesh. The mesh dimension must be either 2 or 3."
-              CALL FlagError(localError,err,error,*999)
-              ENDIF
-            ENDIF
-            numberOfExtents=SIZE(extent,1)
-            IF(numberOfExtents>=minimumNumberOfExtents) THEN
-              !Check the extents
-              !Check the size of the long axis of the ellipsoid
-              IF(extent(1)<ZERO_TOLERANCE) THEN
-                localError="The first specified extent of "//TRIM(NumberToVString(extent(1),"*",err,error))// &
-                  & " is invalid as the size of the long axis of an ellipsoid. The extent must be > 0."
-                CALL FlagError(localError,err,error,*999)
-              ENDIF
-              !If the ellipsoid is open check the opening angle
-              IF(.NOT.generatedMesh%ellipsoidMesh%closed) THEN
-                IF((extent(2)<ZERO_TOLERANCE).OR.(extent(2)>=PI)) THEN
-                  localError="The second specified extent of "//TRIM(NumberToVString(extent(2),"*",err,error))// &
-                    & " is invalid as the opening angle of an open ellipsoid. The extent must be > 0 and < PI."
+                numberOfExtents=SIZE(extent,1)
+                IF(numberOfExtents>=minimumNumberOfExtents) THEN
+                  !Check the extents
+                  previousExtent=0.0_DP
+                  DO extentIdx=1,numberOfExtents
+                    IF(extent(extentIdx)>ZERO_TOLERANCE) THEN
+                      IF(extent(extentIdx)>previousExtent) THEN
+                        previousExtent=extent(extentIdx)+ZERO_TOLERANCE
+                      ELSE
+                        localError="Invalid extents. The specified extent index of "// &
+                          & TRIM(NumberToVString(extentIdx,"*",err,error))// &
+                          & " has an extent of "//TRIM(NumberToVString(extent(extentIdx),"*",err,error))// &
+                          & ". The extent needs to be bigger than the previous extent of "// &
+                          & TRIM(NumberToVString(previousExtent,"*",err,error))//"."
+                        CALL FlagError(localError,err,error,*999)
+                      ENDIF
+                    ELSE
+                      localError="Invalid extents. The specified extent index of "// &
+                        & TRIM(NumberToVString(extentIdx,"*",err,error))// &
+                        & " has an extent of "//TRIM(NumberToVString(extent(extentIdx),"*",err,error))// &
+                        & ". The extent needs to be > zero."
+                      CALL FlagError(localError,err,error,*999)                  
+                    ENDIF
+                  ENDDO !extentIdx
+                ELSE
+                  localError="The specified number of extents of "//TRIM(NumberToVString(SIZE(extent,1),"*",err,error))// &
+                    & " is invalid. The number of extents must be >= "//TRIM(NumberToVString(minimumNumberOfExtents,"*", &
+                    & err,error))//" for a polar generated mesh."
                   CALL FlagError(localError,err,error,*999)
                 ENDIF
+              ELSE
+                CALL FlagError("Regular topologies polar mesh is not associated.",err,error,*999)
               ENDIF
-              !Check the ellipsoid short axis radii
-              previousExtent=0.0_DP
-              DO extentIdx=shortAxisExtentStart,numberOfExtents
-                IF(extent(extentIdx)>ZERO_TOLERANCE) THEN
-                  IF(extent(extentIdx)>previousExtent) THEN
-                    previousExtent=extent(extentIdx)+ZERO_TOLERANCE
-                  ELSE
-                    localError="The specified extent index of "// &
-                      & TRIM(NumberToVString(extentIdx,"*",err,error))// &
-                      & " which has an extent of "//TRIM(NumberToVString(extent(extentIdx),"*",err,error))// &
-                      & " is invalid as a short axis radius of an ellipsoid. The extent needs to be bigger "// &
-                      & "than the previous extent of "//TRIM(NumberToVString(previousExtent,"*",err,error))//"."
+            CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
+              cylinderMesh=>regularTopologies%cylinderMesh
+              IF(ASSOCIATED(cylinderMesh)) THEN
+                IF(regularTopologies%meshDimension==2) THEN
+                  minimumNumberOfExtents=2
+                ELSE IF(regularTopologies%meshDimension==3) THEN
+                  minimumNumberOfExtents=3
+                ELSE
+                  localError="The mesh dimension of "//TRIM(NumberToVString(regularTopologies%meshDimension,"*",err,error))// &
+                    & " is invalid for a cylindrical mesh. The mesh dimension must be either 2 or 3."
+                  CALL FlagError(localError,err,error,*999)             
+                ENDIF
+                numberOfExtents=SIZE(extent,1)
+                IF(numberOfExtents>=minimumNumberOfExtents) THEN
+                  !Check the extents
+                  !Check the length of the cylinder
+                  IF(extent(1)<ZERO_TOLERANCE) THEN
+                    localError="The first specified extent of "//TRIM(NumberToVString(extent(1),"*",err,error))// &
+                      & " is invalid as the length of a cylinder. The extent must be > 0."
                     CALL FlagError(localError,err,error,*999)
                   ENDIF
+                  !Check radii
+                  previousExtent=0.0_DP
+                  DO extentIdx=2,numberOfExtents
+                    IF(extent(extentIdx)>ZERO_TOLERANCE) THEN
+                      IF(extent(extentIdx)>previousExtent) THEN
+                        previousExtent=extent(extentIdx)+ZERO_TOLERANCE
+                      ELSE
+                        localError="The specified extent index of "// &
+                          & TRIM(NumberToVString(extentIdx,"*",err,error))// &
+                          & " which has an extent of "//TRIM(NumberToVString(extent(extentIdx),"*",err,error))// &
+                          & " is invalid as a radius of a cylinder. The extent needs to be bigger than the previous extent of "// &
+                          & TRIM(NumberToVString(previousExtent,"*",err,error))//"."
+                        CALL FlagError(localError,err,error,*999)
+                      ENDIF
+                    ELSE
+                      localError="The specified extent index of "// &
+                        & TRIM(NumberToVString(extentIdx,"*",err,error))// &
+                        & " which has an extent of "//TRIM(NumberToVString(extent(extentIdx),"*",err,error))// &
+                        & " is invalid as a radius of a cylinder. The extent needs to be > zero."
+                      CALL FlagError(localError,err,error,*999)                  
+                    ENDIF
+                  ENDDO !extentIdx
                 ELSE
-                  localError="The specified extent index of "// &
-                    & TRIM(NumberToVString(extentIdx,"*",err,error))// &
-                    & " which has an extent of "//TRIM(NumberToVString(extent(extentIdx),"*",err,error))// &
-                    & " is invalid as a short axis radius of an ellipsoid. The extent needs to be > zero."
-                  CALL FlagError(localError,err,error,*999)                  
+                  localError="The extent size of "//TRIM(NumberToVString(SIZE(extent,1),"*",err,error))// &
+                    & " is invalid. The extent size must >= the mesh dimension of "// &
+                    & TRIM(NumberToVString(meshDimension,"*",err,error))//"."
+                  CALL FlagError(localError,err,error,*999)
                 ENDIF
-              ENDDO !extentIdx
-              ALLOCATE(newExtents(1:numberOfExtents),STAT=err)
-              IF(err/=0) CALL FlagError("Could not allocate new extents.",err,error,*999)
-              newExtents(1:numberOfExtents)=extent(1:numberOfExtents)
-              CALL MOVE_ALLOC(newExtents,generatedMesh%ellipsoidMesh%polarExtent)
-            ELSE
-              localError="The specified number of extents of "//TRIM(NumberToVString(SIZE(extent,1),"*",err,error))// &
-                & " is invalid. The number of extents must be >= "//TRIM(NumberToVString(minimumNumberOfExtents,"*",err,error))// &
-                & " for an ellipsoid generated mesh."
+              ELSE
+                CALL FlagError("Regular topologies cylinder mesh is not associated.",err,error,*999)
+              ENDIF
+            CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
+              ellipsoidMesh=>regularTopologies%ellipsoidMesh
+              IF(ASSOCIATED(ellipsoidMesh)) THEN
+                IF(regularTopologies%meshDimension==2) THEN
+                  IF(ellipsoidMesh%closed) THEN
+                    minimumNumberOfExtents=2
+                    shortAxisExtentStart=2
+                  ELSE
+                    minimumNumberOfExtents=3
+                    shortAxisExtentStart=3
+                  ENDIF
+                ELSE IF(regularTopologies%meshDimension==3) THEN
+                  IF(ellipsoidMesh%closed) THEN
+                    minimumNumberOfExtents=3
+                    shortAxisExtentStart=2
+                  ELSE
+                    minimumNumberOfExtents=4
+                    shortAxisExtentStart=3
+                  ENDIF
+                ELSE
+                  localError="The mesh dimension of "//TRIM(NumberToVString(regularTopologies%meshDimension,"*",err,error))// &
+                    & " is invalid for an ellipsoid mesh. The mesh dimension must be either 2 or 3."
+                  CALL FlagError(localError,err,error,*999)
+                ENDIF
+                numberOfExtents=SIZE(extent,1)
+                IF(numberOfExtents>=minimumNumberOfExtents) THEN
+                  !Check the extents
+                  !Check the size of the long axis of the ellipsoid
+                  IF(extent(1)<ZERO_TOLERANCE) THEN
+                    localError="The first specified extent of "//TRIM(NumberToVString(extent(1),"*",err,error))// &
+                      & " is invalid as the size of the long axis of an ellipsoid. The extent must be > 0."
+                    CALL FlagError(localError,err,error,*999)
+                  ENDIF
+                  !If the ellipsoid is open check the opening angle
+                  IF(.NOT.ellipsoidMesh%closed) THEN
+                    IF((extent(2)<ZERO_TOLERANCE).OR.(extent(2)>=PI)) THEN
+                      localError="The second specified extent of "//TRIM(NumberToVString(extent(2),"*",err,error))// &
+                        & " is invalid as the opening angle of an open ellipsoid. The extent must be > 0 and < PI."
+                      CALL FlagError(localError,err,error,*999)
+                    ENDIF
+                  ENDIF
+                  !Check the ellipsoid short axis radii
+                  previousExtent=0.0_DP
+                  DO extentIdx=shortAxisExtentStart,numberOfExtents
+                    IF(extent(extentIdx)>ZERO_TOLERANCE) THEN
+                      IF(extent(extentIdx)>previousExtent) THEN
+                        previousExtent=extent(extentIdx)+ZERO_TOLERANCE
+                      ELSE
+                        localError="The specified extent index of "// &
+                          & TRIM(NumberToVString(extentIdx,"*",err,error))// &
+                          & " which has an extent of "//TRIM(NumberToVString(extent(extentIdx),"*",err,error))// &
+                          & " is invalid as a short axis radius of an ellipsoid. The extent needs to be bigger "// &
+                          & "than the previous extent of "//TRIM(NumberToVString(previousExtent,"*",err,error))//"."
+                        CALL FlagError(localError,err,error,*999)
+                      ENDIF
+                    ELSE
+                      localError="The specified extent index of "// &
+                        & TRIM(NumberToVString(extentIdx,"*",err,error))// &
+                        & " which has an extent of "//TRIM(NumberToVString(extent(extentIdx),"*",err,error))// &
+                        & " is invalid as a short axis radius of an ellipsoid. The extent needs to be > zero."
+                      CALL FlagError(localError,err,error,*999)                  
+                    ENDIF
+                  ENDDO !extentIdx
+                ELSE
+                  localError="The specified number of extents of "//TRIM(NumberToVString(SIZE(extent,1),"*",err,error))// &
+                    & " is invalid. The number of extents must be >= "//TRIM(NumberToVString(minimumNumberOfExtents,"*", &
+                    & err,error))//" for an ellipsoid generated mesh."
+                  CALL FlagError(localError,err,error,*999)
+                ENDIF
+              ELSE
+                CALL FlagError("Regular topologies ellipsoid mesh is not associated.",err,error,*999)
+              ENDIF          
+            CASE DEFAULT
+              localError="The generated mesh regular topologies type of "// &
+                & TRIM(NumberToVString(regularTopologies%generatedType,"*",err,error))//" is invalid."
               CALL FlagError(localError,err,error,*999)
-            ENDIF
+            END SELECT
+            !Extents OK
+            !Allocate and store the new extents
+            ALLOCATE(newExtents(1:generatedMesh%coordinateDimension),STAT=err)
+            IF(err/=0) CALL FlagError("Could not allocate new extents.",err,error,*999)
+            newExtents(1:generatedMesh%coordinateDimension)=extent(1:generatedMesh%coordinateDimension)
+            CALL MOVE_ALLOC(newExtents,regularTopologies%maximumExtent)
           ELSE
-            CALL FlagError("Ellipsoid generated mesh is not associated.",err,error,*999)
+            CALL FlagError("Generated mesh regular topologies is not associated.",err,error,*999)
           ENDIF
-        CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
-          CALL FlagError("Not implemented.",err,error,*999)
-        CASE DEFAULT
-          localError="The generated mesh mesh type of "//TRIM(NumberToVString(generatedMesh%generatedType,"*",err,error))// &
-            & " is invalid."
-          CALL FlagError(localError,err,error,*999)
+        CASE(GENERATED_MESH_BRANCHING_TOPOLOGIES_CLASS)
+          branchingTopologies=>generatedMesh%branchingTopologies
+          IF(ASSOCIATED(branchingTopologies)) THEN
+            SELECT CASE(branchingTopologies%generatedType)
+            CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
+              CALL FlagError("Not implemented.",err,error,*999)
+            CASE DEFAULT
+              localError="The generated mesh branching topologies type of "// &
+                & TRIM(NumberToVString(generatedMesh%generatedType,"*",err,error))//" is invalid."
+              CALL FlagError(localError,err,error,*999)
+            END SELECT
+          ELSE
+            CALL FlagError("Generated mesh branching topologies is not associated.",err,error,*999)
+          ENDIF
+        CASE DEFAULT        
+          localError="The generated mesh type of "//TRIM(NumberToVString(branchingTopologies% &
+            & generatedType,"*",err,error))//" is invalid for a branching topologies generated class."
+          CALL FlagError(localError,err,error,*999)        
         END SELECT
       ENDIF
     ELSE
       CALL FlagError("Generated mesh is not associated.",err,error,*999)
     ENDIF
-
+    
     EXITS("GeneratedMesh_ExtentSet")
     RETURN
 999 ERRORS("GeneratedMesh_ExtentSet",err,error)
@@ -1565,7 +1871,7 @@ CONTAINS
   !
 
   !>Get one of the surfaces of a generated mesh. \see OpenCMISS::Iron::cmfe_GeneratedMeshSurfaceGet
-  SUBROUTINE GeneratedMesh_SurfaceGet(generatedMesh,meshComponent,surfaceType,surfaceNodes,normalXi,err,error,*)
+  SUBROUTINE GeneratedMesh_SurfaceNodesGet(generatedMesh,meshComponent,surfaceType,surfaceNodes,normalXi,err,error,*)
 
     !Argument variables
     TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh to get the type of
@@ -1578,7 +1884,7 @@ CONTAINS
     !Local Variables
     TYPE(VARYING_STRING) :: localError
 
-    ENTERS("GeneratedMesh_SurfaceGet",err,error,*999)
+    ENTERS("GeneratedMesh_SurfaceNodesGet",err,error,*999)
 
     IF(ASSOCIATED(generatedMesh)) THEN
       SELECT CASE(generatedMesh%generatedType)
@@ -1605,13 +1911,13 @@ CONTAINS
       CALL FlagError("Generated mesh is not associated",err,error,*999)
     ENDIF
 
-    EXITS("GeneratedMesh_SurfaceGet")
+    EXITS("GeneratedMesh_SurfaceNodesGet")
     RETURN
-999 ERRORS("GeneratedMesh_SurfaceGet",err,error)
-    EXITS("GeneratedMesh_SurfaceGet")
+999 ERRORS("GeneratedMesh_SurfaceNodesGet",err,error)
+    EXITS("GeneratedMesh_SurfaceNodesGet")
     RETURN 1
     
-  END SUBROUTINE GeneratedMesh_SurfaceGet
+  END SUBROUTINE GeneratedMesh_SurfaceNodesGet
 
   !
   !================================================================================================================================
@@ -1629,14 +1935,9 @@ CONTAINS
     ENTERS("GeneratedMesh_Finalise",err,error,*999)
 
     IF(ASSOCIATED(generatedMesh)) THEN
-      CALL GeneratedMesh_RegularFinalise(generatedMesh%regularMesh,err,error,*999)
-      CALL GeneratedMesh_PolarFinalise(generatedMesh%polarMesh,err,error,*999)
-      CALL GeneratedMesh_CylinderFinalise(generatedMesh%cylinderMesh,err,error,*999)
-      CALL GeneratedMesh_EllipsoidFinalise(generatedMesh%ellipsoidMesh,err,error,*999)
-      CALL GeneratedMesh_FractalTreeFinalise(generatedMesh%fractalTreeMesh,err,error,*999)
+      CALL GeneratedMesh_RegularTopologiesFinalise(generatedMesh%regularTopologies,err,error,*999)
+      CALL GeneratedMesh_BranchingTopologiesFinalise(generatedMesh%branchingTopologies,err,error,*999)
       IF(ALLOCATED(generatedMesh%bases)) DEALLOCATE(generatedMesh%bases)
-      IF(ALLOCATED(generatedMesh%origin)) DEALLOCATE(generatedMesh%origin)
-      IF(ALLOCATED(generatedMesh%baseVectors)) DEALLOCATE(generatedMesh%baseVectors)
       DEALLOCATE(generatedMesh)
     ENDIF
 
@@ -1647,6 +1948,34 @@ CONTAINS
     RETURN 1
     
   END SUBROUTINE GeneratedMesh_Finalise
+
+  !
+  !================================================================================================================================
+  !
+
+  !>Finalises a branching topologies generated mesh and dellocates all memory.
+  SUBROUTINE GeneratedMesh_BranchingTopologiesFinalise(branchingTopologies,err,error,*)
+
+    !Argument variables
+    TYPE(GeneratedMeshBranchingTopologiesType), POINTER :: branchingTopologies !<A pointer to the branching topologies to finalise.
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+
+    ENTERS("GeneratedMesh_BranchingTopologiesFinalise",err,error,*999)
+
+    IF(ASSOCIATED(branchingTopologies)) THEN
+      CALL GeneratedMesh_FractalTreeMeshFinalise(branchingTopologies%fractalTreeMesh,err,error,*999)
+      DEALLOCATE(branchingTopologies)
+    ENDIF
+
+    EXITS("GeneratedMesh_BranchingTopologiesFinalise")
+    RETURN
+999 ERRORS("GeneratedMesh_BranchingTopologiesFinalise",err,error)
+    EXITS("GeneratedMesh_BranchingTopologiesFinalise")
+    RETURN 1
+    
+  END SUBROUTINE GeneratedMesh_BranchingTopologiesFinalise
 
   !
   !================================================================================================================================
@@ -1679,27 +2008,11 @@ CONTAINS
         generatedMesh%generatedMeshFinished=.FALSE.
         NULLIFY(generatedMesh%region)
         NULLIFY(generatedMesh%INTERFACE)
-        generatedMesh%generatedType=0
-        NULLIFY(generatedMesh%regularMesh)
-        NULLIFY(generatedMesh%polarMesh)
-        NULLIFY(generatedMesh%cylinderMesh)
-        NULLIFY(generatedMesh%ellipsoidMesh)
-        NULLIFY(generatedMesh%fractalTreeMesh)
-        ALLOCATE(generatedMesh%origin(coordinateDimension),STAT=err)
-        IF(err/=0) CALL FlagError("Could not allocate origin.",err,error,*998)
-        generatedMesh%origin=0.0_DP
-        generatedMesh%coordinateDimension=coordinateDimension
-        ALLOCATE(generatedMesh%baseVectors(coordinateDimension,coordinateDimension),STAT=err)
-        IF(err/=0) CALL FlagError("Could not allocate base Vectors.",err,error,*998)
-        generatedMesh%baseVectors=0.0_DP
-        DO coordinateIdx=1,coordinateDimension
-           generatedMesh%baseVectors(coordinateIdx,coordinateIdx)=1.0_DP
-        ENDDO !coordinateidx
-        generatedMesh%meshDimension=0
-        generatedMesh%numberOfMeshComponents=0
+        generatedMesh%generatedClass=0
         NULLIFY(generatedMesh%mesh)
-        !Default to a regular mesh.
-        CALL GeneratedMesh_RegularInitialise(generatedMesh,err,error,*999)
+        generatedMesh%coordinateDimension=coordinateDimension
+        !Default to a regular topologies generated mesh
+        CALL GeneratedMesh_RegularTopologiesInitialise(generatedMesh,err,error,*999)
       ENDIF
     ELSE
       CALL FlagError("Coordinate system is not associated.",err,error,*998)
@@ -1733,85 +2046,37 @@ CONTAINS
     ENTERS("GeneratedMesh_NumberOfElementsGet",err,error,*999)
 
     IF(ASSOCIATED(generatedMesh)) THEN
-      SELECT CASE(generatedMesh%generatedType)
-      CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
-        IF(ASSOCIATED(generatedMesh%regularMesh)) THEN
-          IF(ALLOCATED(generatedMesh%regularMesh%numberOfElementsXi)) THEN
-            IF(SIZE(numberOfElements,1)>=generatedMesh%meshDimension) THEN
-              numberOfElements(1:generatedMesh%meshDimension)= &
-                & generatedMesh%regularMesh%numberOfElementsXi(1:generatedMesh%meshDimension)
+      SELECT CASE(generatedMesh%generatedClass)
+      CASE(GENERATED_MESH_REGULAR_TOPOLOGIES_CLASS)
+        regularTopologies=>generatedMesh%regularTopologies
+        IF(ASSOCIATED(regularTopologies)) THEN
+          IF(ALLOCATED(regularTopologies%numberOfElementsXi)) THEN
+            IF(SIZE(numberOfElements,1)>=regularTopologies%meshDimension) THEN
+              numberOfElements(1:regularTopologies%meshDimension)= &
+                & regularTopologies%numberOfElementsXi(1:regularTopologies%meshDimension)
             ELSE
               localError="The size of number of elements is too small. The supplied size is "// &
                 & TRIM(NumberToVString(SIZE(numberOfElements,1),"*",err,error))//" and it needs to be >= "// &
-                & TRIM(NumberToVString(generatedMesh%meshDimension,"*",err,error))//"."
+                & TRIM(NumberToVString(regularTopologies%meshDimension,"*",err,error))//"."
               CALL FlagError(localError,err,error,*999)
             ENDIF
           ELSE
             CALL FlagError("Number of elements has not yet been set.",err,error,*999)
           ENDIF
         ELSE
-          CALL FlagError("Generated mesh regular mesh is not associated.",err,error,*999)
-        ENDIF
-      CASE(GENERATED_MESH_POLAR_MESH_TYPE)
-        IF(ASSOCIATED(generatedMesh%polarMesh)) THEN
-          IF(ALLOCATED(generatedMesh%polarMesh%numberOfElementsXi)) THEN
-            IF(SIZE(numberOfElements,1)>=SIZE((generatedMesh%polarMesh%numberOfElementsXi,1)) THEN
-              numberOfElements(1:SIZE((generatedMesh%polarMesh%numberOfElementsXi,1))= &
-                & generatedMesh%polarMesh%numberOfElementsXi(1:SIZE((generatedMesh%polarMesh%numberOfElementsXi,1))
-            ELSE
-              localError="The size of number of elements is too small. The supplied size is "// &
-                & TRIM(NumberToVString(SIZE(numberOfElements,1),"*",err,error))//" and it needs to be >= "// &
-                & TRIM(NumberToVString(SIZE(generatedMesh%polarMesh%numberOfElementsXi,1),"*",err,error))//"."
-              CALL FlagError(localError,err,error,*999)
-            ENDIF
-          ELSE
-            CALL FlagError("Number of elements has not yet been set.",err,error,*999)
-          ENDIF
+          CALL FlagError("Generated mesh regular topologies is not associated.",err,error,*999)
+        ENDIF        
+      CASE(GENERATED_MESH_BRANCHING_TOPOLOGIES_CLASS)
+        branchingTopologies=>generatedMesh%branchingTopologies
+        IF(ASSOCIATED(branchingTopologies)) THEN
+          CALL FlagError("Not implemented.",err,error,*999)
         ELSE
-          CALL FlagError("Generated mesh polar mesh is not associated.",err,error,*999)
-        ENDIF
-      CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
-        IF(ASSOCIATED(generatedMesh%cylinderMesh)) THEN
-          IF(ALLOCATED(generatedMesh%cylinderMesh%numberOfElementsXi)) THEN
-            IF(SIZE(numberOfElements,1)>=SIZE((generatedMesh%cylinderMesh%numberOfElementsXi,1)) THEN
-              numberOfElements(1:SIZE((generatedMesh%cylinderMesh%numberOfElementsXi,1))= &
-                & generatedMesh%cylinderMesh%numberOfElementsXi(1:SIZE((generatedMesh%cylinderMesh%numberOfElementsXi,1))
-            ELSE
-              localError="The size of number of elements is too small. The supplied size is "// &
-                & TRIM(NumberToVString(SIZE(numberOfElements,1),"*",err,error))//" and it needs to be >= "// &
-                & TRIM(NumberToVString(SIZE(generatedMesh%cylinderMesh%numberOfElementsXi,1),"*",err,error))//"."
-              CALL FlagError(localError,err,error,*999)
-            ENDIF
-          ELSE
-            CALL FlagError("Number of elements has not yet been set.",err,error,*999)
-          ENDIF
-        ELSE
-          CALL FlagError("Generated mesh cylinder mesh is not associated.",err,error,*999)
-        ENDIF
-      CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
-        IF(ASSOCIATED(generatedMesh%ellipsoidMesh)) THEN
-          IF(ALLOCATED(generatedMesh%ellipsoidMesh%numberOfElementsXi)) THEN
-            IF(SIZE(numberOfElements,1)>=SIZE((generatedMesh%ellipsoidMesh%numberOfElementsXi,1)) THEN
-              numberOfElements(1:SIZE((generatedMesh%ellipsoidMesh%numberOfElementsXi,1))= &
-                & generatedMesh%ellipsoidMesh%numberOfElementsXi(1:SIZE((generatedMesh%ellipsoidMesh%numberOfElementsXi,1))
-            ELSE
-              localError="The size of number of elements is too small. The supplied size is "// &
-                & TRIM(NumberToVString(SIZE(numberOfElements,1),"*",err,error))//" and it needs to be >= "// &
-                & TRIM(NumberToVString(SIZE(generatedMesh%ellipsoidMesh%numberOfElementsXi,1),"*",err,error))//"."
-              CALL FlagError(localError,err,error,*999)
-            ENDIF
-          ELSE
-            CALL FlagError("Number of elements has not yet been set.",err,error,*999)
-          ENDIF
-        ELSE
-          CALL FlagError("Generated mesh ellipsoid mesh is not associated.",err,error,*999)
-        ENDIF
-      CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
-        CALL FlagError("Not implemented.",err,error,*999)
-      CASE DEFAULT
-        localError="The generated mesh mesh type of "//TRIM(NumberToVString(generatedMesh%generatedType,"*",err,error))// &
+          CALL FlagError("Generated mesh branching topologies is not associated.",err,error,*999)
+        ENDIF        
+      CASE DEFAULT            
+        localError="The generated mesh class of "//TRIM(NumberToVString(generatedMesh%generatedClass,"*",err,error))// &
           & " is invalid."
-        CALL FlagError(localError,err,error,*999)
+        CALL FlagError(localError,err,error,*999)            
       END SELECT
     ELSE
       CALL FlagError("Generated mesh is not associated.",err,error,*999)
@@ -1851,90 +2116,39 @@ CONTAINS
         CALL FlagError("Generated mesh has been finished.",err,error,*999)
       ELSE
         IF(ALLOCATED(generatedMesh%bases)) THEN
-          SELECT CASE(generatedMesh%generatedType)
-          CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
-            regularMesh=>generatedMesh%regularMesh
-            IF(ASSOCIATED(regularMesh)) THEN
-              IF(SIZE(numberOfElements,1)>=generatedMesh%meshDimension) THEN
-                IF(ALL(numberOfElements>0)) THEN
-                  regularMesh%numberOfElementsXi(1:generatedMesh%meshDimension)=numberOfElements(1:generatedMesh%meshDimension)
+          SELECT CASE(generatedMesh%generatedClass)
+          CASE(GENERATED_MESH_REGULAR_TOPOLOGIES_CLASS)
+            regularTopologies=>generatedMesh%regularTopologies
+            IF(ASSOCIATED(regularTopologies)) THEN
+              IF(SIZE(numberOfElements,1)>=regularTopologies%meshDimension) THEN
+                IF(ALL(numberOfElements(1:regularTopologies%meshDimension)>0)) THEN
+                  regularTopologies%numberOfElementsXi(1:regularTopologies%meshDimension)= &
+                    & numberOfElements(1:regularTopologies%meshDimension)
                 ELSE
                   CALL FlagError("Must have 1 or more elements in all directions.",err,error,*999)
                 ENDIF
               ELSE
                 localError="The number of elements xi size of "// &
                   & TRIM(NumberToVString(SIZE(numberOfElements,1),"*",err,error))// &
-                  & " is invalid. The number of elements size must be >= the mesh dimension of "// &
-                  & TRIM(NumberToVString(generatedMesh%meshDimension,"*",err,error))//"."
+                  & " is invalid. The number of elements size must be >= to the mesh dimension of "// &
+                  & TRIM(NumberToVString(regularTopologies%meshDimension,"*",err,error))//"."
                 CALL FlagError(localError,err,error,*999)
               ENDIF
             ELSE
-              CALL FlagError("Regular generated mesh is not associated.",err,error,*999)
+              CALL FlagError("Generated mesh regular topologies is not associated.",err,error,*999)
             ENDIF
-          CASE(GENERATED_MESH_POLAR_MESH_TYPE)
-            polarMesh=>generatedMesh%polarMesh
-            IF(ASSOCIATED(polarMesh)) THEN
-              IF(SIZE(numberOfElements,1)>=generatedMesh%meshDimension) THEN
-                IF(ALL(numberOfElements>0)) THEN
-                  polarMesh%numberOfElementsXi(1:generatedMesh%meshDimension)=numberOfElements(1:generatedMesh%meshDimension)
-                ELSE
-                  CALL FlagError("Must have 1 or more elements in all directions.",err,error,*999)
-                ENDIF
-              ELSE
-                localError="The number of elements xi size of "// &
-                  & TRIM(NumberToVString(SIZE(numberOfElements,1),"*",err,error))// &
-                  & " is invalid. The number of elements size must be >= the mesh dimension of "// &
-                  & TRIM(NumberToVString(generatedMesh%meshDimension,"*",err,error))//"."
-                CALL FlagError(localError,err,error,*999)
-              ENDIF
+          CASE(GENERATED_MESH_BRANCHING_TOPOLOGIES_CLASS)
+            branchingTopologies=>generatedMesh%branchingTopologies
+            IF(ASSOCIATED(branchingTopologies)) THEN
+              CALL FlagError("Not implemented.",err,error,*999)
             ELSE
-              CALL FlagError("Polar generated mesh is not associated.",err,error,*999)
+              CALL FlagError("Generated mesh branching topologies is not associated.",err,error,*999)
             ENDIF
-          CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
-            cylinderMesh=>generatedMesh%cylinderMesh
-            IF(ASSOCIATED(cylinderMesh)) THEN
-              IF(SIZE(numberOfElements,1)>=generatedMesh%meshDimension) THEN
-                IF(ALL(numberOfElements>0)) THEN
-                  cylinderMesh%numberOfElementsXi(1:generatedMesh%meshDimension)=numberOfElements(1:generatedMesh%meshDimension)
-                ELSE
-                  CALL FlagError("Must have 1 or more elements in all directions.",err,error,*999)
-                ENDIF
-              ELSE
-                localError="The number of elements xi size of "// &
-                  & TRIM(NumberToVString(SIZE(numberOfElements,1),"*",err,error))// &
-                  & " is invalid. The number of elements size must be >= the mesh dimension of "// &
-                  & TRIM(NumberToVString(generatedMesh%meshDimension,"*",err,error))//"."
-                CALL FlagError(localError,err,error,*999)
-              ENDIF
-            ELSE
-              CALL FlagError("Cylinder generated mesh is not associated.",err,error,*999)
-            ENDIF
-          CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
-            ellipsoidMesh=>generatedMesh%ellipsoidMesh
-            IF(ASSOCIATED(ellipsoidMesh)) THEN
-              IF(SIZE(numberOfElements,1)>=generatedMesh%meshDimension) THEN
-                IF(ALL(numberOfElements>0)) THEN
-                  ellipsoidMesh%numberOfElementsXi(1:generatedMesh%meshDimension)=numberOfElements(1:generatedMesh%meshDimension)
-                ELSE
-                  CALL FlagError("Must have 1 or more elements in all directions.",err,error,*999)
-                ENDIF
-              ELSE
-                localError="The number of elements xi size of "// &
-                  & TRIM(NumberToVString(SIZE(numberOfElements,1),"*",err,error))// &
-                  & " is invalid. The number of elements size must be >= the mesh dimension of "// &
-                  & TRIM(NumberToVString(generatedMesh%meshDimension,"*",err,error))//"."
-                CALL FlagError(localError,err,error,*999)
-              ENDIF
-            ELSE
-              CALL FlagError("Ellipsoid generated mesh is not associated.",err,error,*999)
-            ENDIF
-          CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
-            CALL FlagError("Not implemented.",err,error,*999)
-          CASE DEFAULT
-            localError="The generated mesh mesh type of "//TRIM(NumberToVString(generatedMesh%generatedType,"*",err,error))// &
+          CASE DEFAULT            
+            localError="The generated mesh class of "//TRIM(NumberToVString(generatedMesh%generatedClass,"*",err,error))// &
               & " is invalid."
-            CALL FlagError(localError,err,error,*999)
-          END SELECT
+            CALL FlagError(localError,err,error,*999)            
+          END SELECT              
         ELSE
           CALL FlagError("Must set the generated mesh basis before setting the number of elements.",err,error,*999)
         ENDIF
@@ -1969,15 +2183,34 @@ CONTAINS
     ENTERS("GeneratedMesh_OriginGet",err,error,*999)
 
     IF(ASSOCIATED(generatedMesh)) THEN
-      IF(SIZE(origin,1)>=generatedMesh%coordinateDimension) THEN
-        origin(1:generatedMesh%coordinateDimension)=generatedMesh%origin(1:generatedMesh%coordinateDimension)
-      ELSE
-        localError="The size of origin is too small. The supplied size is "// &
-          & TRIM(NumberToVString(SIZE(origin,1),"*",err,error))// &
-          & " and it needs to be >= the coordinate dimension of "// &
-          & TRIM(NumberToVString(generatedMesh%coordinateDimension,"*",err,error))//"."
-        CALL FlagError(localError,err,error,*999)
-      ENDIF
+      SELECT CASE(generatedMesh%generatedClass)
+      CASE(GENERATED_MESH_REGULAR_TOPOLOGIES_CLASS)
+        regularTopologies=>generatedMesh%regularTopologies
+        IF(ASSOCIATED(regularTopologies)) THEN
+          IF(SIZE(origin,1)>=generatedMesh%coordinateDimension) THEN
+            origin(1:generatedMesh%coordinateDimension)=regularTopologies%origin(1:generatedMesh%coordinateDimension)
+          ELSE
+            localError="The size of origin is too small. The supplied size is "// &
+              & TRIM(NumberToVString(SIZE(origin,1),"*",err,error))// &
+              & " and it needs to be >= the coordinate dimension of "// &
+              & TRIM(NumberToVString(generatedMesh%coordinateDimension,"*",err,error))//"."
+            CALL FlagError(localError,err,error,*999)
+          ENDIF
+        ELSE
+          CALL FlagError("Generated mesh regular topologies is not associated.",err,error,*999)
+        ENDIF
+      CASE(GENERATED_MESH_BRANCHING_TOPOLOGIES_CLASS)
+        branchingTopologies=>generatedMesh%branchingTopologies
+        IF(ASSOCIATED(branchingTopologies)) THEN
+          CALL FlagError("Not implemented.",err,error,*999)
+        ELSE
+          CALL FlagError("Generated mesh branching topologies is not associated.",err,error,*999)
+        ENDIF
+      CASE DEFAULT            
+        localError="The generated mesh class of "//TRIM(NumberToVString(generatedMesh%generatedClass,"*",err,error))// &
+          & " is invalid."
+        CALL FlagError(localError,err,error,*999)            
+      END SELECT
     ELSE
       CALL FlagError("Generated mesh is not associated",err,error,*999)
     ENDIF
@@ -2010,14 +2243,33 @@ CONTAINS
       IF(generatedMesh%generatedMeshFinished) THEN
         CALL FlagError("Generated mesh has been finished.",err,error,*999)
       ELSE
-        IF(SIZE(origin,1)>=generatedMesh%coordinateDimension) THEN
-          generatedMesh%origin(1:generatedMesh%coordinateDimension)=origin(1:generatedMesh%coordinateDimension)
-        ELSE
-          localError="The origin size of "//TRIM(NumberToVString(SIZE(origin,1),"*",err,error))// &
-            & " is invalid. The origin size must be >= the coordinate system dimension of "// &
-            & TRIM(NumberToVString(generatedMesh%coordinateDimension,"*",err,error))//"."
-          CALL FlagError(localError,err,error,*999)
-        ENDIF
+        SELECT CASE(generatedMesh%generatedClass)
+        CASE(GENERATED_MESH_REGULAR_TOPOLOGIES_CLASS)
+          regularTopologies=>generatedMesh%regularTopologies
+          IF(ASSOCIATED(regularTopologies)) THEN
+            IF(SIZE(origin,1)>=generatedMesh%coordinateDimension) THEN
+              regularTopologies%origin(1:generatedMesh%coordinateDimension)=origin(1:generatedMesh%coordinateDimension)
+            ELSE
+              localError="The origin size of "//TRIM(NumberToVString(SIZE(origin,1),"*",err,error))// &
+                & " is invalid. The origin size must be >= the coordinate system dimension of "// &
+                & TRIM(NumberToVString(generatedMesh%coordinateDimension,"*",err,error))//"."
+              CALL FlagError(localError,err,error,*999)
+            ENDIF
+          ELSE
+            CALL FlagError("Generated mesh regular topologies is not associated.",err,error,*999)
+          ENDIF
+        CASE(GENERATED_MESH_BRANCHING_TOPOLOGIES_CLASS)
+          branchingTopologies=>generatedMesh%branchingTopologies
+          IF(ASSOCIATED(branchingTopologies)) THEN
+            CALL FlagError("Not implemented.",err,error,*999)
+          ELSE
+            CALL FlagError("Generated mesh branching topologies is not associated.",err,error,*999)
+          ENDIF
+        CASE DEFAULT            
+          localError="The generated mesh class of "//TRIM(NumberToVString(generatedMesh%generatedClass,"*",err,error))// &
+            & " is invalid."
+          CALL FlagError(localError,err,error,*999)            
+        END SELECT
       ENDIF
     ELSE
       CALL FlagError("Generated mesh is not associated.",err,error,*999)
@@ -2035,8 +2287,8 @@ CONTAINS
   !================================================================================================================================
   !
 
-  !>Finishes the creation of a regular generated mesh.
-  SUBROUTINE GeneratedMesh_RegularCreateFinish(regularMesh,meshUserNumber,err,error,*)
+  !>Finishes the creation of a regular topology.
+  SUBROUTINE GeneratedMesh_RegularTopologyCreateFinish(regularTopologies,topologyIdx,mesh,err,error,*)
 
     !Argument variables
     TYPE(GeneratedMesh_RegularType), POINTER :: regularMesh !<A pointer to the regular generated mesh to finish.
@@ -3736,134 +3988,158 @@ CONTAINS
   !
 
   !>Finialises a regular topology for a generated mesh and deallocates all memory
-  SUBROUTINE GeneratedMesh_RegularTopologyFinalise(regularTopology,err,error,*)
+  SUBROUTINE GeneratedMesh_RegularTopologiesFinalise(regularTopologies,err,error,*)
 
     !Argument variables
-    TYPE(GeneratedMeshRegularTopologyType), POINTER :: regularTopology !<A pointer to the generated mesh regular topology to finalise
+    TYPE(GeneratedMeshRegularTopologiesType), POINTER :: regularTopologies !<A pointer to the generated mesh regular topology to finalise
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
 
-    ENTERS("GeneratedMesh_RegularTopologyFinalise",err,error,*998)
+    ENTERS("GeneratedMesh_RegularTopologiesFinalise",err,error,*998)
 
-    IF(ASSOCIATED(regularTopology)) THEN
-      IF(ALLOCATED(regularTopolgy%maximumExtent)) DEALLOCATE(regularTopology%maximumExtent)
-      IF(ALLOCATED(regularTopology%topologies)) THEN
-        DO topologyIdx=1,SIZE(regularTopology%topologies,1)
-          CALL GeneratedMesh_TopologyFinalise(regularTopology%topologies(topologyIdx),err,error,*999)
+    IF(ASSOCIATED(regularTopologies)) THEN
+      IF(ALLOCATED(regularTopolgies%maximumExtent)) DEALLOCATE(regularTopologies%maximumExtent)
+      IF(ALLOCATED(regularTopologies%topologies)) THEN
+        DO topologyIdx=1,SIZE(regularTopologies%topologies,1)
+          CALL GeneratedMesh_RegularTopologyFinalise(regularTopologies%topologies(topologyIdx),err,error,*999)
         ENDDO !topologyIdx
-        DEALLOCATE(regularTopology%topologies)
+        DEALLOCATE(regularTopologies%topologies)
       ENDIF
-      DEALLOCATE(regularTopology)
+      CALL GeneratedMesh_RegularMeshFinalise(regularTopologies%regularMesh,err,error,*999)
+      CALL GeneratedMesh_PolarMeshFinalise(regularTopologies%polarMesh,err,error,*999)
+      CALL GeneratedMesh_CylinderMeshFinalise(regularTopologies%cylinderMesh,err,error,*999)
+      CALL GeneratedMesh_EllipsoidMeshFinalise(regularTopologies%ellipsoidMesh,err,error,*999)
+      DEALLOCATE(regularTopologies)
     ENDIF
     
-    EXITS("GeneratedMesh_RegularTopologyFinalise")
+    EXITS("GeneratedMesh_RegularTopologiesFinalise")
     RETURN
-999 ERRORS("GeneratedMesh_RegularTopologyFinalise",err,error)
-    EXITS("GeneratedMesh_RegularTopologyFinalise")
+999 ERRORS("GeneratedMesh_RegularTopologiesFinalise",err,error)
+    EXITS("GeneratedMesh_RegularTopologiesFinalise")
     RETURN 1
     
-  END SUBROUTINE GeneratedMesh_RegularTopologyFinalise
+  END SUBROUTINE GeneratedMesh_RegularTopologiesFinalise
 
   !
   !================================================================================================================================
   !
 
   !>Initialises the regular topologies for a generated mesh
-  SUBROUTINE GeneratedMesh_RegularTopologyInitialise(generatedMesh,numberOfTopologies,wrappedTopology,err,error,*)
+  SUBROUTINE GeneratedMesh_RegularTopologiesInitialise(generatedMesh,err,error,*)
 
     !Argument variables
-    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh to initialise the topologies for
-    INTEGER(INTG), INTENT(IN) :: numberOfTopologies !<The number of seperate topologies in the generated mesh
-    LOGICAL, INTENT(IN) :: wrappedTopology !<.TRUE. if the topologies are wrapped.
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh to initialise the regular topologies for
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
 
-    ENTERS("GeneratedMesh_RegularTopologyInitialise",err,error,*998)
+    ENTERS("GeneratedMesh_RegularTopologiesInitialise",err,error,*998)
 
     IF(ASSOCIATED(generatedMesh)) THEN
-      IF(.NOT.ASSOCIATED(generatedMesh%regularTopology)) THEN
-        IF(numberOfTopologies>0) THEN
-          numberOfBases=SIZE(generatedMesh%bases,1)
-          IF(numberOfBases>=numberOfTopologies) THEN
-            basis=>generatedMesh%bases(1)%ptr
-            IF(ASSOCIATED(basis)) THEN
-              IF(MOD(numberOfBases,numberOfTopologies)==0) THEN
-                !Allocate regular topology
-                ALLOCATE(generatedMesh%regularTopology,STAT=err)
-                IF(err/=0) CALL FlagError("Could not allocate generated mesh regular topology.",err,error,*999)
-                !Initialise
-                generatedMesh%regularTopology%meshDimension=0
-                generatedMesh%regularTopology%numberOfMeshComponents=0
-                generatedMesh%regularTopology%numberOfTopologies=0
-                generatedMesh%regularTopology%wrappedTopology=.FALSE.
-                !Set up the regular topology
-                generatedMesh%regularTopology%meshDimension=basis%NUMBER_OF_XI
-                generatedMesh%regularTopology%numberOfMeshComponents=NINT(numberOfBases/numberOfTopologies)
-                !Set up the individual topologies
-                ALLOCATE(generatedMesh%regularTopology%topologies(numberOfTopologies),STAT=err)
-                IF(err/=0) CALL FlagError("Could not allocate regular topology topologies.",err,error,*999)
-                generatedMesh%regularTopology%numberOfTopologies=numberOfTopologies
-                DO topologyIdx=1,numberOfTopologies
-                  CALL GeneratedMesh_RegularTopologyInitialise(generatedMesh,topologyIdx,err,error,*999)
-                ENDDO !topologyIdx
-                generatedMesh%regularTopology%wrappedTopology=wrappedTopology
-              ELSE
-                localError="The number of bases of "//TRIM(NumberToVString(numberOfBases,"*",err,error))// &
-                  & " is invalid. The number of bases should be a multiple of "// &
-                  & TRIM(NumberToVString(numberOfTopologies,"*",err,error))//"."
-                CALL FlagError(localError,err,error,*999)
-              ENDIF
-            ELSE
-              CALL FlagError("The first generated mesh basis is not associated.",err,error,*999)
-            ENDIF
-          ELSE
-            localError="The number of generated mesh bases of "//TRIM(NumberToVString(numberOfBases,"*",err,error))// &
-              & " is invalid. It must be >= than the number of topologies of "// &
-              & TRIM(NumberToVString(numberOfTopologies,"*",err,error))//"."
-            CALL FlagError(localError,err,error,*999)
-          ENDIF
-        ELSE
-          localError="The number of topologies of "//TRIM(NumberToVString(numberOfTopologies,"*",err,error))// &
-            & " is invalid. The number must be > 0."
-          CALL FLagError(localError,err,error,*998)
-        ENDIF
+      IF(.NOT.ASSOCIATED(generatedMesh%regularTopologies)) THEN
+        !Allocate regular topology
+        ALLOCATE(generatedMesh%regularTopologies,STAT=err)
+        IF(err/=0) CALL FlagError("Could not allocate generated mesh regular topologies.",err,error,*999)
+        !Initialise
+        generatedMesh%regularTopologies%generatedMesh=>generatedMesh
+        generatedMesh%regularTopologies%meshDimension=0
+        generatedMesh%regularTopologies%numberOfMeshComponents=0
+        generatedMesh%regularTopologies%numberOfTopologies=0
+        generatedMesh%regularTopologies%wrappedTopology=.FALSE.
+        NULLIFY(generatedMesh%regularTopologies%regularMesh)
+        NULLIFY(generatedMesh%regularTopologies%polarMesh)
+        NULLIFY(generatedMesh%regularTopologies%cylinderMesh)
+        NULLIFY(generatedMesh%regularTopologies%ellipsoidMesh)
+        ALLOCATE(generatedMesh%regularTopologies%origin(generatedMesh%coordinateDimension),STAT=err)
+        IF(err/=0) CALL FlagError("Could not allocate origin.",err,error,*998)
+        generatedMesh%origin=0.0_DP
+        ALLOCATE(generatedMesh%regularTopologies%baseVectors(generatedMesh%coordinateDimension,generatedMesh% &
+          & coordinateDimension),STAT=err)
+        IF(err/=0) CALL FlagError("Could not allocate base Vectors.",err,error,*998)
+        generatedMesh%regularTopologies%baseVectors=0.0_DP
+        DO coordinateIdx=1,generatedMesh%coordinateDimension
+           generatedMesh%regularTopologies%baseVectors(coordinateIdx,coordinateIdx)=1.0_DP
+        ENDDO !coordinateidx
+        !Default to a regular mesh.
+        CALL GeneratedMesh_RegularMeshInitialise(generatedMesh%regularTopologies,err,error,*999)
       ELSE
-        CALL FlagError("Generated mesh regular topology is already associated.",err,error,*998)
+        CALL FlagError("Generated mesh regular topologies is already associated.",err,error,*998)
       ENDIF
     ELSE
       CALL FlagError("Generated mesh is not associated.",err,error,*998)
     ENDIF
     
-    EXITS("GeneratedMesh_RegularTopologyInitialise")
+    EXITS("GeneratedMesh_RegularTopologiesInitialise")
     RETURN
-999 IF(ALLOCATED(generatedMesh%regularTopology)) CALL GeneratedMesh_RegularTopologyFinalise(generatedMesh,err,error,*998)
-998 ERRORS("GeneratedMesh_RegularTopologyInitialise",err,error)
-    EXITS("GeneratedMesh_RegularTopologyInitialise")
+999 CALL GeneratedMesh_RegularTopologiesFinalise(generatedMesh%regularTopologies,dummyErr,dummyError,*998)
+998 ERRORS("GeneratedMesh_RegularTopologiesInitialise",err,error)
+    EXITS("GeneratedMesh_RegularTopologiesInitialise")
     RETURN 1
     
-  END SUBROUTINE GeneratedMesh_RegularTopologyInitialise
+  END SUBROUTINE GeneratedMesh_RegularTopologiesInitialise
+
+  !
+  !================================================================================================================================
+  !
+
+  !>Initialises the  topologies for a generated mesh
+  SUBROUTINE GeneratedMesh_BranchingTopologiesInitialise(generatedMesh,err,error,*)
+
+    !Argument variables
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh to initialise the branching topologies for
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+
+    ENTERS("GeneratedMesh_BranchingTopologiesInitialise",err,error,*998)
+
+    IF(ASSOCIATED(generatedMesh)) THEN
+      IF(.NOT.ASSOCIATED(generatedMesh%branchingTopologies)) THEN
+        !Allocate branching topologies
+        ALLOCATE(generatedMesh%branchingTopologies,STAT=err)
+        IF(err/=0) CALL FlagError("Could not allocate generated mesh branching topologies.",err,error,*999)
+        !Initialise
+        generatedMesh%branchingTopologies%generatedMesh=>generatedMesh
+        NULLIFY(generatedMesh%regularTopologies%fractalTreeMesh)
+        !Default to a fractal tree mesh.
+        CALL GeneratedMesh_FractalTreeMeshInitialise(generatedMesh%branchingTopologies,err,error,*999)
+      ELSE
+        CALL FlagError("Generated mesh branching topologies is already associated.",err,error,*998)
+      ENDIF
+    ELSE
+      CALL FlagError("Generated mesh is not associated.",err,error,*998)
+    ENDIF
+    
+    EXITS("GeneratedMesh_BranchingTopologiesInitialise")
+    RETURN
+999 CALL GeneratedMesh_BranchingTopologiesFinalise(generatedMesh%branchingTopologies,dummyErr,dummyError,*998)
+998 ERRORS("GeneratedMesh_BranchingTopologiesInitialise",err,error)
+    EXITS("GeneratedMesh_BranchingTopologiesInitialise")
+    RETURN 1
+    
+  END SUBROUTINE GeneratedMesh_BranchingTopologiesInitialise
 
   !
   !================================================================================================================================
   !
 
   !>Finialises a topology for a generated mesh and deallocates all memory
-  SUBROUTINE GeneratedMesh_RegularTopologyFinalise(topology,err,error,*)
+  SUBROUTINE GeneratedMesh_RegularTopologyFinalise(regularTopology,err,error,*)
 
     !Argument variables
-    TYPE(GeneratedMeshRegularTopologyType) :: topology !<The generated mesh topology to finalise
+    TYPE(GeneratedMeshRegularTopologyType) :: regularTopology !<The regular topology to finalise
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
 
     ENTERS("GeneratedMesh_RegularTopologyFinalise",err,error,*998)
 
-    IF(ALLOCATED(topolgy%bases)) DEALLOCATE(topology%Bases)
-    IF(ALLOCATED(topology%maximumNumberOfNodes)) DEALLOCATE(topology%maximumNumberOfNodes)
-    IF(ALLOCATED(topology%numberOfElementsXi)) DEALLOCATE(topology%numberOfElementsXi)
-    IF(ALLOCATED(topology%localNodeMap)) DEALLOCATE(topology%localNodeMap)
+    IF(ALLOCATED(regularTopology%bases)) DEALLOCATE(regularTopology%bases)
+    IF(ALLOCATED(regularTopology%totalNumberOfLocalNodesXi)) DEALLOCATE(regularTopology%totalNumberOfLocalNodesXi)
+    IF(ALLOCATED(regularTopology%numberOfNodesXi1)) DEALLOCATE(regularTopology%numberOfNodesXi1)
+    IF(ALLOCATED(regularTopology%numberOfNodesXi12)) DEALLOCATE(regularTopology%numberOfNodesXi12)
+    IF(ALLOCATED(regularTopology%basisOrderMap)) DEALLOCATE(regularTopology%basisOderMap)
     
     EXITS("GeneratedMesh_RegularTopologyFinalise")
     RETURN
@@ -3878,56 +4154,57 @@ CONTAINS
   !
 
   !>Initialises a topology for a generated mesh 
-  SUBROUTINE GeneratedMesh_RegularTopologyInitialise(generatedMesh,topologyIdx,err,error,*)
+  SUBROUTINE GeneratedMesh_RegularTopologyInitialise(regularTopologies,topologyIdx,err,error,*)
 
     !Argument variables
-    TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh to initialise the topology for
+    TYPE(GeneratedMeshRegularTopologiesType), POINTER :: regularTopologies !<A pointer to the regularTopologies to initialise the topology for
     INTEGER(INTG) :: topologyIdx !<The topology index to initialise
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
-    INTEGER(INTG) :: totalNumberOfLocalNodesXi(3)
-    LOGICAL :: basisOrderPresetnt(3,3)
+    INTEGER(INTG) :: basisOrderXi(3),componentIdx,localNode,localNode1,localNode2,localNode3,localNodeIdx1,localNodeIdx2, &
+      & localNodeIdx3,nodeMask(5,5,5),numberOfComponents,numberOfTopologies,numberOfXi,totalNumberOfLocalNodesXi(3),xiIdx
+    LOGICAL :: basisOrderPresent(3,3)
+    TYPE(BASIS_TYPE), POINTER :: basis
+    TYPE(GeneratedMeshType), POINTER :: generatedMesh
+    TYPE(VARYING_STRING) :: localError
 
     ENTERS("GeneratedMesh_RegularTopologyInitialise",err,error,*998)
 
-    IF(ASSOCIATED(generatedMesh)) THEN
-      IF(ASSOCIATED(generatedMesh%regularTopology)) THEN
+    IF(ASSOCIATED(regularTopologies)) THEN
+      generatedMesh=>regularTopologies%generatedMesh
+      IF(ASSOCIATED(generatedMesh)) THEN
+        numberOfTopologies=regularTopologies%numberOfTopologies
+        numberOfComponents=regularTopologies%numberOfMeshComponents
+        numberOfXi=regularTopologies%meshDimension
         IF(topologyIdx>0.AND.topologyIdx<=numberOfTopologies) THEN
-          numberOfTopologies=generatedMesh%regularTopology%numberOfTopologies
-          numberOfComponents=generatedMesh%regularTopology%numberOfMeshComponents
-          numberOfXi=generatedMesh%regularTopology%meshDimension
-          ALLOCATE(generatedMesh%regularTopology%topologies(topologyIdx)%totalNumberOfLocalNodes(numberOfXi),STAT=err)
-          IF(err/=0) CALL FlagError("Could not allocate regular topology total number of local nodes.",err,error,*999)
-          generatedMesh%regularTopology%topologies(topologyIdx)%totalNumberOfLocalNodes=0
-          ALLOCATE(generatedMesh%regularTopology%topologies(topologyIdx)%bases(numberOfComponents),STAT=err)
+          regularTopologies%topologies(topologyIdx)%topologyIdx=topologyIdx
+          regularTopologies%topologies(topologyIdx)%topologyBlock=regularTopologies%topologyBlocks(topologyIdx)
+          ALLOCATE(regularTopologies%topologies(topologyIdx)%bases(numberOfComponents),STAT=err)
           IF(err/=0) CALL FlagError("Could not allocate regular topology bases.",err,error,*999)
-          ALLOCATE(generatedMesh%regularTopology%topologies(topologyIdx)%localNodeMap(64,3,numberOfComponents),STAT=err)
-          IF(err/=0) CALL FlagError("Could not allocate regular topology local node map.",err,error,*999)
-          generatedMesh%regularTopology%topologies(topologyIdx)%localNodeMap=0
           DO componentIdx=1,numberOfComponents
-            generatedMesh%regularTopology%topologies(topologyIdx)%bases(componentIdx)%ptr=> &
+            regularTopologies%topologies(topologyIdx)%bases(componentIdx)%ptr=> &
               & generatedMesh%bases(componentIdx+(topologyIdx-1)*numberOfComponents)%ptr
           ENDDO !basisIdx
+          ALLOCATE(regularTopologies%topologies(topologyIdx)%totalNumberOfLocalNodesXi(numberOfXi),STAT=err)
+          IF(err/=0) CALL FlagError("Could not allocate regular topology total number of local nodes xi.",err,error,*999)
+          regularTopologies%topologies(topologyIdx)%totalNumberOfLocalNodesXi=0
           basisOrderPresent=.FALSE.
-          generatedMesh%regularTopology%topologies(topologyIdx)%totalNumberOfLocalNodes=1
+          regularTopologies%topologies(topologyIdx)%totalNumberOfLocalNodes=1
           totalNumberOfLocalNodesXi=0
-          numberOfNodesXi=0
+          !Work out what basis orders are present across the components and how many nodes are in each xi direction
           DO xiIdx=1,numberOfXi
             DO componentIdx=1,numberOfComponents
-              basis=>generatedMesh%regularTopology%topologies(topologyIdx)%bases(componentIdx)%ptr
+              basis=>regularTopologies%topologies(topologyIdx)%bases(componentIdx)%ptr
               SELECT CASE(basis%INTERPOLATION_XI(xiIdx))
               CASE(BASIS_LINEAR_LAGRANGE_INTERPOLATION,BASIS_CUBIC_HERMITE_INTERPOLATION, &
                 & BASIS_QUADRATIC1_HERMITE_INTERPOLATION,BASIS_QUADRATIC2_HERMITE_INTERPOLATION, &
                 & BASIS_LINEAR_SIMPLEX_INTERPOLATION)
                 basisOrderPresent(1,xiIdx)=.TRUE.
-                numberOfNodesXi(xiIdx)=2
               CASE(BASIS_QUADRATIC_LAGRANGE_INTERPOLATION,BASIS_QUADRATIC_SIMPLEX_INTERPOLATION)
                 basisOrderPresent(2,xiIdx)=.TRUE.
-                numberOfNodesXi(xiIdx)=3
               CASE(BASIS_CUBIC_LAGRANGE_INTERPOLATION,BASIS_CUBIC_SIMPLEX_INTERPOLATION)
                 basisOrderPresent(3,xiIdx)=.TRUE.
-                numberOfNodesXi(xiIdx)=4
               CASE DEFAULT
                 localError="The interpolation xi of "//TRIM(NumberToVString(basis%INTERPOLATION_XI(xiIdx),"*",err,error))// &
                   & " for xi direction "//TRIM(NumberToVString(xiIdx,"*",err,error))//" of mesh component "// &
@@ -3936,90 +4213,126 @@ CONTAINS
               END SELECT
             ENDDO !componentIdx
             totalNumberOfLocalNodesXi(xiIdx)=2
-            IF(basisOrderPresent(2,xiIdx)) totalNumberOfLocalNodesXi(xiIdx) = totalNumberOfLocalNodesXi(xiIdx)+1
-            IF(basisOrderPresent(3,xiIdx)) totalNumberOfLocalNodesXi(xiIdx) = totalNumberOfLocalNodesXi(xiIdx)+2
-            generatedMesh%regularTopology%topologies(topologyIdx)%totalNumberOfLocalNodes=generatedMesh%regularTopology% &
+            regularTopologies%topologies(topologyIdx)%basisOrderMap(1:4,1:3,xiIdx)=1
+            IF(basisOrderPresent(1,xiIdx)) THEN
+              regularTopologies%topologies(topologyIdx)%basisOrderMap(1,1,xiIdx)=1
+            ENDIF
+            IF(basisOrderPresent(2,xiIdx)) THEN
+              totalNumberOfLocalNodesXi(xiIdx) = totalNumberOfLocalNodesXi(xiIdx)+1
+              regularTopologies%topologies(topologyIdx)%basisOrderMap(1,2,xiIdx)=1
+              IF(basisOrderPresent(3,xiIdx)) THEN
+                regularTopologies%topologies(topologyIdx)%basisOrderMap(2,2,xiIdx)=3
+                regularTopologies%topologies(topologyIdx)%basisOrderMap(3,2,xiIdx)=5
+              ELSE
+                regularTopologies%topologies(topologyIdx)%basisOrderMap(2,2,xiIdx)=2
+                regularTopologies%topologies(topologyIdx)%basisOrderMap(3,2,xiIdx)=3
+              ENDIF
+            ENDIF
+            IF(basisOrderPresent(3,xiIdx)) THEN
+              totalNumberOfLocalNodesXi(xiIdx) = totalNumberOfLocalNodesXi(xiIdx)+2
+              regularTopologies%topologies(topologyIdx)%basisOrderMap(1,3,xiIdx)=1
+              IF(basisOrderPresent(2,xiIdx)) THEN
+                regularTopologies%topologies(topologyIdx)%basisOrderMap(2,3,xiIdx)=2
+                regularTopologies%topologies(topologyIdx)%basisOrderMap(3,3,xiIdx)=4
+                regularTopologies%topologies(topologyIdx)%basisOrderMap(4,3,xiIdx)=5
+              ELSE
+                regularTopologies%topologies(topologyIdx)%basisOrderMap(2,3,xiIdx)=2
+                regularTopologies%topologies(topologyIdx)%basisOrderMap(3,3,xiIdx)=3
+                regularTopologies%topologies(topologyIdx)%basisOrderMap(1,3,xiIdx)=4
+              ENDIF
+            ENDIF
+            IF(basisOrderPresent(1,xiIdx)) THEN
+              regularTopologies%topologies(topologyIdx)%basisOrderMap(2,1,xiIdx)=totalNumberOfLocalNodesXi(xiIdx)
+            ENDIF
+            regularTopologies%topologies(topologyIdx)%totalNumberOfLocalNodes=regularTopology% &
               & topologies(topologyIdx)%totalNumberOfLocalNodes*totalNumberOfLocalNodesXi(xiIdx)
-            generatedMesh%regularTopology%topologies(topologyIdx)%totalNumberOfLocalNodesXi(xiIdx)=totalNumberOfLocalNodesXi(xiIdx)
+            regularTopologies%topologies(topologyIdx)%totalNumberOfLocalNodesXi(xiIdx)=totalNumberOfLocalNodesXi(xiIdx)
           ENDDO !xiIdx
+          !Work out the mask of nodes for the element
+          nodeMask=0
           DO componentIdx=1,numberOfComponents
-             basis=>generatedMesh%regularTopology%topologies(topologyIdx)%bases(componentIdx)%ptr
-             localNode=0
-             totalLocalNode=0
-             DO localNodeIdx3=1,numberOfNodesXi(3)
-               DO localNodeIdx2=1,numberOfNodesXi(2)
-                 !Handle first local node in xi 1
-                 localNode=localNode+1
-                 totalLocalNode=totalLocalNode+1
-                 generatedMesh%regularTopology%topologies(topologyIdx)%localNodeMap(localNode,componentIdx)=totalLocalNode
-                 IF(numberOfNodesXi(1)==3) THEN
-                   !Quadratic
-                   IF(basisOrderPresent(3,1)) THEN
-                     !Cubic present so skip second cubic node
-                     totalLocalNode=totalLocalNode+1
-                   ENDIF
-                   !Handle second quadratic node
-                   localNode=localNode+1
-                   totalLocalNode=totalLocalNode+1
-                   generatedMesh%regularTopology%topologies(topologyIdx)%localNodeMap(localNode,componentIdx)=totalLocalNode
-                   IF(basisOrderPresent(3,1)) THEN
-                     !Skip third cubic node
-                     totalLocalNode=totalLocalNode+1
-                   ENDIF
-                 ELSE IF(numberOfNodesXi(1)==4) THEN
-                   !Cubic
-                   !Handle second cubic node
-                   localNode=localNode+1
-                   totalLocalNode=totalLocalNode+1
-                   generatedMesh%regularTopology%topologies(topologyIdx)%localNodeMap(localNode,componentIdx)=totalLocalNode
-                   IF(basisOrderPresent(3,1)) THEN
-                     !Quadratic present so skip second quadratic node
-                     totalLocalNode=totalLocalNode+1
-                   ENDIF
-                   !Handle third cubic node
-                   localNode=localNode+1
-                   totalLocalNode=totalLocalNode+1
-                   generatedMesh%regularTopology%topologies(topologyIdx)%localNodeMap(localNode,componentIdx)=totalLocalNode
-                 ENDIF
-                 !Handle last local node in xi 1
-                 localNode=localNode+1
-                 totalLocalNode=totalLocalNode+1
-                 generatedMesh%regularTopology%topologies(topologyIdx)%localNodeMap(localNode,componentIdx)=totalLocalNode
-                 !Increment xi 1
-                 IF(localNodeIdx2==1) THEN
-                   
-                 ENDIF
-               ENDDO !localNodeIdx2
-             ENDDO !localNodeIdx3
-             DO xiIdx=1,numberOfXi
-               SELECT CASE(basis%INTERPOLATION_XI(xiIdx))
-               CASE(BASIS_LINEAR_LAGRANGE_INTERPOLATION,BASIS_CUBIC_HERMITE_INTERPOLATION, &
-                 & BASIS_QUADRATIC1_HERMITE_INTERPOLATION,BASIS_QUADRATIC2_HERMITE_INTERPOLATION, &
-                 & BASIS_LINEAR_SIMPLEX_INTERPOLATION)
-                 basisOrderPresent(1,xiIdx)=.TRUE.
-               CASE(BASIS_QUADRATIC_LAGRANGE_INTERPOLATION,BASIS_QUADRATIC_SIMPLEX_INTERPOLATION)
-                 basisOrderPresent(2,xiIdx)=.TRUE.
-               CASE(BASIS_CUBIC_LAGRANGE_INTERPOLATION,BASIS_CUBIC_SIMPLEX_INTERPOLATION)
-                 basisOrderPresent(3,xiIdx)=.TRUE.
-               CASE DEFAULT
-                 localError="The interpolation xi of "//TRIM(NumberToVString(basis%INTERPOLATION_XI(xiIdx),"*",err,error))// &
-                   & " for xi direction "//TRIM(NumberToVString(xiIdx,"*",err,error))//" of mesh component "// &
-                   & TRIM(NumberToVString(componentIdx,"*",err,error))//" is invalid."
-                 CALL FlagError(localError,err,error,*999)
-               END SELECT
-             ENDDO !xiIdx
+            basis=>regularTopologies%topologies(topologyIdx)%bases(componentIdx)%ptr
+            basisOrderXi=0
+            DO xiIdx=1,numberOfXi
+              SELECT CASE(basis%INTERPOLATION_XI(xiIdx))
+              CASE(BASIS_LINEAR_LAGRANGE_INTERPOLATION,BASIS_CUBIC_HERMITE_INTERPOLATION, &
+                & BASIS_QUADRATIC1_HERMITE_INTERPOLATION,BASIS_QUADRATIC2_HERMITE_INTERPOLATION, &
+                & BASIS_LINEAR_SIMPLEX_INTERPOLATION)
+                basisOrderXi(xiIdx)=1
+              CASE(BASIS_QUADRATIC_LAGRANGE_INTERPOLATION,BASIS_QUADRATIC_SIMPLEX_INTERPOLATION)
+                basisOrderXi(xiIdx)=2
+              CASE(BASIS_CUBIC_LAGRANGE_INTERPOLATION,BASIS_CUBIC_SIMPLEX_INTERPOLATION)
+                basisOrderXi(xiIdx)=3
+              CASE DEFAULT
+                localError="The interpolation xi of "//TRIM(NumberToVString(basis%INTERPOLATION_XI(xiIdx),"*",err,error))// &
+                  & " for xi direction "//TRIM(NumberToVString(xiIdx,"*",err,error))//" of mesh component "// &
+                  & TRIM(NumberToVString(componentIdx,"*",err,error))//" is invalid."
+                CALL FlagError(localError,err,error,*999)
+              END SELECT
+            ENDDO !xiIdx
+            DO localNodeIdx3=1,basisiOrderXi(3)+1
+              localNode3=regularTopologies%topologies(topologyIdx)%basisOrderMap(localNodeIdx3,basisOrderXi(3),3)
+              DO localNodeIdx2=1,basisOrderXi(2)+1
+                localNode2=regularTopologies%topologies(topologyIdx)%basisOrderMap(localNodeIdx2,basisOrderXi(2),2)
+                DO localNodeIdx1=1,basisOrderXi(1)+1
+                  localNode1=regularTopologies%topologies(topologyIdx)%basisOrderMap(localNodeIdx1,basisOrderXi(1),1)
+                  nodeMask(localNode1,localNode2,localNode3)=1
+                ENDDO !localNodeIdx1
+              ENDDO !localNodeIdx2
+            ENDDO !localNodeIdx3
           ENDDO !componentIdx
+          localNode=0
+          DO localNode3=1,5
+            DO localNode2=1,5
+              DO localNode1=1,5
+                IF(nodeMask(localNode1,localNode2,localNode3)==1) THEN
+                  localNode=localNode+1
+                  nodeMask(localNode1,localNode2,localNode3)=localNode
+                ENDIF
+              ENDDO !localNode1
+            ENDDO !localNode2
+          ENDDO !localNode3
+          IF(numberOfXi>=2) THEN
+            IF(numberOfXi==3) THEN
+              ALLOCATE(regularTopologies%topologies(topologyIdx)%numberOfNodesXi1(totalNumberOfLocalNodesXi(2), &
+                & totalNumberOfLocalNodesXi(3)),STAT=err)
+              IF(err/=0) CALL FlagError("Could not allocate number of nodes xi 1.",err,error,*999)
+              DO localNodeIdx3=1,totalNumberOfLocalNodesXi(3)
+                DO localNodeIdx2=1,totalNumberOfLocalNodesXi(2)
+                  regularTopologies%topologies(topologyIdx)%numberOfNodesXi1(localNodeIdx2,localNodeIdx3)= &
+                    & COUNT(nodeMask(:,localNodeIdx2,localNodeIdx3)/=0)
+                ENDDO !localNodeIdx2
+              ENDDO !localNodeIdx3
+            ELSE
+              ALLOCATE(regularTopologies%topologies(topologyIdx)%numberOfNodesXi1(totalNumberOfLocalNodesXi(2),0), &
+                & STAT=err)
+              IF(err/=0) CALL FlagError("Could not allocate number of nodes xi 1.",err,error,*999)
+              DO localNodeIdx2=1,totalNumberOfLocalNodesXi(2)
+                regularTopologies%topologies(topologyIdx)%numberOfNodesXi1(localNodeIdx2,0)= &
+                  & COUNT(nodeMask(:,localNodeIdx2,1)/=0)
+              ENDDO !localNodeIdx2
+              regularTopologies%topologies(topologyIdx)%numberOfNodesXi1=0
+            ENDIF
+          ENDIF
+          IF(numberOfXi==3) THEN
+            ALLOCATE(regularTopologies%topologies(topologyIdx)%numberOfNodesXi12(totalNumberOfLocalNodesXi(3)),STAT=err)
+            IF(err/=0) CALL FlagError("Could not allocate number of nodes xi 12.",err,error,*999)
+            DO localNodeIdx3=1,totalNumberOfLocalNodesXi(3)
+              regularTopologies%topologies(topologyIdx)%numberOfNodesXi12(localNodeIdx3)= &
+                & COUNT(nodeMask(:,:,localNodeIdx3)/=0)
+            ENDDO !localNodeIdx3
+          ENDIF
         ELSE
           localError="The specified topology index of "//TRIM(NumberToVString(topologyIdx,"*",err,error))// &
             & " is invalid. The index must be > 0 and <= "// &
-            & TRIM(NumberToVString(generatedMesh%regularTopology%numberOfTopologies,"*",err,error))//"."
+            & TRIM(NumberToVString(regularTopologies%numberOfTopologies,"*",err,error))//"."
           CALL FlagError(localError,err,error,*999)
         ENDIF
       ELSE
-        CALL FlagError("Generated mesh regular topology is not associated.",err,error,*999)
-      ENDIF
+        CALL FlagError("Regular topologies generated mesh is not associated.",err,error,*999)
+      ENDIF 
     ELSE
-      CALL FlagError("Generated mesh is not associated.",err,error,*999)
+      CALL FlagError("Regular topologies is not associated.",err,error,*999)
     ENDIF
     
     EXITS("GeneratedMesh_RegularTopologyInitialise")
@@ -4047,7 +4360,26 @@ CONTAINS
     ENTERS("GeneratedMesh_TypeGet",err,error,*999)
 
     IF(ASSOCIATED(generatedMesh)) THEN
-      meshType=generatedMesh%generatedType
+      SELECT CASE(generatedMesh%generatedClass)
+      CASE(GENERATED_MESH_REGULAR_TOPOLOGIES_CLASS)
+        regularTopologies=>generatedMesh%regularTopologies
+        IF(ASSOCIATED(regularTopologies)) THEN                    
+          meshType=regularTopologies%generatedType
+        ELSE
+          CALL FlagError("Generated mesh regular topologies is not associated.",err,error,*999)
+        ENDIF        
+      CASE(GENERATED_MESH_BRANCHING_TOPOLOGIES_CLASS)
+        branchingTopologies=>generatedMesh%branchingTopologies
+        IF(ASSOCIATED(branchingTopologies)) THEN
+          meshType=branchingTopologies%generatedType
+        ELSE
+          CALL FlagError("Generated mesh branching topologies is not associated.",err,error,*999)
+        ENDIF
+      CASE DEFAULT            
+        localError="The generated mesh class of "//TRIM(NumberToVString(generatedMesh%generatedClass,"*",err,error))// &
+          & " is invalid."
+        CALL FlagError(localError,err,error,*999)            
+      END SELECT
     ELSE
       CALL FlagError("Generated mesh is not associated.",err,error,*999)
     ENDIF
@@ -4069,7 +4401,7 @@ CONTAINS
 
     !Argument variables
     TYPE(GeneratedMeshType), POINTER :: generatedMesh !<A pointer to the generated mesh to set the type of
-    INTEGER(INTG), INTENT(IN) :: meshType !<The type of mesh to generate \see GeneratedMeshRoutines_GeneratedMeshTypes,GeneratedMeshRoutines
+    INTEGER(INTG), INTENT(IN) :: meshType !<The type of mesh to generate \see GeneratedMeshRoutines_RegularTopologiesTypes,GeneratedMeshRoutines
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
@@ -4082,43 +4414,78 @@ CONTAINS
       IF(generatedMesh%generatedMeshFinished) THEN
         CALL FlagError("Generated mesh has already been finished.",err,error,*999)
       ELSE
-        oldMeshType=generatedMesh%generatedType
-        IF(oldMeshType/=meshType) THEN
-          !Initialise the new generated mesh type
-          SELECT CASE(meshType)
-          CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
-            CALL GeneratedMesh_RegularInitialise(generatedMesh,err,error,*999)
-          CASE(GENERATED_MESH_POLAR_MESH_TYPE)
-            CALL GeneratedMesh_PolarInitialise(generatedMesh,err,error,*999)
-          CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
-            CALL GeneratedMesh_CylinderInitialise(generatedMesh,err,error,*999)
-          CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
-            CALL GeneratedMesh_EllipsoidInitialise(generatedMesh,err,error,*999)
-          CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
-            CALL GeneratedMesh_FractalTreeInitialise(generatedMesh,err,error,*999)
-          CASE DEFAULT
-            localError="The specified generated mesh mesh type of "//TRIM(NumberToVString(meshType,"*",err,error))// &
-              & " is invalid."
-            CALL FlagError(localError,err,error,*999)
-          END SELECT
-          !Finalise the new generated mesh type
-          SELECT CASE(oldMeshType)
-          CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
-            CALL GeneratedMesh_RegularFinalise(generatedMesh%regularMesh,err,error,*999)
-          CASE(GENERATED_MESH_POLAR_MESH_TYPE)
-            CALL GeneratedMesh_PolarFinalise(generatedMesh%polarMesh,err,error,*999)
-          CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
-            CALL GeneratedMesh_CylinderFinalise(generatedMesh%cylinderMesh,err,error,*999)
-          CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
-            CALL GeneratedMesh_EllipsoidFinalise(generatedMesh%ellipsoidMesh,err,error,*999)
-          CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
-            CALL GeneratedMesh_FractalTreeFinalise(generatedMesh%fractalTreeMesh,err,error,*999)
-          CASE DEFAULT
-            localError="The generated mesh mesh type of "//TRIM(NumberToVString(oldMeshType,"*",err,error))// &
-              & " is invalid."
-            CALL FlagError(localError,err,error,*999)
-          END SELECT
-        ENDIF
+        SELECT CASE(generatedMesh%generatedClass)
+        CASE(GENERATED_MESH_REGULAR_TOPOLOGIES_CLASS)
+          regularTopologies=>generateMesh%regularTopologies
+          IF(ASSOCIATED(regularTopologies)) THEN                    
+            oldMeshType=regularTopologies%generatedType
+            IF(oldMeshType/=meshType) THEN
+              !Initialise the new generated mesh type
+              SELECT CASE(meshType)
+              CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
+                CALL GeneratedMesh_RegularMeshInitialise(regularTopologies,err,error,*999)
+              CASE(GENERATED_MESH_POLAR_MESH_TYPE)
+                CALL GeneratedMesh_PolarMeshInitialise(regularTopologies,err,error,*999)
+              CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
+                CALL GeneratedMesh_CylinderMeshInitialise(regularTopologies,err,error,*999)
+              CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
+                CALL GeneratedMesh_EllipsoidMeshInitialise(regularTopologies,err,error,*999)
+              CASE DEFAULT
+                localError="The specified generated mesh type of "//TRIM(NumberToVString(meshType,"*",err,error))// &
+                  & " is invalid for a regular topologies mesh class."
+                CALL FlagError(localError,err,error,*999)
+              END SELECT
+              !Finalise the new generated mesh type
+              SELECT CASE(oldMeshType)
+              CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
+                CALL GeneratedMesh_RegularMeshFinalise(regularTopologies%regularMesh,err,error,*999)
+              CASE(GENERATED_MESH_POLAR_MESH_TYPE)
+                CALL GeneratedMesh_PolarMeshFinalise(regularTopologies%polarMesh,err,error,*999)
+              CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
+                CALL GeneratedMesh_CylinderMeshFinalise(regularTopologies%cylinderMesh,err,error,*999)
+              CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
+                CALL GeneratedMesh_EllipsoidMeshFinalise(regularTopologies%ellipsoidMesh,err,error,*999)
+              CASE DEFAULT
+                localError="The specified generated mesh type of "//TRIM(NumberToVString(oldMeshType,"*",err,error))// &
+                  & " is invalid for a regular topologies mesh class."
+                CALL FlagError(localError,err,error,*999)
+              END SELECT
+            ENDIF
+          ELSE
+            CALL FlagError("Generated mesh regular topologies is not associated.",err,error,*999)
+          ENDIF
+        CASE(GENERATED_MESH_BRANCHING_TOPOLOGIES_CLASS)
+          branchingTopologies=>generatedMesh%branchingTopologies
+          IF(ASSOCIATED(branchingTopologies)) THEN
+            oldMeshType=regularTopologies%generatedType
+            IF(oldMeshType/=meshType) THEN
+              !Initialise the new generated mesh type
+              SELECT CASE(meshType)
+              CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
+                CALL GeneratedMesh_FractalTreeMeshInitialise(branchingTopologies,err,error,*999)
+              CASE DEFAULT
+                localError="The specified generated mesh type of "//TRIM(NumberToVString(meshType,"*",err,error))// &
+                  & " is invalid for a branching topologies mesh class."
+                CALL FlagError(localError,err,error,*999)
+              END SELECT
+              !Finalise the new generated mesh type
+              SELECT CASE(oldMeshType)
+              CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
+                CALL GeneratedMesh_FractalTreeMeshFinalise(branchingTopologies%fractalTreeMesh,err,error,*999)
+              CASE DEFAULT
+                localError="The specified generated mesh type of "//TRIM(NumberToVString(oldMeshType,"*",err,error))// &
+                  & " is invalid for a branching topologies mesh class."
+                CALL FlagError(localError,err,error,*999)
+              END SELECT
+            ENDIF
+          ELSE
+            CALL FlagError("Generated mesh branching topologies is not associated.",err,error,*999)
+          ENDIF
+        CASE DEFAULT            
+          localError="The generated mesh class of "//TRIM(NumberToVString(generatedMesh%generatedClass,"*",err,error))// &
+            & " is invalid."
+          CALL FlagError(localError,err,error,*999)            
+        END SELECT              
       ENDIF
     ELSE
       CALL FlagError("Generated mesh is not associated.",err,error,*999)
@@ -4390,6 +4757,8 @@ CONTAINS
     !Local Variables
     INTEGER(INTG) :: componentIdx
     TYPE(FIELD_VARIABLE_TYPE), POINTER :: fieldVariable
+    TYPE(GeneratedMeshBranchinTopologiesType), POINTER :: branchingTopologies
+    TYPE(GeneratedMeshRegularTopologiesType), POINTER :: regularTopologies
     TYPE(REGION_TYPE), POINTER :: meshRegion,fieldRegion
     TYPE(VARYING_STRING) :: localError
 
@@ -4420,23 +4789,51 @@ CONTAINS
                   ENDIF
                 ENDDO !componentIdx
                 !End of checks, calculate the geometric parameters for each mesh type
-                SELECT CASE(generatedMesh%generatedType)
-                CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
-                  CALL GeneratedMesh_RegularGeometricParametersCalculate(generatedMesh%regularMesh,geometricField,err,error,*999)
-                CASE(GENERATED_MESH_POLAR_MESH_TYPE)
-                  CALL GeneratedMesh_PolarGeometricParametersCalculate(generatedMesh%polarMesh,geometricField,err,error,*999)
-                CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
-                  CALL GeneratedMesh_CylinderGeometricParametersCalculate(generatedMesh%cylinderMesh,geometricField,err,error,*999)
-                CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
-                  CALL GeneratedMesh_EllipsoidGeometricParametersCalculate(generatedMesh%ellipsoidMesh,geometricField,err,error,*999)
-                CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
-                   CALL GeneratedMesh_FractalTreeGeometricParametersCalculate(generatedMesh%fractalTreeMesh,geometricField, &
-                     & err,error,*999)
-                CASE DEFAULT
-                  localError="The generated mesh mesh type of "// &
-                    & TRIM(NumberToVString(generatedMesh%generatedType,"*",err,error))//" is invalid."
-                  CALL FlagError(localError,err,error,*999)
-                END SELECT
+                SELECT CASE(generatedMesh%generatedClass)
+                CASE(GENERATED_MESH_REGULAR_TOPOLOGIES_CLASS)
+                  regularTopologies=>generatedMesh%regularTopologies
+                  IF(ASSOCIATED(regularTopologies)) THEN
+                    SELECT CASE(regularTopologies%generatedType)            
+                    CASE(GENERATED_MESH_REGULAR_MESH_TYPE)
+                      CALL GeneratedMesh_RegularGeometricParametersCalculate(regularTopologies%regularMesh,geometricField, &
+                        & err,error,*999)
+                    CASE(GENERATED_MESH_POLAR_MESH_TYPE)
+                      CALL GeneratedMesh_PolarGeometricParametersCalculate(regularTopologies%polarMesh,geometricField, &
+                        & err,error,*999)
+                    CASE(GENERATED_MESH_CYLINDER_MESH_TYPE)
+                      CALL GeneratedMesh_CylinderGeometricParametersCalculate(regularTopologies%cylinderMesh,geometricField, &
+                        & err,error,*999)
+                    CASE(GENERATED_MESH_ELLIPSOID_MESH_TYPE)
+                      CALL GeneratedMesh_EllipsoidGeometricParametersCalculate(regularTopologies%ellipsoidMesh,geometricField, &
+                        & err,error,*999)
+                    CASE DEFAULT
+                      localError="The generated mesh mesh type of "// &
+                        & TRIM(NumberToVString(regularTopologies%generatedType,"*",err,error))//" is invalid."
+                      CALL FlagError(localError,err,error,*999)
+                    END SELECT
+                  ELSE
+                    CALL FlagError("Generated mesh regular topologies is not associated.",err,error,*999)
+                  ENDIF                  
+                CASE(GENERATED_MESH_BRANCHING_TOPOLOGIES_CLASS)
+                  branchingTopologies=>generatedMesh%branchingTopologies
+                  IF(ASSOCIATED(branchingTopologies)) THEN                    
+                    SELECT CASE(branchingTopologies%generatedType)
+                    CASE(GENERATED_MESH_FRACTAL_TREE_MESH_TYPE)
+                      CALL GeneratedMesh_FractalTreeGeometricParametersCalculate(branchingTopologies%fractalTreeMesh, &
+                        & geometricField,err,error,*999)
+                    CASE DEFAULT                      
+                      localError="The generated mesh type of "//TRIM(NumberToVString(branchingTopologies% &
+                        & generatedType,"*",err,error))//" is invalid for a branching topologies generated class."
+                      CALL FlagError(localError,err,error,*999)                      
+                    END SELECT              
+                  ELSE
+                    CALL FlagError("Generated mesh branching topologies is not associated.",err,error,*999)
+                  ENDIF                  
+                CASE DEFAULT            
+                  localError="The generated mesh class of "//TRIM(NumberToVString(generatedMesh%generatedClass,"*",err,error))// &
+                    & " is invalid."
+                  CALL FlagError(localError,err,error,*999)                  
+                END SELECT                
               ELSE
                 localError="The generated mesh region user number of "// &
                   & TRIM(NumberToVString(meshRegion%USER_NUMBER,"*",err,error))// &

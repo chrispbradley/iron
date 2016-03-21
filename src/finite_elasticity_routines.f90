@@ -60,7 +60,7 @@ MODULE FINITE_ELASTICITY_ROUTINES
   USE FIELD_ROUTINES
   USE FIELD_IO_ROUTINES
   USE FLUID_MECHANICS_IO_ROUTINES
-  USE GENERATED_MESH_ROUTINES
+  USE GeneratedMeshRoutines
   USE INPUT_OUTPUT
   USE ISO_VARYING_STRING
   USE KINDS
@@ -3377,7 +3377,7 @@ CONTAINS
     !Argument variables
     TYPE(FIELD_INTERPOLATED_POINT_METRICS_TYPE), POINTER :: dependentInterpPointMetrics,geometricInterpPointMetrics
     TYPE(FIELD_INTERPOLATED_POINT_TYPE), POINTER :: fibreInterpolatedPoint
-    REAL(DP), INTENT(OUT) :: dZdNu(3,3) !<dZdNu(coordinateIdx,coordianteIdx). On return, the deformation gradient tensor
+    REAL(DP), INTENT(OUT) :: dZdNu(3,3) !<dZdNu(coordinateIdx,coordinateIdx). On return, the deformation gradient tensor
     INTEGER(INTG), INTENT(OUT) :: err   !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
