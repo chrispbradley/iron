@@ -1813,7 +1813,7 @@ CONTAINS
                           CASE(EQUATIONS_SET_ELASTICITY_CLASS)
                             CALL Elasticity_FiniteElementPostResidualEvaluate(EQUATIONS_SET,ERR,ERROR,*999)
                           CASE(EQUATIONS_SET_FLUID_MECHANICS_CLASS)
-                            !Post residual evaluate not used
+                            CALL FluidMechanics_FiniteElementPostResidualEvaluate(EQUATIONS_SET,ERR,ERROR,*999)
                           CASE(EQUATIONS_SET_ELECTROMAGNETICS_CLASS)
                             !Post residual evaluate not used
                           CASE(EQUATIONS_SET_CLASSICAL_FIELD_CLASS)

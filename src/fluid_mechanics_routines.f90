@@ -99,7 +99,7 @@ MODULE FLUID_MECHANICS_ROUTINES
 
   PUBLIC FluidMechanics_FiniteElementJacobianEvaluate,FluidMechanics_FiniteElementResidualEvaluate
   
-  PUBLIC FluidMechanics_FiniteElementPreResidualEvaluate
+  PUBLIC FluidMechanics_FiniteElementPreResidualEvaluate,FluidMechanics_FiniteElementPostResidualEvaluate
 
   PUBLIC FluidMechanics_NodalJacobianEvaluate,FluidMechanics_NodalResidualEvaluate
   
@@ -1035,6 +1035,52 @@ CONTAINS
   !
   !================================================================================================================================
   !
+
+  SUBROUTINE FluidMechanics_FiniteElementPostResidualEvaluate(equationsSet,err,error,*)
+
+    !Argument variables
+    TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet !<A pointer the equations set
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+    TYPE(VARYING_STRING) :: localError
+
+    ENTERS("FluidMechanics_FiniteElementPostResidualEvaluate",err,error,*999)
+    
+    IF(ASSOCIATED(equationsSet)) THEN
+      SELECT CASE(equationsSet%specification(2))
+      CASE(EQUATIONS_SET_STOKES_EQUATION_TYPE)
+        ! Do nothing
+      CASE(EQUATIONS_SET_NAVIER_STOKES_EQUATION_TYPE)
+        CALL NavierStokes_FiniteElementPostResidualEvaluate(equationsSet,err,error,*999)
+      CASE(EQUATIONS_SET_DARCY_EQUATION_TYPE)
+        ! Do nothing
+      CASE(EQUATIONS_SET_DARCY_PRESSURE_EQUATION_TYPE)
+        ! Do nothing
+      CASE(EQUATIONS_SET_POISEUILLE_EQUATION_TYPE)
+        ! Do nothing
+      CASE(EQUATIONS_SET_BURGERS_EQUATION_TYPE)
+        ! Do nothing
+      CASE(EQUATIONS_SET_CHARACTERISTIC_EQUATION_TYPE)
+        ! Do nothing
+      CASE DEFAULT
+        localError="The second equations set specificaiton of "// &
+          & TRIM(NUMBER_TO_VSTRING(equationsSet%specification(2),"*",ERR,ERROR))// &
+          & " is not valid for a fluid mechanics equation set."
+        CALL FlagError(localError,ERR,ERROR,*999)
+      END SELECT
+    ELSE
+      CALL FlagError("Equations set is not associated",err,error,*999)
+    ENDIF
+       
+    EXITS("FluidMechanics_FiniteElementPostResidualEvaluate")
+    RETURN
+999 ERRORS("FluidMechanics_FiniteElementPostResidualEvaluate",err,error)
+    EXITS("FluidMechanics_FiniteElementPostResidualEvaluate")
+    RETURN 1
+    
+  END SUBROUTINE FluidMechanics_FiniteElementPostResidualEvaluate
+
 
 END MODULE FLUID_MECHANICS_ROUTINES
 

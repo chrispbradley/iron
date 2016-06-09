@@ -26,7 +26,7 @@
 !> Auckland, the University of Oxford and King's College, London.
 !> All Rights Reserved.
 !>
-!> Contributor(s): David Ladd, Soroush Safaei
+!> Contributor(s): David Ladd, Soroush Safaei, Chris Bradley
 !>
 !> Alternatively, the contents of this file may be used under the terms of
 !> either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -119,7 +119,7 @@ MODULE NAVIER_STOKES_EQUATIONS_ROUTINES
   
   PUBLIC NavierStokes_CoupleCharacteristics
   
-  PUBLIC NavierStokes_FiniteElementPreResidualEvaluate
+  PUBLIC NavierStokes_FiniteElementPreResidualEvaluate,NavierStokes_FiniteElementPostResidualEvaluate
   
   PUBLIC NavierStokes_ControlLoopPostLoop
   
@@ -4414,14 +4414,18 @@ CONTAINS
     TYPE(EQUATIONS_MATRICES_RHS_TYPE), POINTER :: RHS_VECTOR
     TYPE(EQUATIONS_MATRIX_TYPE), POINTER :: STIFFNESS_MATRIX,DAMPING_MATRIX
     TYPE(FIELD_TYPE), POINTER :: DEPENDENT_FIELD,GEOMETRIC_FIELD,MATERIALS_FIELD,INDEPENDENT_FIELD
+    TYPE(FIELD_INTERPOLATED_POINT_METRICS_TYPE), POINTER :: geometricMetrics
     TYPE(FIELD_VARIABLE_TYPE), POINTER :: FIELD_VARIABLE
     TYPE(QUADRATURE_SCHEME_TYPE), POINTER :: QUADRATURE_SCHEME,QUADRATURE_SCHEME1,QUADRATURE_SCHEME2
     INTEGER(INTG) :: ng,mh,mhs,mi,ms,nh,nhs,ni,ns,nhs_max,mhs_max,nhs_min,mhs_min,xv,out
     INTEGER(INTG) :: FIELD_VAR_TYPE,MESH_COMPONENT1,MESH_COMPONENT2,MESH_COMPONENT_NUMBER
-    INTEGER(INTG) :: nodeIdx,xiIdx,coordIdx,derivativeIdx,versionIdx,elementVersionNumber,componentIdx
+    INTEGER(INTG) :: nodeIdx,xiIdx,xiIdx1,xiIdx2,xIdx,coordIdx,derivativeIdx,versionIdx,elementVersionNumber,componentIdx
     INTEGER(INTG) :: numberOfVersions,nodeNumber,numberOfElementNodes,numberOfParameters,firstNode,lastNode
+    INTEGER(INTG) :: numberOfXDimensions,numberOfXiDimensions
     REAL(DP) :: JGW,SUM,X(3),DXI_DX(3,3),DPHIMS_DXI(3),DPHINS_DXI(3),PHIMS,PHINS,momentum,mass,QUpwind,AUpwind,pExternal
-    REAL(DP) :: U_VALUE(3),W_VALUE(3),U_DERIV(3,3),Q_VALUE,A_VALUE,Q_DERIV,A_DERIV,area,pressure,normalWave,normal,Lref,Tref,Mref
+    REAL(DP) :: uSum(3),U_VALUE(3),W_VALUE(3),U_DERIV(3,3),Q_VALUE,A_VALUE,Q_DERIV,A_DERIV,area,pressure,normalWave,normal, &
+      & Lref,Tref,Mref
+    REAL(DP) :: dXidPhim(3),wdXidXPhim(3),dPhimdX(3),dPhindX
     REAL(DP) :: MU_PARAM,RHO_PARAM,A0_PARAM,E_PARAM,H_PARAM,A0_DERIV,E_DERIV,H_DERIV,alpha,beta,G0_PARAM,muScale
     REAL(DP), POINTER :: dependentParameters(:),materialsParameters(:),materialsParameters1(:)
     LOGICAL :: UPDATE_STIFFNESS_MATRIX,UPDATE_DAMPING_MATRIX,UPDATE_RHS_VECTOR,UPDATE_NONLINEAR_RESIDUAL
@@ -4618,14 +4622,14 @@ CONTAINS
             & MU_PARAM,err,error,*999)
           CALL FIELD_PARAMETER_SET_GET_CONSTANT(MATERIALS_FIELD,FIELD_U_VARIABLE_TYPE,FIELD_VALUES_SET_TYPE,2, &
             & RHO_PARAM,err,error,*999)
+          geometricMetrics=>EQUATIONS%INTERPOLATION%GEOMETRIC_INTERP_POINT_METRICS(FIELD_U_VARIABLE_TYPE)%PTR
           !Loop over Gauss points
           DO ng=1,QUADRATURE_SCHEME%NUMBER_OF_GAUSS
             CALL FIELD_INTERPOLATE_GAUSS(FIRST_PART_DERIV,BASIS_DEFAULT_QUADRATURE_SCHEME,ng,EQUATIONS%INTERPOLATION% &
               & DEPENDENT_INTERP_POINT(FIELD_U_VARIABLE_TYPE)%PTR,ERR,ERROR,*999)
             CALL FIELD_INTERPOLATE_GAUSS(FIRST_PART_DERIV,BASIS_DEFAULT_QUADRATURE_SCHEME,ng,EQUATIONS%INTERPOLATION% &
               & GEOMETRIC_INTERP_POINT(FIELD_U_VARIABLE_TYPE)%PTR,ERR,ERROR,*999)
-            CALL FIELD_INTERPOLATED_POINT_METRICS_CALCULATE(GEOMETRIC_BASIS%NUMBER_OF_XI,EQUATIONS%INTERPOLATION% &
-              & GEOMETRIC_INTERP_POINT_METRICS(FIELD_U_VARIABLE_TYPE)%PTR,ERR,ERROR,*999)
+            CALL FIELD_INTERPOLATED_POINT_METRICS_CALCULATE(GEOMETRIC_BASIS%NUMBER_OF_XI,geometricMetrics,ERR,ERROR,*999)
             IF(EQUATIONS_SET%specification(3)==EQUATIONS_SET_ALE_NAVIER_STOKES_SUBTYPE.OR. &
               & EQUATIONS_SET%specification(3)==EQUATIONS_SET_PGM_NAVIER_STOKES_SUBTYPE) THEN
               CALL FIELD_INTERPOLATE_GAUSS(FIRST_PART_DERIV,BASIS_DEFAULT_QUADRATURE_SCHEME,ng,EQUATIONS%INTERPOLATION% &
@@ -4638,8 +4642,9 @@ CONTAINS
             ELSE
               W_VALUE=0.0_DP
             END IF
-
-            ! Get the constitutive law (non-Newtonian) viscosity based on shear rate
+            numberOfXiDimensions=geometricMetrics%NUMBER_OF_XI_DIMENSIONS
+            numberOfXDimensions=geometricMetrics%NUMBER_OF_X_DIMENSIONS
+             ! Get the constitutive law (non-Newtonian) viscosity based on shear rate
             IF(EQUATIONS_SET%specification(3)==EQUATIONS_SET_CONSTITUTIVE_MU_NAVIER_STOKES_SUBTYPE) THEN
               ! Note the constant from the U_VARIABLE is a scale factor
               muScale = MU_PARAM
@@ -4660,20 +4665,43 @@ CONTAINS
               & EQUATIONS_SET%specification(3)==EQUATIONS_SET_QUASISTATIC_NAVIER_STOKES_SUBTYPE.OR. &
               & EQUATIONS_SET%specification(3)==EQUATIONS_SET_ALE_NAVIER_STOKES_SUBTYPE.OR. &
               & EQUATIONS_SET%specification(3)==EQUATIONS_SET_PGM_NAVIER_STOKES_SUBTYPE) THEN
-              !Loop over field components
-              mhs=0
-              DO mh=1,FIELD_VARIABLE%NUMBER_OF_COMPONENTS-1
-                MESH_COMPONENT1=FIELD_VARIABLE%COMPONENTS(mh)%MESH_COMPONENT_NUMBER
-                DEPENDENT_BASIS1=>DEPENDENT_FIELD%DECOMPOSITION%DOMAIN(MESH_COMPONENT1)%PTR% &
-                  & TOPOLOGY%ELEMENTS%ELEMENTS(ELEMENT_NUMBER)%BASIS
-                QUADRATURE_SCHEME1=>DEPENDENT_BASIS1%QUADRATURE%QUADRATURE_SCHEME_MAP(BASIS_DEFAULT_QUADRATURE_SCHEME)%PTR
-                JGW=EQUATIONS%INTERPOLATION%GEOMETRIC_INTERP_POINT_METRICS(FIELD_U_VARIABLE_TYPE)%PTR%JACOBIAN* &
-                  & QUADRATURE_SCHEME1%GAUSS_WEIGHTS(ng)
-
-                DO ms=1,DEPENDENT_BASIS1%NUMBER_OF_ELEMENT_PARAMETERS
-                  mhs=mhs+1
-                  nhs=0
-                  IF(UPDATE_STIFFNESS_MATRIX.OR.UPDATE_DAMPING_MATRIX) THEN
+              DO xiIdx=1,numberOfXiDimensions
+                DO xIdx=1,numberOfXDimensions
+                  DXI_DX(xiIdx,xIdx)=geometricMetrics%DXI_DX(xiIdx,xIdx)
+                ENDDO !xIdx
+              ENDDO !xiIdx
+              IF(UPDATE_STIFFNESS_MATRIX.OR.UPDATE_DAMPING_MATRIX) THEN
+                !Loop over field components
+                mhs=0
+                DO mh=1,FIELD_VARIABLE%NUMBER_OF_COMPONENTS-1
+                  MESH_COMPONENT1=FIELD_VARIABLE%COMPONENTS(mh)%MESH_COMPONENT_NUMBER
+                  DEPENDENT_BASIS1=>DEPENDENT_FIELD%DECOMPOSITION%DOMAIN(MESH_COMPONENT1)%PTR% &
+                    & TOPOLOGY%ELEMENTS%ELEMENTS(ELEMENT_NUMBER)%BASIS
+                  QUADRATURE_SCHEME1=>DEPENDENT_BASIS1%QUADRATURE%QUADRATURE_SCHEME_MAP(BASIS_DEFAULT_QUADRATURE_SCHEME)%PTR
+                  JGW=geometricMetrics%JACOBIAN*QUADRATURE_SCHEME1%GAUSS_WEIGHTS(ng)
+                  
+                  DO ms=1,DEPENDENT_BASIS1%NUMBER_OF_ELEMENT_PARAMETERS
+                    mhs=mhs+1
+                    PHIMS=QUADRATURE_SCHEME1%GAUSS_BASIS_FNS(ms,NO_PART_DERIV,ng)
+                    DO xiIdx1=1,DEPENDENT_BASIS1%NUMBER_OF_XI
+                      DPHIMS_DXI(xiIdx1)=QUADRATURE_SCHEME1%GAUSS_BASIS_FNS(ms,PARTIAL_DERIVATIVE_FIRST_DERIVATIVE_MAP(xiIdx1),ng)
+                    END DO !xiIdx
+                    !Calculate dXidXdPhi
+                    DO xiIdx1=1,numberOfXiDimensions
+                      dXidPhim(xiIdx1)=0.0_DP
+                      wdXidXPhim(xiIdx1)=0.0_DP
+                      DO xIdx=1,numberOfXDimensions
+                        dPhimdX(xIdx)=0.0_DP
+                        DO xiIdx2=1,numberOfXiDimensions
+                          dPhimdX(xIdx)=dPhimdX(xIdx)+DPHIMS_DXI(xiIdx2)*DXI_DX(xiIdx2,xIdx)
+                        END DO !xiIdx2
+                        dXidPhim(xiIdx1)=dXidPhim(xiIdx1)+DXI_DX(xiIdx1,xIdx)*dPhimdX(xIdx)
+                        wdXidXPhim(xiIdx1)=wdXidXPhim(xiIdx1)+W_VALUE(xIdx)*DXI_DX(xiIdx1,xIdx)
+                      END DO !xIdx
+                      dXidPhim(xiIdx1)=MU_PARAM*dXidPhim(xiIdx1)
+                      wdXidXPhim(xiIdx1)=RHO_PARAM*wdXidXPhim(xiIdx1)*PHIMS
+                    END DO !xiIdx1
+                    nhs=0
                     !Loop over element columns
                     DO nh=1,FIELD_VARIABLE%NUMBER_OF_COMPONENTS
                       MESH_COMPONENT2=FIELD_VARIABLE%COMPONENTS(nh)%MESH_COMPONENT_NUMBER
@@ -4681,111 +4709,80 @@ CONTAINS
                         & TOPOLOGY%ELEMENTS%ELEMENTS(ELEMENT_NUMBER)%BASIS
                       QUADRATURE_SCHEME2=>DEPENDENT_BASIS2%QUADRATURE%QUADRATURE_SCHEME_MAP&
                         &(BASIS_DEFAULT_QUADRATURE_SCHEME)%PTR
-                      ! JGW=EQUATIONS%INTERPOLATION%GEOMETRIC_INTERP_POINT_METRICS%JACOBIAN*QUADRATURE_SCHEME2%&
-                      ! &GAUSS_WEIGHTS(ng)                        
                       DO ns=1,DEPENDENT_BASIS2%NUMBER_OF_ELEMENT_PARAMETERS
                         nhs=nhs+1
-                        !Calculate some general values
-                        DO ni=1,DEPENDENT_BASIS2%NUMBER_OF_XI
-                          DO mi=1,DEPENDENT_BASIS1%NUMBER_OF_XI
-                            DXI_DX(mi,ni)=EQUATIONS%INTERPOLATION%GEOMETRIC_INTERP_POINT_METRICS(FIELD_U_VARIABLE_TYPE)%PTR% &
-                              & DXI_DX(mi,ni)
-                          END DO
-                          DPHIMS_DXI(ni)=QUADRATURE_SCHEME1%GAUSS_BASIS_FNS(ms,PARTIAL_DERIVATIVE_FIRST_DERIVATIVE_MAP(ni),ng)
-                          DPHINS_DXI(ni)=QUADRATURE_SCHEME2%GAUSS_BASIS_FNS(ns,PARTIAL_DERIVATIVE_FIRST_DERIVATIVE_MAP(ni),ng)
-                        END DO !ni
-                        PHIMS=QUADRATURE_SCHEME1%GAUSS_BASIS_FNS(ms,NO_PART_DERIV,ng)
                         PHINS=QUADRATURE_SCHEME2%GAUSS_BASIS_FNS(ns,NO_PART_DERIV,ng)
-                        !Laplace only matrix
                         IF(UPDATE_STIFFNESS_MATRIX) THEN
+                          !Calculate some general values
+                          dPhindX=0.0_DP
+                          DO xiIdx2=1,DEPENDENT_BASIS2%NUMBER_OF_XI
+                            DPHINS_DXI(xiIdx2)=QUADRATURE_SCHEME2%GAUSS_BASIS_FNS(ns, &
+                              & PARTIAL_DERIVATIVE_FIRST_DERIVATIVE_MAP(xiIdx2),ng)
+                            dPhindX=dPhindX+DPHINS_DXI(xiIdx2)*DXI_DX(xiIdx2,mh)
+                          END DO !xiIdx2
+                          !Laplace only matrix
                           !LAPLACE TYPE 
                           IF(nh==mh) THEN 
-                            SUM=0.0_DP
                             !Calculate SUM 
-                            DO xv=1,DEPENDENT_BASIS1%NUMBER_OF_XI
-                              DO mi=1,DEPENDENT_BASIS1%NUMBER_OF_XI
-                                DO ni=1,DEPENDENT_BASIS2%NUMBER_OF_XI
-                                  SUM=SUM+MU_PARAM*DPHINS_DXI(ni)*DXI_DX(ni,xv)*DPHIMS_DXI(mi)*DXI_DX(mi,xv)
-                                END DO !ni
-                              END DO !mi
-                            END DO !x 
+                            SUM=0.0_DP
+                            DO xiIdx1=1,DEPENDENT_BASIS2%NUMBER_OF_XI
+                              SUM=SUM+DPHINS_DXI(xiIdx1)*dXidPhim(xiIdx1)
+                            END DO !ni
                             !Calculate MATRIX  
                             STIFFNESS_MATRIX%ELEMENT_MATRIX%MATRIX(mhs,nhs)=STIFFNESS_MATRIX%ELEMENT_MATRIX%MATRIX(mhs,nhs)+SUM*JGW
                           END IF
-                        END IF
-                        !General matrix
-                        IF(UPDATE_STIFFNESS_MATRIX) THEN
+                          !General matrix
                           !GRADIENT TRANSPOSE TYPE
                           IF(EQUATIONS_SET%SPECIFICATION(3)/=EQUATIONS_SET_LAPLACE_NAVIER_STOKES_SUBTYPE) THEN 
                             IF(nh<FIELD_VARIABLE%NUMBER_OF_COMPONENTS) THEN 
-                              SUM=0.0_DP
-                              !Calculate SUM 
-                              DO mi=1,DEPENDENT_BASIS1%NUMBER_OF_XI
-                                DO ni=1,DEPENDENT_BASIS2%NUMBER_OF_XI
-                                  !note mh/nh derivative in DXI_DX 
-                                  SUM=SUM+MU_PARAM*DPHINS_DXI(mi)*DXI_DX(mi,mh)*DPHIMS_DXI(ni)*DXI_DX(ni,nh)
-                                END DO !ni
-                              END DO !mi
                               !Calculate MATRIX
-                              STIFFNESS_MATRIX%ELEMENT_MATRIX%MATRIX(mhs,nhs)=STIFFNESS_MATRIX%ELEMENT_MATRIX%MATRIX(mhs,nhs) &
-                               & +SUM*JGW
-                           END IF
+                              STIFFNESS_MATRIX%ELEMENT_MATRIX%MATRIX(mhs,nhs)=STIFFNESS_MATRIX%ELEMENT_MATRIX%MATRIX(mhs,nhs)+ &
+                                & dPhindX*dPhimdX(nh)*JGW
+                            END IF
                           END IF
-                        END IF
-                        !Contribution through ALE
-                        IF(UPDATE_STIFFNESS_MATRIX) THEN
+                          !Contribution through ALE
                           !GRADIENT TRANSPOSE TYPE
                           IF(EQUATIONS_SET%SPECIFICATION(3)==EQUATIONS_SET_ALE_NAVIER_STOKES_SUBTYPE.OR. & 
                             & EQUATIONS_SET%SPECIFICATION(3)==EQUATIONS_SET_PGM_NAVIER_STOKES_SUBTYPE) THEN 
                             IF(nh==mh) THEN 
                               SUM=0.0_DP
                               !Calculate SUM 
-                              DO mi=1,DEPENDENT_BASIS1%NUMBER_OF_XI
-                                DO ni=1,DEPENDENT_BASIS1%NUMBER_OF_XI
-                                  SUM=SUM-RHO_PARAM*W_VALUE(mi)*DPHINS_DXI(ni)*DXI_DX(ni,mi)*PHIMS
-                                END DO !ni
-                              END DO !mi
+                              DO xiIdx2=1,DEPENDENT_BASIS2%NUMBER_OF_XI
+                                SUM=SUM-DPHINS_DXI(xiIdx2)*wdXidXPhim(xiIdx2)
+                              ENDDO !xiIdx2
                               !Calculate MATRIX
                               STIFFNESS_MATRIX%ELEMENT_MATRIX%MATRIX(mhs,nhs)=STIFFNESS_MATRIX%ELEMENT_MATRIX%MATRIX(mhs,nhs)+ &
-                               & SUM*JGW
-                            END IF
-                          END IF
-                        END IF
-                        !Pressure contribution (B transpose)
-                        IF(UPDATE_STIFFNESS_MATRIX) THEN
+                                & SUM*JGW
+                            ENDIF
+                          ENDIF
+                          !Pressure contribution (B transpose)
                           !LAPLACE TYPE 
                           IF(nh==FIELD_VARIABLE%NUMBER_OF_COMPONENTS) THEN 
-                            SUM=0.0_DP
-                            !Calculate SUM 
-                            DO ni=1,DEPENDENT_BASIS1%NUMBER_OF_XI
-                              SUM=SUM-PHINS*DPHIMS_DXI(ni)*DXI_DX(ni,mh)
-                            END DO !ni
                             !Calculate MATRIX
-                            STIFFNESS_MATRIX%ELEMENT_MATRIX%MATRIX(mhs,nhs)=STIFFNESS_MATRIX%ELEMENT_MATRIX%MATRIX(mhs,nhs)+SUM*JGW
+                            STIFFNESS_MATRIX%ELEMENT_MATRIX%MATRIX(mhs,nhs)=STIFFNESS_MATRIX%ELEMENT_MATRIX%MATRIX(mhs,nhs)- &
+                              & PHINS*dPhimdX(mh)*JGW
                           END IF
                         END IF
                         !Damping matrix
-                        IF(EQUATIONS_SET%specification(3)==EQUATIONS_SET_TRANSIENT_NAVIER_STOKES_SUBTYPE.OR. &
-                          & EQUATIONS_SET%specification(3)==EQUATIONS_SET_ALE_NAVIER_STOKES_SUBTYPE.OR. &
-                          & EQUATIONS_SET%specification(3)==EQUATIONS_SET_PGM_NAVIER_STOKES_SUBTYPE.OR. &
-                          & EQUATIONS_SET%specification(3)==EQUATIONS_SET_TRANSIENT_RBS_NAVIER_STOKES_SUBTYPE.OR. &
-                          & EQUATIONS_SET%specification(3)==EQUATIONS_SET_MULTISCALE3D_NAVIER_STOKES_SUBTYPE .OR. &
-                          & EQUATIONS_SET%specification(3)==EQUATIONS_SET_CONSTITUTIVE_MU_NAVIER_STOKES_SUBTYPE) THEN
-                          IF(UPDATE_DAMPING_MATRIX) THEN
+                        IF(UPDATE_DAMPING_MATRIX) THEN
+                          IF(EQUATIONS_SET%specification(3)==EQUATIONS_SET_TRANSIENT_NAVIER_STOKES_SUBTYPE.OR. &
+                            & EQUATIONS_SET%specification(3)==EQUATIONS_SET_ALE_NAVIER_STOKES_SUBTYPE.OR. &
+                            & EQUATIONS_SET%specification(3)==EQUATIONS_SET_PGM_NAVIER_STOKES_SUBTYPE.OR. &
+                            & EQUATIONS_SET%specification(3)==EQUATIONS_SET_TRANSIENT_RBS_NAVIER_STOKES_SUBTYPE.OR. &
+                            & EQUATIONS_SET%specification(3)==EQUATIONS_SET_MULTISCALE3D_NAVIER_STOKES_SUBTYPE .OR. &
+                            & EQUATIONS_SET%specification(3)==EQUATIONS_SET_CONSTITUTIVE_MU_NAVIER_STOKES_SUBTYPE) THEN
                             IF(nh==mh) THEN 
-                              SUM=0.0_DP 
-                              !Calculate SUM 
-                              SUM=PHIMS*PHINS*RHO_PARAM
                               !Calculate MATRIX
-                              DAMPING_MATRIX%ELEMENT_MATRIX%MATRIX(mhs,nhs)=DAMPING_MATRIX%ELEMENT_MATRIX%MATRIX(mhs,nhs)+SUM*JGW
+                              DAMPING_MATRIX%ELEMENT_MATRIX%MATRIX(mhs,nhs)=DAMPING_MATRIX%ELEMENT_MATRIX%MATRIX(mhs,nhs)+ &
+                                & RHO_PARAM*PHIMS*PHINS*JGW
                             END IF
                           END IF
                         END IF
                       END DO !ns    
                     END DO !nh
-                  END IF
-                END DO !ms
-              END DO !mh
+                  END DO !ms
+                END DO !mh
+              END IF
               !Analytic RHS vector
               IF(RHS_VECTOR%FIRST_ASSEMBLY) THEN
                 IF(UPDATE_RHS_VECTOR) THEN
@@ -4807,8 +4804,7 @@ CONTAINS
                         DEPENDENT_BASIS1=>DEPENDENT_FIELD%DECOMPOSITION%DOMAIN(MESH_COMPONENT1)%PTR% &
                           & TOPOLOGY%ELEMENTS%ELEMENTS(ELEMENT_NUMBER)%BASIS
                         QUADRATURE_SCHEME1=>DEPENDENT_BASIS1%QUADRATURE%QUADRATURE_SCHEME_MAP(BASIS_DEFAULT_QUADRATURE_SCHEME)%PTR
-                        JGW=EQUATIONS%INTERPOLATION%GEOMETRIC_INTERP_POINT_METRICS(FIELD_U_VARIABLE_TYPE)%PTR%JACOBIAN* &
-                          & QUADRATURE_SCHEME1%GAUSS_WEIGHTS(ng)
+                        JGW=geometricMetrics%JACOBIAN*QUADRATURE_SCHEME1%GAUSS_WEIGHTS(ng)
 
                         DO ms=1,DEPENDENT_BASIS1%NUMBER_OF_ELEMENT_PARAMETERS
                           mhs=mhs+1
@@ -4966,31 +4962,40 @@ CONTAINS
                   DEPENDENT_BASIS1=>DEPENDENT_FIELD%DECOMPOSITION%DOMAIN(MESH_COMPONENT1)%PTR% &
                     & TOPOLOGY%ELEMENTS%ELEMENTS(ELEMENT_NUMBER)%BASIS
                   QUADRATURE_SCHEME1=>DEPENDENT_BASIS1%QUADRATURE%QUADRATURE_SCHEME_MAP(BASIS_DEFAULT_QUADRATURE_SCHEME)%PTR
-                  JGW=EQUATIONS%INTERPOLATION%GEOMETRIC_INTERP_POINT_METRICS(FIELD_U_VARIABLE_TYPE)%PTR%JACOBIAN* &
-                    & QUADRATURE_SCHEME1%GAUSS_WEIGHTS(ng)
-                  DXI_DX=0.0_DP
-
-                  DO ni=1,DEPENDENT_BASIS1%NUMBER_OF_XI
-                    DO mi=1,DEPENDENT_BASIS1%NUMBER_OF_XI
-                      DXI_DX(mi,ni)=EQUATIONS%INTERPOLATION%GEOMETRIC_INTERP_POINT_METRICS(FIELD_U_VARIABLE_TYPE)%PTR%DXI_DX(mi,ni)
-                    END DO
-                  END DO
-
+                  JGW=geometricMetrics%JACOBIAN*QUADRATURE_SCHEME1%GAUSS_WEIGHTS(ng)
+                  !note mh value derivative
+                  ! Convective form
+                  sum=0.0_DP
+                  SELECT CASE(numberOfXDimensions)
+                  CASE(1)
+                    DO xiIdx1=1,DEPENDENT_BASIS1%NUMBER_OF_XI                    
+                      uSum(xiIdx1)=RHO_PARAM*(U_VALUE(1)*U_DERIV(mh,xiIdx1)*DXI_DX(xiIdx1,1))
+                      sum=sum+uSum(xiIdx1)
+                    ENDDO !xiIdx1
+                  CASE(2)
+                    DO xiIdx1=1,DEPENDENT_BASIS1%NUMBER_OF_XI                    
+                      uSum(xiIdx1)= RHO_PARAM*( &
+                        & U_VALUE(1)*U_DERIV(mh,xiIdx1)*DXI_DX(xiIdx1,1)+ &
+                        & U_VALUE(2)*U_DERIV(mh,xiIdx1)*DXI_DX(xiIdx1,2))
+                      sum=sum+uSum(xiIdx)
+                    ENDDO !xiIdx1
+                  CASE(3)
+                    DO xiIdx1=1,DEPENDENT_BASIS1%NUMBER_OF_XI                    
+                      uSum(xiIdx1)= RHO_PARAM*( &
+                        & U_VALUE(1)*U_DERIV(mh,xiIdx1)*DXI_DX(xiIdx1,1)+ &
+                        & U_VALUE(2)*U_DERIV(mh,xiIdx1)*DXI_DX(xiIdx1,2)+ &
+                        & U_VALUE(3)*U_DERIV(mh,xiIdx1)*DXI_DX(xiIdx1,3))
+                      sum=sum+uSum(xiIdx1)
+                    ENDDO !xiIdx1
+                  CASE DEFAULT
+                    LOCAL_ERROR="The number of dimensions of "//TRIM(NumberToVString(numberOfXDimensions,"*",err,error))// &
+                      & " is invalid."
+                    CALL FlagError(LOCAL_ERROR,err,error,*999)
+                  END SELECT                  
                   DO ms=1,DEPENDENT_BASIS1%NUMBER_OF_ELEMENT_PARAMETERS
                     mhs=mhs+1
                     PHIMS=QUADRATURE_SCHEME1%GAUSS_BASIS_FNS(ms,NO_PART_DERIV,ng)
-                    !note mh value derivative 
-                    SUM=0.0_DP
-                    ! Convective form
-                    DO ni=1,DEPENDENT_BASIS1%NUMBER_OF_XI
-                      SUM=SUM+RHO_PARAM*(PHIMS)*( & 
-                        & (U_VALUE(1))*(U_DERIV(mh,ni)*DXI_DX(ni,1))+ &
-                        & (U_VALUE(2))*(U_DERIV(mh,ni)*DXI_DX(ni,2))+ &
-                        & (U_VALUE(3))*(U_DERIV(mh,ni)*DXI_DX(ni,3)))
-                    END DO !ni
-
-                    NONLINEAR_MATRICES%ELEMENT_RESIDUAL%VECTOR(mhs)=NONLINEAR_MATRICES%ELEMENT_RESIDUAL%VECTOR(mhs)+SUM*JGW
-
+                    NONLINEAR_MATRICES%ELEMENT_RESIDUAL%VECTOR(mhs)=NONLINEAR_MATRICES%ELEMENT_RESIDUAL%VECTOR(mhs)+SUM*PHIMS*JGW
                   END DO !ms
                 END DO !mh
               END IF
@@ -5003,9 +5008,9 @@ CONTAINS
               & EQUATIONS_SET%specification(3)==EQUATIONS_SET_STATIC_RBS_NAVIER_STOKES_SUBTYPE.OR. &
               & EQUATIONS_SET%specification(3)==EQUATIONS_SET_MULTISCALE3D_NAVIER_STOKES_SUBTYPE) THEN
               CALL NavierStokes_ResidualBasedStabilisation(EQUATIONS_SET,ELEMENT_NUMBER,ng, &
-               & MU_PARAM,RHO_PARAM,.FALSE.,ERR,ERROR,*999)
+                & MU_PARAM,RHO_PARAM,.FALSE.,ERR,ERROR,*999)
             END IF
-
+            
             !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             !!!!!                                        !!!!!
             !!!!!         1 D  T R A N S I E N T         !!!!!
@@ -5272,22 +5277,22 @@ CONTAINS
           END IF
 
           !!!--   A S S E M B L E   M A T R I C E S  &  V E C T O R S   --!!!
-          mhs_min=mhs
-          mhs_max=nhs
-          nhs_min=mhs
-          nhs_max=nhs
-          IF(EQUATIONS_SET%specification(3)==EQUATIONS_SET_STATIC_NAVIER_STOKES_SUBTYPE.OR.  &
-            & EQUATIONS_SET%specification(3)==EQUATIONS_SET_STATIC_RBS_NAVIER_STOKES_SUBTYPE.OR. &
-            & EQUATIONS_SET%specification(3)==EQUATIONS_SET_LAPLACE_NAVIER_STOKES_SUBTYPE.OR. &
-            & EQUATIONS_SET%specification(3)==EQUATIONS_SET_TRANSIENT_NAVIER_STOKES_SUBTYPE.OR. &
-            & EQUATIONS_SET%specification(3)==EQUATIONS_SET_TRANSIENT_RBS_NAVIER_STOKES_SUBTYPE.OR. &
-            & EQUATIONS_SET%specification(3)==EQUATIONS_SET_MULTISCALE3D_NAVIER_STOKES_SUBTYPE.OR. &
-            & EQUATIONS_SET%specification(3)==EQUATIONS_SET_CONSTITUTIVE_MU_NAVIER_STOKES_SUBTYPE.OR. &
-            & EQUATIONS_SET%specification(3)==EQUATIONS_SET_QUASISTATIC_NAVIER_STOKES_SUBTYPE.OR. &
-            & EQUATIONS_SET%specification(3)==EQUATIONS_SET_ALE_NAVIER_STOKES_SUBTYPE.OR. &
-            & EQUATIONS_SET%specification(3)==EQUATIONS_SET_PGM_NAVIER_STOKES_SUBTYPE) THEN
-            IF(STIFFNESS_MATRIX%FIRST_ASSEMBLY) THEN
-              IF(UPDATE_STIFFNESS_MATRIX) THEN
+          IF(STIFFNESS_MATRIX%FIRST_ASSEMBLY) THEN
+            IF(UPDATE_STIFFNESS_MATRIX) THEN
+              mhs_min=mhs
+              mhs_max=nhs
+              nhs_min=mhs
+              nhs_max=nhs
+              IF(EQUATIONS_SET%specification(3)==EQUATIONS_SET_STATIC_NAVIER_STOKES_SUBTYPE.OR.  &
+                & EQUATIONS_SET%specification(3)==EQUATIONS_SET_STATIC_RBS_NAVIER_STOKES_SUBTYPE.OR. &
+                & EQUATIONS_SET%specification(3)==EQUATIONS_SET_LAPLACE_NAVIER_STOKES_SUBTYPE.OR. &
+                & EQUATIONS_SET%specification(3)==EQUATIONS_SET_TRANSIENT_NAVIER_STOKES_SUBTYPE.OR. &
+                & EQUATIONS_SET%specification(3)==EQUATIONS_SET_TRANSIENT_RBS_NAVIER_STOKES_SUBTYPE.OR. &
+                & EQUATIONS_SET%specification(3)==EQUATIONS_SET_MULTISCALE3D_NAVIER_STOKES_SUBTYPE.OR. &
+                & EQUATIONS_SET%specification(3)==EQUATIONS_SET_CONSTITUTIVE_MU_NAVIER_STOKES_SUBTYPE.OR. &
+                & EQUATIONS_SET%specification(3)==EQUATIONS_SET_QUASISTATIC_NAVIER_STOKES_SUBTYPE.OR. &
+                & EQUATIONS_SET%specification(3)==EQUATIONS_SET_ALE_NAVIER_STOKES_SUBTYPE.OR. &
+                & EQUATIONS_SET%specification(3)==EQUATIONS_SET_PGM_NAVIER_STOKES_SUBTYPE) THEN
                 DO mhs=mhs_min+1,mhs_max
                   DO nhs=1,nhs_min
                     !Transpose pressure type entries for mass equation  
@@ -5297,7 +5302,7 @@ CONTAINS
               END IF
             END IF
           END IF
-
+          
         CASE DEFAULT
           LOCAL_ERROR="Equations set subtype "//TRIM(NUMBER_TO_VSTRING(EQUATIONS_SET%SPECIFICATION(3),"*",ERR,ERROR))// &
             & " is not valid for a Navier-Stokes equation type of a classical field equations set class."
@@ -5872,13 +5877,22 @@ CONTAINS
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR
     !Local Variables
     TYPE(CONTROL_LOOP_TYPE), POINTER :: CONTROL_LOOP
+    TYPE(EQUATIONS_TYPE), POINTER :: equations
+    TYPE(EQUATIONS_MATRICES_TYPE), POINTER :: equationsMatrices
+    TYPE(EQUATIONS_MATRICES_RHS_TYPE), POINTER :: rhsVector
+    TYPE(EQUATIONS_MATRICES_DYNAMIC_TYPE), POINTER :: dynamicMatrices
+    TYPE(EQUATIONS_MATRIX_TYPE), POINTER :: stiffnessMatrix,dampingMatrix
+    TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet
     TYPE(FIELD_TYPE), POINTER :: dependentField
     TYPE(FIELD_VARIABLE_TYPE), POINTER :: fieldVariable
     TYPE(SOLVER_TYPE), POINTER :: SOLVER2
+    TYPE(SOLVER_EQUATIONS_TYPE), POINTER :: solverEquations
+    TYPE(SOLVER_MAPPING_TYPE), POINTER :: solverMapping
     TYPE(SOLVERS_TYPE), POINTER :: SOLVERS
-    TYPE(VARYING_STRING) :: LOCAL_ERROR
-    INTEGER(INTG) :: iteration,timestep,outputIteration,equationsSetNumber
+    TYPE(VARYING_STRING) :: LOCAL_ERROR,localError
+    INTEGER(INTG) :: iteration,timestep,outputIteration,equationsSetNumber,equationsSetIdx
     REAL(DP) :: startTime,stopTime,currentTime,timeIncrement
+    LOGICAL :: found
 
     ENTERS("NAVIER_STOKES_POST_SOLVE",ERR,ERROR,*999)
     NULLIFY(SOLVER2)
@@ -6116,8 +6130,8 @@ CONTAINS
                 END IF
               END DO
             CASE(PROBLEM_ALE_NAVIER_STOKES_SUBTYPE)
-              !Post solve for the linear solver
               IF(SOLVER%SOLVE_TYPE==SOLVER_LINEAR_TYPE) THEN
+                !Post solve for the linear solver
                 CALL WRITE_STRING(GENERAL_OUTPUT_TYPE,"Mesh movement post solve... ",ERR,ERROR,*999)
                 CALL SOLVERS_SOLVER_GET(SOLVER%SOLVERS,2,SOLVER2,ERR,ERROR,*999)
                 IF(ASSOCIATED(SOLVER2%DYNAMIC_SOLVER)) THEN
@@ -6125,8 +6139,79 @@ CONTAINS
                 ELSE  
                   CALL FlagError("Dynamic solver is not associated for ALE problem.",ERR,ERROR,*999)
                 END IF
-              !Post solve for the dynamic solver
+                !Reset the update flags for the Navier Stokes equations matrices as the mesh has moved
+                solverEquations=>solver2%SOLVER_EQUATIONS
+                IF(ASSOCIATED(solverEquations)) THEN
+                  solverMapping=>solverEquations%SOLVER_MAPPING
+                  IF(ASSOCIATED(solverMapping)) THEN
+                    IF(ALLOCATED(solverMapping%EQUATIONS_SETS)) THEN
+                      !Find the Navier-Stokes equations set
+                      found=.FALSE.
+                      DO equationsSetIdx=2,solverMapping%NUMBER_OF_EQUATIONS_SETS
+                        equationsSet=>solverMapping%EQUATIONS_SETS(equationsSetIdx)%ptr
+                        IF(ASSOCIATED(equationsSet)) THEN
+                          IF(ALLOCATED(equationsSet%specification)) THEN
+                            IF(equationsSet%specification(1)==EQUATIONS_SET_FLUID_MECHANICS_CLASS) THEN
+                              found=.TRUE.
+                              EXIT
+                            ENDIF
+                          ELSE
+                            CALL FlagError("Equations set specification is not allocated.",err,error,*999)
+                          ENDIF
+                        ELSE
+                          localError="The solver mapping equations set for index "// &
+                            & TRIM(NumberToVString(equationsSetIdx,"*",err,error))//" is not associated."
+                          CALL FlagError(localError,err,error,*999)
+                        ENDIF
+                      ENDDO !equationsSetIdx
+                      IF(found) THEN
+                        equations=>equationsSet%equations
+                        IF(ASSOCIATED(equations)) THEN
+                          equationsMatrices=>equations%EQUATIONS_MATRICES
+                          IF(ASSOCIATED(equationsMatrices)) THEN
+                            dynamicMatrices=>equationsMatrices%DYNAMIC_MATRICES
+                            IF(ASSOCIATED(dynamicMatrices)) THEN
+                              stiffnessMatrix=>dynamicMatrices%matrices(1)%ptr
+                              IF(ASSOCIATED(stiffnessMatrix)) THEN
+                                stiffnessMatrix%UPDATE_MATRIX=.TRUE.
+                              ELSE
+                                CALL FlagError("Dynamic matrices stiffness matrix is not associated.",err,error,*999)
+                              ENDIF
+                              dampingMatrix=>dynamicMatrices%matrices(2)%ptr
+                              IF(ASSOCIATED(dampingMatrix)) THEN
+                                dampingMatrix%UPDATE_MATRIX=.TRUE.
+                              ELSE
+                                CALL FlagError("Dynamic matrices damping matrix is not associated.",err,error,*999)
+                              ENDIF
+                            ELSE
+                              CALL FlagError("Equations matrices dynamic matrices is not associated.",err,error,*999)
+                            ENDIF
+                            rhsVector=>equationsMatrices%RHS_VECTOR
+                            IF(ASSOCIATED(rhsVector)) THEN
+                              rhsVector%UPDATE_VECTOR=.TRUE.
+                            ELSE
+                              CALL FlagError("Equations matrices RHS vector is not associated.",err,error,*999)
+                            ENDIF
+                          ELSE
+                            CALL FlagError("Equations equations matrices is not associated.",err,error,*999)
+                          ENDIF
+                        ELSE
+                          CALL FlagError("Equations set equations is not associated.",err,error,*999)
+                        ENDIF
+                      ELSE
+                        CALL FlagError("Could not find the fluid mechanics equations set.",err,error,*999)
+                      ENDIF
+                    ELSE
+                      CALL FlagError("Solver mapping equations set is not allocated.",err,error,*999)
+                    ENDIF
+                  ELSE
+                    CALL FlagError("Solver equations solver mapping is not associated.",err,error,*999)
+                  ENDIF
+                ELSE
+                  CALL FlagError("Solver equations are not associated for the ALE dynamic solver.",err,error,*999)
+                ENDIF
               ELSE IF(SOLVER%SOLVE_TYPE==SOLVER_DYNAMIC_TYPE) THEN
+                !Post solve for the dynamic solver
                 CALL WRITE_STRING(GENERAL_OUTPUT_TYPE,"ALE Navier-Stokes post solve... ",ERR,ERROR,*999)
                 CALL NAVIER_STOKES_POST_SOLVE_OUTPUT_DATA(SOLVER,err,error,*999)
               END IF
@@ -12364,7 +12449,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
-    TYPE(VARYING_STRING) :: LOCAL_ERROR
+    TYPE(VARYING_STRING) :: localError
 
     ENTERS("NavierStokes_FiniteElementPreResidualEvaluate",err,error,*999)
 
@@ -12390,10 +12475,10 @@ CONTAINS
          & EQUATIONS_SET_COUPLED1D0D_ADV_NAVIER_STOKES_SUBTYPE)
         !Do nothing
       CASE DEFAULT
-        LOCAL_ERROR="The third equations set specification of "// &
-          & TRIM(NUMBER_TO_VSTRING(equationsSet%specification(3),"*",err,error))// &
+        localError="The third equations set specification of "// &
+          & TRIM(NumberToVString(equationsSet%specification(3),"*",err,error))// &
           & " is not valid for a Navier-Stokes fluid mechanics equations set."
-        CALL FlagError(LOCAL_ERROR,err,error,*999)
+        CALL FlagError(localError,err,error,*999)
       END SELECT
     ELSE
       CALL FlagError("Equations set is not associated.",err,error,*999)
@@ -12406,6 +12491,97 @@ CONTAINS
     RETURN 1
 
   END SUBROUTINE NavierStokes_FiniteElementPreResidualEvaluate
+
+  !
+  !================================================================================================================================
+  !
+
+  !>Post-residual evaluation a navier-stokes finite element equations set.
+  SUBROUTINE NavierStokes_FiniteElementPostResidualEvaluate(equationsSet,err,error,*)
+
+    !Argument variables
+    TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet !<A pointer the equations set
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+    TYPE(EQUATIONS_TYPE), POINTER :: equations
+    TYPE(EQUATIONS_MATRICES_TYPE), POINTER :: equationsMatrices
+    TYPE(EQUATIONS_MATRICES_DYNAMIC_TYPE), POINTER :: dynamicMatrices
+    TYPE(EQUATIONS_MATRICES_RHS_TYPE), POINTER :: rhsVector
+    TYPE(EQUATIONS_MATRIX_TYPE), POINTER :: stiffnessMatrix,dampingMatrix
+    TYPE(VARYING_STRING) :: localError
+
+    ENTERS("NavierStokes_FiniteElementPostResidualEvaluate",err,error,*999)
+
+    IF(ASSOCIATED(equationsSet)) THEN
+      SELECT CASE(equationsSet%specification(3))
+      CASE(EQUATIONS_SET_CONSTITUTIVE_MU_NAVIER_STOKES_SUBTYPE, &
+        & EQUATIONS_SET_STATIC_NAVIER_STOKES_SUBTYPE, &
+        & EQUATIONS_SET_LAPLACE_NAVIER_STOKES_SUBTYPE, &
+        & EQUATIONS_SET_TRANSIENT_NAVIER_STOKES_SUBTYPE, &
+        & EQUATIONS_SET_OPTIMISED_NAVIER_STOKES_SUBTYPE, &
+        & EQUATIONS_SET_PGM_NAVIER_STOKES_SUBTYPE, &
+        & EQUATIONS_SET_QUASISTATIC_NAVIER_STOKES_SUBTYPE, &
+        & EQUATIONS_SET_TRANSIENT_RBS_NAVIER_STOKES_SUBTYPE, &
+        & EQUATIONS_SET_STATIC_RBS_NAVIER_STOKES_SUBTYPE, &
+        & EQUATIONS_SET_MULTISCALE3D_NAVIER_STOKES_SUBTYPE, &
+        & EQUATIONS_SET_TRANSIENT1D_ADV_NAVIER_STOKES_SUBTYPE, &
+        & EQUATIONS_SET_TRANSIENT1D_NAVIER_STOKES_SUBTYPE, &
+        & EQUATIONS_SET_COUPLED1D0D_NAVIER_STOKES_SUBTYPE, &
+        & EQUATIONS_SET_COUPLED1D0D_ADV_NAVIER_STOKES_SUBTYPE)
+        !Do nothing
+      CASE(EQUATIONS_SET_ALE_NAVIER_STOKES_SUBTYPE)
+        !Set the update flag for the linear parts to .FALSE.
+        equations=>equationsSet%equations
+        IF(ASSOCIATED(equations)) THEN
+          equationsMatrices=>equations%EQUATIONS_MATRICES
+          IF(ASSOCIATED(equationsMatrices)) THEN
+            dynamicMatrices=>equationsMatrices%DYNAMIC_MATRICES
+            IF(ASSOCIATED(dynamicMatrices)) THEN
+              stiffnessMatrix=>dynamicMatrices%matrices(1)%ptr
+              IF(ASSOCIATED(stiffnessMatrix)) THEN
+                stiffnessMatrix%UPDATE_MATRIX=.FALSE.
+              ELSE
+                CALL FlagError("Dynamic matrices stiffness matrix is not associated.",err,error,*999)
+              ENDIF              
+              dampingMatrix=>dynamicMatrices%matrices(2)%ptr
+              IF(ASSOCIATED(dampingMatrix)) THEN
+                dampingMatrix%UPDATE_MATRIX=.FALSE.
+              ELSE
+                CALL FlagError("Dynamic matrices damping matrix is not associated.",err,error,*999)
+              ENDIF
+            ELSE
+              CALL FlagError("Equations matrices dynamic matrices is not associated.",err,error,*999)
+            ENDIF
+            rhsVector=>equationsMatrices%RHS_VECTOR
+            IF(ASSOCIATED(rhsVector)) THEN
+              rhsVector%UPDATE_VECTOR=.FALSE.
+            ELSE
+              CALL FlagError("Equations matrices RHS vector is not associated.",err,error,*999)
+            ENDIF
+          ELSE
+            CALL FlagError("Equations equations matrices is not associated.",err,error,*999)
+          ENDIF
+        ELSE
+          CALL FlagError("Equations set equations is not associated.",err,error,*999)
+        ENDIF
+      CASE DEFAULT
+        localError="The third equations set specification of "// &
+          & TRIM(NumberToVString(equationsSet%specification(3),"*",err,error))// &
+          & " is not valid for a Navier-Stokes fluid mechanics equations set."
+        CALL FlagError(localError,err,error,*999)
+      END SELECT
+    ELSE
+      CALL FlagError("Equations set is not associated.",err,error,*999)
+    END IF
+
+    EXITS("NavierStokes_FiniteElementPostResidualEvaluate")
+    RETURN
+999 ERRORS("NavierStokes_FiniteElementPostResidualEvaluate",err,error)
+    EXITS("NavierStokes_FiniteElementPostResidualEvaluate")
+    RETURN 1
+
+  END SUBROUTINE NavierStokes_FiniteElementPostResidualEvaluate
 
   !
   !================================================================================================================================
