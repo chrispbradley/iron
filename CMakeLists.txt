@@ -10,8 +10,7 @@ else()
 endif()
 
 # Options for building iron
-option(IRON_BUILD_SHARED_LIBRARY "Build a shared iron library." ON)
-option(IRON_BUILD_STATIC_LIBRARY "Build a static iron library." OFF)
+option(BUILD_SHARED_LIBS "Build a shared iron library." ON)
 set(REAL_PRECISION "double" CACHE STRING "Real precision (single|double)")
 option(WITH_CELLML "Build iron with CellML support" ON)
 option(WITH_FIELDML "Build iron with FieldML support" ON)
@@ -37,10 +36,6 @@ elseif(_uppercase_REAL_PRECISION STREQUAL "DOUBLE")
 else()
   message(STATUS "The specified real precision of '${REAL_PRECISION}' is invalid. Defaulting to double.")
   set(WORKING_REAL_PRECISION_DOUBLE)
-endif()
-
-if(NOT IRON_BUILD_SHARED_LIBRARY AND NOT IRON_BUILD_STATIC_LIBRARY )
-  message(FATAL_ERROR "You have to build at least one of the types of libraries (shared or static)." )
 endif()
 
 # Config
@@ -111,8 +106,12 @@ if(MSVC)
     set(IRON_TARGETS iron iron_static_C)
     
     add_library(iron_static_C STATIC ${IRON_C_SRC})
-    
-    add_library(iron ${IRON_Fortran_SRC})
+
+    if(BUILD_SHARED_LIBS)
+      add_library(iron SHARED ${IRON_Fortran_SRC})
+    else()
+      add_library(iron STATIC ${IRON_Fortran_SRC})
+    endif
     target_link_libraries(iron PRIVATE iron_static_C)
     
     # IDE stuff
@@ -121,7 +120,11 @@ if(MSVC)
     source_group(src FILES ${IRON_Fortran_SRC})
 else()
     set(IRON_TARGETS iron)
-    add_library(iron ${IRON_SRC})
+    if(BUILD_SHARED_LIBS)
+      add_library(iron SHARED ${IRON_SRC})
+    else()
+      add_library(iron STATIC ${IRON_SRC})
+    endif()
     target_compile_options(iron PUBLIC $<BUILD_INTERFACE:-cpp>)
     source_group(headers FILES ${IRON_HEADERS})
     source_group(src FILES ${IRON_Fortran_SRC} ${IRON_C_SRC})
