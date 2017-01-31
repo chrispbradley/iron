@@ -69,14 +69,14 @@
 !> This module contains all type definitions in order to avoid cyclic module references.
 MODULE TYPES
 
-  USE CmissPetscTypes, ONLY : PetscISColoringType,PetscKspType,PetscMatType,PetscMatColoringType,PetscMatFDColoringType, &
-    & PetscPCType,PetscSnesType,PetscSnesLineSearchType,PetscVecType
-  USE CONSTANTS
-  USE KINDS
-  USE ISO_C_BINDING
-  USE ISO_VARYING_STRING
-  USE TREES
+  use KINDS
+  use TREES
+  use CONSTANTS
+  use ISO_C_BINDING
+  use ISO_VARYING_STRING
   use linkedlist_routines
+  use CmissPetscTypes, ONLY : PetscISColoringType,PetscKspType,PetscMatType,PetscMatColoringType,PetscMatFDColoringType, &
+                            & PetscPCType,PetscSnesType,PetscSnesLineSearchType,PetscVecType
 
   IMPLICIT NONE
 
@@ -924,6 +924,19 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     INTEGER(INTG), ALLOCATABLE :: ADJACENT_DOMAINS_LIST(:) !<ADJACENT_DOMAINS_LIST(i). The list of adjacent domains for each domain. The start and end positions for the list for domain number domain_no are given by ADJACENT_DOMAIN_PTR(domain_no) and ADJACENT_DOMAIN_PTR(domain_no+1)-1 respectively.
     TYPE(DOMAIN_ADJACENT_DOMAIN_TYPE), ALLOCATABLE :: ADJACENT_DOMAINS(:) !<ADJACENT_DOMAINS(adjacent_domain_idx). The adjacent domain information for the adjacent_domain_idx'th adjacent domain to this domain. 
   END TYPE DOMAIN_MAPPING_TYPE
+
+  !>Contains information on distributed domain mappings
+  TYPE MappingType
+       ! Local numbering will be sorted in the following way:
+       !       1 -> boundary_start-1            = IDs considered internal to the subdomain
+       !       boundary_start -> ghost_start-1  = IDs considered as boundary IDs (used for communication overlapping)
+       !       ghost_start -> num_local         = IDs considered ghost IDs
+       integer(INTG) :: num_local      !<Total number of IDs on a local subdomain
+       integer(INTG) :: boundary_start !<The starting local ID for boundary IDs on the local subdomain
+       integer(INTG) :: ghost_start    !<The starting local ID for ghost IDs on the local subdomain
+       integer(INTG) :: num_global     !<Total overall number of IDs globally in the mapping
+       integer(INTG), dimension(:), allocatable :: local_to_global_map !< The global ID corresponding to the i'th local ID for a subdomain.
+  END TYPE MappingType
 
   !>Contains information on the domain decomposition mappings.
   TYPE DOMAIN_MAPPINGS_TYPE

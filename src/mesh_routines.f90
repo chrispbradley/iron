@@ -44,24 +44,24 @@
 !> This module handles all mesh (node and element) routines.
 MODULE MESH_ROUTINES
 
-  USE BASE_ROUTINES
-  USE BASIS_ROUTINES
-  USE CMISS_MPI
-  USE CMISS_PARMETIS
-  USE COMP_ENVIRONMENT
-  USE COORDINATE_ROUTINES
-  USE DOMAIN_MAPPINGS
-  USE KINDS
-  USE INPUT_OUTPUT
-  USE ISO_VARYING_STRING
-  USE LISTS
 #ifndef NOMPIMOD
-  USE MPI
+  use MPI
 #endif
-  USE NODE_ROUTINES
-  USE STRINGS
-  USE TREES
-  USE TYPES
+  use TREES
+  use TYPES
+  use LISTS
+  use KINDS
+  use STRINGS
+  use CMISS_MPI
+  use INPUT_OUTPUT
+  use NODE_ROUTINES
+  use BASE_ROUTINES
+  use BASIS_ROUTINES
+  use CMISS_PARMETIS
+  use DOMAIN_MAPPINGS
+  use COMP_ENVIRONMENT
+  use ISO_VARYING_STRING
+  use COORDINATE_ROUTINES
 
 #include "macros.h"  
 
@@ -574,25 +574,24 @@ CONTAINS
 
     !Argument variables
     TYPE(DECOMPOSITION_TYPE), POINTER :: DECOMPOSITION !<A pointer to the decomposition to calculate the element domains for.
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
+    INTEGER(INTG),        INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+
     !Local Variables
-    INTEGER(INTG) :: number_elem_indicies,elem_index,elem_count,ne,nn,my_computational_node_number,number_computational_nodes, &
-      & no_computational_node,ELEMENT_START,ELEMENT_STOP,MY_ELEMENT_START,MY_ELEMENT_STOP,NUMBER_OF_ELEMENTS, &
-      & MY_NUMBER_OF_ELEMENTS,MPI_IERROR,MAX_NUMBER_ELEMENTS_PER_NODE,component_idx,minNumberXi
-    INTEGER(INTG), ALLOCATABLE :: ELEMENT_COUNT(:),ELEMENT_PTR(:),ELEMENT_INDICIES(:),ELEMENT_DISTANCE(:),DISPLACEMENTS(:), &
-      & RECEIVE_COUNTS(:)
-    INTEGER(INTG) :: ELEMENT_WEIGHT(1),WEIGHT_FLAG,NUMBER_FLAG,NUMBER_OF_CONSTRAINTS, &
-      & NUMBER_OF_COMMON_NODES,PARMETIS_OPTIONS(0:2)
-    !ParMETIS now has double for these
-    !REAL(SP) :: UBVEC(1)
-    !REAL(SP), ALLOCATABLE :: TPWGTS(:)
-    REAL(DP) :: UBVEC(1)
-    REAL(DP), ALLOCATABLE :: TPWGTS(:)
-    REAL(DP) :: NUMBER_ELEMENTS_PER_NODE
+    integer(INTG) :: number_elem_indicies,elem_index,elem_count,ne,nn,my_computational_node_number,number_computational_nodes, &
+                   & no_computational_node,ELEMENT_START,ELEMENT_STOP,MY_ELEMENT_START,MY_ELEMENT_STOP,NUMBER_OF_ELEMENTS, &
+                   & MY_NUMBER_OF_ELEMENTS,MPI_IERROR,MAX_NUMBER_ELEMENTS_PER_NODE,component_idx,minNumberXi,WEIGHT_FLAG, &
+                   & NUMBER_FLAG,NUMBER_OF_CONSTRAINTS,NUMBER_OF_COMMON_NODES
+    integer(INTG), dimension(1)              :: ELEMENT_WEIGHT
+    integer(INTG), dimension(0:2)            :: PARMETIS_OPTIONS
+    integer(INTG), dimension(:), allocatable :: ELEMENT_COUNT, ELEMENT_PTR, ELEMENT_INDICIES, ELEMENT_DISTANCE, &
+                                              & DISPLACEMENTS, RECEIVE_COUNTS
+    real(DP)                            :: NUMBER_ELEMENTS_PER_NODE
+    real(DP), dimension(1)              :: UBVEC
+    real(DP), dimension(:), allocatable :: TPWGTS
     TYPE(BASIS_TYPE), POINTER :: BASIS
-    TYPE(MESH_TYPE), POINTER :: MESH
-    TYPE(VARYING_STRING) :: LOCAL_ERROR
+    TYPE(MESH_TYPE),  POINTER :: MESH
+    TYPE(VARYING_STRING)      :: LOCAL_ERROR
 
     ENTERS("DECOMPOSITION_ELEMENT_DOMAIN_CALCULATE",ERR,ERROR,*999)
 
@@ -701,10 +700,12 @@ CONTAINS
               PARMETIS_OPTIONS(2)=CMISS_RANDOM_SEEDS(1) !Seed for random number generator
               
               !Call ParMETIS to calculate the partitioning of the mesh graph.
-              CALL PARMETIS_PARTMESHKWAY(ELEMENT_DISTANCE,ELEMENT_PTR,ELEMENT_INDICIES,ELEMENT_WEIGHT,WEIGHT_FLAG,NUMBER_FLAG, &
-                & NUMBER_OF_CONSTRAINTS,NUMBER_OF_COMMON_NODES,DECOMPOSITION%NUMBER_OF_DOMAINS,TPWGTS,UBVEC,PARMETIS_OPTIONS, &
-                & DECOMPOSITION%NUMBER_OF_EDGES_CUT,DECOMPOSITION%ELEMENT_DOMAIN(DISPLACEMENTS(my_computational_node_number)+1:), &
-                & COMPUTATIONAL_ENVIRONMENT%MPI_COMM,ERR,ERROR,*999)
+              CALL PARMETIS_PARTMESHKWAY( ELEMENT_DISTANCE, ELEMENT_PTR, ELEMENT_INDICIES, ELEMENT_WEIGHT, &
+                                        & WEIGHT_FLAG, NUMBER_FLAG, NUMBER_OF_CONSTRAINTS, NUMBER_OF_COMMON_NODES, &
+                                        & DECOMPOSITION%NUMBER_OF_DOMAINS, TPWGTS, UBVEC, PARMETIS_OPTIONS, &
+                                        & DECOMPOSITION%NUMBER_OF_EDGES_CUT, &
+                                        & DECOMPOSITION%ELEMENT_DOMAIN(DISPLACEMENTS(my_computational_node_number)+1:), &
+                                        & COMPUTATIONAL_ENVIRONMENT%MPI_COMM, ERR, ERROR, *999 )
               
               !Transfer all the element domain information to the other computational nodes so that each rank has all the info
               IF(number_computational_nodes>1) THEN
