@@ -918,6 +918,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     INTEGER(INTG) :: GHOST_FINISH !<The finish postition in the DOMAIN_LIST for the list of ghost numbers
     INTEGER(INTG), ALLOCATABLE :: DOMAIN_LIST(:) !<DOMAIN_LIST(i). The list of local numbers grouped so that the internal numbers are from INTERNAL_START to INTERNAL_FINISH, the boundary numbers are from BOUNDARY_START to BOUNDARY_FINISH and the ghost numbers are from GHOST_START to GHOST_FINISH
     INTEGER(INTG), ALLOCATABLE :: LOCAL_TO_GLOBAL_MAP(:) !<LOCAL_TO_GLOBAL_MAP(i). The global number for the i'th local number for the mapping.
+    INTEGER(INTG), ALLOCATABLE :: LOCAL_TYPE(:) !<LOCAL_TYPE(domain_idx). The type of local for the domain_idx'th domain for which the global number is mapped to a local number. The types depend on whether the mapped local number in the domain_idx'th domain is an internal, boundary or ghost local number. \see DOMAIN_MAPPINGS_DomainType
     TYPE(DOMAIN_GLOBAL_MAPPING_TYPE), ALLOCATABLE :: GLOBAL_TO_LOCAL_MAP(:) !<GLOBAL_TO_LOCAL_MAP(i). The local information for the i'th global number for the mapping.
     INTEGER(INTG) :: NUMBER_OF_ADJACENT_DOMAINS !<The number of domains that are adjacent to this domain in the mapping.
     INTEGER(INTG), ALLOCATABLE :: ADJACENT_DOMAINS_PTR(:) !<ADJACENT_DOMAINS_PTR(domain_no). The pointer to the list of adjacent domains for domain_no. ADJACENT_DOMAINS_PTR(domain_no) gives the starting position in ADJACENT_DOMAINS_LIST for the first adjacent domain number for domain number domain_no. ADJACENT_DOMAINS_PTR(domain_no+1) gives the last+1 position in ADJACENT_DOMAINS_LIST for the last adjacent domain number for domain number domain_no. NOTE: the index for ADJACENT_DOMAINS_PTR varies from 0 to the number of domains.
@@ -931,12 +932,16 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
        !       1 -> boundary_start-1            = IDs considered internal to the subdomain
        !       boundary_start -> ghost_start-1  = IDs considered as boundary IDs (used for communication overlapping)
        !       ghost_start -> num_local         = IDs considered ghost IDs
-       integer(INTG) :: NUMBER_OF_GLOBAL      !<Total number of IDs on a local subdomain
-       integer(INTG) :: boundary_start !<The starting local ID for boundary IDs on the local subdomain
-       integer(INTG) :: ghost_start    !<The starting local ID for ghost IDs on the local subdomain
-       integer(INTG) :: num_global     !<Total overall number of IDs globally in the mapping
-       integer(INTG), dimension(:), allocatable :: local_to_global_map !< The global ID corresponding to the i'th local ID for a subdomain.
-       integer(INTG), dimension(:), allocatable :: local_type          !< Indicates what type of ID is stored <INTERNAL, BOUNDARY, GHOST>
+       integer(INTG) :: NUMBER_OF_LOCAL      !<Number of IDs on a local subdomain
+       integer(INTG) :: TOTAL_NUMBER_OF_LOCAL !<Number of IDs on a local subdomain including ghost IDs
+       integer(INTG) :: BOUNDARY_START
+       integer(INTG) :: GHOST_START
+       integer(INTG) :: NUMBER_OF_INTERNAL
+       integer(INTG) :: NUMBER_OF_BOUNDARY
+       integer(INTG) :: NUMBER_OF_GHOST
+       integer(INTG) :: NUMBER_OF_GLOBAL     !<Total overall number of IDs globally in the mapping
+       integer(INTG), dimension(:), allocatable :: LOCAL_TO_GLOBAL_MAP !< The global ID corresponding to the i'th local ID for a subdomain.
+       integer(INTG), dimension(:), allocatable :: LOCAL_TYPE          !< Indicates what type of ID is stored <INTERNAL, BOUNDARY, GHOST>
   END TYPE MappingType
 
   !>Contains information on the domain decomposition mappings.
