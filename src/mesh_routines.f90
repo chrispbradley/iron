@@ -4236,6 +4236,8 @@ CONTAINS
     ELEMENTS_MAPPING%DOMAIN_LIST = local_ids
     deallocate( local_ids )
 
+    call GetAdjacentDomainInfo( ELEMENTS_MAPPING, ERR, ERROR, *999 )
+
     !Calculate element local to global maps from global to local map
     call DOMAIN_MAPPINGS_LOCAL_FROM_GLOBAL_CALCULATE( ELEMENTS_MAPPING, ERR, ERROR, *999 )
 

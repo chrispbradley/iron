@@ -44,6 +44,9 @@
 !> This module handles all domain mappings routines.
 MODULE DOMAIN_MAPPINGS
 
+#ifndef NOMPIMOD
+  use MPI
+#endif
   USE BASE_ROUTINES
   USE COMP_ENVIRONMENT
   USE INPUT_OUTPUT
@@ -57,6 +60,9 @@ MODULE DOMAIN_MAPPINGS
 
 
   IMPLICIT NONE
+#ifdef NOMPIMOD
+#include "mpif.h"
+#endif
 
   PRIVATE
 
@@ -79,7 +85,7 @@ MODULE DOMAIN_MAPPINGS
   PUBLIC DOMAIN_LOCAL_INTERNAL,DOMAIN_LOCAL_BOUNDARY,DOMAIN_LOCAL_GHOST
 
   PUBLIC DOMAIN_MAPPINGS_MAPPING_FINALISE,DOMAIN_MAPPINGS_MAPPING_INITIALISE,DOMAIN_MAPPINGS_MAPPING_GLOBAL_INITIALISE, &
-    & DOMAIN_MAPPINGS_GLOBAL_TO_LOCAL_GET,DOMAIN_MAPPINGS_LOCAL_FROM_GLOBAL_CALCULATE
+    & DOMAIN_MAPPINGS_GLOBAL_TO_LOCAL_GET,DOMAIN_MAPPINGS_LOCAL_FROM_GLOBAL_CALCULATE,GetAdjacentDomainInfo
 
 CONTAINS
 
@@ -178,6 +184,207 @@ CONTAINS
 999 ERRORSEXITS("DOMAIN_MAPPINGS_GLOBAL_TO_LOCAL_GET",ERR,ERROR)
     RETURN 1
   END SUBROUTINE DOMAIN_MAPPINGS_GLOBAL_TO_LOCAL_GET
+
+  !
+  !================================================================================================================================
+  !
+  ! GetAdjacentDomainInfo 
+  !
+  ! Calculate the domains adjacent to every sub-domain.  We determine the subdomains that each subdomain sends and receives ghost
+  ! ID values to/from.  
+  !
+  !  Mark Cheeseman, CeR
+  !  Feb 8, 2017
+  
+  SUBROUTINE GetAdjacentDomainInfo( mapping, err, error, * )
+
+     !Argument variables
+     type(DOMAIN_MAPPING_TYPE), pointer :: mapping
+     integer(INTG),         intent(out) :: err      !<The error code
+     type(VARYING_STRING),  intent(out) :: error    !<The error string
+
+     !Local variables
+     integer(INTG) :: max_ghost_cnt, ierr, subdomain, left, right, n, m, nn, cnt, idx
+     integer(INTG), dimension(MPI_STATUS_SIZE) :: status
+     integer(INTG), dimension(:), allocatable :: buf, send_cnts, recv_cnts, local_idx
+     logical  :: found
+
+     !
+     ! Step One: determine the maximum size for a ghost ID message buffer. Then allocate memory to the buffer
+     !-------------------------------------------------------------------------------------------------------
+
+     call MPI_Allreduce( mapping%NUMBER_OF_GHOST, max_ghost_cnt, 1, MPI_INTEGER, MPI_MAX, &
+                       & COMPUTATIONAL_ENVIRONMENT%MPI_COMM, ierr )
+
+     !mpch DEBUGGING
+     !write(*,*) " max # of ghosts is ", max_ghost_cnt
+
+     ! add 1 for the array length entry
+     max_ghost_cnt = max_ghost_cnt + 1
+     allocate( buf(max_ghost_cnt), STAT=err )
+     if (err/=0) call FlagError( "Could not allocate message buffer", err, error, *999 )
+  
+     !
+     ! Step Two: determine send_cnts 
+     !-------------------------------------------------------------------------------------------------------
+ 
+     subdomain = COMPUTATIONAL_NODE_NUMBER_GET( err, error )
+     if (err/=0) goto 999
+
+     allocate( send_cnts(0:mapping%NUMBER_OF_DOMAINS-1) )
+     if (err/=0) call FlagError( "Could not allocate send counts", err, error, *999 )
+     send_cnts(:) = 0
+
+     do n = 0,mapping%NUMBER_OF_DOMAINS-1
+
+        if ( n==subdomain ) then
+           buf(max_ghost_cnt) = mapping%NUMBER_OF_GHOST
+           buf(1:mapping%NUMBER_OF_GHOST) = mapping%DOMAIN_LIST( mapping%GHOST_START:mapping%GHOST_FINISH )
+        endif
+
+        call MPI_Bcast( buf, max_ghost_cnt, MPI_INTEGER, n, COMPUTATIONAL_ENVIRONMENT%MPI_COMM, ierr )
+
+        if ( n/=subdomain ) then
+           do nn = 1,buf(max_ghost_cnt)
+           do m = 1,mapping%BOUNDARY_FINISH
+              if ( buf(nn)==mapping%DOMAIN_LIST(m) ) then
+                 send_cnts(n) = send_cnts(n) + 1
+                 exit
+              endif
+           enddo
+           enddo
+        endif
+
+     enddo
+     deallocate( buf )
+  
+     !
+     ! Step Three: determine receive counts 
+     !-------------------------------------------------------------------------------------------------------
+
+     allocate( recv_cnts(0:mapping%NUMBER_OF_DOMAINS-1) )
+     if (err/=0) call FlagError( "Could not allocate receive counts", err, error, *999 )
+     recv_cnts(:) = 0
+
+     do n = 0,mapping%NUMBER_OF_DOMAINS-1
+
+        call MPI_Gather( send_cnts(n), 1, MPI_INTEGER, recv_cnts, 1, MPI_INTEGER, n, &
+                       & COMPUTATIONAL_ENVIRONMENT%MPI_COMM, ierr )
+
+     enddo
+
+     !
+     ! Step Four: determine # of subdomains that the local subdomain receives/sends ghost IDs from/to
+     !-------------------------------------------------------------------------------------------------------
+
+     mapping%NUMBER_OF_ADJACENT_DOMAINS = 0
+     do n = 0,mapping%NUMBER_OF_DOMAINS-1
+        if ( (send_cnts(n)>0).or.(recv_cnts(n)>0) ) then
+           mapping%NUMBER_OF_ADJACENT_DOMAINS = mapping%NUMBER_OF_ADJACENT_DOMAINS + 1
+        endif
+     enddo
+
+     !mpch DEBUGGING
+     !write(*,*) "Subdomain ", subdomain, " # of adjacent domains is ", mapping%NUMBER_OF_ADJACENT_DOMAINS
+
+     allocate( mapping%ADJACENT_DOMAINS(mapping%NUMBER_OF_ADJACENT_DOMAINS), STAT=err )
+     if (err/=0) call FlagError( "Could not allocate adjacent_domains", err, error, *999 )
+
+     cnt = 0
+     do n = 0,mapping%NUMBER_OF_DOMAINS-1
+
+        if ( send_cnts(n)>0 ) then
+           cnt = cnt + 1
+           mapping%ADJACENT_DOMAINS(cnt)%DOMAIN_NUMBER = n
+           mapping%ADJACENT_DOMAINS(cnt)%NUMBER_OF_SEND_GHOSTS = send_cnts(n)
+           allocate( mapping%ADJACENT_DOMAINS(cnt)%LOCAL_GHOST_SEND_INDICES(send_cnts(n)), STAT=err )
+           if (err/=0) call FlagError( "Could not allocate ghost send indicies", err, error, *999 )
+        endif
+
+     enddo
+
+     do n = 0,mapping%NUMBER_OF_DOMAINS-1
+
+        if (recv_cnts(n)>0) then
+           found = .false.
+           do m = 1,cnt
+              if ( mapping%ADJACENT_DOMAINS(m)%DOMAIN_NUMBER==n ) then
+                 found = .true.
+                 mapping%ADJACENT_DOMAINS(m)%NUMBER_OF_RECEIVE_GHOSTS = recv_cnts(n) 
+                 allocate( mapping%ADJACENT_DOMAINS(m)%LOCAL_GHOST_RECEIVE_INDICES(recv_cnts(n)), STAT=err )
+                 exit
+              endif
+           enddo
+           if ( .not.found ) then
+              cnt = cnt + 1
+              mapping%ADJACENT_DOMAINS(cnt)%DOMAIN_NUMBER = n
+              mapping%ADJACENT_DOMAINS(cnt)%NUMBER_OF_RECEIVE_GHOSTS = recv_cnts(n) 
+              allocate( mapping%ADJACENT_DOMAINS(cnt)%LOCAL_GHOST_RECEIVE_INDICES(recv_cnts(n)), STAT=err )
+           endif 
+        endif
+
+     enddo
+
+     deallocate( send_cnts )
+     deallocate( recv_cnts )
+
+     !mpch DEBUGGING
+     !write(*,*) "Subdomain ", subdomain, mapping%NUMBER_OF_GHOST, sum(mapping%ADJACENT_DOMAINS(:)%NUMBER_OF_SEND_GHOSTS), &
+     !           & sum(mapping%ADJACENT_DOMAINS(:)%NUMBER_OF_RECEIVE_GHOSTS)
+
+     !
+     ! Step Four: Determine the local indices for ID values involved in the ghost ID exchange  
+     !-------------------------------------------------------------------------------------------------------
+     
+!     allocate( buf(max_ghost_cnt), STAT=err )
+!     if (err/=0) call FlagError( "Could not allocate message buffer", err, error, *999 )
+
+!     do n = 0,mapping%NUMBER_OF_DOMAINS-1
+
+!        buf(max_ghost_cnt) = mapping%NUMBER_OF_GHOST
+!        buf(1:mapping%NUMBER_OF_GHOST) = mapping%DOMAIN_LIST( mapping%GHOST_START:mapping%GHOST_FINISH )
+!        call MPI_Bcast( buf, max_ghost_cnt, MPI_INTEGER, n, COMPUTATIONAL_ENVIRONMENT%MPI_COMM, ierr )
+
+!        cnt = -1 
+!        do m = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
+!           if ( mapping%ADJACENT_DOMAINS(m)%DOMAIN_NUMBER == n ) then
+!              cnt = m 
+!              exit
+!           endif
+!        enddo
+
+      ! Determine the local IDs that will be sent to Sub-domain n
+!        if ( cnt/=-1 ) then
+!           idx = 0
+!           do nn = 1,buf(max_ghost_cnt)
+!           do m = 1,mapping%BOUNDARY_FINISH
+!              if ( buf(nn)==mapping%DOMAIN_LIST(m) ) then
+!                 idx = idx + 1
+!                 mapping%ADJACENT_DOMAINS(cnt)%LOCAL_GHOST_SEND_INDICES(idx) = m
+!                 exit
+!             endif
+!          enddo
+!          enddo
+!        endif
+
+!     enddo
+!     deallocate( buf )
+
+     ! temporary clean-up
+     do m = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
+        deallocate( mapping%ADJACENT_DOMAINS(m)%LOCAL_GHOST_SEND_INDICES )
+        deallocate( mapping%ADJACENT_DOMAINS(m)%LOCAL_GHOST_RECEIVE_INDICES )
+     enddo
+     deallocate( mapping%ADJACENT_DOMAINS )
+
+     return
+
+     ! If we fail, let's fail gracefully
+ 999 if ( allocated(buf) ) deallocate( buf )
+     if ( allocated(send_cnts) ) deallocate( send_cnts )
+     return 1
+
+  END SUBROUTINE GetAdjacentDomainInfo 
 
   !
   !================================================================================================================================
