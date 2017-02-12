@@ -3998,6 +3998,8 @@ CONTAINS
 
     integer(INTG), dimension(:), allocatable :: local_ids, local_types
     logical :: test_passed
+    type(DOMAIN_MAPPING_TYPE),target :: new_domain
+    type(DOMAIN_MAPPING_TYPE),pointer :: new_domain_ptr
 
     ENTERS("DOMAIN_MAPPINGS_ELEMENTS_CALCULATE",ERR,ERROR,*999)
 
@@ -4236,34 +4238,16 @@ CONTAINS
     ELEMENTS_MAPPING%DOMAIN_LIST = local_ids
     deallocate( local_ids )
 
-    call GetAdjacentDomainInfo( ELEMENTS_MAPPING, ERR, ERROR, *999 )
+!    call GetAdjacentDomainInfo( ELEMENTS_MAPPING, ERR, ERROR, *999 )
+!mpch -- first check
+    new_domain_ptr => new_domain
+    call DomainMappingCopy( ELEMENTS_MAPPING, new_domain_ptr )
 
     !Calculate element local to global maps from global to local map
     call DOMAIN_MAPPINGS_LOCAL_FROM_GLOBAL_CALCULATE( ELEMENTS_MAPPING, ERR, ERROR, *999 )
 
 !mpch -- first check
-!    write(*,*) "INTERNAL: (old) ", ELEMENTS_MAPPING%NUMBER_OF_INTERNAL, " (new) ", &
-!                          & elementMap%NUMBER_OF_INTERNAL
-!    write(*,*) "BOUNDARY: ", ELEMENTS_MAPPING%BOUNDARY_START, &
-!                          & ELEMENTS_MAPPING%NUMBER_OF_BOUNDARY, " (new) ", &
-!                          & elementMap%BOUNDARY_START, &
-!                          & elementMap%NUMBER_OF_BOUNDARY
-!    write(*,*) "GHOST: ", ELEMENTS_MAPPING%GHOST_START, &
-!                          & ELEMENTS_MAPPING%NUMBER_OF_GHOST, " (new) ", &
-!                          & elementMap%GHOST_START, elementMap%NUMBER_OF_GHOST
-!mpch -- second check
-!    do ne = 1,elementMap%TOTAL_NUMBER_OF_LOCAL
-!       test_passed = .false.
-!       do cnt = 1,ELEMENTS_MAPPING%TOTAL_NUMBER_OF_LOCAL
-!          if ( elementMap%LOCAL_TO_GLOBAL_MAP(ne)==ELEMENTS_MAPPING%LOCAL_TO_GLOBAL_MAP(cnt) ) then
-!              test_passed = .true.
-!              exit
-!          endif
-!       enddo
-!       if ( .not.test_passed ) then
-!          write(*,*) "(new) ", elementMap%LOCAL_TO_GLOBAL_MAP(ne), " not found"
-!       endif
-!    enddo
+    call DomainMappingsCompare( ELEMENTS_MAPPING, new_domain_ptr )
 
     IF(DIAGNOSTICS1) THEN
       CALL WRITE_STRING(DIAGNOSTIC_OUTPUT_TYPE,"Element mappings :",ERR,ERROR,*999)
