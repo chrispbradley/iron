@@ -207,6 +207,8 @@ MODULE MESH_ROUTINES
 
   PUBLIC MESHES_INITIALISE,MESHES_FINALISE
 
+  PUBLIC CalculateLocalElementDomainMappings
+
 CONTAINS
 
   !
@@ -3975,6 +3977,195 @@ CONTAINS
   !
   !================================================================================================================================
   !
+  ! CalculateLocalElementDomainMappings
+  !  
+  !   Construct the domain mapping for the mesh elements.  This includes classifying all elements on the local sub-domains as
+  !   either INTERNAL, BOUNDARY or GHOST elements.  The LOCAL_TO_GLOBAL_MAP array is also defined here
+  !
+  !   Mark Cheeseman, CeR
+  !   Feb 14, 2017
+
+  subroutine CalculateLocalElementDomainMappings( domain, err, error )
+
+    !argument variables
+     type(DOMAIN_TYPE),        pointer :: domain
+     integer(INTG),        intent(out) :: err
+     type(VARYING_STRING), intent(out) :: error 
+
+    !local variables
+     integer(INTG)                            :: subdomain, n, nn, nnn, np, idx, component_idx, cnt
+     integer(INTG), dimension(:), allocatable :: local_ids, element_types, ghost_ids, tmp
+     type(DOMAIN_MAPPING_TYPE),       pointer :: mapping
+     type(BASIS_TYPE),                pointer :: basis
+
+    !
+    ! PART 1 - (ELEMENT COUNT)
+    !          Determine total # of elements in the domain mesh and how many reside on the local sub-domain
+    !------------------------------------------------------------------------------------------------------
+  
+     component_idx = domain%MESH_COMPONENT_NUMBER
+     mapping => domain%MAPPINGS%ELEMENTS
+     mapping%NUMBER_OF_GLOBAL = domain%MESH%TOPOLOGY(component_idx)%PTR%ELEMENTS%NUMBER_OF_ELEMENTS     
+
+     subdomain = COMPUTATIONAL_NODE_NUMBER_GET( err, error ) 
+     mapping%NUMBER_OF_LOCAL = 0
+     do n = 1,domain%MESH%NUMBER_OF_ELEMENTS
+        if ( subdomain==domain%DECOMPOSITION%ELEMENT_DOMAIN(n) ) then
+           mapping%NUMBER_OF_LOCAL = mapping%NUMBER_OF_LOCAL + 1
+        endif
+     enddo
+
+    !
+    ! PART 2 - (ELEMENT COLLECTION)
+    !          Gather the global ID of all elements residing on the local sub-domain. Note that ghost
+    !          elements are not included here. 
+    !------------------------------------------------------------------------------------------------------
+
+     allocate( local_ids(mapping%NUMBER_OF_LOCAL) )
+     idx = 0
+     do n = 1,domain%MESH%NUMBER_OF_ELEMENTS
+        if ( subdomain==domain%DECOMPOSITION%ELEMENT_DOMAIN(n) ) then
+           idx = idx + 1
+           local_ids(idx) = n 
+        endif
+     enddo
+
+    !
+    ! PART 3 - (ELEMENT CLASSIFICATION)
+    !          Classify all local elements as either INTERNAL or BOUNDARY.  If a local element has 
+    !          adjacent elements that don't reside on the current sub-domain, we set these as GHOST 
+    !          elements. 
+    !------------------------------------------------------------------------------------------------------
+
+     allocate( element_types(mapping%NUMBER_OF_LOCAL) )
+
+     mapping%NUMBER_OF_INTERNAL = 0
+     mapping%NUMBER_OF_BOUNDARY = 0
+     mapping%NUMBER_OF_GHOST = 0
+
+     do n = 1,mapping%NUMBER_OF_LOCAL
+        basis => domain%MESH%TOPOLOGY(component_idx)%PTR%ELEMENTS%ELEMENTS(local_ids(n))%BASIS
+
+       ! check all elements adjacent to this local element.  If all adjacent elements reside on this
+       ! sub-domain, we classify the element as INTERNAL, otherwise we classify it as BOUNDARY
+        do nn = 1,basis%NUMBER_OF_NODES
+           np = domain%MESH%TOPOLOGY(component_idx)%PTR%ELEMENTS%ELEMENTS(local_ids(n))%MESH_ELEMENT_NODES(nn)
+           do nnn = 1,domain%MESH%TOPOLOGY(component_idx)%PTR%NODES%NODES(np)%numberOfSurroundingElements
+              idx = domain%MESH%TOPOLOGY(component_idx)%PTR%NODES%NODES(np)%surroundingElements(nnn)
+              if ( domain%DECOMPOSITION%ELEMENT_DOMAIN(idx)/=subdomain ) then
+                 element_types(n) = DOMAIN_LOCAL_BOUNDARY
+                 mapping%NUMBER_OF_GHOST = mapping%NUMBER_OF_GHOST + 1
+              else 
+                 element_types(n) = DOMAIN_LOCAL_INTERNAL
+              endif
+           enddo
+        enddo
+
+        if ( element_types(n) == DOMAIN_LOCAL_BOUNDARY ) then
+           mapping%NUMBER_OF_BOUNDARY = mapping%NUMBER_OF_BOUNDARY + 1
+        else
+           mapping%NUMBER_OF_INTERNAL = mapping%NUMBER_OF_INTERNAL + 1
+        endif
+   
+     enddo
+
+    !
+    ! PART 4 - (GHOST ELEMENT COLLECTION)
+    !          Gather the global IDs of all GHOST elements required for the local sub-domain. 
+    !------------------------------------------------------------------------------------------------------
+   
+     allocate( tmp(mapping%NUMBER_OF_GHOST) )
+
+     cnt = 0
+     do n = 1,mapping%NUMBER_OF_LOCAL
+        basis => domain%MESH%TOPOLOGY(component_idx)%PTR%ELEMENTS%ELEMENTS(local_ids(n))%BASIS
+        do nn = 1,basis%NUMBER_OF_NODES
+           np = domain%MESH%TOPOLOGY(component_idx)%PTR%ELEMENTS%ELEMENTS(local_ids(n))%MESH_ELEMENT_NODES(nn)
+           do nnn = 1,domain%MESH%TOPOLOGY(component_idx)%PTR%NODES%NODES(np)%numberOfSurroundingElements
+              idx = domain%MESH%TOPOLOGY(component_idx)%PTR%NODES%NODES(np)%surroundingElements(nnn)
+              if ( domain%DECOMPOSITION%ELEMENT_DOMAIN(idx)/=subdomain ) then
+                 element_types(n) = DOMAIN_LOCAL_BOUNDARY
+                 cnt = cnt + 1
+                 tmp(cnt) = idx
+              endif
+           enddo
+        enddo
+     enddo 
+
+     ! the initial gathering above will result in GHOST element global IDs being listed multiple times.
+     ! We need to extract the unique GHOST element IDs.
+     do n = 1,mapping%NUMBER_OF_GHOST
+     do nn = n+1,mapping%NUMBER_OF_GHOST
+        if ( tmp(n)==tmp(nn) ) tmp(nn) = -1
+     enddo
+     enddo
+
+     idx = mapping%NUMBER_OF_GHOST
+     mapping%NUMBER_OF_GHOST = 0
+     do n = 1,idx
+        if ( tmp(n)>-1 ) mapping%NUMBER_OF_GHOST = mapping%NUMBER_OF_GHOST + 1
+     enddo
+
+     allocate( ghost_ids(mapping%NUMBER_OF_GHOST) )
+     nn = 0
+     do n = 1,idx
+        if ( tmp(n)>-1 ) then
+           nn = nn + 1
+           ghost_ids(nn) = tmp(n)
+        endif 
+     enddo
+     deallocate( tmp )
+
+    !
+    ! PART 5 - (DOMAIN MAPPING FILL)
+    !          Fill any remaining variables in the DOMAIN_MAPPING object.  The LOCAL_TO_GLOBAL_MAP array
+    !          is constructed here.
+    !------------------------------------------------------------------------------------------------------
+ 
+     mapping%TOTAL_NUMBER_OF_LOCAL = mapping%NUMBER_OF_LOCAL + mapping%NUMBER_OF_GHOST
+     mapping%INTERNAL_START = 1
+     mapping%INTERNAL_FINISH = mapping%NUMBER_OF_INTERNAL
+     mapping%BOUNDARY_START = mapping%INTERNAL_FINISH + 1
+     mapping%BOUNDARY_FINISH = mapping%NUMBER_OF_LOCAL 
+     mapping%GHOST_START = mapping%BOUNDARY_FINISH + 1
+     mapping%GHOST_FINISH = mapping%TOTAL_NUMBER_OF_LOCAL
+
+     allocate( mapping%DOMAIN_LIST( mapping%TOTAL_NUMBER_OF_LOCAL ) )
+     idx = 0
+     do n = 1,mapping%NUMBER_OF_LOCAL
+        if ( element_types(n)==DOMAIN_LOCAL_INTERNAL ) then
+           idx = idx + 1
+           mapping%DOMAIN_LIST(idx) = n
+        endif
+     enddo
+     do n = 1,mapping%NUMBER_OF_LOCAL
+        if ( element_types(n)==DOMAIN_LOCAL_BOUNDARY ) then
+           idx = idx + 1
+           mapping%DOMAIN_LIST(idx) = n
+        endif
+     enddo
+     do n = mapping%GHOST_START,mapping%GHOST_FINISH
+        mapping%DOMAIN_LIST(n) = n
+     enddo 
+
+     allocate( mapping%LOCAL_TO_GLOBAL_MAP( mapping%TOTAL_NUMBER_OF_LOCAL ) )
+     mapping%LOCAL_TO_GLOBAL_MAP( 1:mapping%NUMBER_OF_LOCAL ) = local_ids
+     mapping%LOCAL_TO_GLOBAL_MAP( mapping%GHOST_START:mapping%GHOST_FINISH ) = ghost_ids
+     deallocate( ghost_ids )
+     deallocate( local_ids )
+
+     allocate( mapping%LOCAL_TYPE( mapping%TOTAL_NUMBER_OF_LOCAL ) )
+     mapping%LOCAL_TYPE( 1:mapping%NUMBER_OF_LOCAL ) = element_types
+     mapping%LOCAL_TYPE( mapping%GHOST_START:mapping%GHOST_FINISH ) = DOMAIN_LOCAL_GHOST
+     deallocate( element_types )
+
+     return
+  end subroutine CalculateLocalElementDomainMappings
+
+
+  !
+  !================================================================================================================================
+  !
 
   !>Calculates the local/global element mappings for a domain decomposition.
   SUBROUTINE DOMAIN_MAPPINGS_ELEMENTS_CALCULATE( DOMAIN, ERR, ERROR, *)
@@ -4035,7 +4226,7 @@ CONTAINS
                 &               ERR, ERROR, *999 )
 
     ! Set the global number of elements available
-    ELEMENTS_MAPPING%NUMBER_OF_GLOBAL = MESH%TOPOLOGY(component_idx)%PTR%ELEMENTS%NUMBER_OF_ELEMENTS
+!    ELEMENTS_MAPPING%NUMBER_OF_GLOBAL = MESH%TOPOLOGY(component_idx)%PTR%ELEMENTS%NUMBER_OF_ELEMENTS
 
     ! Allocate memory for list of local and adjacent element IDs
     allocate( LOCAL_ELEMENT_NUMBERS(0:DECOMPOSITION%NUMBER_OF_DOMAINS-1), STAT=ERR )
@@ -4057,18 +4248,18 @@ CONTAINS
     enddo
 
     ! Determine # of local elements (ignoring ghost elements for now)
-    ELEMENTS_MAPPING%NUMBER_OF_LOCAL = 0
-    do ne = 1,MESH%NUMBER_OF_ELEMENTS
-       domain_no = DECOMPOSITION%ELEMENT_DOMAIN(ne)
-       if ( domain_no==my_computational_node_number ) then
-          ELEMENTS_MAPPING%NUMBER_OF_LOCAL = ELEMENTS_MAPPING%NUMBER_OF_LOCAL + 1
-       endif
-    enddo
+!    ELEMENTS_MAPPING%NUMBER_OF_LOCAL = 0
+!    do ne = 1,MESH%NUMBER_OF_ELEMENTS
+!       domain_no = DECOMPOSITION%ELEMENT_DOMAIN(ne)
+!       if ( domain_no==my_computational_node_number ) then
+!          ELEMENTS_MAPPING%NUMBER_OF_LOCAL = ELEMENTS_MAPPING%NUMBER_OF_LOCAL + 1
+!       endif
+!    enddo
 
-    allocate( local_ids(ELEMENTS_MAPPING%NUMBER_OF_LOCAL), STAT=ERR )
-    if (ERR/=0) call FlagError( "Could not allocate temporary local ID array.", ERR, ERROR, *999 )
-    allocate( local_types(ELEMENTS_MAPPING%NUMBER_OF_LOCAL), STAT=ERR )
-    if (ERR/=0) call FlagError( "Could not allocate temporary local types array.", ERR, ERROR, *999 )
+!    allocate( local_ids(ELEMENTS_MAPPING%NUMBER_OF_LOCAL), STAT=ERR )
+!    if (ERR/=0) call FlagError( "Could not allocate temporary local ID array.", ERR, ERROR, *999 )
+!    allocate( local_types(ELEMENTS_MAPPING%NUMBER_OF_LOCAL), STAT=ERR )
+!    if (ERR/=0) call FlagError( "Could not allocate temporary local types array.", ERR, ERROR, *999 )
 
     ! Loop over all global element IDs. Add each ID to the appropriate subdomain's
     ! list.  These lists will create the local ID mappings
@@ -4113,7 +4304,7 @@ CONTAINS
                                    & ERR, ERROR, *999 )
        deallocate( DOMAINS )
 
-       ! Initialise the arrays and variables for the gloabl to local mapping structure
+       ! Initialise the arrays and variables for the global to local mapping structure
        call DOMAIN_MAPPINGS_MAPPING_GLOBAL_INITIALISE( ELEMENTS_MAPPING%GLOBAL_TO_LOCAL_MAP(ne), &
                                                      & ERR, ERROR, *999 )
 
@@ -4136,15 +4327,15 @@ CONTAINS
           ELEMENTS_MAPPING%GLOBAL_TO_LOCAL_MAP(ne)%LOCAL_TYPE(1) = DOMAIN_LOCAL_BOUNDARY
        endif
 
-       if ( domain_no==my_computational_node_number ) then
-          cnt = cnt + 1
-          local_ids(cnt) = ne
-          if ( NUMBER_OF_DOMAINS==1 ) then
-             local_types(cnt) = DOMAIN_LOCAL_INTERNAL
-          else
-             local_types(cnt) = DOMAIN_LOCAL_BOUNDARY
-          endif
-       endif
+ !      if ( domain_no==my_computational_node_number ) then
+ !         cnt = cnt + 1
+ !         local_ids(cnt) = ne
+ !         if ( NUMBER_OF_DOMAINS==1 ) then
+ !            local_types(cnt) = DOMAIN_LOCAL_INTERNAL
+ !         else
+ !            local_types(cnt) = DOMAIN_LOCAL_BOUNDARY
+ !         endif
+ !      endif
 
     enddo
 
@@ -4154,20 +4345,20 @@ CONTAINS
        call LIST_DETACH_AND_DESTROY( ADJACENT_ELEMENTS_LIST(domain_idx)%PTR, NUMBER_OF_ADJACENT_ELEMENTS, &
                                    & ADJACENT_ELEMENTS, ERR, ERROR, *999 )
 
-       if ( domain_idx==my_computational_node_number ) then
-          ELEMENTS_MAPPING%TOTAL_NUMBER_OF_LOCAL = ELEMENTS_MAPPING%NUMBER_OF_LOCAL + NUMBER_OF_ADJACENT_ELEMENTS
+!       if ( domain_idx==my_computational_node_number ) then
+ !         ELEMENTS_MAPPING%TOTAL_NUMBER_OF_LOCAL = ELEMENTS_MAPPING%NUMBER_OF_LOCAL + NUMBER_OF_ADJACENT_ELEMENTS
 
-          allocate( ELEMENTS_MAPPING%LOCAL_TO_GLOBAL_MAP(ELEMENTS_MAPPING%TOTAL_NUMBER_OF_LOCAL), STAT=ERR)
-          if (ERR/=0) call FlagError( "Could not allocate local to global mapping array.", ERR, ERROR, *999 )
-          allocate( ELEMENTS_MAPPING%LOCAL_TYPE(ELEMENTS_MAPPING%TOTAL_NUMBER_OF_LOCAL), STAT=ERR)
-          if (ERR/=0) call FlagError( "Could not allocate local types array.", ERR, ERROR, *999 )
+ !         allocate( ELEMENTS_MAPPING%LOCAL_TO_GLOBAL_MAP(ELEMENTS_MAPPING%TOTAL_NUMBER_OF_LOCAL), STAT=ERR)
+ !         if (ERR/=0) call FlagError( "Could not allocate local to global mapping array.", ERR, ERROR, *999 )
+ !         allocate( ELEMENTS_MAPPING%LOCAL_TYPE(ELEMENTS_MAPPING%TOTAL_NUMBER_OF_LOCAL), STAT=ERR)
+ !         if (ERR/=0) call FlagError( "Could not allocate local types array.", ERR, ERROR, *999 )
 
-          ELEMENTS_MAPPING%LOCAL_TO_GLOBAL_MAP( 1:ELEMENTS_MAPPING%NUMBER_OF_LOCAL ) = local_ids
-          ELEMENTS_MAPPING%LOCAL_TYPE( 1:ELEMENTS_MAPPING%NUMBER_OF_LOCAL ) = local_types
+ !         ELEMENTS_MAPPING%LOCAL_TO_GLOBAL_MAP( 1:ELEMENTS_MAPPING%NUMBER_OF_LOCAL ) = local_ids
+ !         ELEMENTS_MAPPING%LOCAL_TYPE( 1:ELEMENTS_MAPPING%NUMBER_OF_LOCAL ) = local_types
 
-          deallocate( local_ids )
-          deallocate( local_types )
-       endif
+!          deallocate( local_ids )
+!          deallocate( local_types )
+!       endif
 
        cnt = ELEMENTS_MAPPING%NUMBER_OF_LOCAL+1
        do no_adjacent_element = 1,NUMBER_OF_ADJACENT_ELEMENTS
@@ -4184,8 +4375,8 @@ CONTAINS
           if ( domain_idx==my_computational_node_number ) then
              domain_no = DECOMPOSITION%ELEMENT_DOMAIN(adjacent_element)
              if ( domain_no.ne.my_computational_node_number ) then
-                ELEMENTS_MAPPING%LOCAL_TO_GLOBAL_MAP(cnt) = adjacent_element
-                ELEMENTS_MAPPING%LOCAL_TYPE(cnt) = DOMAIN_LOCAL_GHOST
+ !               ELEMENTS_MAPPING%LOCAL_TO_GLOBAL_MAP(cnt) = adjacent_element
+ !               ELEMENTS_MAPPING%LOCAL_TYPE(cnt) = DOMAIN_LOCAL_GHOST
                 cnt = cnt + 1
              endif
           endif
@@ -4198,56 +4389,53 @@ CONTAINS
 
     !mpch Determine the # of internal, boundary and elements in the distributed mapping
     !mpch Sort the local IDs in the LOCAL_TO_GLOBAL_MAP array
-    allocate( local_ids(ELEMENTS_MAPPING%TOTAL_NUMBER_OF_LOCAL), STAT=ERR )
+!    allocate( local_ids(ELEMENTS_MAPPING%TOTAL_NUMBER_OF_LOCAL), STAT=ERR )
 
-    ne = 0
-    ELEMENTS_MAPPING%INTERNAL_START = 1
-    do cnt = 1,ELEMENTS_MAPPING%NUMBER_OF_LOCAL
-       if ( ELEMENTS_MAPPING%LOCAL_TYPE(cnt)==DOMAIN_LOCAL_INTERNAL ) then
-          ne = ne + 1
-          local_ids(ne) = ELEMENTS_MAPPING%LOCAL_TO_GLOBAL_MAP(cnt)
-       endif
-    enddo
-    ELEMENTS_MAPPING%INTERNAL_FINISH = ne
-    ELEMENTS_MAPPING%NUMBER_OF_INTERNAL = ne
+!    ne = 0
+!    ELEMENTS_MAPPING%INTERNAL_START = 1
+!    do cnt = 1,ELEMENTS_MAPPING%NUMBER_OF_LOCAL
+!       if ( ELEMENTS_MAPPING%LOCAL_TYPE(cnt)==DOMAIN_LOCAL_INTERNAL ) then
+!          ne = ne + 1
+!          local_ids(ne) = ELEMENTS_MAPPING%LOCAL_TO_GLOBAL_MAP(cnt)
+!       endif
+!    enddo
+!    ELEMENTS_MAPPING%INTERNAL_FINISH = ne
+!    ELEMENTS_MAPPING%NUMBER_OF_INTERNAL = ne
 
-    ELEMENTS_MAPPING%BOUNDARY_START = ne+1
-    do cnt = 1,ELEMENTS_MAPPING%NUMBER_OF_LOCAL
-       if ( ELEMENTS_MAPPING%LOCAL_TYPE(cnt)==DOMAIN_LOCAL_BOUNDARY ) then
-          ne = ne + 1
-          local_ids(ne) = ELEMENTS_MAPPING%LOCAL_TO_GLOBAL_MAP(cnt)
-       endif
-    enddo
-    ELEMENTS_MAPPING%BOUNDARY_FINISH = ne
-    ELEMENTS_MAPPING%NUMBER_OF_BOUNDARY = ne - ELEMENTS_MAPPING%NUMBER_OF_INTERNAL
+!    ELEMENTS_MAPPING%BOUNDARY_START = ne+1
+!    do cnt = 1,ELEMENTS_MAPPING%NUMBER_OF_LOCAL
+!       if ( ELEMENTS_MAPPING%LOCAL_TYPE(cnt)==DOMAIN_LOCAL_BOUNDARY ) then
+!          ne = ne + 1
+!          local_ids(ne) = ELEMENTS_MAPPING%LOCAL_TO_GLOBAL_MAP(cnt)
+!       endif
+!    enddo
+!    ELEMENTS_MAPPING%BOUNDARY_FINISH = ne
+!    ELEMENTS_MAPPING%NUMBER_OF_BOUNDARY = ne - ELEMENTS_MAPPING%NUMBER_OF_INTERNAL
 
-    ELEMENTS_MAPPING%GHOST_START = ELEMENTS_MAPPING%NUMBER_OF_LOCAL+1
-    ELEMENTS_MAPPING%GHOST_FINISH = ELEMENTS_MAPPING%TOTAL_NUMBER_OF_LOCAL
-    ELEMENTS_MAPPING%NUMBER_OF_GHOST = ELEMENTS_MAPPING%TOTAL_NUMBER_OF_LOCAL &
-                                    &- ELEMENTS_MAPPING%NUMBER_OF_LOCAL
+!    ELEMENTS_MAPPING%GHOST_START = ELEMENTS_MAPPING%NUMBER_OF_LOCAL+1
+!    ELEMENTS_MAPPING%GHOST_FINISH = ELEMENTS_MAPPING%TOTAL_NUMBER_OF_LOCAL
+!    ELEMENTS_MAPPING%NUMBER_OF_GHOST = ELEMENTS_MAPPING%TOTAL_NUMBER_OF_LOCAL &
+!                                    &- ELEMENTS_MAPPING%NUMBER_OF_LOCAL
 
-    do cnt = ELEMENTS_MAPPING%GHOST_START,ELEMENTS_MAPPING%TOTAL_NUMBER_OF_LOCAL
-       if ( ELEMENTS_MAPPING%LOCAL_TYPE(cnt)==DOMAIN_LOCAL_GHOST ) then
-          ne = ne + 1
-          local_ids(ne) = ELEMENTS_MAPPING%LOCAL_TO_GLOBAL_MAP(cnt)
-       endif
-    enddo
+!    do cnt = ELEMENTS_MAPPING%GHOST_START,ELEMENTS_MAPPING%TOTAL_NUMBER_OF_LOCAL
+!       if ( ELEMENTS_MAPPING%LOCAL_TYPE(cnt)==DOMAIN_LOCAL_GHOST ) then
+!          ne = ne + 1
+!          local_ids(ne) = ELEMENTS_MAPPING%LOCAL_TO_GLOBAL_MAP(cnt)
+!       endif
+!    enddo
 
-    allocate( ELEMENTS_MAPPING%DOMAIN_LIST(ELEMENTS_MAPPING%TOTAL_NUMBER_OF_LOCAL), STAT=ERR )
-    if (ERR/=0) call FlagError( "Could not allocate elements domain list.", ERR, ERROR, *999 )
-    ELEMENTS_MAPPING%DOMAIN_LIST = local_ids
-    deallocate( local_ids )
+!    allocate( ELEMENTS_MAPPING%DOMAIN_LIST(ELEMENTS_MAPPING%TOTAL_NUMBER_OF_LOCAL), STAT=ERR )
+!    if (ERR/=0) call FlagError( "Could not allocate elements domain list.", ERR, ERROR, *999 )
+!    ELEMENTS_MAPPING%DOMAIN_LIST = local_ids
+!    deallocate( local_ids )
 
-!    call GetAdjacentDomainInfo( ELEMENTS_MAPPING, ERR, ERROR, *999 )
 !mpch -- first check
-    new_domain_ptr => new_domain
-    call DomainMappingCopy( ELEMENTS_MAPPING, new_domain_ptr )
 
     !Calculate element local to global maps from global to local map
+    call CreateHaloExchangeNetwork( DOMAIN, ERR, ERROR, *999 )
     call DOMAIN_MAPPINGS_LOCAL_FROM_GLOBAL_CALCULATE( ELEMENTS_MAPPING, ERR, ERROR, *999 )
+    call MPI_Abort( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err, cnt )
 
-!mpch -- first check
-    call DomainMappingsCompare( ELEMENTS_MAPPING, new_domain_ptr )
 
     IF(DIAGNOSTICS1) THEN
       CALL WRITE_STRING(DIAGNOSTIC_OUTPUT_TYPE,"Element mappings :",ERR,ERROR,*999)
@@ -4427,42 +4615,47 @@ CONTAINS
   !
 
   !>Initialises the mappings for a domain decomposition. \todo finalise on error.
-  SUBROUTINE DOMAIN_MAPPINGS_INITIALISE(DOMAIN,ERR,ERROR,*)
+  subroutine DOMAIN_MAPPINGS_INITIALISE( domain, err, error, * )
 
     !Argument variables
-    TYPE(DOMAIN_TYPE), POINTER :: DOMAIN !<A pointer to the domain to initialise the mappings for
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
-    !Local Variables
+    type(DOMAIN_TYPE),        pointer :: domain !<A pointer to the domain to initialise the mappings for
+    integer(INTG),        intent(out) :: err !<The error code
+    type(VARYING_STRING), intent(out) :: error !<The error string
+
+    integer(INTG) :: ierr
 
     ENTERS("DOMAIN_MAPPINGS_INITIALISE",ERR,ERROR,*999)
 
-    IF(ASSOCIATED(DOMAIN)) THEN
-      IF(ASSOCIATED(DOMAIN%MAPPINGS)) THEN
-        CALL FlagError("Domain already has mappings associated.",ERR,ERROR,*999)
-      ELSE
-        ALLOCATE(DOMAIN%MAPPINGS,STAT=ERR)
-        IF(ERR/=0) CALL FlagError("Could not allocate domain mappings.",ERR,ERROR,*999)
-        DOMAIN%MAPPINGS%DOMAIN=>DOMAIN
-        NULLIFY(DOMAIN%MAPPINGS%ELEMENTS)
-        NULLIFY(DOMAIN%MAPPINGS%NODES)
-        NULLIFY(DOMAIN%MAPPINGS%DOFS)
-        !Calculate the node and element mappings
-        CALL DOMAIN_MAPPINGS_ELEMENTS_INITIALISE(DOMAIN%MAPPINGS,ERR,ERROR,*999)
-        CALL DOMAIN_MAPPINGS_NODES_INITIALISE(DOMAIN%MAPPINGS,ERR,ERROR,*999)
-        CALL DOMAIN_MAPPINGS_DOFS_INITIALISE(DOMAIN%MAPPINGS,ERR,ERROR,*999)
-        CALL DOMAIN_MAPPINGS_ELEMENTS_CALCULATE(DOMAIN,ERR,ERROR,*999)
-        CALL DOMAIN_MAPPINGS_NODES_DOFS_CALCULATE(DOMAIN,ERR,ERROR,*999)
-      ENDIF
-    ELSE
-      CALL FlagError("Domain is not associated.",ERR,ERROR,*999)
-    ENDIF
+    if ( .not.associated(domain) ) then
+       call FlagError( "Domain is not associated.", err, error, *999 )
+    endif
+    if ( associated(domain%MAPPINGS) ) then
+       call FlagError( "Domain mappings already associated.", err, error, *999 )
+    endif
+
+    allocate( domain%MAPPINGS, STAT=err )
+    if (err/=0) call FlagError( "Could not allocate domain mappings.", err, error, *999 )
+
+    domain%MAPPINGS%DOMAIN=>domain
+    nullify( domain%MAPPINGS%ELEMENTS )
+    nullify( domain%MAPPINGS%NODES )
+    nullify( domain%MAPPINGS%DOFS )
+
+   !Calculate the node and element mappings
+    call DOMAIN_MAPPINGS_ELEMENTS_INITIALISE( domain%MAPPINGS, err, error, *999 )
+    call DOMAIN_MAPPINGS_NODES_INITIALISE( domain%MAPPINGS, err, error, *999 )
+    call DOMAIN_MAPPINGS_DOFS_INITIALISE( domain%MAPPINGS, err, error, *999 )
+!mpch
+    call CalculateLocalElementDomainMappings( domain, err, error )
+!mpch
+    call DOMAIN_MAPPINGS_ELEMENTS_CALCULATE( domain, err, error, *999 )
+    call DOMAIN_MAPPINGS_NODES_DOFS_CALCULATE( domain, err, error, *999 )
 
     EXITS("DOMAIN_MAPPINGS_INITIALISE")
-    RETURN
+    return
 999 ERRORSEXITS("DOMAIN_MAPPINGS_INITIALISE",ERR,ERROR)
-    RETURN 1
-  END SUBROUTINE DOMAIN_MAPPINGS_INITIALISE
+    return 1
+  end subroutine DOMAIN_MAPPINGS_INITIALISE
 
   !
   !================================================================================================================================
