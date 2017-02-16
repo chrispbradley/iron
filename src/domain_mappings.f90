@@ -357,6 +357,7 @@ CONTAINS
      !Local variables
      type(DOMAIN_MAPPING_TYPE), pointer :: mapping
      integer(INTG) :: ierr, subdomain, n, m, nn, mm, cnt, idx, max_num_ghost
+     integer(INTG), dimension(MPI_STATUS_SIZE) :: status
      integer(INTG), dimension(:),   allocatable  :: tmp
      logical  :: found
  
@@ -457,13 +458,19 @@ CONTAINS
               tmp(idx) = mapping%LOCAL_TO_GLOBAL_MAP( mapping%DOMAIN_LIST(n) )
            enddo
            tmp(cnt) = mapping%NUMBER_OF_GHOST
+
+           do n = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
+              call MPI_Send( tmp, cnt, MPI_INTEGER, mapping%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER, 1, &
+                           & COMPUTATIONAL_ENVIRONMENT%MPI_COMM, m )
+           enddo
         endif
 
-        call MPI_Bcast( tmp, cnt, MPI_INTEGER, mm, COMPUTATIONAL_ENVIRONMENT%MPI_COMM, n ) 
+       ! call MPI_Bcast( tmp, cnt, MPI_INTEGER, mm, COMPUTATIONAL_ENVIRONMENT%MPI_COMM, n ) 
 
         if ( subdomain/=mm ) then
            do n = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
               if ( mm==mapping%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER ) then
+                 call MPI_Recv( tmp, cnt, MPI_INTEGER, mm, MPI_ANY_TAG, COMPUTATIONAL_ENVIRONMENT%MPI_COMM, status, m )
                  mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS = 0
                  do m = 1,tmp(cnt)
                  do nn = 1,mapping%NUMBER_OF_LOCAL
