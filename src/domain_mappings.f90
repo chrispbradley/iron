@@ -444,10 +444,13 @@ CONTAINS
     !             Determine the # of ghost values to be sent to each adjacent sub-domain
     !-------------------------------------------------------------------------------------------------------
 
-     call MPI_Allreduce( mapping%NUMBER_OF_GHOST, cnt, 1, MPI_INTEGER, MPI_MAX, &
-                       & COMPUTATIONAL_ENVIRONMENT%MPI_COMM, n ) 
-     cnt = cnt + 1
-     allocate( tmp(cnt) )
+    ! call MPI_Allreduce( mapping%NUMBER_OF_GHOST, cnt, 1, MPI_INTEGER, MPI_MAX, &
+    !                   & COMPUTATIONAL_ENVIRONMENT%MPI_COMM, n ) 
+     max_num_ghost = maxval( mapping%NUMBER_OF_DOMAIN_GHOST )
+
+    ! cnt = cnt + 1
+    ! allocate( tmp(cnt) )
+     allocate( tmp(max_num_ghost) )
 
      do mm = 0,domain%DECOMPOSITION%NUMBER_OF_DOMAINS-1
 
@@ -457,10 +460,11 @@ CONTAINS
               idx = idx + 1
               tmp(idx) = mapping%LOCAL_TO_GLOBAL_MAP( mapping%DOMAIN_LIST(n) )
            enddo
-           tmp(cnt) = mapping%NUMBER_OF_GHOST
+        !   tmp(cnt) = mapping%NUMBER_OF_GHOST
 
            do n = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
-              call MPI_Send( tmp, cnt, MPI_INTEGER, mapping%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER, 1, &
+              !call MPI_Send( tmp, cnt, MPI_INTEGER, mapping%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER, 1, &
+              call MPI_Send( tmp, max_num_ghost, MPI_INTEGER, mapping%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER, 1, &
                            & COMPUTATIONAL_ENVIRONMENT%MPI_COMM, m )
            enddo
         endif
@@ -470,9 +474,11 @@ CONTAINS
         if ( subdomain/=mm ) then
            do n = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
               if ( mm==mapping%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER ) then
-                 call MPI_Recv( tmp, cnt, MPI_INTEGER, mm, MPI_ANY_TAG, COMPUTATIONAL_ENVIRONMENT%MPI_COMM, status, m )
+               !  call MPI_Recv( tmp, cnt, MPI_INTEGER, mm, MPI_ANY_TAG, COMPUTATIONAL_ENVIRONMENT%MPI_COMM, status, m )
+                 call MPI_Recv( tmp, max_num_ghost, MPI_INTEGER, mm, MPI_ANY_TAG, COMPUTATIONAL_ENVIRONMENT%MPI_COMM, status, m )
                  mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS = 0
-                 do m = 1,tmp(cnt)
+               !  do m = 1,tmp(cnt)
+                 do m = 1,mapping%NUMBER_OF_DOMAIN_GHOST(mm)
                  do nn = 1,mapping%NUMBER_OF_LOCAL
                     if ( tmp(m)==mapping%LOCAL_TO_GLOBAL_MAP(nn) ) then
                        mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS = &
@@ -487,7 +493,8 @@ CONTAINS
                  if (err/=0) call FlagError( "could not allocate ghost_send indices array", err, error, *999 )
 
                  idx = 0
-                 do m = 1,tmp(cnt)
+                ! do m = 1,tmp(cnt)
+                 do m = 1,mapping%NUMBER_OF_DOMAIN_GHOST(mm)
                  do nn = 1,mapping%NUMBER_OF_LOCAL
                     if ( tmp(m)==mapping%LOCAL_TO_GLOBAL_MAP(nn) ) then
                        idx = idx + 1
@@ -522,7 +529,6 @@ CONTAINS
                                & mapping%NUMBER_OF_GHOST, err, error, *999 )
         call WRITE_STRING_VALUE( DIAGNOSTIC_OUTPUT_TYPE,"  sum of all element receive  = ", &
                                & sum(mapping%ADJACENT_DOMAINS(:)%NUMBER_OF_RECEIVE_GHOSTS), err, error, *999 )
-     endif
      if ( DIAGNOSTICS2 ) then
         call WRITE_STRING( DIAGNOSTIC_OUTPUT_TYPE, "Halo Exchange Network (Elements):", err, error, *999 )
         do n = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
@@ -539,6 +545,7 @@ CONTAINS
                                    & '("  Local Ghost Receive Indices List :",8(X,I5))', '(36X,8(X,I5))', &
                                    & err, error, *999 )
         enddo
+     endif
      endif
 
      EXITS( "CreateHaloExchangeNetwork" ) 
@@ -576,7 +583,7 @@ CONTAINS
     INTEGER(INTG) :: domain_idx,domain_idx2,domain_no,domain_no2,global_number,idx,local_number,local_number2,NUMBER_INTERNAL, &
                    & NUMBER_BOUNDARY,NUMBER_GHOST,my_computational_node_number,MY_DOMAIN_INDEX,TEMP,NUMBER_OF_ADJACENT_DOMAINS, &
                    & RECEIVE_FROM_DOMAIN,DUMMY_ERR,NUMBER_OF_GHOST_RECEIVE,NUMBER_OF_GHOST_SEND,local_type,COUNT, &
-                   & TOTAL_NUMBER_OF_ADJACENT_DOMAINS
+                   & TOTAL_NUMBER_OF_ADJACENT_DOMAINS, ierr, errorcode
     INTEGER(INTG),       ALLOCATABLE :: ADJACENT_DOMAIN_MAP(:),ADJACENT_DOMAINS(:,:),SEND_LIST(:),RECEIVE_LIST(:)
     TYPE(LIST_PTR_TYPE), ALLOCATABLE :: GHOST_SEND_LISTS(:),GHOST_RECEIVE_LISTS(:)
 
@@ -585,9 +592,7 @@ CONTAINS
 
     ENTERS("DOMAIN_MAPPINGS_LOCAL_FROM_GLOBAL_CALCULATE",ERR,ERROR,*999)
 
-    if (.not.ASSOCIATED(DOMAIN_MAPPING)) then
-       call FlagError( "Domain mapping is not associated.", ERR, ERROR, *999 )
-    endif
+    if (.not.ASSOCIATED(DOMAIN_MAPPING))  call FlagError( "Domain mapping is not associated.", ERR, ERROR, *999 )
 
     my_computational_node_number=COMPUTATIONAL_NODE_NUMBER_GET(ERR,ERROR)
     IF(ERR/=0) GOTO 999
