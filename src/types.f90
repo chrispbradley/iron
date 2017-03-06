@@ -3284,10 +3284,9 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
   TYPE REGIONS_TYPE
     TYPE(REGION_TYPE), POINTER :: WORLD_REGION !<A pointer to the world region
   END TYPE REGIONS_TYPE
-
   !
   !================================================================================================================================
   !
-
+CONTAINS
 
 END MODULE TYPES
