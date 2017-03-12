@@ -86,7 +86,7 @@ MODULE DOMAIN_MAPPINGS
 
   PUBLIC DOMAIN_MAPPINGS_MAPPING_FINALISE,DOMAIN_MAPPINGS_MAPPING_INITIALISE,DOMAIN_MAPPINGS_MAPPING_GLOBAL_INITIALISE, &
        & DOMAIN_MAPPINGS_GLOBAL_TO_LOCAL_GET,DOMAIN_MAPPINGS_LOCAL_FROM_GLOBAL_CALCULATE
-       
+
   PUBLIC DomainMappingCopy, DomainMappingsCompare, CreateHaloExchangeNetwork
 
 CONTAINS
@@ -119,7 +119,7 @@ CONTAINS
          map_out%DOMAIN_LIST(:) = map_in%DOMAIN_LIST(:)
       return
 
-  end subroutine DomainMappingCopy 
+  end subroutine DomainMappingCopy
 
   !
   !================================================================================================================================
@@ -176,7 +176,7 @@ CONTAINS
                do m = 1,map2%TOTAL_NUMBER_OF_LOCAL
                   id2 = map2%LOCAL_TO_GLOBAL_MAP(m)
                   if ( id1==id2 ) then
-                     cnt = cnt + 1 
+                     cnt = cnt + 1
                      exit
                   endif
                enddo
@@ -191,7 +191,7 @@ CONTAINS
                do m = map2%INTERNAL_START,map2%INTERNAL_FINISH
                   id2 = map2%LOCAL_TO_GLOBAL_MAP( map2%DOMAIN_LIST(n) )
                   if ( id1==id2 ) then
-                     cnt = cnt + 1 
+                     cnt = cnt + 1
                      exit
                   endif
                enddo
@@ -206,7 +206,7 @@ CONTAINS
                do m = map2%BOUNDARY_START,map2%BOUNDARY_FINISH
                   id2 = map2%LOCAL_TO_GLOBAL_MAP( map2%DOMAIN_LIST(n) )
                   if ( id1==id2 ) then
-                     cnt = cnt + 1 
+                     cnt = cnt + 1
                      exit
                   endif
                enddo
@@ -221,7 +221,7 @@ CONTAINS
                do m = map2%GHOST_START,map2%GHOST_FINISH
                   id2 = map2%LOCAL_TO_GLOBAL_MAP( map2%DOMAIN_LIST(n) )
                   if ( id1==id2 ) then
-                     cnt = cnt + 1 
+                     cnt = cnt + 1
                      exit
                   endif
                enddo
@@ -233,10 +233,10 @@ CONTAINS
                      id1 = map1%LOCAL_TO_GLOBAL_MAP( map1%DOMAIN_LIST(n) )
                      id2 = map2%LOCAL_TO_GLOBAL_MAP( map2%DOMAIN_LIST(n) )
                      write(*,*)  id1, id2
-                  enddo 
+                  enddo
                endif
             endif
-   
+
       return
   end subroutine DomainMappingsCompare
 
@@ -339,47 +339,59 @@ CONTAINS
   !
   !================================================================================================================================
   !
-  ! CreateHaloExchangeNetwork 
+  ! CreateHaloExchangeNetwork
   !
-  !  Determine which sub-domain(s) need to communicate during their halo/ghost-id exchange.  Each sub-domain determines which 
-  !  sub-domains it needs to exchange with, how many ids need to be exchanged and which specific values need updating. 
+  !  Determine which sub-domain(s) need to communicate during their halo/ghost-id exchange.  Each sub-domain determines which
+  !  sub-domains it needs to exchange with, how many ids need to be exchanged and which specific values need updating.
   !
   !  Mark Cheeseman, CeR
   !  Feb 14, 2017
-  
-  SUBROUTINE CreateHaloExchangeNetwork( domain, err, error, * )
+
+  SUBROUTINE CreateHaloExchangeNetwork( domain, mappingType, err, error, * )
 
      !Argument variables
      type(DOMAIN_TYPE),         pointer :: domain
+     integer(INTG),          intent(in) :: mappingType !<1 indicates an element mapping being used, 2 indicates a node mapping
      integer(INTG),         intent(out) :: err      !<The error code
      type(VARYING_STRING),  intent(out) :: error    !<The error string
 
      !Local variables
      type(DOMAIN_MAPPING_TYPE), pointer :: mapping
+  !   type(LIST_TYPE),           pointer :: subdomain_list
      integer(INTG) :: ierr, subdomain, n, m, nn, mm, cnt, idx, max_num_ghost
      integer(INTG), dimension(MPI_STATUS_SIZE) :: status
      integer(INTG), dimension(:),   allocatable  :: tmp
      logical  :: found
- 
+
      ENTERS( "CreateHaloExchangeNetwork", err, error, *999 )
 
      subdomain = COMPUTATIONAL_NODE_NUMBER_GET( err, error )
      if (err/=0) goto 999
 
-     mapping => domain%MAPPINGS%ELEMENTS
+     if ( mappingType==1 ) then
+        mapping => domain%MAPPINGS%ELEMENTS
+     elseif ( mappingType==2 ) then
+        mapping => domain%MAPPINGS%NODES
+     endif
 
     !
     ! STEP ONE: (ADJACENT DOMAIN COUNT)
     !           Determine the number of sub-domains in which the local sub-domain must exchange ghost
-    !           values with. 
+    !           values with.
     !-------------------------------------------------------------------------------------------------------
+    !  nullify( subdomain_list )
+    !  call List_CreateStart( subdomain_list, err, error, *997 )
+    !  call List_DataTypeSet( subdomain_list, LIST_INTG_TYPE, err, error, *997 )
+    !  call List_InitialSizeSet( subdomain_list, domain%DECOMPOSITION%NUMBER_OF_DOMAINS, err, error, *997 )
+    !  call List_CreateFinish( subdomain_list, err, error, *997 )
+
      allocate( tmp(mapping%NUMBER_OF_GHOST), STAT=ierr )
      if ( ierr/=0 ) call FlagError( "Could not allocate temporary buffer", err, error, *999 )
 
      cnt = 0
      do n = mapping%GHOST_START,mapping%GHOST_FINISH
         idx = mapping%LOCAL_TO_GLOBAL_MAP( mapping%DOMAIN_LIST(n) )
-        if ( domain%DECOMPOSITION%ELEMENT_DOMAIN(idx)/=subdomain ) then 
+        if ( domain%DECOMPOSITION%ELEMENT_DOMAIN(idx)/=subdomain ) then
            cnt = cnt + 1
            tmp(cnt) = domain%DECOMPOSITION%ELEMENT_DOMAIN(idx)
         endif
@@ -389,8 +401,8 @@ CONTAINS
      do n = 1,cnt
      do nn = n+1,cnt
         if ( tmp(n)==tmp(nn) ) tmp(nn) = -1
-     enddo 
-     enddo 
+     enddo
+     enddo
 
      mapping%NUMBER_OF_ADJACENT_DOMAINS = 0
      do n = 1,cnt
@@ -399,12 +411,12 @@ CONTAINS
 
     !
     ! STEP TWO: (ADJACENT DOMAINS DEFINITION)
-    !           Define an ADJACENT_DOMAIN TYPE array for each sub-domain adjacent to the local sub-domain 
+    !           Define an ADJACENT_DOMAIN TYPE array for each sub-domain adjacent to the local sub-domain
     !-------------------------------------------------------------------------------------------------------
 
      allocate( mapping%ADJACENT_DOMAINS(mapping%NUMBER_OF_ADJACENT_DOMAINS), STAT=err )
      if (err/=0) call FlagError( "Could not allocate adjacent_domains", err, error, *999 )
-     
+
      nn = 0
      do n = 1,cnt
         if ( tmp(n)>-1 ) then
@@ -415,7 +427,7 @@ CONTAINS
 
     !
     ! STEP THREE: (RECEIVE COUNTS & INDICES)
-    !             Determine the # of ghost values received by each adjacent sub-domain 
+    !             Determine the # of ghost values received by each adjacent sub-domain
     !-------------------------------------------------------------------------------------------------------
 
      do m = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
@@ -445,7 +457,7 @@ CONTAINS
     !-------------------------------------------------------------------------------------------------------
 
     ! call MPI_Allreduce( mapping%NUMBER_OF_GHOST, cnt, 1, MPI_INTEGER, MPI_MAX, &
-    !                   & COMPUTATIONAL_ENVIRONMENT%MPI_COMM, n ) 
+    !                   & COMPUTATIONAL_ENVIRONMENT%MPI_COMM, n )
      max_num_ghost = maxval( mapping%NUMBER_OF_DOMAIN_GHOST )
 
     ! cnt = cnt + 1
@@ -469,7 +481,7 @@ CONTAINS
            enddo
         endif
 
-       ! call MPI_Bcast( tmp, cnt, MPI_INTEGER, mm, COMPUTATIONAL_ENVIRONMENT%MPI_COMM, n ) 
+       ! call MPI_Bcast( tmp, cnt, MPI_INTEGER, mm, COMPUTATIONAL_ENVIRONMENT%MPI_COMM, n )
 
         if ( subdomain/=mm ) then
            do n = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
@@ -482,7 +494,7 @@ CONTAINS
                  do nn = 1,mapping%NUMBER_OF_LOCAL
                     if ( tmp(m)==mapping%LOCAL_TO_GLOBAL_MAP(nn) ) then
                        mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS = &
-                                      & mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS + 1 
+                                      & mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS + 1
                        exit
                     endif
                  enddo
@@ -503,12 +515,12 @@ CONTAINS
                     endif
                  enddo
                  enddo
- 
+
               endif
            enddo
         endif
 
-     enddo   
+     enddo
      deallocate( tmp )
 
     do m = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
@@ -548,7 +560,7 @@ CONTAINS
      endif
      endif
 
-     EXITS( "CreateHaloExchangeNetwork" ) 
+     EXITS( "CreateHaloExchangeNetwork" )
      return
 
 999  if ( allocated(mapping%ADJACENT_DOMAINS) ) then
@@ -565,7 +577,7 @@ CONTAINS
 998  ERRORSEXITS( "CreateHaloExchangeNetwork", err, error )
      return 1
 
-  END SUBROUTINE CreateHaloExchangeNetwork 
+  END SUBROUTINE CreateHaloExchangeNetwork
 
   !
   !================================================================================================================================
