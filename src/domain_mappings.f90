@@ -610,11 +610,15 @@ CONTAINS
     IF(ERR/=0) GOTO 999
 
     !Calculate local to global maps from global to local map
-    ALLOCATE(DOMAIN_MAPPING%NUMBER_OF_DOMAIN_LOCAL(0:DOMAIN_MAPPING%NUMBER_OF_DOMAINS-1),STAT=ERR)
-    IF(ERR/=0) CALL FlagError("Could not allocate number of domain local.",ERR,ERROR,*999)
+    if ( .not.allocated(DOMAIN_MAPPING%NUMBER_OF_DOMAIN_LOCAL) ) then
+       ALLOCATE(DOMAIN_MAPPING%NUMBER_OF_DOMAIN_LOCAL(0:DOMAIN_MAPPING%NUMBER_OF_DOMAINS-1),STAT=ERR)
+       IF(ERR/=0) CALL FlagError("Could not allocate number of domain local.",ERR,ERROR,*999)
+    endif
     DOMAIN_MAPPING%NUMBER_OF_DOMAIN_LOCAL=0
-    ALLOCATE(DOMAIN_MAPPING%NUMBER_OF_DOMAIN_GHOST(0:DOMAIN_MAPPING%NUMBER_OF_DOMAINS-1),STAT=ERR)
-    IF(ERR/=0) CALL FlagError("Could not allocate number of domain ghost.",ERR,ERROR,*999)
+    if ( .not.allocated(DOMAIN_MAPPING%NUMBER_OF_DOMAIN_GHOST) ) then
+       ALLOCATE(DOMAIN_MAPPING%NUMBER_OF_DOMAIN_GHOST(0:DOMAIN_MAPPING%NUMBER_OF_DOMAINS-1),STAT=ERR)
+       IF(ERR/=0) CALL FlagError("Could not allocate number of domain ghost.",ERR,ERROR,*999)
+    endif
     DOMAIN_MAPPING%NUMBER_OF_DOMAIN_GHOST=0
     NUMBER_INTERNAL=0
     NUMBER_BOUNDARY=0

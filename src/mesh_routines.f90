@@ -4182,13 +4182,13 @@ CONTAINS
         displ(n+1) = n
      enddo
 
-     allocate( mapping%NUMBER_OF_DOMAIN_LOCAL(domain%DECOMPOSITION%NUMBER_OF_DOMAINS), STAT=err )
+     allocate( mapping%NUMBER_OF_DOMAIN_LOCAL(0:domain%DECOMPOSITION%NUMBER_OF_DOMAINS-1), STAT=err )
      if ( err/=0 ) call FlagError( "could not allocate NUMBER_OF_DOMAIN_LOCAL", err, error, *999 )
      call MPI_Allgatherv( mapping%NUMBER_OF_LOCAL, 1, MPI_INTEGER, &
                         & mapping%NUMBER_OF_DOMAIN_LOCAL, recv_cnt, displ, MPI_INTEGER, &
                         & COMPUTATIONAL_ENVIRONMENT%MPI_COMM, n )
 
-     allocate( mapping%NUMBER_OF_DOMAIN_GHOST(domain%DECOMPOSITION%NUMBER_OF_DOMAINS), STAT=err )
+     allocate( mapping%NUMBER_OF_DOMAIN_GHOST(0:domain%DECOMPOSITION%NUMBER_OF_DOMAINS-1), STAT=err )
      if ( err/=0 ) call FlagError( "could not allocate NUMBER_OF_DOMAIN_GHOST", err, error, *999 )
      call MPI_Allgatherv( mapping%NUMBER_OF_GHOST, 1, MPI_INTEGER, &
                         & mapping%NUMBER_OF_DOMAIN_GHOST, recv_cnt, displ, MPI_INTEGER, &
@@ -4611,7 +4611,6 @@ CONTAINS
     return 1
   end subroutine DOMAIN_MAPPINGS_INITIALISE
 
-!
 !================================================================================================================================
 ! CalculateLocalNodeDomainMappings
 !
@@ -4626,10 +4625,9 @@ CONTAINS
 
      ! local variables
      integer(INTG) :: node_idx, domain_no, num_domains, num_nodes, cnt, n, i, j, element, subdomain, np
-  !   integer(INTG) :: status(MPI_STATUS_SIZE)
-     integer(INTG), allocatable :: DOMAINS(:), internalNODES(:), boundaryNODES(:), ghostNODES(:)
+     integer(INTG), allocatable :: DOMAINS(:), internalNODES(:), boundaryNODES(:), ghostNODES(:), displ(:), recv_cnt(:)
      type(LIST_TYPE), pointer :: domain_list, local_node_list, internal_node_list, boundary_node_list, ghost_node_list
-     type(DOMAIN_MAPPING_TYPE), pointer :: elementMap, nodeMap, dofMap
+     type(DOMAIN_MAPPING_TYPE), pointer :: elementMap, nodeMap
      TYPE(MeshComponentTopologyType), pointer :: meshTopology
      logical :: found
 
@@ -4761,6 +4759,7 @@ CONTAINS
      call List_DetachAndDestroy( ghost_node_list, nodeMap%NUMBER_OF_GHOST, ghostNODES, err, error, *998 )
 
    ! allocate the LOCAL->GLOBAL and DOMAIN LIST mapping arrays
+     nodeMap%NUMBER_OF_GLOBAL = meshTopology%NODES%numberOfNodes
      nodeMap%TOTAL_NUMBER_OF_LOCAL = nodeMap%NUMBER_OF_INTERNAL + nodeMap%NUMBER_OF_BOUNDARY + nodeMap%NUMBER_OF_GHOST
      nodeMap%NUMBER_OF_LOCAL = nodeMap%NUMBER_OF_INTERNAL + nodeMap%NUMBER_OF_BOUNDARY
      allocate( nodeMap%LOCAL_TO_GLOBAL_MAP(nodeMap%TOTAL_NUMBER_OF_LOCAL), STAT=err )
@@ -4800,6 +4799,44 @@ CONTAINS
      enddo
      nodeMap%LOCAL_TYPE( nodeMap%GHOST_START:nodeMap%GHOST_FINISH ) = DOMAIN_LOCAL_GHOST
      deallocate( ghostNODES )
+
+     allocate( recv_cnt(domain%DECOMPOSITION%NUMBER_OF_DOMAINS), STAT=err )
+     if ( err/=0 ) call FlagError( "could not allocate receive counts array", err, error, *999 )
+     recv_cnt(:) = 1
+
+     allocate( displ(domain%DECOMPOSITION%NUMBER_OF_DOMAINS), STAT=err )
+     if ( err/=0 ) call FlagError( "could not allocate displacement array", err, error, *999 )
+     do n = 0,domain%DECOMPOSITION%NUMBER_OF_DOMAINS-1
+        displ(n+1) = n
+     enddo
+
+     allocate( nodeMap%NUMBER_OF_DOMAIN_LOCAL(0:domain%DECOMPOSITION%NUMBER_OF_DOMAINS-1), STAT=err )
+     if ( err/=0 ) call FlagError( "could not allocate NUMBER_OF_DOMAIN_LOCAL", err, error, *999 )
+     call MPI_Allgatherv( nodeMap%NUMBER_OF_LOCAL, 1, MPI_INTEGER, &
+                        & nodeMap%NUMBER_OF_DOMAIN_LOCAL, recv_cnt, displ, MPI_INTEGER, &
+                        & COMPUTATIONAL_ENVIRONMENT%MPI_COMM, n )
+
+     allocate( nodeMap%NUMBER_OF_DOMAIN_GHOST(0:domain%DECOMPOSITION%NUMBER_OF_DOMAINS-1), STAT=err )
+     if ( err/=0 ) call FlagError( "could not allocate NUMBER_OF_DOMAIN_GHOST", err, error, *999 )
+     call MPI_Allgatherv( nodeMap%NUMBER_OF_GHOST, 1, MPI_INTEGER, &
+                        & nodeMap%NUMBER_OF_DOMAIN_GHOST, recv_cnt, displ, MPI_INTEGER, &
+                        & COMPUTATIONAL_ENVIRONMENT%MPI_COMM, n )
+
+   ! define the NODE_DOMAIN global array
+     allocate( domain%NODE_DOMAIN(meshTopology%NODES%numberOfNodes), STAT=err )
+     if (err/=0) call FlagError( "could not allocate NODE_DOMAIN", err, error, *999 )
+
+    do n = 0,domain%DECOMPOSITION%NUMBER_OF_DOMAINS-1
+       allocate( internalNODES(nodeMap%NUMBER_OF_DOMAIN_LOCAL(n)) )
+      if ( n==subdomain ) internalNODES = nodeMap%LOCAL_TO_GLOBAL_MAP( 1:nodeMap%NUMBER_OF_LOCAL )
+
+      call MPI_Bcast( internalNODES, nodeMap%NUMBER_OF_DOMAIN_LOCAL(n), MPI_INTEGER, n, &
+                    & COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
+      do i = 1,nodeMap%NUMBER_OF_DOMAIN_LOCAL(n)
+         domain%NODE_DOMAIN( internalNODES(i) ) = n
+      enddo
+      deallocate( internalNODES )
+    enddo
 
    ! debugging purposes only
       ! write(*,*) "(new) # of internal/boundary/ghost nodes : ", subdomain, nodeMap%NUMBER_OF_INTERNAL, &
@@ -4911,7 +4948,7 @@ CONTAINS
        nullify( GHOST_NODES_LIST( domain_idx)%PTR )
        call LIST_CREATE_START( GHOST_NODES_LIST(domain_idx)%PTR, ERR, ERROR, *999 )
        call LIST_DATA_TYPE_SET( GHOST_NODES_LIST(domain_idx)%PTR, LIST_INTG_TYPE, ERR, ERROR, *999 )
-       call LIST_INITIAL_SIZE_SET( GHOST_NODES_LIST(domain_idx)%PTR, INT(MESH_TOPOLOGY%NODES%numberOfNodes/2 ), &
+       call LIST_INITIAL_SIZE_SET( GHOST_NODES_LIST(domain_idx)%PTR, INT(MESH_TOPOLOGY%NODES%numberOfNodes ), &
                       & ERR, ERROR, *999 )
        call LIST_CREATE_FINISH( GHOST_NODES_LIST(domain_idx)%PTR, ERR, ERROR, *999 )
     enddo
@@ -5056,8 +5093,10 @@ CONTAINS
     NUMBER_OF_NODES_PER_DOMAIN = FLOOR( REAL(MESH_TOPOLOGY%NODES%numberOfNodes,DP)/ &
                                       & REAL(DECOMPOSITION%NUMBER_OF_DOMAINS,DP) )
 
-    allocate( DOMAIN%NODE_DOMAIN(MESH_TOPOLOGY%NODES%numberOfNodes), STAT=ERR )
-    if ( ERR/=0 ) call FlagError( "Could not allocate node domain", ERR, ERROR, *999 )
+    if ( .not.allocated(DOMAIN%NODE_DOMAIN) ) then
+       allocate( DOMAIN%NODE_DOMAIN(MESH_TOPOLOGY%NODES%numberOfNodes), STAT=ERR )
+       if ( ERR/=0 ) call FlagError( "Could not allocate node domain", ERR, ERROR, *999 )
+    endif
     DOMAIN%NODE_DOMAIN(:) = -1
 
     do node_idx = 1,MESH_TOPOLOGY%NODES%numberOfNodes
