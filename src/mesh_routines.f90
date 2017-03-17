@@ -4785,6 +4785,7 @@ CONTAINS
    ! define the BOUNDARY node-related mapping variables
      nodeMap%BOUNDARY_START = nodeMap%INTERNAL_FINISH + 1
      nodeMap%BOUNDARY_FINISH = nodeMap%BOUNDARY_START + nodeMap%NUMBER_OF_BOUNDARY - 1
+     if ( nodeMap%NUMBER_OF_BOUNDARY==0 ) nodeMap%BOUNDARY_FINISH = nodeMap%INTERNAL_FINISH
      do n = nodeMap%BOUNDARY_START,nodeMap%BOUNDARY_FINISH
         nodeMap%LOCAL_TO_GLOBAL_MAP(n) = boundaryNODES(n)
      enddo
@@ -4865,6 +4866,206 @@ CONTAINS
  999 return 1
 
   end subroutine CalculateLocalNodeDomainMappings
+
+  !================================================================================================================================
+  ! CalculateLocalDOFDomainMappings
+  !
+  !>Calculates the local to global degrees of freedom mapping for a domain decomposition.
+  !================================================================================================================================
+    subroutine CalculateLocalDOFDomainMappings( domain, err, error, * )
+
+      ! input variables
+       type(DOMAIN_TYPE),        pointer :: domain
+       integer(INTG),        intent(out) :: err
+       type(VARYING_STRING), intent(out) :: error
+
+      ! local variables
+       logical :: found
+       integer(INTG) :: node_idx, subdomain, np, version, derivative, dof, global_start
+       integer(INTG), allocatable :: internalDOFS(:), boundaryDOFS(:), ghostDOFS(:), displ(:), recv_cnt(:)
+       type(LIST_TYPE), pointer :: internal_dof_list, boundary_dof_list, ghost_dof_list
+       type(DOMAIN_MAPPING_TYPE), pointer :: nodeMap, dofMap
+       TYPE(MeshComponentTopologyType), pointer :: meshTopology
+
+       ENTERS( "CalculateLocalDOFDomainMappings", err, error, *999 )
+
+      ! set some necessary variables
+       subdomain = COMPUTATIONAL_NODE_NUMBER_GET( err, error )
+       if ( err/=0 ) goto 999
+
+      ! set some convenient pointers
+       nodeMap => domain%MAPPINGS%NODES
+       dofMap => domain%MAPPINGS%DOFS
+       meshTopology => domain%MESH%TOPOLOGY( domain%MESH_COMPONENT_NUMBER )%PTR
+
+  !
+  ! PART ONE - LOCAL DOF COLLECTION & CLASSIFICATION
+  !            DOF placement is dependent on the local node mapping.  So we iterate through all nodes in the input mesh. If
+  !            the local sub-domain possesses a given node, all DOFs associated with that node will be mapped to the local
+  !            sub-domain.  The mapped DOFs will have the same classification of the local node.
+  !--------------------------------------------------------------------------------------------------------------------------------
+      ! create 3 empty lists to hold DOFs classified as INTERNAL, BOUNDARY or GHOST
+       nullify( internal_dof_list )
+       call List_CreateStart( internal_dof_list, err, error, *999 )
+       call List_DataTypeSet( internal_dof_list, LIST_INTG_TYPE, err, error, *999 )
+       call List_InitialSizeSet( internal_dof_list, 4*nodeMap%NUMBER_OF_LOCAL, err, error, *999 )
+       call List_CreateFinish( internal_dof_list, err, error, *999 )
+
+       nullify( boundary_dof_list )
+       call List_CreateStart( boundary_dof_list, err, error, *999 )
+       call List_DataTypeSet( boundary_dof_list, LIST_INTG_TYPE, err, error, *999 )
+       call List_InitialSizeSet( boundary_dof_list, 4*nodeMap%NUMBER_OF_LOCAL, err, error, *999 )
+       call List_CreateFinish( boundary_dof_list, err, error, *999 )
+
+       nullify( ghost_dof_list )
+       call List_CreateStart( ghost_dof_list, err, error, *999 )
+       call List_DataTypeSet( ghost_dof_list, LIST_INTG_TYPE, err, error, *999 )
+       call List_InitialSizeSet( ghost_dof_list, 4*nodeMap%NUMBER_OF_LOCAL, err, error, *999 )
+       call List_CreateFinish( ghost_dof_list, err, error, *999 )
+
+      ! loop over all nodes in the mesh
+       do node_idx = 1,meshTopology%NODES%numberOfNodes
+          if ( domain%NODE_DOMAIN(node_idx)==subdomain ) then
+
+             found = .false.
+             do np = nodeMap%INTERNAL_START,nodeMap%INTERNAL_FINISH
+                if ( node_idx==nodeMap%LOCAL_TO_GLOBAL_MAP(np) ) then
+                   found = .true.
+                   do derivative = 1,meshTopology%NODES%NODES(node_idx)%numberOfDerivatives
+                   do version = 1,meshTopology%NODES%NODES(node_idx)%DERIVATIVES(derivative)%numberOfVersions
+                      dof = meshTopology%NODES%NODES(node_idx)%DERIVATIVES(derivative)%dofIndex(version)
+                      call List_ItemAdd(internal_dof_list, dof, err, error, *999)
+                   enddo
+                   enddo
+                endif
+             enddo
+             if ( .not.found ) then
+                do np = nodeMap%BOUNDARY_START,nodeMap%BOUNDARY_FINISH
+                   if ( node_idx==nodeMap%LOCAL_TO_GLOBAL_MAP(np) ) then
+                      found = .true.
+                      do derivative = 1,meshTopology%NODES%NODES(node_idx)%numberOfDerivatives
+                      do version = 1,meshTopology%NODES%NODES(node_idx)%DERIVATIVES(derivative)%numberOfVersions
+                         dof = meshTopology%NODES%NODES(node_idx)%DERIVATIVES(derivative)%dofIndex(version)
+                         call List_ItemAdd(boundary_dof_list, dof, err, error, *999)
+                      enddo
+                      enddo
+                   endif
+                enddo
+             endif
+
+          else ! subdomain
+
+             do np = nodeMap%GHOST_START,nodeMap%GHOST_FINISH
+                do derivative = 1,meshTopology%NODES%NODES(node_idx)%numberOfDerivatives
+                do version = 1,meshTopology%NODES%NODES(node_idx)%DERIVATIVES(derivative)%numberOfVersions
+                   dof = meshTopology%NODES%NODES(node_idx)%DERIVATIVES(derivative)%dofIndex(version)
+                   call List_ItemAdd(ghost_dof_list, dof, err, error, *999)
+                enddo
+                enddo
+             enddo
+
+          endif ! subdomain
+       enddo
+
+      ! count the # of DOFs for each classification and export the global IDs into 3 separate arrays
+       call List_DetachAndDestroy( internal_dof_list, dofMap%NUMBER_OF_INTERNAL, internalDOFS, err, error, *999 )
+       call List_DetachAndDestroy( boundary_dof_list, dofMap%NUMBER_OF_BOUNDARY, boundaryDOFS, err, error, *999 )
+       call List_DetachAndDestroy( ghost_dof_list, dofMap%NUMBER_OF_GHOST, ghostDOFS, err, error, *999 )
+
+  !
+  ! PART TWO - DOMAIN MAPPING VARIABLE DEFINITIONS
+  !--------------------------------------------------------------------------------------------------------------------------------
+       dofMap%NUMBER_OF_LOCAL = dofMap%NUMBER_OF_INTERNAL + dofMap%NUMBER_OF_BOUNDARY
+       dofMap%TOTAL_NUMBER_OF_LOCAL = dofMap%NUMBER_OF_LOCAL + dofMap%NUMBER_OF_GHOST
+
+      ! determine the total # of DOFs in the input mesh
+       call MPI_Allreduce( dofMap%NUMBER_OF_LOCAL, dofMap%NUMBER_OF_GLOBAL, 1, MPI_INTEGER, MPI_SUM, &
+                         & COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
+
+     ! define the start/finish indices for the 3 different classifications
+       dofMap%INTERNAL_START = 1
+       dofMap%INTERNAL_FINISH = dofMap%NUMBER_OF_INTERNAL
+       dofMap%BOUNDARY_START = dofMap%INTERNAL_FINISH + 1
+       dofMap%BOUNDARY_FINISH = dofMap%BOUNDARY_START + dofMap%NUMBER_OF_BOUNDARY - 1
+       dofMap%GHOST_START = dofMap%BOUNDARY_FINISH + 1
+       dofMap%GHOST_FINISH = dofMap%TOTAL_NUMBER_OF_LOCAL
+
+       if ( dofMap%NUMBER_OF_BOUNDARY==0 ) dofMap%BOUNDARY_FINISH = dofMap%INTERNAL_FINISH
+
+     ! set some necessary mapping arrays
+       allocate( dofMap%DOMAIN_LIST(dofMap%TOTAL_NUMBER_OF_LOCAL), STAT=err )
+       if (err/=0) call FlagError( "could not allocate DOF DOMAIN_LIST", err, error, *999 )
+       do dof = 1,dofMap%TOTAL_NUMBER_OF_LOCAL
+          dofMap%DOMAIN_LIST(dof) = dof
+       enddo
+
+       allocate( dofMap%LOCAL_TYPE(dofMap%TOTAL_NUMBER_OF_LOCAL), STAT=err )
+       if (err/=0) call FlagError( "could not allocate DOF LOCAL_TYPE", err, error, *999 )
+       dofMap%LOCAL_TYPE( dofMap%INTERNAL_START:dofMap%INTERNAL_FINISH ) = DOMAIN_LOCAL_INTERNAL
+       dofMap%LOCAL_TYPE( dofMap%BOUNDARY_START:dofMap%BOUNDARY_FINISH ) = DOMAIN_LOCAL_BOUNDARY
+       dofMap%LOCAL_TYPE( dofMap%GHOST_START:dofMap%GHOST_FINISH ) = DOMAIN_LOCAL_GHOST
+
+       allocate( dofMap%LOCAL_TO_GLOBAL_MAP(dofMap%TOTAL_NUMBER_OF_LOCAL), STAT=err )
+       if (err/=0) call FlagError( "could not allocate DOF LOCAL_TO_GLOBAL_MAP", err, error, *999 )
+       dofMap%LOCAL_TO_GLOBAL_MAP( nodeMap%INTERNAL_START:nodeMap%INTERNAL_FINISH ) = internalDOFS
+       dofMap%LOCAL_TO_GLOBAL_MAP( nodeMap%BOUNDARY_START:nodeMap%BOUNDARY_FINISH ) = boundaryDOFS
+       dofMap%LOCAL_TO_GLOBAL_MAP( nodeMap%GHOST_START:nodeMap%GHOST_FINISH ) = ghostDOFS
+       deallocate( internalDOFS,boundaryDOFS,ghostDOFS )
+
+     ! now define & fill some absolutely necessary global arrays
+       allocate( recv_cnt(domain%DECOMPOSITION%NUMBER_OF_DOMAINS), STAT=err )
+       if ( err/=0 ) call FlagError( "could not allocate receive counts array", err, error, *999 )
+       recv_cnt(:) = 1
+
+       allocate( displ(domain%DECOMPOSITION%NUMBER_OF_DOMAINS), STAT=err )
+       if ( err/=0 ) call FlagError( "could not allocate displacement array", err, error, *999 )
+       do np = 0,domain%DECOMPOSITION%NUMBER_OF_DOMAINS-1
+          displ(np+1) = np
+       enddo
+
+       allocate( dofMap%NUMBER_OF_DOMAIN_LOCAL(0:domain%DECOMPOSITION%NUMBER_OF_DOMAINS-1), STAT=err )
+       if ( err/=0 ) call FlagError( "could not allocate DOF NUMBER_OF_DOMAIN_LOCAL", err, error, *999 )
+       call MPI_Allgatherv( dofMap%NUMBER_OF_LOCAL, 1, MPI_INTEGER, &
+                          & dofMap%NUMBER_OF_DOMAIN_LOCAL, recv_cnt, displ, MPI_INTEGER, &
+                          & COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
+
+       allocate( dofMap%NUMBER_OF_DOMAIN_GHOST(0:domain%DECOMPOSITION%NUMBER_OF_DOMAINS-1), STAT=err )
+       if ( err/=0 ) call FlagError( "could not allocate NUMBER_OF_DOMAIN_GHOST", err, error, *999 )
+       call MPI_Allgatherv( dofMap%NUMBER_OF_GHOST, 1, MPI_INTEGER, &
+                          & dofMap%NUMBER_OF_DOMAIN_GHOST, recv_cnt, displ, MPI_INTEGER, &
+                          & COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
+       deallocate( displ,recv_cnt )
+
+  !
+  ! PART THREE - DOF GLOBAL OFFSETS
+  !--------------------------------------------------------------------------------------------------------------------------------
+       allocate( dofMap%GLOBAL_START(meshTopology%NODES%numberOfNodes), STAT=err )
+       if ( err/=0 ) call FlagError( "could not allocate DOF GLOBAL_START", err, error, *999 )
+
+       global_start = 1
+       do node_idx = 1,meshTopology%NODES%numberOfNodes
+          dofMap%GLOBAL_START(node_idx) = global_start
+          if ( subdomain==domain%NODE_DOMAIN(node_idx) ) global_start = global_start + dofMap%NUMBER_OF_LOCAL
+          call MPI_Bcast( global_start, 1, MPI_INTEGER, domain%NODE_DOMAIN(node_idx), COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
+       enddo
+
+       EXITS( "CalculateLocalDOFDomainMappings" )
+
+       if ( DIAGNOSTICS1 ) then
+          call WRITE_STRING_VALUE( DIAGNOSTIC_OUTPUT_TYPE," Total number of local DOFs = ", dofMap%TOTAL_NUMBER_OF_LOCAL, &
+                                 & err, error, *999 )
+          call WRITE_STRING_VALUE( DIAGNOSTIC_OUTPUT_TYPE," Number of internal DOFs = ", dofMap%NUMBER_OF_INTERNAL, &
+                                 & err, error, *999 )
+          call WRITE_STRING_VALUE( DIAGNOSTIC_OUTPUT_TYPE," Number of boundary DOFs = ", dofMap%NUMBER_OF_BOUNDARY, &
+                                 & err, error, *999 )
+          call WRITE_STRING_VALUE( DIAGNOSTIC_OUTPUT_TYPE," Number of ghost DOFs = ", dofMap%NUMBER_OF_GHOST, &
+                                 & err, error, *999 )
+       endif
+
+       return
+   999 return 1
+
+    end subroutine CalculateLocalDOFDomainMappings
 
   !
   !================================================================================================================================
