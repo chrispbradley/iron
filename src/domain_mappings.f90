@@ -345,22 +345,22 @@ CONTAINS
   !  sub-domains it needs to exchange with, how many ids need to be exchanged and which specific values need updating.
   !
   !  Mark Cheeseman, CeR
-  !  Feb 14, 2017
+  !  March 19, 2017
 
   SUBROUTINE CreateHaloExchangeNetwork( domain, mappingType, err, error, * )
 
      !Argument variables
-     type(DOMAIN_TYPE),         pointer :: domain
-     integer(INTG),          intent(in) :: mappingType !<1 indicates an element mapping being used, 2 indicates a node mapping
-     integer(INTG),         intent(out) :: err      !<The error code
-     type(VARYING_STRING),  intent(out) :: error    !<The error string
+     type(DOMAIN_TYPE),        pointer :: domain
+     integer(INTG),         intent(in) :: mappingType !<1 indicates an element mapping being used, 2 indicates a node mapping
+     integer(INTG),        intent(out) :: err      !<The error code
+     type(VARYING_STRING), intent(out) :: error    !<The error string
 
      !Local variables
-     type(DOMAIN_MAPPING_TYPE), pointer :: mapping
-  !   type(LIST_TYPE),           pointer :: subdomain_list
-     integer(INTG) :: ierr, subdomain, n, m, nn, mm, cnt, idx, max_num_ghost
-     integer(INTG), dimension(MPI_STATUS_SIZE) :: status
-     integer(INTG), dimension(:),   allocatable  :: tmp
+     type(DOMAIN_MAPPING_TYPE),       pointer :: mapping, dofMap
+     type(LIST_TYPE),                 pointer :: subdomain_list, local_id_list
+     TYPE(MeshComponentTopologyType), pointer :: meshTopology
+     integer(INTG) :: ierr, subdomain, n, m, nn, mm, cnt, idx, max_num_ghost, status(MPI_STATUS_SIZE), domain_no, np, node
+     integer(INTG), allocatable  :: tmp(:), ghost_ids(:)
      logical  :: found
 
      ENTERS( "CreateHaloExchangeNetwork", err, error, *999 )
@@ -372,42 +372,51 @@ CONTAINS
         mapping => domain%MAPPINGS%ELEMENTS
      elseif ( mappingType==2 ) then
         mapping => domain%MAPPINGS%NODES
+     elseif ( mappingType==3 ) then
+        mapping => domain%MAPPINGS%DOFS
+        meshTopology => domain%MESH%TOPOLOGY( domain%MESH_COMPONENT_NUMBER )%PTR
+     else
+        call FlagError( "Undefined mapping type specified", err, error, *999 )
      endif
+
+    ! do some checks
+     if (.not.associated(mapping)) call FlagError( "Domain mapping not associated", err, error, *999 )
 
     !
     ! STEP ONE: (ADJACENT DOMAIN COUNT)
     !           Determine the number of sub-domains in which the local sub-domain must exchange ghost
     !           values with.
     !-------------------------------------------------------------------------------------------------------
-    !  nullify( subdomain_list )
-    !  call List_CreateStart( subdomain_list, err, error, *997 )
-    !  call List_DataTypeSet( subdomain_list, LIST_INTG_TYPE, err, error, *997 )
-    !  call List_InitialSizeSet( subdomain_list, domain%DECOMPOSITION%NUMBER_OF_DOMAINS, err, error, *997 )
-    !  call List_CreateFinish( subdomain_list, err, error, *997 )
+     if ( (mappingType==1).or.(mappingType==2) ) then
+        nullify( subdomain_list )
+        call List_CreateStart( subdomain_list, err, error, *999 )
+        call List_DataTypeSet( subdomain_list, LIST_INTG_TYPE, err, error, *999 )
+        call List_InitialSizeSet( subdomain_list, domain%DECOMPOSITION%NUMBER_OF_DOMAINS, err, error, *999 )
+        call List_CreateFinish( subdomain_list, err, error, *999 )
 
-     allocate( tmp(mapping%NUMBER_OF_GHOST), STAT=ierr )
-     if ( ierr/=0 ) call FlagError( "Could not allocate temporary buffer", err, error, *999 )
+    ! for the element-based mapping, we use the ELEMENT_DOMAIN array to look up sub-domain IDs
+        if ( mappingType==1 ) then
+           do n = mapping%GHOST_START,mapping%GHOST_FINISH
+              idx = mapping%LOCAL_TO_GLOBAL_MAP( mapping%DOMAIN_LIST(n) )
+              call List_ItemAdd(subdomain_list, domain%DECOMPOSITION%ELEMENT_DOMAIN(idx), err, error, *999)
+           enddo
+    ! for the node-based mapping, we use the NODE_DOMAIN array to look up sub-domain IDs. 
+        elseif ( mappingType==2 ) then 
+           do n = mapping%GHOST_START,mapping%GHOST_FINISH
+              idx = mapping%LOCAL_TO_GLOBAL_MAP( mapping%DOMAIN_LIST(n) )
+              call List_ItemAdd(subdomain_list, domain%NODE_DOMAIN(idx), err, error, *999)
+           enddo
+        endif 
 
-     cnt = 0
-     do n = mapping%GHOST_START,mapping%GHOST_FINISH
-        idx = mapping%LOCAL_TO_GLOBAL_MAP( mapping%DOMAIN_LIST(n) )
-        if ( domain%DECOMPOSITION%ELEMENT_DOMAIN(idx)/=subdomain ) then
-           cnt = cnt + 1
-           tmp(cnt) = domain%DECOMPOSITION%ELEMENT_DOMAIN(idx)
-        endif
-     enddo
+        call LIST_REMOVE_DUPLICATES( subdomain_list, err, error, *999 )
+        call List_ItemInList( subdomain_list, subdomain, n, err, error, *999 )
+        if (n/=0) call List_ItemDelete( subdomain_list, n, err, error, *999 )
+        call List_DetachAndDestroy( subdomain_list, mapping%NUMBER_OF_ADJACENT_DOMAINS, tmp, err, error, *999 )
 
-     ! Check to see if adjacent domains are defined multiple times
-     do n = 1,cnt
-     do nn = n+1,cnt
-        if ( tmp(n)==tmp(nn) ) tmp(nn) = -1
-     enddo
-     enddo
-
-     mapping%NUMBER_OF_ADJACENT_DOMAINS = 0
-     do n = 1,cnt
-        if ( tmp(n)>-1 ) mapping%NUMBER_OF_ADJACENT_DOMAINS = mapping%NUMBER_OF_ADJACENT_DOMAINS + 1
-     enddo
+    ! Since DOFs are node-based, we sinply copy the node-based adjanency data from the node-based mapping 
+     elseif ( mappingType==3 ) then
+        mapping%NUMBER_OF_ADJACENT_DOMAINS = domain%MAPPINGS%NODES%NUMBER_OF_ADJACENT_DOMAINS
+     endif
 
     !
     ! STEP TWO: (ADJACENT DOMAINS DEFINITION)
@@ -417,132 +426,142 @@ CONTAINS
      allocate( mapping%ADJACENT_DOMAINS(mapping%NUMBER_OF_ADJACENT_DOMAINS), STAT=err )
      if (err/=0) call FlagError( "Could not allocate adjacent_domains", err, error, *999 )
 
-     nn = 0
-     do n = 1,cnt
-        if ( tmp(n)>-1 ) then
-           nn = nn + 1
-           mapping%ADJACENT_DOMAINS(nn)%DOMAIN_NUMBER = tmp(n)
-        endif
-     enddo
+     if ((mappingType==1).or.(mappingType==2)) then
+        do n = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
+           mapping%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER = tmp(n)
+        enddo
+        deallocate(tmp)
+     elseif ( mappingType==3 ) then
+        do n = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
+           mapping%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER = domain%MAPPINGS%NODES%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER 
+        enddo
+     endif
+
+   ! DEBUGGING
+   !  if ( mappingType==1 ) then
+   !     write(*,*) "[ELEMENTS] Sub-domain ", subdomain, " has ", mapping%NUMBER_OF_ADJACENT_DOMAINS, " adjacent domains: ", &
+   !               & tmp(1:mapping%NUMBER_OF_ADJACENT_DOMAINS)
+   !  endif
+   !  if ( mappingType==2 ) then
+   !     write(*,*) "[NODES] Sub-domain ", subdomain, " has ", mapping%NUMBER_OF_ADJACENT_DOMAINS, " adjacent domains", &
+   !               & tmp(1:mapping%NUMBER_OF_ADJACENT_DOMAINS)
+   !     call MPI_Barrier( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
+   !     call MPI_Abort( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err, n )
+   !  endif
 
     !
     ! STEP THREE: (RECEIVE COUNTS & INDICES)
     !             Determine the # of ghost values received by each adjacent sub-domain
     !-------------------------------------------------------------------------------------------------------
-
      do m = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
         nn = mapping%ADJACENT_DOMAINS(m)%DOMAIN_NUMBER
 
-        cnt = 0
+        nullify( local_id_list )
+        call List_CreateStart( local_id_list, err, error, *999 )
+        call List_DataTypeSet( local_id_list, LIST_INTG_TYPE, err, error, *999 )
+        call List_InitialSizeSet( local_id_list, mapping%NUMBER_OF_GHOST, err, error, *999 )
+        call List_CreateFinish( local_id_list, err, error, *999 )
+
         do n = mapping%GHOST_START,mapping%GHOST_FINISH
            idx = mapping%LOCAL_TO_GLOBAL_MAP( mapping%DOMAIN_LIST(n) )
-           if ( domain%DECOMPOSITION%ELEMENT_DOMAIN(idx)/=nn ) then
-              cnt = cnt + 1
-              tmp(cnt) = n
+
+           if ( mappingType==1 ) domain_no = domain%DECOMPOSITION%ELEMENT_DOMAIN( idx )  
+           if ( mappingType==2 ) domain_no = domain%NODE_DOMAIN( idx )
+           if ( mappingType==3 ) then
+! could be replaced with a local node search followed by a MPI_Allgatherv
+              do np = 1,meshTopology%NODES%numberOfNodes
+                 if ( idx>=domain%DOF_GLOBAL_START(np) ) then
+                    domain_no = domain%NODE_DOMAIN( np )
+                 else
+                    exit
+                 endif
+              enddo
            endif
+
+           if ( domain_no/=nn ) call List_ItemAdd( local_id_list, n, err, error, *999 )
         enddo
 
-        mapping%ADJACENT_DOMAINS(m)%NUMBER_OF_RECEIVE_GHOSTS = cnt
-
+        call LIST_REMOVE_DUPLICATES( local_id_list, err, error, *999 )
+        call List_DetachAndDestroy( local_id_list, mapping%ADJACENT_DOMAINS(m)%NUMBER_OF_RECEIVE_GHOSTS, tmp, err, error, *999 )
+        
         allocate( mapping%ADJACENT_DOMAINS(m)%LOCAL_GHOST_RECEIVE_INDICES(cnt), STAT=err )
         if (err/=0) call FlagError( "Could not allocate ghost receive index array", err, error, *999 )
-        mapping%ADJACENT_DOMAINS(m)%LOCAL_GHOST_RECEIVE_INDICES = tmp( 1:cnt )
+        mapping%ADJACENT_DOMAINS(m)%LOCAL_GHOST_RECEIVE_INDICES = tmp( 1:mapping%ADJACENT_DOMAINS(m)%NUMBER_OF_RECEIVE_GHOSTS )
+        deallocate(tmp)
 
      enddo
-     deallocate( tmp )
 
     !
     ! STEP FOUR: (SEND COUNTS)
     !             Determine the # of ghost values to be sent to each adjacent sub-domain
     !-------------------------------------------------------------------------------------------------------
+     do domain_no = 0,domain%DECOMPOSITION%NUMBER_OF_DOMAINS-1
+        allocate( ghost_ids(mapping%NUMBER_OF_DOMAIN_GHOST(domain_no)) )
 
-    ! call MPI_Allreduce( mapping%NUMBER_OF_GHOST, cnt, 1, MPI_INTEGER, MPI_MAX, &
-    !                   & COMPUTATIONAL_ENVIRONMENT%MPI_COMM, n )
-     max_num_ghost = maxval( mapping%NUMBER_OF_DOMAIN_GHOST )
-
-    ! cnt = cnt + 1
-    ! allocate( tmp(cnt) )
-     allocate( tmp(max_num_ghost) )
-
-     do mm = 0,domain%DECOMPOSITION%NUMBER_OF_DOMAINS-1
-
-        if ( subdomain==mm ) then
-           idx = 0
-           do n = mapping%GHOST_START,mapping%GHOST_FINISH
-              idx = idx + 1
-              tmp(idx) = mapping%LOCAL_TO_GLOBAL_MAP( mapping%DOMAIN_LIST(n) )
-           enddo
-        !   tmp(cnt) = mapping%NUMBER_OF_GHOST
-
-           do n = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
-              !call MPI_Send( tmp, cnt, MPI_INTEGER, mapping%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER, 1, &
-              call MPI_Send( tmp, max_num_ghost, MPI_INTEGER, mapping%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER, 1, &
-                           & COMPUTATIONAL_ENVIRONMENT%MPI_COMM, m )
+       ! domain_no loads its ghost IDs into the message buffer
+        if ( subdomain==domain_no ) then
+           do n = 1,mapping%NUMBER_OF_GHOST
+              ghost_ids(n) = mapping%LOCAL_TO_GLOBAL_MAP( mapping%DOMAIN_LIST(mapping%GHOST_START+n-1) )
            enddo
         endif
 
-       ! call MPI_Bcast( tmp, cnt, MPI_INTEGER, mm, COMPUTATIONAL_ENVIRONMENT%MPI_COMM, n )
+       ! domain_no broadcasts its ghost IDs to all other sub-domains
+        call MPI_Bcast( ghost_ids, mapping%NUMBER_OF_DOMAIN_GHOST(domain_no), MPI_INTEGER, domain_no, &
+       &                COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
 
-        if ( subdomain/=mm ) then
-           do n = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
-              if ( mm==mapping%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER ) then
-               !  call MPI_Recv( tmp, cnt, MPI_INTEGER, mm, MPI_ANY_TAG, COMPUTATIONAL_ENVIRONMENT%MPI_COMM, status, m )
-                 call MPI_Recv( tmp, max_num_ghost, MPI_INTEGER, mm, MPI_ANY_TAG, COMPUTATIONAL_ENVIRONMENT%MPI_COMM, status, m )
-                 mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS = 0
-               !  do m = 1,tmp(cnt)
-                 do m = 1,mapping%NUMBER_OF_DOMAIN_GHOST(mm)
-                 do nn = 1,mapping%NUMBER_OF_LOCAL
-                    if ( tmp(m)==mapping%LOCAL_TO_GLOBAL_MAP(nn) ) then
-                       mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS = &
-                                      & mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS + 1
-                       exit
-                    endif
-                 enddo
-                 enddo
+       ! all sub-domains (except domain_no) check if they possess any of the ghost IDs sent
+       if ( subdomain/=domain_no ) then
+          allocate( tmp(mapping%NUMBER_OF_DOMAIN_GHOST(domain_no)) )
+          cnt = 0
+          do n = 1,mapping%NUMBER_OF_DOMAIN_GHOST(domain_no)
+          do m = 1,mapping%NUMBER_OF_LOCAL
+             if ( ghost_ids(n)==mapping%LOCAL_TO_GLOBAL_MAP(m) ) then
+                cnt = cnt + 1 
+                tmp(cnt) = m
+                exit
+             endif
+          enddo
+          enddo
 
-                 idx = mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS
-                 allocate( mapping%ADJACENT_DOMAINS(n)%LOCAL_GHOST_SEND_INDICES(idx), STAT=err )
-                 if (err/=0) call FlagError( "could not allocate ghost_send indices array", err, error, *999 )
+          if ( cnt>0 ) then
+             do n = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
+                if ( domain_no==mapping%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER ) then
+                   mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS = cnt
+                   allocate( mapping%ADJACENT_DOMAINS(n)%LOCAL_GHOST_SEND_INDICES(cnt) )
+                   mapping%ADJACENT_DOMAINS(n)%LOCAL_GHOST_SEND_INDICES = tmp( 1:cnt )
+                endif
+             enddo
+          endif
+          deallocate( tmp )
+       endif
 
-                 idx = 0
-                ! do m = 1,tmp(cnt)
-                 do m = 1,mapping%NUMBER_OF_DOMAIN_GHOST(mm)
-                 do nn = 1,mapping%NUMBER_OF_LOCAL
-                    if ( tmp(m)==mapping%LOCAL_TO_GLOBAL_MAP(nn) ) then
-                       idx = idx + 1
-                       mapping%ADJACENT_DOMAINS(n)%LOCAL_GHOST_SEND_INDICES(idx) = nn
-                       exit
-                    endif
-                 enddo
-                 enddo
+       deallocate( ghost_ids )
+     enddo ! domain_no
 
-              endif
-           enddo
-        endif
-
-     enddo
-     deallocate( tmp )
-
-    do m = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
-       deallocate( mapping%ADJACENT_DOMAINS(m)%LOCAL_GHOST_SEND_INDICES )
-       deallocate( mapping%ADJACENT_DOMAINS(m)%LOCAL_GHOST_RECEIVE_INDICES )
-    enddo
-    deallocate( mapping%ADJACENT_DOMAINS )
+!     if ( mappingType==3 ) then
+!       write(*,*) "OK so far"
+!       call MPI_Barrier( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
+!       call MPI_Abort( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err, np )
+!     endif
 
     !*******************************************************************************************************
     !                                      DEBUGGING  /  DIAGNOSTICS
     !*******************************************************************************************************
 
      if ( DIAGNOSTICS1 ) then
-        call WRITE_STRING( DIAGNOSTIC_OUTPUT_TYPE, "Halo Exchange Network (Elements):", err, error, *999 )
+        call WRITE_STRING( DIAGNOSTIC_OUTPUT_TYPE, "Halo Exchange Network :", err, error, *999 )
+       if ( mappingType==1 ) then
         call WRITE_STRING_VALUE( DIAGNOSTIC_OUTPUT_TYPE,"  # of adjacent elements = ", &
                                & mapping%NUMBER_OF_ADJACENT_DOMAINS, err, error, *999 )
         call WRITE_STRING_VALUE( DIAGNOSTIC_OUTPUT_TYPE,"  # of ghost elements = ", &
                                & mapping%NUMBER_OF_GHOST, err, error, *999 )
-        call WRITE_STRING_VALUE( DIAGNOSTIC_OUTPUT_TYPE,"  sum of all element receive  = ", &
-                               & sum(mapping%ADJACENT_DOMAINS(:)%NUMBER_OF_RECEIVE_GHOSTS), err, error, *999 )
+       elseif ( mappingType==2 ) then
+        call WRITE_STRING_VALUE( DIAGNOSTIC_OUTPUT_TYPE,"  # of adjacent nodes = ", &
+                               & mapping%NUMBER_OF_ADJACENT_DOMAINS, err, error, *999 )
+        call WRITE_STRING_VALUE( DIAGNOSTIC_OUTPUT_TYPE,"  # of ghost nodes = ", &
+                               & mapping%NUMBER_OF_GHOST, err, error, *999 )
+       endif
      if ( DIAGNOSTICS2 ) then
-        call WRITE_STRING( DIAGNOSTIC_OUTPUT_TYPE, "Halo Exchange Network (Elements):", err, error, *999 )
         do n = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
            call WRITE_STRING_VALUE( DIAGNOSTIC_OUTPUT_TYPE,"  Adjacent domain ID = ", &
                                   & mapping%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER, err, error, *999 )

@@ -914,7 +914,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     INTEGER(INTG) :: BOUNDARY_FINISH !<The finish postition in the DOMAIN_LIST for the list of boundary numbers
     INTEGER(INTG) :: GHOST_START !<The start postition in the DOMAIN_LIST for the list of ghost numbers
     INTEGER(INTG) :: GHOST_FINISH !<The finish postition in the DOMAIN_LIST for the list of ghost numbers
-    INTEGER(INTG), ALLOCATABLE :: GLOBAL_START(:) !<GLOBAL_START(np). The start position in the global numbering for local DOF numbers on a node
+    INTEGER(INTG) :: MINIMUM_NUMBER_OF_DOF !<The minimum number of DOFs on a single node in this mapping
     INTEGER(INTG), ALLOCATABLE :: DOMAIN_LIST(:) !<DOMAIN_LIST(i). The list of local numbers grouped so that the internal numbers are from INTERNAL_START to INTERNAL_FINISH, the boundary numbers are from BOUNDARY_START to BOUNDARY_FINISH and the ghost numbers are from GHOST_START to GHOST_FINISH
     INTEGER(INTG), ALLOCATABLE :: LOCAL_TO_GLOBAL_MAP(:) !<LOCAL_TO_GLOBAL_MAP(i). The global number for the i'th local number for the mapping.
     INTEGER(INTG), ALLOCATABLE :: LOCAL_TYPE(:) !<LOCAL_TYPE(domain_idx). The type of local for the domain_idx'th domain for which the global number is mapped to a local number. The types depend on whether the mapped local number in the domain_idx'th domain is an internal, boundary or ghost local number. \see DOMAIN_MAPPINGS_DomainType
@@ -941,6 +941,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     TYPE(REGION_TYPE), POINTER :: REGION !<A pointer to the region that this domain is in. This is "inherited" from the mesh region.
     INTEGER(INTG) :: NUMBER_OF_DIMENSIONS !<The number of dimensions for this domain. This is "inherited" from the mesh.
     INTEGER(INTG), ALLOCATABLE :: NODE_DOMAIN(:) !<NODE_DOMAIN(np). The domain number that the np'th global node is in for the domain decomposition. Note: the domain numbers start at 0 and go up to the NUMBER_OF_DOMAINS-1.
+    INTEGER(INTG), ALLOCATABLE :: DOF_GLOBAL_START(:) !<DOF_GLOBAL_START(np). The starting global DOF ID value that the np'th global node has in the domain decomposition.
     TYPE(DOMAIN_MAPPINGS_TYPE), POINTER :: MAPPINGS !<Pointer to the mappings for the domain  e.g., global to local and local to global maps
     TYPE(DOMAIN_TOPOLOGY_TYPE), POINTER :: TOPOLOGY !<Pointer to the topology for the domain.
   END TYPE DOMAIN_TYPE
