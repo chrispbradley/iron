@@ -2302,44 +2302,49 @@ CONTAINS
   !
 
   !>Finishes the process of creating an equation set on a region. \see OPENCMISS::CMISSEquationsSetCreateStart
-  SUBROUTINE EQUATIONS_SET_CREATE_FINISH(EQUATIONS_SET,ERR,ERROR,*)
+  subroutine EQUATIONS_SET_CREATE_FINISH( EquationsSet, err, error, * )
 
     !Argument variables
-    TYPE(EQUATIONS_SET_TYPE), POINTER :: EQUATIONS_SET !<A pointer to the equations set to finish creating
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    TYPE(EQUATIONS_SET_TYPE), POINTER :: EquationsSet !<A pointer to the equations set to finish creating
+    INTEGER(INTG),        INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+
     !Local Variables
     TYPE(EQUATIONS_SET_SETUP_TYPE) :: EQUATIONS_SET_SETUP_INFO
     
-    ENTERS("EQUATIONS_SET_CREATE_FINISH",ERR,ERROR,*999)
+    ENTERS( "EQUATIONS_SET_CREATE_FINISH", err, error, *999 )
 
-    IF(ASSOCIATED(EQUATIONS_SET)) THEN
-      IF(EQUATIONS_SET%EQUATIONS_SET_FINISHED) THEN
-        CALL FlagError("Equations set has already been finished.",ERR,ERROR,*999)
-      ELSE            
-        EQUATIONS_SET_SETUP_INFO%SETUP_TYPE=EQUATIONS_SET_SETUP_INITIAL_TYPE
-        EQUATIONS_SET_SETUP_INFO%ACTION_TYPE=EQUATIONS_SET_SETUP_FINISH_ACTION
-        !Finish the equations set specific setup
-        CALL EQUATIONS_SET_SETUP(EQUATIONS_SET,EQUATIONS_SET_SETUP_INFO,ERR,ERROR,*999)
-        EQUATIONS_SET_SETUP_INFO%SETUP_TYPE=EQUATIONS_SET_SETUP_GEOMETRY_TYPE
-        EQUATIONS_SET_SETUP_INFO%ACTION_TYPE=EQUATIONS_SET_SETUP_FINISH_ACTION
-        !Finish the equations set specific geometry setup
-        CALL EQUATIONS_SET_SETUP(EQUATIONS_SET,EQUATIONS_SET_SETUP_INFO,ERR,ERROR,*999)
-        !Finalise the setup
-        CALL EQUATIONS_SET_SETUP_FINALISE(EQUATIONS_SET_SETUP_INFO,ERR,ERROR,*999)
-        !Finish the equations set creation
-        EQUATIONS_SET%EQUATIONS_SET_FINISHED=.TRUE.
-      ENDIF
-    ELSE
-      CALL FlagError("Equations set is not associated.",ERR,ERROR,*999)
-    ENDIF
+    if ( .not.associated(EquationsSet) ) then
+       call FlagError( "Equations set is not associated.", err, error, *999 )
+    endif
+
+    if ( EquationsSet%EQUATIONS_SET_FINISHED ) then
+       call FlagError( "Equations set has already been finished.", err, error, *999 )
+    endif
+            
+    EQUATIONS_SET_SETUP_INFO%SETUP_TYPE = EQUATIONS_SET_SETUP_INITIAL_TYPE
+    EQUATIONS_SET_SETUP_INFO%ACTION_TYPE = EQUATIONS_SET_SETUP_FINISH_ACTION
+
+   !Finish the equations set specific setup
+    call EQUATIONS_SET_SETUP( EquationsSet, EQUATIONS_SET_SETUP_INFO, err, error, *999 )
+    EQUATIONS_SET_SETUP_INFO%SETUP_TYPE = EQUATIONS_SET_SETUP_GEOMETRY_TYPE
+    EQUATIONS_SET_SETUP_INFO%ACTION_TYPE = EQUATIONS_SET_SETUP_FINISH_ACTION
+ 
+   !Finish the equations set specific geometry setup
+    call EQUATIONS_SET_SETUP( EquationsSet, EQUATIONS_SET_SETUP_INFO, err, error, *999 )
+
+   !Finalise the setup
+    call EQUATIONS_SET_SETUP_FINALISE( EQUATIONS_SET_SETUP_INFO, err, error, *999 )
+
+   !Finish the equations set creation
+    EquationsSet%EQUATIONS_SET_FINISHED = .TRUE.
        
-    EXITS("EQUATIONS_SET_CREATE_FINISH")
-    RETURN
-999 ERRORSEXITS("EQUATIONS_SET_CREATE_FINISH",ERR,ERROR)
-    RETURN 1
+    EXITS( "EQUATIONS_SET_CREATE_FINISH" )
+    return
+999 ERRORSEXITS( "EQUATIONS_SET_CREATE_FINISH", err, error )
+    return 1
    
-  END SUBROUTINE EQUATIONS_SET_CREATE_FINISH
+  end subroutine EQUATIONS_SET_CREATE_FINISH
         
   !
   !================================================================================================================================
@@ -4516,63 +4521,66 @@ CONTAINS
 
 
   !>Sets up the specifices for an equation set.
-  SUBROUTINE EQUATIONS_SET_SETUP(EQUATIONS_SET,EQUATIONS_SET_SETUP_INFO,ERR,ERROR,*)
+  subroutine EQUATIONS_SET_SETUP( EquationsSet, EquationsSetSetupInfo, err, error, * )
 
     !Argument variables
-    TYPE(EQUATIONS_SET_TYPE), POINTER :: EQUATIONS_SET !<A pointer to the equations set to perform the setup on
-    TYPE(EQUATIONS_SET_SETUP_TYPE), INTENT(INOUT) :: EQUATIONS_SET_SETUP_INFO !<The equations set setup information
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    TYPE(EQUATIONS_SET_TYPE),             POINTER :: EquationsSet !<A pointer to the equations set to perform the setup on
+    TYPE(EQUATIONS_SET_SETUP_TYPE), INTENT(INOUT) :: EquationsSetSetupInfo !<The equations set setup information
+    INTEGER(INTG),                    INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING),             INTENT(OUT) :: error !<The error string
+
     !Local Variables
     TYPE(VARYING_STRING) :: LOCAL_ERROR
 
-    ENTERS("EQUATIONS_SET_SETUP",ERR,ERROR,*999)
+    ENTERS( "EQUATIONS_SET_SETUP", err, error, *999 )
 
-    IF(ASSOCIATED(EQUATIONS_SET)) THEN
-      IF(.NOT.ALLOCATED(EQUATIONS_SET%SPECIFICATION)) THEN
-        CALL FlagError("Equations set specification is not allocated.",err,error,*999)
-      ELSE IF(SIZE(EQUATIONS_SET%SPECIFICATION,1)<1) THEN
-        CALL FlagError("Equations set specification must have at least one entry.",err,error,*999)
-      END IF
-      SELECT CASE(EQUATIONS_SET%SPECIFICATION(1))
-      CASE(EQUATIONS_SET_ELASTICITY_CLASS)
-        CALL ELASTICITY_EQUATIONS_SET_SETUP(EQUATIONS_SET,EQUATIONS_SET_SETUP_INFO,ERR,ERROR,*999)
-      CASE(EQUATIONS_SET_FLUID_MECHANICS_CLASS)
-        CALL FLUID_MECHANICS_EQUATIONS_SET_SETUP(EQUATIONS_SET,EQUATIONS_SET_SETUP_INFO,ERR,ERROR,*999)
-      CASE(EQUATIONS_SET_ELECTROMAGNETICS_CLASS)
-        CALL FlagError("Not implemented.",ERR,ERROR,*999)
-      CASE(EQUATIONS_SET_CLASSICAL_FIELD_CLASS)
-        CALL CLASSICAL_FIELD_EQUATIONS_SET_SETUP(EQUATIONS_SET,EQUATIONS_SET_SETUP_INFO,ERR,ERROR,*999)
-      CASE(EQUATIONS_SET_BIOELECTRICS_CLASS)
-        IF(SIZE(EQUATIONS_SET%SPECIFICATION,1)<2) THEN
-          CALL FlagError("Equations set specification must have at least two entries for a bioelectrics equation class.", &
-            & err,error,*999)
-        END IF
-        IF(EQUATIONS_SET%SPECIFICATION(2) == EQUATIONS_SET_MONODOMAIN_STRANG_SPLITTING_EQUATION_TYPE) THEN
-          CALL MONODOMAIN_EQUATION_EQUATIONS_SET_SETUP(EQUATIONS_SET,EQUATIONS_SET_SETUP_INFO,ERR,ERROR,*999)
-        ELSE
-          CALL BIOELECTRIC_EQUATIONS_SET_SETUP(EQUATIONS_SET,EQUATIONS_SET_SETUP_INFO,ERR,ERROR,*999)
-        END IF
-      CASE(EQUATIONS_SET_FITTING_CLASS)
-        CALL FITTING_EQUATIONS_SET_SETUP(EQUATIONS_SET,EQUATIONS_SET_SETUP_INFO,ERR,ERROR,*999)
-      CASE(EQUATIONS_SET_MODAL_CLASS)
-        CALL FlagError("Not implemented.",ERR,ERROR,*999)
-      CASE(EQUATIONS_SET_MULTI_PHYSICS_CLASS)
-        CALL MULTI_PHYSICS_EQUATIONS_SET_SETUP(EQUATIONS_SET,EQUATIONS_SET_SETUP_INFO,ERR,ERROR,*999)
-      CASE DEFAULT
-        LOCAL_ERROR="The first equations set specification of "// &
-          & TRIM(NUMBER_TO_VSTRING(EQUATIONS_SET%SPECIFICATION(1),"*",ERR,ERROR))//" is not valid."
-        CALL FlagError(LOCAL_ERROR,ERR,ERROR,*999)
-      END SELECT
-    ELSE
-      CALL FlagError("Equations set is not associated.",ERR,ERROR,*999)
-    ENDIF
+    if ( .not.associated(EquationsSet) ) call FlagError( "Equations set is not associated", err, error, *999 )
+    
+    if ( .not.allocated(EquationsSet%SPECIFICATION) ) then
+       call FlagError( "Equations set specification is not allocated", err, error, *999 )
+    elseif( SIZE(EquationsSet%SPECIFICATION,1)<1 ) then
+       call FlagError( "Equations set specification must have at least one entry", err, error, *999 )
+    endif
+
+    select case( EquationsSet%SPECIFICATION(1) )
+        case( EQUATIONS_SET_ELASTICITY_CLASS )
+            call ELASTICITY_EQUATIONS_SET_SETUP( EquationsSet, EquationsSetSetupInfo, err, error, *999 )
+
+        case( EQUATIONS_SET_FLUID_MECHANICS_CLASS )
+            call FLUID_MECHANICS_EQUATIONS_SET_SETUP( EquationsSet, EquationsSetSetupInfo, err, error, *999 )
+
+        case( EQUATIONS_SET_CLASSICAL_FIELD_CLASS )
+            call CLASSICAL_FIELD_EQUATIONS_SET_SETUP( EquationsSet, EquationsSetSetupInfo, err, error, *999 )
+ 
+        case( EQUATIONS_SET_BIOELECTRICS_CLASS )
+            if ( SIZE(EquationsSet%SPECIFICATION,1)<2 ) then
+               call  FlagError( &
+                  &"Equations set specification must have at least two entries for a bioelectrics equation class.", &
+                  & err, error, *999 ) 
+            endif 
+            if ( EquationsSet%SPECIFICATION(2) == EQUATIONS_SET_MONODOMAIN_STRANG_SPLITTING_EQUATION_TYPE ) then
+               call MONODOMAIN_EQUATION_EQUATIONS_SET_SETUP( EquationsSet, EquationsSetSetupInfo, err, error, *999 )
+            else
+               call BIOELECTRIC_EQUATIONS_SET_SETUP( EquationsSet, EquationsSetSetupInfo, err, error, *999 )
+            endif
+
+        case( EQUATIONS_SET_FITTING_CLASS )
+            call FITTING_EQUATIONS_SET_SETUP( EquationsSet, EquationsSetSetupInfo, err, error, *999 )
+
+        case( EQUATIONS_SET_MULTI_PHYSICS_CLASS )
+            call MULTI_PHYSICS_EQUATIONS_SET_SETUP( EquationsSet, EquationsSetSetupInfo, err, error, *999 )
+
+        case default
+            LOCAL_ERROR = "The first equations set specification of "// &
+                      & TRIM(NUMBER_TO_VSTRING( EquationsSet%SPECIFICATION(1), "*", err, error ))//" is not valid."
+            call FlagError( LOCAL_ERROR, err, error, *999 )
+    end select
        
-    EXITS("EQUATIONS_SET_SETUP")
-    RETURN
-999 ERRORSEXITS("EQUATIONS_SET_SETUP",ERR,ERROR)
-    RETURN 1
-  END SUBROUTINE EQUATIONS_SET_SETUP
+    EXITS( "EQUATIONS_SET_SETUP" )
+    return
+999 ERRORSEXITS( "EQUATIONS_SET_SETUP", err, error )
+    return 1
+  end subroutine EQUATIONS_SET_SETUP
 
   !
   !================================================================================================================================
