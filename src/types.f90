@@ -924,24 +924,6 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     TYPE(DOMAIN_ADJACENT_DOMAIN_TYPE), ALLOCATABLE :: ADJACENT_DOMAINS(:) !<ADJACENT_DOMAINS(adjacent_domain_idx). The adjacent domain information for the adjacent_domain_idx'th adjacent domain to this domain.
   END TYPE DOMAIN_MAPPING_TYPE
 
-  !>Contains information on distributed domain mappings
-  TYPE MappingType
-       ! Local numbering will be sorted in the following way:
-       !       1 -> boundary_start-1            = IDs considered internal to the subdomain
-       !       boundary_start -> ghost_start-1  = IDs considered as boundary IDs (used for communication overlapping)
-       !       ghost_start -> num_local         = IDs considered ghost IDs
-       integer(INTG) :: NUMBER_OF_LOCAL      !<Number of IDs on a local subdomain
-       integer(INTG) :: TOTAL_NUMBER_OF_LOCAL !<Number of IDs on a local subdomain including ghost IDs
-       integer(INTG) :: BOUNDARY_START
-       integer(INTG) :: GHOST_START
-       integer(INTG) :: NUMBER_OF_INTERNAL
-       integer(INTG) :: NUMBER_OF_BOUNDARY
-       integer(INTG) :: NUMBER_OF_GHOST
-       integer(INTG) :: NUMBER_OF_GLOBAL     !<Total overall number of IDs globally in the mapping
-       integer(INTG), dimension(:), allocatable :: LOCAL_TO_GLOBAL_MAP !< The global ID corresponding to the i'th local ID for a subdomain.
-       integer(INTG), dimension(:), allocatable :: LOCAL_TYPE          !< Indicates what type of ID is stored <INTERNAL, BOUNDARY, GHOST>
-  END TYPE MappingType
-
   !>Contains information on the domain decomposition mappings.
   TYPE DOMAIN_MAPPINGS_TYPE
     TYPE(DOMAIN_TYPE), POINTER :: DOMAIN !<A pointer to the domain decomposition.
