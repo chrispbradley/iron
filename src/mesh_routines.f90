@@ -4018,7 +4018,7 @@ CONTAINS
 
     !local variables
      integer(INTG)              :: subdomain, n, nn, nnn, np, idx, m, cnt, num_domains, domain_no, status(MPI_STATUS_SIZE), &
-                                 & element_idx, node_idx
+                                 & element_idx, node_idx, recv_request, send_request
      integer(INTG), allocatable :: local_ids(:), temp(:), tmp(:), displ(:), recv_cnt(:), recv_cnt2(:), DOMAINS(:), &
                                  & ADJACENT_DOMAINS(:), internalELEMENTS(:), boundaryELEMENTS(:), ghostELEMENTS(:)
      type(DOMAIN_MAPPING_TYPE),       pointer :: mapping
@@ -4115,11 +4115,11 @@ CONTAINS
 
       ! if all adjacent elements reside on the same sub-domain as element n, we classify element n as INTERNAL
         if ( num_domains==1 ) then
-           call List_ItemAdd( internal_element_list, n, err, error, *999 )
+           call List_ItemAdd( internal_element_list, local_ids(n), err, error, *999 )
      ! otherwise we classify the element as BOUNDARY. It cannot be a GHOST element as we know that element n
      ! is local
         elseif ( num_domains>1 ) then
-           call List_ItemAdd( boundary_element_list, n, err, error, *999 )
+           call List_ItemAdd( boundary_element_list, local_ids(n), err, error, *999 )
         endif
 
         deallocate( DOMAINS )
@@ -4184,24 +4184,23 @@ CONTAINS
         displ(n+1) = n
      enddo
 
-     allocate( mapping%NUMBER_OF_DOMAIN_LOCAL(domain%DECOMPOSITION%NUMBER_OF_DOMAINS), STAT=err )
+     allocate( mapping%NUMBER_OF_DOMAIN_LOCAL(0:domain%DECOMPOSITION%NUMBER_OF_DOMAINS-1), STAT=err )
      if ( err/=0 ) call FlagError( "could not allocate NUMBER_OF_DOMAIN_LOCAL", err, error, *999 )
      call MPI_Allgatherv( mapping%NUMBER_OF_LOCAL, 1, MPI_INTEGER, &
                         & mapping%NUMBER_OF_DOMAIN_LOCAL, recv_cnt, displ, MPI_INTEGER, &
                         & COMPUTATIONAL_ENVIRONMENT%MPI_COMM, n )
 
-     allocate( mapping%NUMBER_OF_DOMAIN_GHOST(domain%DECOMPOSITION%NUMBER_OF_DOMAINS), STAT=err )
+     allocate( mapping%NUMBER_OF_DOMAIN_GHOST(0:domain%DECOMPOSITION%NUMBER_OF_DOMAINS-1), STAT=err )
      if ( err/=0 ) call FlagError( "could not allocate NUMBER_OF_DOMAIN_GHOST", err, error, *999 )
      call MPI_Allgatherv( mapping%NUMBER_OF_GHOST, 1, MPI_INTEGER, &
                         & mapping%NUMBER_OF_DOMAIN_GHOST, recv_cnt, displ, MPI_INTEGER, &
                         & COMPUTATIONAL_ENVIRONMENT%MPI_COMM, n )
 
     !  call MPI_Barrier( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
-    !  if ( subdomain==0 ) then
-    !     write(*,*) "NUMBER_OF_DOMAIN_LOCAL : ", mapping%NUMBER_OF_DOMAIN_LOCAL
-    !     write(*,*) "NUMBER_OF_DOMAIN_GHOST : ", mapping%NUMBER_OF_DOMAIN_GHOST
-    !  endif
+    !  write(*,*) "NUMBER_OF_DOMAIN_LOCAL : ", mapping%NUMBER_OF_DOMAIN_LOCAL
+    !  write(*,*) "NUMBER_OF_DOMAIN_GHOST : ", mapping%NUMBER_OF_DOMAIN_GHOST
 
+      !  write(*,*) "[Sub-domain ", subdomain, "] local elements are : ", mapping%LOCAL_TO_GLOBAL_MAP(1:mapping%NUMBER_OF_LOCAL)
   !
   ! PART FOUR - DOMAIN ADJACENCY INFO
   !             Define and fill are required parameters for the element domain mapping
@@ -4252,49 +4251,55 @@ CONTAINS
       ! domain_no will send the global IDs of its GHOST elements to all sub-domains adjacent to it
         if ( subdomain==domain_no ) then
            temp = ghostELEMENTS( 1:mapping%NUMBER_OF_GHOST )
+
            do n = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
-              call MPI_Send( temp, mapping%NUMBER_OF_DOMAIN_GHOST(domain_no), MPI_INTEGER, &
-                          &  mapping%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER, 0, COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
+              m = mapping%ADJACENT_DOMAINS( n )%DOMAIN_NUMBER
+              call MPI_iSend( temp, mapping%NUMBER_OF_GHOST, MPI_INTEGER, m, 0, COMPUTATIONAL_ENVIRONMENT%MPI_COMM, &
+                            & send_request, err )
+              call MPI_Wait( send_request, status, err )
            enddo
         endif
 
       ! the other sub-domains check if they are adjacent to domain_no.  If they are, they receive the sent GHOST node
       ! IDs and update their NUMBER_OF_SEND_GHOSTS counter.
-        do n = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
-           if ( mapping%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER==domain_no ) then
-              call MPI_Recv( temp, mapping%NUMBER_OF_DOMAIN_GHOST(domain_no), MPI_INTEGER, domain_no, MPI_ANY_TAG, &
-                           & COMPUTATIONAL_ENVIRONMENT%MPI_COMM, status, err )
+        if ( subdomain/=domain_no ) then
+           do n = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
+              if ( mapping%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER==domain_no ) then
 
-              allocate( tmp(mapping%NUMBER_OF_DOMAIN_GHOST(domain_no)) )
-              do np = 1,mapping%NUMBER_OF_LOCAL
-              do m = 1,mapping%NUMBER_OF_DOMAIN_GHOST(domain_no)
-                  if ( mapping%LOCAL_TO_GLOBAL_MAP(np)==temp(m) ) then
-                     mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS = mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS + 1
-                     tmp( mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS ) = np
-                  endif
-              enddo
-              enddo
+                 call MPI_iRecv( temp, mapping%NUMBER_OF_DOMAIN_GHOST(domain_no), MPI_INTEGER, domain_no, MPI_ANY_TAG, &
+                               & COMPUTATIONAL_ENVIRONMENT%MPI_COMM, recv_request, err )
 
-              allocate( mapping%ADJACENT_DOMAINS(n)&
+                 call MPI_Wait( recv_request, status, err )
+                 allocate( tmp(mapping%NUMBER_OF_DOMAIN_GHOST(domain_no)) )
+                 do m = 1,mapping%NUMBER_OF_DOMAIN_GHOST(domain_no)
+                 do np = 1,mapping%NUMBER_OF_LOCAL
+                     if ( mapping%LOCAL_TO_GLOBAL_MAP(np)==temp(m) ) then
+                        mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS = mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS + 1
+                        tmp( mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS ) = np
+                        exit
+                     endif
+                 enddo
+                 enddo
+
+                 allocate( mapping%ADJACENT_DOMAINS(n)&
                       &%LOCAL_GHOST_SEND_INDICES(mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS), STAT=err )
-              if (err/=0) call FlagError( "could not allocate nodal LOCAL_GHOST_SEND_INDICES", err, error, *999 )
-              mapping%ADJACENT_DOMAINS(n)%LOCAL_GHOST_SEND_INDICES = tmp( 1:mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS )
-              deallocate( tmp )
-              exit
+                 if (err/=0) call FlagError( "could not allocate nodal LOCAL_GHOST_SEND_INDICES", err, error, *999 )
+                 mapping%ADJACENT_DOMAINS(n)%LOCAL_GHOST_SEND_INDICES = tmp( 1:mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS )
+                 deallocate( tmp )
+                 exit
 
-           endif
-        enddo
+              endif
+           enddo
+        endif
 
         deallocate( temp )
      enddo
     !  call MPI_Barrier( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
     !  write(*,*) "[Sub-domain ", subdomain, "] # of adjacent domains was ", mapping%NUMBER_OF_ADJACENT_DOMAINS
-    !  if ( subdomain==0 ) then
-    !     do n = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
-    !        write(*,*) "Adjacent domain [", mapping%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER, "] send indicies: ", &
-    !                 & mapping%ADJACENT_DOMAINS(n)%LOCAL_GHOST_SEND_INDICES
-    !     enddo
-    !  endif
+    !  do n = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
+    !     write(*,*) "Adjacent domain [", mapping%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER, "] send indicies: ", &
+    !              & mapping%ADJACENT_DOMAINS(n)%LOCAL_GHOST_SEND_INDICES
+    ! enddo
 
    ! next we need to determine which GHOST elements on the local sub-domain need to be sent to
    ! the appropriate adjacent sub-domains
@@ -4355,8 +4360,8 @@ CONTAINS
       !                 & mapping%ADJACENT_DOMAINS(n)%LOCAL_GHOST_RECEIVE_INDICES
       !     enddo
       !  endif
-      ! call MPI_Barrier( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
-      ! call MPI_Abort( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err, n )
+      call MPI_Barrier( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
+      call MPI_Abort( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err, n )
 
     !******************************************************************************************************
     !                                  DEBUGGING  /  DIAGNOSTICS
