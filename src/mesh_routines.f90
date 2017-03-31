@@ -576,20 +576,25 @@ CONTAINS
 
     !Argument variables
     TYPE(DECOMPOSITION_TYPE), POINTER :: DECOMPOSITION !<A pointer to the decomposition to calculate the element domains for.
-    INTEGER(INTG),        INTENT(OUT) :: ERR !<The error code
+    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
-
     !Local Variables
-    integer(INTG) :: number_elem_indicies,elem_index,elem_count,ne,nn,my_computational_node_number,number_computational_nodes, &
-                   & no_computational_node,ELEMENT_START,ELEMENT_STOP,MY_ELEMENT_START,MY_ELEMENT_STOP,NUMBER_OF_ELEMENTS, &
-                   & MY_NUMBER_OF_ELEMENTS,MPI_IERROR,MAX_NUMBER_ELEMENTS_PER_NODE,component_idx,minNumberXi
-    integer(INTG), dimension(0:2)            :: PARMETIS_OPTIONS
-    integer(INTG), dimension(:), allocatable :: ELEMENT_COUNT, ELEMENT_PTR, ELEMENT_INDICIES, ELEMENT_DISTANCE, &
-                                              & DISPLACEMENTS, RECEIVE_COUNTS
-    real(DP)                  :: NUMBER_ELEMENTS_PER_NODE
+    INTEGER(INTG) :: number_elem_indicies,elem_index,elem_count,ne,nn,my_computational_node_number,number_computational_nodes, &
+      & no_computational_node,ELEMENT_START,ELEMENT_STOP,MY_ELEMENT_START,MY_ELEMENT_STOP,NUMBER_OF_ELEMENTS, &
+      & MY_NUMBER_OF_ELEMENTS,MPI_IERROR,MAX_NUMBER_ELEMENTS_PER_NODE,component_idx,minNumberXi
+    INTEGER(INTG), ALLOCATABLE :: ELEMENT_COUNT(:),ELEMENT_PTR(:),ELEMENT_INDICIES(:),ELEMENT_DISTANCE(:),DISPLACEMENTS(:), &
+      & RECEIVE_COUNTS(:)
+    INTEGER(INTG) :: ELEMENT_WEIGHT(1),WEIGHT_FLAG,NUMBER_FLAG,NUMBER_OF_CONSTRAINTS, &
+      & NUMBER_OF_COMMON_NODES,PARMETIS_OPTIONS(0:2)
+    !ParMETIS now has double for these
+    !REAL(SP) :: UBVEC(1)
+    !REAL(SP), ALLOCATABLE :: TPWGTS(:)
+    REAL(DP) :: UBVEC(1)
+    REAL(DP), ALLOCATABLE :: TPWGTS(:)
+    REAL(DP) :: NUMBER_ELEMENTS_PER_NODE
     TYPE(BASIS_TYPE), POINTER :: BASIS
-    TYPE(MESH_TYPE),  POINTER :: MESH
-    TYPE(VARYING_STRING)      :: LOCAL_ERROR
+    TYPE(MESH_TYPE), POINTER :: MESH
+    TYPE(VARYING_STRING) :: LOCAL_ERROR
 
     ENTERS("DECOMPOSITION_ELEMENT_DOMAIN_CALCULATE",ERR,ERROR,*999)
 
@@ -606,7 +611,7 @@ CONTAINS
           IF(ERR/=0) GOTO 999
 
           SELECT CASE(DECOMPOSITION%DECOMPOSITION_TYPE)
-           CASE(DECOMPOSITION_ALL_TYPE,DECOMPOSITION_USER_DEFINED_TYPE)
+          CASE(DECOMPOSITION_ALL_TYPE)
             !Do nothing. Decomposition checked below.
            CASE(DECOMPOSITION_CALCULATED_TYPE)
             !Calculate the general decomposition
@@ -660,6 +665,8 @@ CONTAINS
               IF(ERR/=0) CALL FlagError("Could not allocate element pointer list.",ERR,ERROR,*999)
               ALLOCATE(ELEMENT_INDICIES(0:number_elem_indicies-1),STAT=ERR)
               IF(ERR/=0) CALL FlagError("Could not allocate element indicies list.",ERR,ERROR,*999)
+              ALLOCATE(TPWGTS(1:DECOMPOSITION%NUMBER_OF_DOMAINS),STAT=ERR)
+              IF(ERR/=0) CALL FlagError("Could not allocate tpwgts.",ERR,ERROR,*999)
               elem_index=0
               elem_count=0
               ELEMENT_PTR(0)=0
@@ -676,17 +683,30 @@ CONTAINS
                 ELEMENT_PTR(elem_count)=elem_index !C numbering
               ENDDO !ne
 
-              !Set up ParMETIS options
-              PARMETIS_OPTIONS(0) = 1 !If zero, defaults are used, otherwise next two values are used
-              PARMETIS_OPTIONS(1) = 7 !Level of information to output
-              PARMETIS_OPTIONS(2) = CMISS_RANDOM_SEEDS(1) !Seed for random number generator
+              !Set up ParMETIS variables
+              WEIGHT_FLAG=0 !No weights
+              ELEMENT_WEIGHT(1)=1 !Isn't used due to weight flag
+              NUMBER_FLAG=0 !C Numbering as there is a bug with Fortran numbering
+              NUMBER_OF_CONSTRAINTS=1
+              IF(minNumberXi==1) THEN
+                NUMBER_OF_COMMON_NODES=1
+              ELSE
+                NUMBER_OF_COMMON_NODES=2
+              ENDIF
+              !ParMETIS now has doule precision for these
+              !TPWGTS=1.0_SP/REAL(DECOMPOSITION%NUMBER_OF_DOMAINS,SP)
+              !UBVEC=1.05_SP
+              TPWGTS=1.0_DP/REAL(DECOMPOSITION%NUMBER_OF_DOMAINS,DP)
+              UBVEC=1.05_DP
+              PARMETIS_OPTIONS(0)=1 !If zero, defaults are used, otherwise next two values are used
+              PARMETIS_OPTIONS(1)=7 !Level of information to output
+              PARMETIS_OPTIONS(2)=CMISS_RANDOM_SEEDS(1) !Seed for random number generator
 
               !Call ParMETIS to calculate the partitioning of the mesh graph.
-              CALL PARMETIS_PARTMESHKWAY( ELEMENT_DISTANCE, ELEMENT_PTR, ELEMENT_INDICIES, minNumberXi, &
-                                        & DECOMPOSITION%NUMBER_OF_DOMAINS, PARMETIS_OPTIONS, &
-                                        & DECOMPOSITION%NUMBER_OF_EDGES_CUT, &
-                                        & DECOMPOSITION%ELEMENT_DOMAIN(DISPLACEMENTS(my_computational_node_number)+1:), &
-                                        & COMPUTATIONAL_ENVIRONMENT%MPI_COMM, ERR, ERROR, *999 )
+              CALL PARMETIS_PARTMESHKWAY(ELEMENT_DISTANCE,ELEMENT_PTR,ELEMENT_INDICIES,ELEMENT_WEIGHT,WEIGHT_FLAG,NUMBER_FLAG, &
+                & NUMBER_OF_CONSTRAINTS,NUMBER_OF_COMMON_NODES,DECOMPOSITION%NUMBER_OF_DOMAINS,TPWGTS,UBVEC,PARMETIS_OPTIONS, &
+                & DECOMPOSITION%NUMBER_OF_EDGES_CUT,DECOMPOSITION%ELEMENT_DOMAIN(DISPLACEMENTS(my_computational_node_number)+1:), &
+                & COMPUTATIONAL_ENVIRONMENT%MPI_COMM,ERR,ERROR,*999)
 
               !Transfer all the element domain information to the other computational nodes so that each rank has all the info
               IF(number_computational_nodes>1) THEN
@@ -701,9 +721,12 @@ CONTAINS
               DEALLOCATE(ELEMENT_DISTANCE)
               DEALLOCATE(ELEMENT_PTR)
               DEALLOCATE(ELEMENT_INDICIES)
+              DEALLOCATE(TPWGTS)
 
             ENDIF
 
+          CASE(DECOMPOSITION_USER_DEFINED_TYPE)
+            !Do nothing. Decomposition checked below.
           CASE DEFAULT
             CALL FlagError("Invalid domain decomposition type.",ERR,ERROR,*999)
           END SELECT
@@ -771,6 +794,7 @@ CONTAINS
     IF(ALLOCATED(ELEMENT_DISTANCE)) DEALLOCATE(ELEMENT_DISTANCE)
     IF(ALLOCATED(ELEMENT_PTR)) DEALLOCATE(ELEMENT_PTR)
     IF(ALLOCATED(ELEMENT_INDICIES)) DEALLOCATE(ELEMENT_INDICIES)
+    IF(ALLOCATED(TPWGTS)) DEALLOCATE(TPWGTS)
     ERRORSEXITS("DECOMPOSITION_ELEMENT_DOMAIN_CALCULATE",ERR,ERROR)
     RETURN 1
   END SUBROUTINE DECOMPOSITION_ELEMENT_DOMAIN_CALCULATE
