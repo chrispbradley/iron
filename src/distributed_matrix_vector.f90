@@ -6348,14 +6348,14 @@ CONTAINS
           IF(ERR/=0) CALL FlagError("Could not allocate CMISS distributed vector transfer buffers.",ERR,ERROR,*999)
 
           DO domain_idx = 1,MAPPING%NUMBER_OF_ADJACENT_DOMAINS
-             CALL DistributedVector_CmissTransferInitialise(CMISS_VECTOR,domain_idx,ERR,ERROR,*999)
+             CALL DistributedVector_CmissTransferInitialise( CMISS_VECTOR, domain_idx, ERR, ERROR, *999 )
              CMISS_VECTOR%TRANSFERS(domain_idx)%SEND_BUFFER_SIZE = MAPPING%ADJACENT_DOMAINS(domain_idx)% &
                                                                  & NUMBER_OF_SEND_GHOSTS
              CMISS_VECTOR%TRANSFERS(domain_idx)%RECEIVE_BUFFER_SIZE = &
                   & MAPPING%ADJACENT_DOMAINS(domain_idx)%NUMBER_OF_RECEIVE_GHOSTS
              CMISS_VECTOR%TRANSFERS(domain_idx)%DATA_TYPE=DISTRIBUTED_VECTOR%DATA_TYPE
              CMISS_VECTOR%TRANSFERS(domain_idx)%SEND_TAG_NUMBER=CMISS_VECTOR%BASE_TAG_NUMBER + &
-                  & MAPPING%ADJACENT_DOMAINS_PTR(subdomain)+domain_idx-1
+                  & MAPPING%ADJACENT_DOMAINS_PTR(subdomain) + domain_idx - 1
              domain_no = MAPPING%ADJACENT_DOMAINS(domain_idx)%DOMAIN_NUMBER
              FOUND = .FALSE.
              DO domain_idx2=MAPPING%ADJACENT_DOMAINS_PTR(domain_no),MAPPING%ADJACENT_DOMAINS_PTR(domain_no+1)-1
@@ -6364,13 +6364,10 @@ CONTAINS
                    EXIT
                 ENDIF
              ENDDO !domain_idx2
-             IF (FOUND) THEN
-                domain_idx2=domain_idx2-MAPPING%ADJACENT_DOMAINS_PTR(domain_no)+1
-                CMISS_VECTOR%TRANSFERS(domain_idx)%RECEIVE_TAG_NUMBER=CMISS_VECTOR%BASE_TAG_NUMBER + &
-                    & MAPPING%ADJACENT_DOMAINS_PTR(domain_no)+domain_idx2-1
-             ELSE
-                CALL FlagError("Could not find domain to set the receive tag number.",ERR,ERROR,*999)
-             ENDIF
+             IF ( .not.FOUND ) CALL FlagError("Could not find domain to set the receive tag number.",ERR,ERROR,*999)
+             domain_idx2 = domain_idx2 - MAPPING%ADJACENT_DOMAINS_PTR(domain_no) + 1
+             CMISS_VECTOR%TRANSFERS(domain_idx)%RECEIVE_TAG_NUMBER = CMISS_VECTOR%BASE_TAG_NUMBER + &
+                                                                   & MAPPING%ADJACENT_DOMAINS_PTR(domain_no) + domain_idx2 - 1
 
              SELECT CASE( DISTRIBUTED_VECTOR%DATA_TYPE )
                 CASE( DISTRIBUTED_MATRIX_VECTOR_INTG_TYPE )
@@ -7678,37 +7675,34 @@ CONTAINS
 
     !Argument variables
     TYPE(DISTRIBUTED_VECTOR_CMISS_TYPE), POINTER :: CMISS_VECTOR !<A pointer to the CMISS distributed vector
-    INTEGER(INTG), INTENT(IN) :: domain_idx !<The domain index to initialise
-    INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
+    INTEGER(INTG),                    INTENT(IN) :: domain_idx !<The domain index to initialise
+    INTEGER(INTG),                   INTENT(OUT) :: ERR !<The error code
+    TYPE(VARYING_STRING),            INTENT(OUT) :: ERROR !<The error string
+
     !Local Variables
     TYPE(VARYING_STRING) :: LOCAL_ERROR
 
     ENTERS("DistributedVector_CmissTransferInitialise",ERR,ERROR,*999)
 
-    IF(ASSOCIATED(CMISS_VECTOR)) THEN
-      IF(ALLOCATED(CMISS_VECTOR%TRANSFERS)) THEN
-        IF(domain_idx>0.AND.domain_idx<=SIZE(CMISS_VECTOR%TRANSFERS,1)) THEN
-          CMISS_VECTOR%TRANSFERS(domain_idx)%CMISS_VECTOR=>CMISS_VECTOR
-          CMISS_VECTOR%TRANSFERS(domain_idx)%DATA_TYPE=0
-          CMISS_VECTOR%TRANSFERS(domain_idx)%SEND_BUFFER_SIZE=0
-          CMISS_VECTOR%TRANSFERS(domain_idx)%RECEIVE_BUFFER_SIZE=0
-          CMISS_VECTOR%TRANSFERS(domain_idx)%SEND_TAG_NUMBER=-1
-          CMISS_VECTOR%TRANSFERS(domain_idx)%RECEIVE_TAG_NUMBER=-1
-          CMISS_VECTOR%TRANSFERS(domain_idx)%MPI_SEND_REQUEST=MPI_REQUEST_NULL
-          CMISS_VECTOR%TRANSFERS(domain_idx)%MPI_RECEIVE_REQUEST=MPI_REQUEST_NULL
-        ELSE
-          LOCAL_ERROR="The domain index of "//TRIM(NumberToVString(domain_idx,"*",ERR,ERROR))// &
-            & " is invalid. It must be between 1 and "// &
-            & TRIM(NumberToVString(SIZE(CMISS_VECTOR%TRANSFERS,1),"*",ERR,ERROR))//"."
-          CALL FlagError(LOCAL_ERROR,ERR,ERROR,*999)
-        ENDIF
-      ELSE
-        CALL FlagError("CMISS vector transfers is not allocated.",ERR,ERROR,*999)
-      ENDIF
-    ELSE
-      CALL FlagError("CMISS vector is not associated.",ERR,ERROR,*999)
+  ! perform some checks first
+    IF ( .not.ASSOCIATED(CMISS_VECTOR) ) CALL FlagError( "CMISS vector not associated", ERR, ERROR, *999 )
+    IF ( .not.ALLOCATED(CMISS_VECTOR%TRANSFERS) ) CALL FlagError( "CMISS vector transfers not allocated", ERR, ERROR, *999 )
+    IF ( (domain_idx<1).or.(domain_idx>SIZE(CMISS_VECTOR%TRANSFERS,1)) ) THEN
+       LOCAL_ERROR = "The domain index of "//TRIM(NumberToVString(domain_idx,"*",ERR,ERROR))// &
+           & " is invalid. It must be between 1 and "// &
+           & TRIM(NumberToVString(SIZE(CMISS_VECTOR%TRANSFERS,1),"*",ERR,ERROR))//"."
+       CALL FlagError( LOCAL_ERROR, ERR, ERROR, *999 )
     ENDIF
+
+  ! set some default values for the CMISS distribuited vector
+    CMISS_VECTOR%TRANSFERS(domain_idx)%CMISS_VECTOR => CMISS_VECTOR
+    CMISS_VECTOR%TRANSFERS(domain_idx)%DATA_TYPE = 0
+    CMISS_VECTOR%TRANSFERS(domain_idx)%SEND_BUFFER_SIZE = 0
+    CMISS_VECTOR%TRANSFERS(domain_idx)%RECEIVE_BUFFER_SIZE = 0
+    CMISS_VECTOR%TRANSFERS(domain_idx)%SEND_TAG_NUMBER = -1
+    CMISS_VECTOR%TRANSFERS(domain_idx)%RECEIVE_TAG_NUMBER = -1
+    CMISS_VECTOR%TRANSFERS(domain_idx)%MPI_SEND_REQUEST = MPI_REQUEST_NULL
+    CMISS_VECTOR%TRANSFERS(domain_idx)%MPI_RECEIVE_REQUEST = MPI_REQUEST_NULL
 
     EXITS("DistributedVector_CmissTransferInitialise")
     RETURN

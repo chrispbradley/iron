@@ -48,7 +48,7 @@ MODULE BASE_ROUTINES
   USE KINDS
   USE ISO_C_BINDING
   USE ISO_VARYING_STRING
-  USE MACHINE_CONSTANTS 
+  USE MACHINE_CONSTANTS
 
   IMPLICIT NONE
 
@@ -62,7 +62,7 @@ MODULE BASE_ROUTINES
   !> \addtogroup BASE_ROUTINES_OutputType BASE_ROUTINES::OutputType
   !> \brief Output type parameter
   !> \see BASE_ROUTINES
-  !>@{  
+  !>@{
   INTEGER(INTG), PARAMETER :: GENERAL_OUTPUT_TYPE=1 !<General output type \see BASE_ROUTINES_OutputType,BASE_ROUTINES
   INTEGER(INTG), PARAMETER :: DIAGNOSTIC_OUTPUT_TYPE=2 !<Diagnostic output type \see BASE_ROUTINES_OutputType,BASE_ROUTINES
   INTEGER(INTG), PARAMETER :: TIMING_OUTPUT_TYPE=3 !<Timing output type \see BASE_ROUTINES_OutputType,BASE_ROUTINES
@@ -74,7 +74,7 @@ MODULE BASE_ROUTINES
   !> \addtogroup BASE_ROUTINES_FileUnits BASE_ROUTINES::FileUnits
   !> \brief File unit parameters
   !> \see BASE_ROUTINES
-  !>@{  
+  !>@{
   INTEGER(INTG), PARAMETER :: ECHO_FILE_UNIT=10 !<File unit for echo files \see BASE_ROUTINES_FileUnits,BASE_ROUTINES
   INTEGER(INTG), PARAMETER :: DIAGNOSTICS_FILE_UNIT=11 !<File unit for diagnostic files \see BASE_ROUTINES_FileUnits,BASE_ROUTINES
   INTEGER(INTG), PARAMETER :: TIMING_FILE_UNIT=12 !<File unit for timing files \see BASE_ROUTINES_FileUnits,BASE_ROUTINES
@@ -93,7 +93,7 @@ MODULE BASE_ROUTINES
   !> \addtogroup BASE_ROUTINES_DiagnosticTypes BASE_ROUTINES::DiagnosticTypes
   !> \brief Diganostic type parameters
   !> \see BASE_ROUTINES,OPENCMISS_DiagnosticTypes
-  !>@{  
+  !>@{
   INTEGER(INTG), PARAMETER :: ALL_DIAG_TYPE=1 !<Type for setting diagnostic output in all routines \see BASE_ROUTINES_DiagnosticTypes,BASE_ROUTINES
   INTEGER(INTG), PARAMETER :: IN_DIAG_TYPE=2 !<Type for setting diagnostic output in one routine \see BASE_ROUTINES_DiagnosticTypes,BASE_ROUTINES
   INTEGER(INTG), PARAMETER :: FROM_DIAG_TYPE=3 !<Type for setting diagnostic output from one routine downwards \see BASE_ROUTINES_DiagnosticTypes,BASE_ROUTINES
@@ -102,7 +102,7 @@ MODULE BASE_ROUTINES
   !> \addtogroup BASE_ROUTINES_TimingTypes BASE_ROUTINES::TimingTypes
   !> \brief Timing type parameters
   !> \see BASE_ROUTINES,OPENCMISS_TimingTypes
-  !>@{  
+  !>@{
   INTEGER(INTG), PARAMETER :: ALL_TIMING_TYPE=1 !<Type for setting timing output in all routines \see BASE_ROUTINES_TimingTypes,BASE_ROUTINES
   INTEGER(INTG), PARAMETER :: IN_TIMING_TYPE=2 !<Type for setting timing output in one routine \see BASE_ROUTINES_TimingTypes,BASE_ROUTINES
   INTEGER(INTG), PARAMETER :: FROM_TIMING_TYPE=3 !<Type for setting timing output from one routine downwards \see BASE_ROUTINES_TimingTypes,BASE_ROUTINES
@@ -129,10 +129,10 @@ MODULE BASE_ROUTINES
   !>Contains information for an item in the routine invocation stack
   TYPE ROUTINE_STACK_ITEM_TYPE
     CHARACTER(LEN=63) :: NAME !<Name of the routine
-    REAL(SP) :: INCLUSIVE_CPU_TIME !<User CPU time spent in the routine inclusive of calls 
-    REAL(SP) :: INCLUSIVE_SYSTEM_TIME !<System CPU time spent in the routine inclusive of calls 
-    REAL(SP) :: EXCLUSIVE_CPU_TIME !<User CPU time spent in the routine exclusive of calls 
-    REAL(SP) :: EXCLUSIVE_SYSTEM_TIME !<System CPU time spent in the routine exclusive of calls 
+    REAL(SP) :: INCLUSIVE_CPU_TIME !<User CPU time spent in the routine inclusive of calls
+    REAL(SP) :: INCLUSIVE_SYSTEM_TIME !<System CPU time spent in the routine inclusive of calls
+    REAL(SP) :: EXCLUSIVE_CPU_TIME !<User CPU time spent in the routine exclusive of calls
+    REAL(SP) :: EXCLUSIVE_SYSTEM_TIME !<System CPU time spent in the routine exclusive of calls
     LOGICAL :: DIAGNOSTICS !<.TRUE. if diagnostics are active in the routine
     LOGICAL :: TIMING !<.TRUE. if timing is active in the routine
     TYPE(ROUTINE_LIST_ITEM_TYPE), POINTER :: ROUTINE_LIST_ITEM !<Pointer to the routine list item for diagnostics or timing
@@ -227,7 +227,7 @@ MODULE BASE_ROUTINES
     MODULE PROCEDURE FLAG_ERROR_C
     MODULE PROCEDURE FLAG_ERROR_VS
   END INTERFACE FLAG_ERROR
-  
+
   !>Flags a warning to the user \see BASE_ROUTINES
   INTERFACE FLAG_WARNING
     MODULE PROCEDURE FLAG_WARNING_C
@@ -303,13 +303,13 @@ MODULE BASE_ROUTINES
   PUBLIC LEARN_FILE_UNIT,IO1_FILE_UNIT,IO2_FILE_UNIT,IO3_FILE_UNIT,IO4_FILE_UNIT,IO5_FILE_UNIT
 
   PUBLIC CMISS_RANDOM_SEEDS
-  
+
   PUBLIC OP_STRING
 
   PUBLIC BASE_ROUTINES_FINALISE,BASE_ROUTINES_INITIALISE
 
   PUBLIC BaseRoutinesFinalise,BaseRoutinesInitialise
-  
+
   PUBLIC COMPUTATIONAL_NODE_NUMBERS_SET
 
   PUBLIC ComputationalNodeNumbersSet
@@ -323,11 +323,11 @@ MODULE BASE_ROUTINES
   PUBLIC EXTRACT_ERROR_MESSAGE
 
   PUBLIC ExtractErrorMessage
-  
+
   PUBLIC FLAG_ERROR,FLAG_WARNING
 
   PUBLIC FlagError,FlagWarning
-  
+
   PUBLIC OUTPUT_SET_OFF,OUTPUT_SET_ON
 
   PUBLIC OutputSetOn,OutputSetOff
@@ -337,17 +337,17 @@ MODULE BASE_ROUTINES
   PUBLIC RandomSeedsGet,RandomSeedsSizeGet,RandomSeedsSet
 
   PUBLIC TIMING_SET_ON,TIMING_SET_OFF
-  
+
   PUBLIC TimingSetOn,TimingSetOff
-  
+
   PUBLIC TIMING_SUMMARY_OUTPUT
 
   PUBLIC TimingSummaryOutput
-   
+
   PUBLIC WRITE_ERROR
 
   PUBLIC WriteError
-  
+
   PUBLIC WRITE_STR
 
   PUBLIC WriteStr
@@ -476,7 +476,7 @@ CONTAINS
   !================================================================================================================================
   !
 
-  !>Records the exiting error of the subroutine 
+  !>Records the exiting error of the subroutine
   SUBROUTINE ERRORS(NAME,ERR,ERROR)
 
     !Argument variables
@@ -485,7 +485,7 @@ CONTAINS
     TYPE(VARYING_STRING), INTENT(INOUT) :: ERROR !<The error string
     !Local variables
     TYPE(VARYING_STRING) :: LOCAL_ERROR
- 
+
     IF(ERR==0) ERR=1
     !CPB 20/02/07 aix compiler does not like varying strings so split the concatenate statement up into two statements
     LOCAL_ERROR=ERROR//ERROR_SEPARATOR_CONSTANT
@@ -631,18 +631,18 @@ CONTAINS
     ENTERS("COMPUTATIONAL_NODE_NUMBERS_SET",ERR,ERROR,*999)
 
     IF(NUMBER_OF_NODES>0) THEN
-      IF(MY_NODE_NUMBER>=0.AND.MY_NODE_NUMBER<=NUMBER_OF_NODES-1) THEN        
+      IF(MY_NODE_NUMBER>=0.AND.MY_NODE_NUMBER<=NUMBER_OF_NODES-1) THEN
         MY_COMPUTATIONAL_NODE_NUMBER=MY_NODE_NUMBER
-        NUMBER_OF_COMPUTATIONAL_NODES=NUMBER_OF_NODES        
+        NUMBER_OF_COMPUTATIONAL_NODES=NUMBER_OF_NODES
       ELSE
         CALL FlagError("Invalid node number.",ERR,ERROR,*999)
       ENDIF
     ELSE
        CALL FlagError("Invalid number of nodes.",ERR,ERROR,*999)
     ENDIF
-    
+
     EXITS("COMPUTATIONAL_NODE_NUMBERS_SET")
-    RETURN 
+    RETURN
 999 ERRORSEXITS("COMPUTATIONAL_NODE_NUMBERS_SET",ERR,ERROR)
     RETURN 1
   END SUBROUTINE COMPUTATIONAL_NODE_NUMBERS_SET
@@ -691,8 +691,11 @@ CONTAINS
   !================================================================================================================================
   !
 
-  !>Sets the error string specified by a character string and flags an error 
+  !>Sets the error string specified by a character string and flags an error
   SUBROUTINE FLAG_ERROR_C(STRING,ERR,ERROR,*)
+
+    use COMP_ENVIRONMENT
+    implicit none
 
     !Argument variables
     CHARACTER(LEN=*), INTENT(IN) :: STRING !<The error condition string
@@ -705,6 +708,7 @@ CONTAINS
     STRING_LENGTH=LEN_TRIM(STRING)
     ERROR=STRING(1:STRING_LENGTH)
 
+    call MPI_Barrier( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, ERR )
     RETURN 1
   END SUBROUTINE FLAG_ERROR_C
 
@@ -715,6 +719,9 @@ CONTAINS
   !>Sets the error string specified by a varying string and flags an error.
   SUBROUTINE FLAG_ERROR_VS(STRING,ERR,ERROR,*)
 
+    use COMP_ENVIRONMENT
+    implicit none 
+
     !Argument variables
     TYPE(VARYING_STRING), INTENT(IN) :: STRING !<The error condition string
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
@@ -724,6 +731,7 @@ CONTAINS
     IF(ERR==0) ERR=1
     ERROR=STRING
 
+    call MPI_Barrier( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, ERR )
     RETURN 1
   END SUBROUTINE FLAG_ERROR_VS
 
@@ -747,10 +755,10 @@ CONTAINS
     ENDIF
     CALL WRITE_STR(WARNING_OUTPUT_TYPE,ERR,ERROR,*999)
 
-    RETURN 
+    RETURN
 999 ERRORS("FLAG_WARNING_C",ERR,ERROR)
     RETURN 1
-    
+
   END SUBROUTINE FLAG_WARNING_C
 
   !
@@ -773,10 +781,10 @@ CONTAINS
     ENDIF
     CALL WRITE_STR(WARNING_OUTPUT_TYPE,ERR,ERROR,*999)
 
-    RETURN 
+    RETURN
 999 ERRORS("FLAG_WARNING_VS",ERR,ERROR)
     RETURN 1
-    
+
   END SUBROUTINE FLAG_WARNING_VS
 
   !
@@ -795,8 +803,8 @@ CONTAINS
     ERROR=""
     !Deallocate the random seeds
     IF(ALLOCATED(CMISS_RANDOM_SEEDS)) DEALLOCATE(CMISS_RANDOM_SEEDS)
-    
-    RETURN 
+
+    RETURN
 999 RETURN 1
   END SUBROUTINE BASE_ROUTINES_FINALISE
 
@@ -806,7 +814,7 @@ CONTAINS
 
   !>Initialises the variables required for the base_routines module.
   SUBROUTINE BASE_ROUTINES_INITIALISE(ERR,ERROR,*)
-    
+
     !Argument variables
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -875,7 +883,7 @@ CONTAINS
     NULLIFY(DIAG_ROUTINE_LIST%HEAD)
     NULLIFY(TIMING_ROUTINE_LIST%HEAD)
 
-    RETURN 
+    RETURN
 999 RETURN 1
   END SUBROUTINE BASE_ROUTINES_INITIALISE
 
@@ -951,9 +959,9 @@ CONTAINS
     INTEGER(INTG) :: i,LEVEL
     CHARACTER(LEN=MAXSTRLEN) :: FILENAME
     TYPE(ROUTINE_LIST_ITEM_TYPE), POINTER :: NEXT_ROUTINE,PREVIOUS_ROUTINE,ROUTINE
- 
+
     NULLIFY(ROUTINE)
-    
+
     ENTERS("DIAGNOSTICS_SET_ON",ERR,ERROR,*999)
 
     IF(LEN_TRIM(DIAG_FILENAME)>=1) THEN
@@ -1092,7 +1100,7 @@ CONTAINS
       CALL FlagError("Write output is already on.",ERR,ERROR,*999)
     ELSE
       IF(NUMBER_OF_COMPUTATIONAL_NODES>1) THEN
-        WRITE(FILENAME,'(A,".out.",I0)') ECHO_FILENAME(1:LEN_TRIM(ECHO_FILENAME)),MY_COMPUTATIONAL_NODE_NUMBER        
+        WRITE(FILENAME,'(A,".out.",I0)') ECHO_FILENAME(1:LEN_TRIM(ECHO_FILENAME)),MY_COMPUTATIONAL_NODE_NUMBER
       ELSE
         FILENAME=ECHO_FILENAME(1:LEN_TRIM(ECHO_FILENAME))//".out"
       ENDIF
@@ -1113,14 +1121,14 @@ CONTAINS
 
   !>Returns the random seeds for CMISS \see OPENCMISS::CMISSRandomSeedsGet
   SUBROUTINE RANDOM_SEEDS_GET(RANDOM_SEEDS,ERR,ERROR,*)
-  
+
     !Argument variables
     INTEGER(INTG), INTENT(OUT) :: RANDOM_SEEDS(:) !<On return, the random seeds.
     INTEGER(INTG), INTENT(INOUT) :: ERR !<The error string
     TYPE(VARYING_STRING), INTENT(INOUT) :: ERROR !<The error code
     !Local Variables
     CHARACTER(LEN=MAXSTRLEN) :: LOCAL_ERROR
-    
+
     ENTERS("RANDOM_SEEDS_GET",ERR,ERROR,*999)
 
     IF(SIZE(RANDOM_SEEDS,1)>=SIZE(CMISS_RANDOM_SEEDS,1)) THEN
@@ -1130,7 +1138,7 @@ CONTAINS
         & SIZE(RANDOM_SEEDS,1),SIZE(CMISS_RANDOM_SEEDS,1)
       CALL FlagError(LOCAL_ERROR,ERR,ERROR,*999)
     ENDIF
-    
+
     EXITS("RANDOM_SEED_GET")
     RETURN
 999 ERRORSEXITS("RANDOM_SEEDS_GET",ERR,ERROR)
@@ -1143,7 +1151,7 @@ CONTAINS
 
   !>Returns the size of the random seeds array for CMISS \see OPENCMISS::CMISSRandomSeedsSizeGet
   SUBROUTINE RANDOM_SEEDS_SIZE_GET(RANDOM_SEEDS_SIZE,ERR,ERROR,*)
-  
+
     !Argument variables
     INTEGER(INTG), INTENT(OUT) :: RANDOM_SEEDS_SIZE !<On return, the size of the random seeds array.
     INTEGER(INTG), INTENT(INOUT) :: ERR !<The error string
@@ -1153,7 +1161,7 @@ CONTAINS
     ENTERS("RANDOM_SEEDS_SIZE_GET",ERR,ERROR,*999)
 
     RANDOM_SEEDS_SIZE=SIZE(CMISS_RANDOM_SEEDS,1)
-    
+
     EXITS("RANDOM_SEED_SIZE_GET")
     RETURN
 999 ERRORSEXITS("RANDOM_SEEDS_SIZE_GET",ERR,ERROR)
@@ -1166,13 +1174,13 @@ CONTAINS
 
   !>Sets the random seeds for cmiss \see OPENCMISS::CMISSRandomSeedsSet
   SUBROUTINE RANDOM_SEEDS_SET(RANDOM_SEEDS,ERR,ERROR,*)
-  
+
     !Argument variables
-    INTEGER(INTG), INTENT(IN) :: RANDOM_SEEDS(:) !<The random seeds to set. 
+    INTEGER(INTG), INTENT(IN) :: RANDOM_SEEDS(:) !<The random seeds to set.
     INTEGER(INTG), INTENT(INOUT) :: ERR !<The error string
     TYPE(VARYING_STRING), INTENT(INOUT) :: ERROR !<The error code
     !Local Variables
-    
+
     ENTERS("RANDOM_SEEDS_SET",ERR,ERROR,*999)
 
     IF(SIZE(RANDOM_SEEDS,1)>SIZE(CMISS_RANDOM_SEEDS,1)) THEN
@@ -1241,7 +1249,7 @@ CONTAINS
 
     !Argument variables
     INTEGER(INTG), INTENT(IN) :: TIMING_TYPE !<The type of timing to set on \see BASE_ROUTINES_TimingTypes
-    LOGICAL, INTENT(IN) :: TIMING_SUMMARY_FLAG !<.TRUE. if the timing information will be output with subsequent TIMING_SUMMARY_OUTPUT calls, .FALSE. if the timing information will be output every time the routine exits 
+    LOGICAL, INTENT(IN) :: TIMING_SUMMARY_FLAG !<.TRUE. if the timing information will be output with subsequent TIMING_SUMMARY_OUTPUT calls, .FALSE. if the timing information will be output every time the routine exits
     CHARACTER(LEN=*), INTENT(IN) :: TIMING_FILENAME !<If present the name of the file to output timing information to. If omitted the timing output is sent to the screen
     CHARACTER(LEN=*), INTENT(IN) :: ROUTINE_LIST(:) !<The list of routines to set timing on in.
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
@@ -1250,7 +1258,7 @@ CONTAINS
     INTEGER(INTG) :: i
     CHARACTER(LEN=MAXSTRLEN) :: FILENAME
     TYPE(ROUTINE_LIST_ITEM_TYPE), POINTER :: NEXT_ROUTINE,PREVIOUS_ROUTINE,ROUTINE
- 
+
     ENTERS("TIMING_SET_ON",ERR,ERROR,*999)
 
     NULLIFY(ROUTINE)
@@ -1337,7 +1345,7 @@ CONTAINS
   !
 
   !>Outputs the timing summary. \see OPENCMISS::CMISSTimingSummaryOutput
-  SUBROUTINE TIMING_SUMMARY_OUTPUT(ERR,ERROR,*)    
+  SUBROUTINE TIMING_SUMMARY_OUTPUT(ERR,ERROR,*)
 
     !Argument variables
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
@@ -1346,11 +1354,11 @@ CONTAINS
     TYPE(ROUTINE_LIST_ITEM_TYPE), POINTER :: ROUTINE_PTR
 
     NULLIFY(ROUTINE_PTR)
-    
+
     ENTERS("TIMING_SUMMARY_OUTPUT",ERR,ERROR,*999)
 
     IF(TIMING) THEN
-      WRITE(OP_STRING,'("*** Timing Summary: ")') 
+      WRITE(OP_STRING,'("*** Timing Summary: ")')
       CALL WRITE_STR(TIMING_OUTPUT_TYPE,ERR,ERROR,*999)
       ROUTINE_PTR=>TIMING_ROUTINE_LIST%HEAD
       DO WHILE(ASSOCIATED(ROUTINE_PTR))
@@ -1399,7 +1407,7 @@ CONTAINS
 
   !>Writes the error string.
   SUBROUTINE WriteError(err,error,*)
-  
+
     !Argument variables
     INTEGER(INTG), INTENT(INOUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(INOUT) :: error !<The error string
@@ -1452,7 +1460,7 @@ CONTAINS
 
     RETURN
     !Don't return an error code here otherwise we will get into a circular loop
-999 RETURN 
+999 RETURN
   END SUBROUTINE WriteError
 
   !
@@ -1477,7 +1485,7 @@ CONTAINS
     !Calculate number of records in OP_STRING
     SELECT CASE(MACHINE_OS)
     CASE(VMS_OS)
-      i=1 
+      i=1
       DO WHILE(OP_STRING(i)(1:1)/=CHAR(0).AND.i<MAX_OUTPUT_LINES)
         i=i+1
       ENDDO
@@ -1496,7 +1504,7 @@ CONTAINS
       ENDDO
       NUMBER_RECORDS=i-NUMBER_BLANKS
     CASE(WINDOWS_OS)
-      i=1 
+      i=1
       DO WHILE(OP_STRING(i)(1:1)/=CHAR(0).AND.i<MAX_OUTPUT_LINES)
         i=i+1
       ENDDO
