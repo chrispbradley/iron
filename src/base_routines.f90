@@ -694,9 +694,6 @@ CONTAINS
   !>Sets the error string specified by a character string and flags an error
   SUBROUTINE FLAG_ERROR_C(STRING,ERR,ERROR,*)
 
-    use COMP_ENVIRONMENT
-    implicit none
-
     !Argument variables
     CHARACTER(LEN=*), INTENT(IN) :: STRING !<The error condition string
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
@@ -708,7 +705,6 @@ CONTAINS
     STRING_LENGTH=LEN_TRIM(STRING)
     ERROR=STRING(1:STRING_LENGTH)
 
-    call MPI_Barrier( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, ERR )
     RETURN 1
   END SUBROUTINE FLAG_ERROR_C
 
@@ -719,9 +715,6 @@ CONTAINS
   !>Sets the error string specified by a varying string and flags an error.
   SUBROUTINE FLAG_ERROR_VS(STRING,ERR,ERROR,*)
 
-    use COMP_ENVIRONMENT
-    implicit none 
-
     !Argument variables
     TYPE(VARYING_STRING), INTENT(IN) :: STRING !<The error condition string
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
@@ -731,7 +724,6 @@ CONTAINS
     IF(ERR==0) ERR=1
     ERROR=STRING
 
-    call MPI_Barrier( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, ERR )
     RETURN 1
   END SUBROUTINE FLAG_ERROR_VS
 
