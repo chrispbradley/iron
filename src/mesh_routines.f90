@@ -4966,7 +4966,7 @@ CONTAINS
      do n = 1,domain%DECOMPOSITION%NUMBER_OF_DOMAINS
         displ(n) = n - 1
      enddo
-     call List_Destroy( local_node_list, err, error, *999 )
+     !call List_Destroy( local_node_list, err, error, *999 )
 
      call MPI_Allgatherv( nodeMap%NUMBER_OF_LOCAL, 1, MPI_INTEGER, nodeMap%NUMBER_OF_DOMAIN_LOCAL, recv_cnt, displ, &
                         & MPI_INTEGER, COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
