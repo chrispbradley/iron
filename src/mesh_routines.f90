@@ -4038,6 +4038,7 @@ CONTAINS
     ! PART 1 - (LOCAL ELEMENT COLLECTION)
     !          Gather the global ID of all elements residing on the local sub-domain into a list
     !------------------------------------------------------------------------------------------------------
+     cnt = meshTopology%ELEMENTS%NUMBER_OF_ELEMENTS / domain%DECOMPOSITION%NUMBER_OF_DOMAINS
      nullify( local_element_list )
      call List_CreateStart( local_element_list, err, error, *999 )
      call List_DataTypeSet( local_element_list, LIST_INTG_TYPE, err, error, *999 )
@@ -4050,7 +4051,7 @@ CONTAINS
      enddo
 
      call List_DetachAndDestroy( local_element_list, mapping%NUMBER_OF_LOCAL, local_ids, err, error, *999 )
-
+      
     !
     ! PART 2 - (ELEMENT CLASSIFICATION)
     !          Classify all local elements as either INTERNAL or BOUNDARY.  If a local element has
@@ -4127,14 +4128,15 @@ CONTAINS
 !     endif
 
 !      if ( subdomain==0 ) then
+!      write(*,*) "Sub-Domain ", subdomain, ": # of internal/boundary/ghost elements was ", mapping%NUMBER_OF_INTERNAL, &
+!           & mapping%NUMBER_OF_BOUNDARY, mapping%NUMBER_OF_GHOST
 !         write(*,*) "INTERNAL IDS: ", internalELEMENTS( 1:mapping%NUMBER_OF_INTERNAL )
 !         write(*,*) "BOUNDARY IDS: ", boundaryELEMENTS(1:mapping%NUMBER_OF_BOUNDARY )
 !         write(*,*) "GHOST IDS: ", ghostELEMENTS( 1:mapping%NUMBER_OF_GHOST )
 !      endif
 
 !      call MPI_Barrier( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
-!      write(*,*) "[Sub-domain ", subdomain, "] # of internal/boundary/ghost elements : ", mapping%NUMBER_OF_INTERNAL, &
-!               & mapping%NUMBER_OF_BOUNDARY, mapping%NUMBER_OF_GHOST
+!      call MPI_Abort( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err, n )
 !*********************************************  D E B U G G I N G  ***************************************************** 
 
     !
@@ -4163,18 +4165,17 @@ CONTAINS
      if ( err/=0 ) call FlagError( "could not allocate element LOCAL_TO_GLOBAL_MAP array", err, error, *999 )
 
      mapping%LOCAL_TO_GLOBAL_MAP( 1:mapping%NUMBER_OF_INTERNAL ) = internalELEMENTS( 1:mapping%NUMBER_OF_INTERNAL )
+     deallocate( internalELEMENTS )
      if ( mapping%NUMBER_OF_BOUNDARY>0 ) &
        & mapping%LOCAL_TO_GLOBAL_MAP( mapping%BOUNDARY_START:mapping%BOUNDARY_FINISH ) &
        & = boundaryELEMENTS( 1:mapping%NUMBER_OF_BOUNDARY )
      mapping%LOCAL_TO_GLOBAL_MAP( mapping%GHOST_START:mapping%GHOST_FINISH ) = ghostELEMENTS( 1:mapping%NUMBER_OF_GHOST )
-     deallocate( internalELEMENTS,boundaryELEMENTS )
 
      allocate( mapping%LOCAL_TYPE( mapping%TOTAL_NUMBER_OF_LOCAL ) )
      mapping%LOCAL_TYPE( 1:mapping%NUMBER_OF_INTERNAL ) = DOMAIN_LOCAL_INTERNAL
      mapping%LOCAL_TYPE( mapping%BOUNDARY_START:mapping%BOUNDARY_FINISH ) = DOMAIN_LOCAL_BOUNDARY
      mapping%LOCAL_TYPE( mapping%GHOST_START:mapping%GHOST_FINISH ) = DOMAIN_LOCAL_GHOST
 
-     ! mpch - can the following arrays be removed/replaced?
      allocate( recv_cnt(domain%DECOMPOSITION%NUMBER_OF_DOMAINS), STAT=err )
      if ( err/=0 ) call FlagError( "could not allocate receive counts array", err, error, *999 )
      recv_cnt(:) = 1
@@ -4191,6 +4192,12 @@ CONTAINS
                         & mapping%NUMBER_OF_DOMAIN_LOCAL, recv_cnt, displ, MPI_INTEGER, &
                         & COMPUTATIONAL_ENVIRONMENT%MPI_COMM, n )
 
+     allocate( mapping%NUMBER_OF_DOMAIN_BOUNDARY(0:domain%DECOMPOSITION%NUMBER_OF_DOMAINS-1), STAT=err )
+     if ( err/=0 ) call FlagError( "could not allocate NUMBER_OF_DOMAIN_BOUNDARY", err, error, *999 )
+     call MPI_Allgatherv( mapping%NUMBER_OF_BOUNDARY, 1, MPI_INTEGER, &
+                        & mapping%NUMBER_OF_DOMAIN_BOUNDARY, recv_cnt, displ, MPI_INTEGER, &
+                        & COMPUTATIONAL_ENVIRONMENT%MPI_COMM, n )
+
      allocate( mapping%NUMBER_OF_DOMAIN_GHOST(0:domain%DECOMPOSITION%NUMBER_OF_DOMAINS-1), STAT=err )
      if ( err/=0 ) call FlagError( "could not allocate NUMBER_OF_DOMAIN_GHOST", err, error, *999 )
      call MPI_Allgatherv( mapping%NUMBER_OF_GHOST, 1, MPI_INTEGER, &
@@ -4200,8 +4207,9 @@ CONTAINS
 !*********************************************  D E B U G G I N G  ***************************************************** 
 !      call MPI_Barrier( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
 !      if ( subdomain==0 ) then
-!         write(*,*) "NUMBER_OF_DOMAIN_LOCAL : ", mapping%NUMBER_OF_DOMAIN_LOCAL
-!         write(*,*) "NUMBER_OF_DOMAIN_GHOST : ", mapping%NUMBER_OF_DOMAIN_GHOST
+!         write(*,*) "NUMBER_OF_DOMAIN_LOCAL    : ", mapping%NUMBER_OF_DOMAIN_LOCAL
+!         write(*,*) "NUMBER_OF_DOMAIN_BOUNDARY : ", mapping%NUMBER_OF_DOMAIN_BOUNDARY
+!         write(*,*) "NUMBER_OF_DOMAIN_GHOST    : ", mapping%NUMBER_OF_DOMAIN_GHOST
 !      endif
 !*********************************************  D E B U G G I N G  ***************************************************** 
 
@@ -4257,6 +4265,10 @@ CONTAINS
         mapping%ADJACENT_DOMAINS( domain_no )%NUMBER_OF_RECEIVE_GHOSTS = 0
      enddo
 
+  !
+  ! PART FIVE - HALO EXCHANGE SETUP (send) 
+  !             Determine the boundary element values that each sub-domain needs to send to its neighbors 
+  !--------------------------------------------------------------------------------------------------------------------------------
      do domain_no = 0,domain%DECOMPOSITION%NUMBER_OF_DOMAINS-1
         allocate( temp(mapping%NUMBER_OF_DOMAIN_GHOST(domain_no)) )
 
@@ -4282,120 +4294,91 @@ CONTAINS
                     if ( mapping%LOCAL_TO_GLOBAL_MAP(np)==temp(m) ) then
                        mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS = mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS + 1
                        tmp( mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS ) = np
+                       cycle 
+                    endif
+                 enddo
+                 enddo
+
+              allocate( mapping%ADJACENT_DOMAINS(n)&
+                      &%LOCAL_GHOST_SEND_INDICES(mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS), STAT=err )
+              if (err/=0) call FlagError( "could not allocate element LOCAL_GHOST_SEND_INDICES", err, error, *999 )
+              mapping%ADJACENT_DOMAINS(n)%LOCAL_GHOST_SEND_INDICES = tmp( 1:mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS )
+              deallocate( tmp )
+              exit
+
+           endif
+        enddo
+        endif
+
+        deallocate( temp )
+     enddo
+     deallocate( ghostELEMENTS )
+
+  !
+  ! PART SIX - HALO EXCHANGE SETUP (receive) 
+  !            Determine the ghost element values that each sub-domain receives from its neighbors 
+  !--------------------------------------------------------------------------------------------------------------------------------
+     do domain_no = 0,domain%DECOMPOSITION%NUMBER_OF_DOMAINS-1
+        allocate( temp(mapping%NUMBER_OF_DOMAIN_BOUNDARY(domain_no)) )
+
+      ! domain_no will send the global IDs of its BOUNDARY elements to all sub-domains adjacent to it
+        if ( subdomain==domain_no ) then
+           temp = boundaryELEMENTS( 1:mapping%NUMBER_OF_BOUNDARY )
+           do n = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
+              call MPI_Send( temp, mapping%NUMBER_OF_BOUNDARY, MPI_INTEGER, mapping%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER, 0, &
+                           & COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
+           enddo
+
+        else 
+      ! the other sub-domains check if they are adjacent to domain_no.  If they are, they receive the sent BOUNDARY node
+      ! IDs and update their NUMBER_OF_RECIEVE_GHOSTS counter.
+           do n = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
+              if ( mapping%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER==domain_no ) then
+                 call MPI_Recv( temp, mapping%NUMBER_OF_DOMAIN_BOUNDARY(domain_no), MPI_INTEGER, domain_no, MPI_ANY_TAG, &
+                              & COMPUTATIONAL_ENVIRONMENT%MPI_COMM, status, err )
+
+                 nn = 0
+                 allocate( tmp(mapping%NUMBER_OF_DOMAIN_BOUNDARY(domain_no)) )
+
+                 do np = mapping%GHOST_START,mapping%GHOST_FINISH 
+                 do m = 1,mapping%NUMBER_OF_DOMAIN_BOUNDARY(domain_no)
+                    if ( mapping%LOCAL_TO_GLOBAL_MAP(mapping%DOMAIN_LIST(np))==temp(m) ) then
+                       nn = nn + 1
+                       tmp( nn ) = mapping%DOMAIN_LIST(np)
                        exit 
                     endif
                  enddo
                  enddo
 
-                allocate(mapping%ADJACENT_DOMAINS(n)%LOCAL_GHOST_SEND_INDICES(mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS)&
-                       &, STAT=err )
-                 if (err/=0) call FlagError( "could not allocate element LOCAL_GHOST_SEND_INDICES", err, error, *999 )
-                 mapping%ADJACENT_DOMAINS(n)%LOCAL_GHOST_SEND_INDICES = tmp( 1:mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS )
+                 mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_RECEIVE_GHOSTS = nn 
+                 allocate( mapping%ADJACENT_DOMAINS(n)%LOCAL_GHOST_RECEIVE_INDICES( nn ), STAT=err )
+                 if (err/=0) call FlagError( "could not allocate element LOCAL_GHOST_RECEIVE_INDICES", err, error, *999 )
+                 mapping%ADJACENT_DOMAINS(n)%LOCAL_GHOST_RECEIVE_INDICES = tmp( 1:nn )
+
                  deallocate( tmp )
                  exit
               endif
            enddo
-        endif
+
+        endif ! domain_no
 
         deallocate( temp )
      enddo
+     deallocate( boundaryELEMENTS )
 
 !*********************************************  D E B U G G I N G  ***************************************************** 
-!      call MPI_Barrier( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
-!      if ( subdomain==0 ) then
-!         write(*,*) "[Sub-domain ", subdomain, "] # of adjacent domains was ", mapping%NUMBER_OF_ADJACENT_DOMAINS
-!         do n = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
-!            write(*,*) "Adjacent domain [", mapping%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER, "] send indicies: ", &
-!                     & mapping%ADJACENT_DOMAINS(n)%LOCAL_GHOST_SEND_INDICES
-!         enddo
-!      endif
-!      call MPI_Barrier( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
-!      if ( subdomain==1 ) then
-!         write(*,*) "[Sub-domain ", subdomain, "] # of adjacent domains was ", mapping%NUMBER_OF_ADJACENT_DOMAINS
-!         do n = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
-!            write(*,*) "Adjacent domain [", mapping%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER, "] send indicies: ", &
-!                     & mapping%ADJACENT_DOMAINS(n)%LOCAL_GHOST_SEND_INDICES
-!         enddo
-!      endif
-!      call MPI_Barrier( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
-!      if ( subdomain==2 ) then
-!         write(*,*) "[Sub-domain ", subdomain, "] # of adjacent domains was ", mapping%NUMBER_OF_ADJACENT_DOMAINS
-!         do n = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
-!            write(*,*) "Adjacent domain [", mapping%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER, "] send indicies: ", &
-!                     & mapping%ADJACENT_DOMAINS(n)%LOCAL_GHOST_SEND_INDICES
-!         enddo
-!      endif
-!      call MPI_Barrier( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
-!      if ( subdomain==3 ) then
-!         write(*,*) "[Sub-domain ", subdomain, "] # of adjacent domains was ", mapping%NUMBER_OF_ADJACENT_DOMAINS
-!         do n = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
-!            write(*,*) "Adjacent domain [", mapping%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER, "] send indicies: ", &
-!                     & mapping%ADJACENT_DOMAINS(n)%LOCAL_GHOST_SEND_INDICES
-!         enddo
-!      endif
-!*********************************************  D E B U G G I N G  ***************************************************** 
-
-   ! next we need to determine which GHOST elements on the local sub-domain need to be sent to
-   ! the appropriate adjacent sub-domains
-     do domain_no = 0,domain%DECOMPOSITION%NUMBER_OF_DOMAINS-1
-
-        if ( subdomain/=domain_no ) then
-           allocate( temp(mapping%NUMBER_OF_DOMAIN_GHOST(subdomain)) )
-           temp = ghostELEMENTS( 1:mapping%NUMBER_OF_DOMAIN_GHOST(subdomain) )
-
-      ! all sub-domains check if they are adjacent to domain_no. If they are, they send their GHOST node global IDs to
-      ! domain_no
-           do n = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
-              if ( mapping%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER==domain_no ) then
-                 call MPI_Send( temp, mapping%NUMBER_OF_DOMAIN_GHOST(subdomain), MPI_INTEGER, &
-                             &  domain_no, 0, COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
-                 exit
-              endif
-           enddo
-        endif
-
-      ! domain_no will receive a message from every adjacent sub-domain containing the global IDs of the GHOST elements
-      ! on that sub-domain.
-        if ( subdomain==domain_no ) then
-           do n = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
-              allocate( temp(mapping%NUMBER_OF_DOMAIN_GHOST(mapping%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER)) )
-              allocate( tmp(mapping%NUMBER_OF_DOMAIN_GHOST(mapping%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER)) )
-
-              call MPI_Recv( temp, mapping%NUMBER_OF_DOMAIN_GHOST(mapping%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER), MPI_INTEGER, &
-                          &  mapping%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER, MPI_ANY_TAG, COMPUTATIONAL_ENVIRONMENT%MPI_COMM, &
-                          &  status, err )
-
-              do np = 1,mapping%NUMBER_OF_LOCAL
-              do m = 1,mapping%NUMBER_OF_DOMAIN_GHOST(mapping%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER)
-                 if ( mapping%LOCAL_TO_GLOBAL_MAP(np)==temp(m) ) then
-                    mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_RECEIVE_GHOSTS = mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_RECEIVE_GHOSTS + 1
-                    tmp( mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_RECEIVE_GHOSTS ) = np
-                 endif
-              enddo
-              enddo
-
-              allocate( mapping%ADJACENT_DOMAINS(n)%LOCAL_GHOST_RECEIVE_INDICES(mapping%ADJACENT_DOMAINS(n)&
-                        &%NUMBER_OF_RECEIVE_GHOSTS), STAT=err )
-              if (err/=0) call FlagError( "could not allocate element LOCAL_GHOST_RECEIVE_INDICES", err, error, *999 )
-              mapping%ADJACENT_DOMAINS(n)%LOCAL_GHOST_RECEIVE_INDICES &
-                  &      = tmp( 1:mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_RECEIVE_GHOSTS )
-              deallocate( temp,tmp )
-            enddo
-         endif
-
-         if ( subdomain/=domain_no ) deallocate( temp )
-      enddo
-
 !       call MPI_Barrier( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
-!       write(*,*) "[Sub-domain ", subdomain, "] # of adjacent domains was ", mapping%NUMBER_OF_ADJACENT_DOMAINS
-!        if ( subdomain==0 ) then
+!       if ( subdomain==0 ) then
+!           write(*,*) "[Sub-domain ", subdomain, "] # of adjacent domains was ", mapping%NUMBER_OF_ADJACENT_DOMAINS
 !           do n = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
-!              write(*,*) "Adjacent domain [", mapping%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER, "] receive indicies: ", &
-!                       & mapping%ADJACENT_DOMAINS(n)%LOCAL_GHOST_RECEIVE_INDICES
+!              write(*,*) "   Adjacent domain ", mapping%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER
+!              write(*,*) "      receive indicies: ", mapping%ADJACENT_DOMAINS(n)%LOCAL_GHOST_RECEIVE_INDICES
+!              write(*,*) "         send indicies: ", mapping%ADJACENT_DOMAINS(n)%LOCAL_GHOST_SEND_INDICES
 !           enddo
 !        endif
-!      call MPI_Barrier( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
-!      call MPI_Abort( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err, n )
+!        call MPI_Barrier( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
+!        call MPI_Abort( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err, n )
+!*********************************************  D E B U G G I N G  ***************************************************** 
 
     !******************************************************************************************************
     !                                  DEBUGGING  /  DIAGNOSTICS
@@ -4403,28 +4386,12 @@ CONTAINS
 
      if ( DIAGNOSTICS1 ) then
         call WRITE_STRING( DIAGNOSTIC_OUTPUT_TYPE, "Element mapping :", err, error, *999 )
-        call WRITE_STRING_VALUE( DIAGNOSTIC_OUTPUT_TYPE, "  Total number of elements = ", &
-                                 & mapping%TOTAL_NUMBER_OF_LOCAL, err, error, *999 )
-        call WRITE_STRING_VALUE( DIAGNOSTIC_OUTPUT_TYPE, "  Number of local elements = ", &
-                                 & mapping%NUMBER_OF_LOCAL, err, error, *999 )
         call WRITE_STRING_VALUE( DIAGNOSTIC_OUTPUT_TYPE, "  Number of internal elements = ", &
                                  & mapping%NUMBER_OF_INTERNAL, err, error, *999 )
         call WRITE_STRING_VALUE( DIAGNOSTIC_OUTPUT_TYPE, "  Number of boundary elements = ", &
                                  & mapping%NUMBER_OF_BOUNDARY, err, error, *999 )
         call WRITE_STRING_VALUE( DIAGNOSTIC_OUTPUT_TYPE, "  Number of ghosts elements = ", &
                                  & mapping%NUMBER_OF_GHOST, err, error, *999 )
-        call WRITE_STRING_VALUE( DIAGNOSTIC_OUTPUT_TYPE, "  Internal start = ", &
-                                 & mapping%INTERNAL_START, err, error, *999 )
-        call WRITE_STRING_VALUE( DIAGNOSTIC_OUTPUT_TYPE, "  Internal finish = ", &
-                                 & mapping%INTERNAL_FINISH, err, error, *999 )
-        call WRITE_STRING_VALUE( DIAGNOSTIC_OUTPUT_TYPE, "  Boundary start = ", &
-                                 & mapping%BOUNDARY_START, err, error, *999 )
-        call WRITE_STRING_VALUE( DIAGNOSTIC_OUTPUT_TYPE, "  Boundary finish = ", &
-                                 & mapping%BOUNDARY_FINISH, err, error, *999 )
-        call WRITE_STRING_VALUE( DIAGNOSTIC_OUTPUT_TYPE, "  Ghost start = ", &
-                                 & mapping%GHOST_START, err, error, *999 )
-        call WRITE_STRING_VALUE( DIAGNOSTIC_OUTPUT_TYPE, "  Ghost finish = ", &
-                                 & mapping%GHOST_FINISH, err, error, *999 )
      if ( DIAGNOSTICS2 ) then
         call WRITE_STRING( DIAGNOSTIC_OUTPUT_TYPE, "Element mapping :", err, error, *999 )
         call WRITE_STRING_VECTOR( DIAGNOSTIC_OUTPUT_TYPE, 1, 1, mapping%TOTAL_NUMBER_OF_LOCAL, 10, 10, &
@@ -4477,11 +4444,11 @@ CONTAINS
     ENTERS("DOMAIN_MAPPINGS_ELEMENTS_CALCULATE",ERR,ERROR,*999)
 
     ! Pointer check
-    if ( .not.ASSOCIATED(DOMAIN) ) call FlagError( "Domain is not associated.", ERR,ERROR, *998 )
-    if ( .not.ASSOCIATED(DOMAIN%MAPPINGS) ) call FlagError( "Domain mappings is not associated.", ERR,ERROR, *998 )
+    if ( .not.ASSOCIATED(DOMAIN) )                   call FlagError( "Domain is not associated.", ERR,ERROR, *998 )
+    if ( .not.ASSOCIATED(DOMAIN%MAPPINGS) )          call FlagError( "Domain mappings is not associated.", ERR,ERROR, *998 )
     if ( .not.ASSOCIATED(DOMAIN%MAPPINGS%ELEMENTS) ) call FlagError("Domain mappings elements is not associated.",ERR,ERROR,*998)
-    if ( .not.ASSOCIATED(DOMAIN%DECOMPOSITION) ) call FlagError( "Domain decomposition is not associated.", ERR,ERROR, *998 )
-    if ( .not.ASSOCIATED(DOMAIN%MESH) ) call FlagError( "Domain mesh is not associated.", ERR,ERROR, *998 )
+    if ( .not.ASSOCIATED(DOMAIN%DECOMPOSITION) )     call FlagError( "Domain decomposition is not associated.", ERR,ERROR, *998 )
+    if ( .not.ASSOCIATED(DOMAIN%MESH) )              call FlagError( "Domain mesh is not associated.", ERR,ERROR, *998 )
 
     ! Create some pointer shortcuts
     ELEMENTS_MAPPING => DOMAIN%MAPPINGS%ELEMENTS
@@ -4601,47 +4568,6 @@ CONTAINS
 
     deallocate( ADJACENT_ELEMENTS_LIST )
     deallocate( LOCAL_ELEMENT_NUMBERS )
-
-!********************************************************************************************************************************
-!                                                  D E B U G G I N G
-!********************************************************************************************************************************
-   ! INTERNAL element check
-    cnt = 0
-    do nn = 1,ELEMENTS_MAPPING%NUMBER_OF_INTERNAL
-       element_idx = ELEMENTS_MAPPING%LOCAL_TO_GLOBAL_MAP( ELEMENTS_MAPPING%DOMAIN_LIST(nn) )
-       if ( ELEMENTS_MAPPING%GLOBAL_TO_LOCAL_MAP(element_idx)%NUMBER_OF_DOMAINS==1 ) then
-          if ( ELEMENTS_MAPPING%GLOBAL_TO_LOCAL_MAP(element_idx)%DOMAIN_NUMBER(1)==my_computational_node_number ) then
-             if ( ELEMENTS_MAPPING%GLOBAL_TO_LOCAL_MAP(element_idx)%LOCAL_TYPE(1)==DOMAIN_LOCAL_INTERNAL ) then
-                cnt = cnt + 1
-              endif
-            endif
-          endif
-    enddo
-    if ( cnt/=ELEMENTS_MAPPING%NUMBER_OF_INTERNAL ) call FlagError( "# of internal elements not in agreement", ERR, ERROR, *999)
-
-    ! BOUNDARY element check
-    cnt = 0
-    do nn = 1,ELEMENTS_MAPPING%NUMBER_OF_BOUNDARY
-      element_idx = ELEMENTS_MAPPING%LOCAL_TO_GLOBAL_MAP( ELEMENTS_MAPPING%DOMAIN_LIST(nn) )
-      if ( ELEMENTS_MAPPING%GLOBAL_TO_LOCAL_MAP(element_idx)%NUMBER_OF_DOMAINS>1 ) then
-         np = ELEMENTS_MAPPING%GLOBAL_TO_LOCAL_MAP(element_idx)%DOMAIN_NUMBER(&
-            &ELEMENTS_MAPPING%GLOBAL_TO_LOCAL_MAP(element_idx)%NUMBER_OF_DOMAINS)
-         if ( ELEMENTS_MAPPING%GLOBAL_TO_LOCAL_MAP(element_idx)%DOMAIN_NUMBER(np)==my_computational_node_number ) then
-            if ( ELEMENTS_MAPPING%GLOBAL_TO_LOCAL_MAP(element_idx)%LOCAL_TYPE(np)==DOMAIN_LOCAL_BOUNDARY ) then
-               cnt = cnt + 1
-             endif
-         endif
-       endif
-     enddo
-     if ( cnt/=ELEMENTS_MAPPING%NUMBER_OF_BOUNDARY ) call FlagError( "# of boundary elements not in agreement", ERR, ERROR, *999)
-
-!mpch    call MPI_Barrier( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, ERR )
-!    call MPI_Abort( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, ERR, nn )
-
-!********************************************************************************************************************************
-!                                                  D E B U G G I N G
-!********************************************************************************************************************************
-
 
     if (DIAGNOSTICS1) then
        call WRITE_STRING( DIAGNOSTIC_OUTPUT_TYPE, "Element mappings :", ERR, ERROR, *999 )
@@ -4805,12 +4731,16 @@ CONTAINS
     call DOMAIN_MAPPINGS_NODES_INITIALISE( domain%MAPPINGS, err, error, *999 )
     call DOMAIN_MAPPINGS_DOFS_INITIALISE( domain%MAPPINGS, err, error, *999 )
 
+  ! Define and fill the local->global element mapping
     call CalculateLocalElementDomainMappings( domain, err, error )
-
     call DOMAIN_MAPPINGS_ELEMENTS_CALCULATE( domain, err, error, *999 )
-!mpch
+
+  ! Define and fill the local->global node mapping
     call CalculateLocalNodeDomainMappings( domain, err, error, *999 )
-    call DOMAIN_MAPPINGS_NODES_DOFS_CALCULATE( domain, err, error, *999 )
+!    call DOMAIN_MAPPINGS_NODES_DOFS_CALCULATE( domain, err, error, *999 )
+    call MPI_Barrier( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
+    call MPI_Abort( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err, errorcode )
+!mpch
 
     EXITS("DOMAIN_MAPPINGS_INITIALISE")
     return
@@ -4833,9 +4763,9 @@ CONTAINS
 
      ! local variables
      integer(INTG) :: node_idx, num_element, adjacent_element, domain_no, num_domains, subdomain, np, num_nodes, cnt, n, nn, &
-                    & element, found, nodes_per_subdomain, m, status(MPI_STATUS_SIZE)
+                    & element, found, nodes_per_subdomain, m, status(MPI_STATUS_SIZE), ne, boundary
      integer(INTG), allocatable :: DOMAINS(:), LOCAL_NODES(:), recv_cnt(:), recv_cnt2(:), displ(:), ADJACENT_DOMAINS(:), &
-                                 & temp(:), ghostNODES(:), tmp(:)
+                                 & temp(:), ghostNODES(:), tmp(:), boundaryNODES(:), internalNODES(:)
      type(LIST_TYPE), pointer :: domain_list, local_node_list, internal_node_list, boundary_node_list, ghost_node_list, &
                                & adjacent_domain_list
      type(MeshComponentTopologyType), pointer :: meshTopology
@@ -4852,106 +4782,77 @@ CONTAINS
      elementMap => domain%MAPPINGS%ELEMENTS
      nodeMap => domain%MAPPINGS%NODES
 
-!
-! PART ONE - LOCAL NODE GATHERING
-!            Gather the global IDs of all nodes on the local sub-domain.
-!--------------------------------------------------------------------------------------------------------------------------------
      nodes_per_subdomain = meshTopology%NODES%numberOfNodes/domain%DECOMPOSITION%NUMBER_OF_DOMAINS
 
-   ! create an empty list to hold the global IDs of the nodes on the sub-domain
-     nullify( local_node_list )
-     call List_CreateStart( local_node_list, err, error, *999 )
-     call List_DataTypeSet( local_node_list, LIST_INTG_TYPE, err, error, *999 )
-     call List_InitialSizeSet( local_node_list, nodes_per_subdomain, err, error, *999 )
-     call List_CreateFinish( local_node_list, err, error, *999 )
-
-   ! add the global ID of every node comprising the elements local to this sub-domain to the list
-     do n = 1,elementMap%TOTAL_NUMBER_OF_LOCAL
-        element = elementMap%LOCAL_TO_GLOBAL_MAP( n )
-        do np = 1,meshTopology%elements%ELEMENTS( element )%BASIS%NUMBER_OF_NODES
-           call List_ItemAdd(local_node_list, meshTopology%elements%ELEMENTS( element )%GLOBAL_ELEMENT_NODES(np),err,error, *999)
-        enddo
-     enddo
-     call LIST_REMOVE_DUPLICATES( local_node_list, err, error, *999 )
-
-   ! count the number of unique global node IDs and allocate an array to hold them
-     call List_DetachAndDestroy( local_node_list, nodeMap%NUMBER_OF_LOCAL, LOCAL_NODES, err, error, *999 )
-
 !
-! PART TWO - NODE CLASSIFICATION
+! PART ONE - INTERNAL NODE GATHERING
+!            Gather the global IDs of all internal nodes on the local sub-domain.
 !--------------------------------------------------------------------------------------------------------------------------------
-   ! create empty lists for nodes being classifed as INTERNAL, BOUNDARY or GHOST
      nullify( internal_node_list )
      call List_CreateStart( internal_node_list, err, error, *999 )
      call List_DataTypeSet( internal_node_list, LIST_INTG_TYPE, err, error, *999 )
      call List_InitialSizeSet( internal_node_list, nodes_per_subdomain, err, error, *999 )
      call List_CreateFinish( internal_node_list, err, error, *999 )
 
+     do ne = 1,elementMap%NUMBER_OF_INTERNAL
+        element = elementMap%LOCAL_TO_GLOBAL_MAP( ne )
+        do np = 1,meshTopology%elements%ELEMENTS( element )%BASIS%NUMBER_OF_NODES
+           node_idx = meshTopology%elements%ELEMENTS( element )%GLOBAL_ELEMENT_NODES(np)
+           call List_ItemAdd( internal_node_list, node_idx, err, error, *999 )
+        enddo
+     enddo
+
+     call LIST_REMOVE_DUPLICATES( internal_node_list, err, error, *999 )
+
+!
+! PART TWO - BOUNDARY NODE GATHERING
+!            Gather the global IDs of all boundary nodes on the local sub-domain.
+!--------------------------------------------------------------------------------------------------------------------------------
      nullify( boundary_node_list )
      call List_CreateStart( boundary_node_list, err, error, *999 )
      call List_DataTypeSet( boundary_node_list, LIST_INTG_TYPE, err, error, *999 )
      call List_InitialSizeSet( boundary_node_list, INT(nodes_per_subdomain/3), err, error, *999 )
      call List_CreateFinish( boundary_node_list, err, error, *999 )
 
+     do ne = elementMap%BOUNDARY_START,elementMap%BOUNDARY_FINISH
+        element = elementMap%LOCAL_TO_GLOBAL_MAP( elementMap%DOMAIN_LIST(ne) )
+        do np = 1,meshTopology%elements%ELEMENTS( element )%BASIS%NUMBER_OF_NODES
+           node_idx = meshTopology%elements%ELEMENTS( element )%GLOBAL_ELEMENT_NODES(np)
+           call List_ItemInList( internal_node_list, node_idx, nn, err, error, *999 )
+           if ( nn==0 ) call List_ItemAdd( boundary_node_list, node_idx, err, error, *999 )
+        enddo
+     enddo
+
+     call LIST_REMOVE_DUPLICATES( boundary_node_list, err, error, *999 )
+
+!
+! PART THREE - GHOST NODE GATHERING
+!              Gather the global IDs of all ghost nodes on the local sub-domain.
+!--------------------------------------------------------------------------------------------------------------------------------
      nullify( ghost_node_list )
      call List_CreateStart( ghost_node_list, err, error, *999 )
      call List_DataTypeSet( ghost_node_list, LIST_INTG_TYPE, err, error, *999 )
-     call List_InitialSizeSet( ghost_node_list, INT(nodes_per_subdomain/2), err, error, *999 )
+     call List_InitialSizeSet( ghost_node_list, nodes_per_subdomain, err, error, *999 )
      call List_CreateFinish( ghost_node_list, err, error, *999 )
 
-   ! also add an empty list to gather adjacent domain IDs
-     nullify( adjacent_domain_list )
-     call List_CreateStart( adjacent_domain_list, err, error, *999 )
-     call List_DataTypeSet( adjacent_domain_list, LIST_INTG_TYPE, err, error, *999 )
-     call List_InitialSizeSet( adjacent_domain_list, INT(nodes_per_subdomain/2), err, error, *999 )
-     call List_CreateFinish( adjacent_domain_list, err, error, *999 )
-
-   ! Iterate through each node local to this sub-domain
-     do np = 1,nodeMap%NUMBER_OF_LOCAL
-        node_idx = LOCAL_NODES( np )
-
-      ! create a list of all sub-domains possessing nodes adjacent to node_idx
-        nullify( domain_list )
-        call List_CreateStart( domain_list, err, error, *999 )
-        call List_DataTypeSet( domain_list, LIST_INTG_TYPE, err, error, *999 )
-        call List_InitialSizeSet( domain_list, domain%DECOMPOSITION%NUMBER_OF_DOMAINS, err, error, *999 )
-        call List_CreateFinish( domain_list, err, error, *999 )
-
-      ! add to the list the ID of all sub-domains possessing nodes adjacent to node_idx
-        do num_element = 1,meshTopology%NODES%NODES( node_idx )%numberOfSurroundingElements
-           adjacent_element = meshTopology%NODES%NODES( node_idx )%surroundingElements( num_element )
-           domain_no = domain%DECOMPOSITION%ELEMENT_DOMAIN( adjacent_element )
-           call List_ItemAdd( domain_list, domain_no, err, error, *999 )
-           if ( domain_no/=subdomain ) call List_ItemAdd( adjacent_domain_list, domain_no, err, error, *999 )
+     do ne = elementMap%GHOST_START,elementMap%GHOST_FINISH
+        element = elementMap%LOCAL_TO_GLOBAL_MAP( elementMap%DOMAIN_LIST(ne) )
+        do np = 1,meshTopology%elements%ELEMENTS( element )%BASIS%NUMBER_OF_NODES
+           node_idx = meshTopology%elements%ELEMENTS( element )%GLOBAL_ELEMENT_NODES(np)
+           call List_ItemInList( boundary_node_list, node_idx, nn, err, error, *999 )
+           if ( nn==0 ) call List_ItemAdd( ghost_node_list, node_idx, err, error, *999 )
         enddo
-
-      ! determine the # of unique adjacent sub-domains and a list of these sub-domains
-        call LIST_REMOVE_DUPLICATES( domain_list, err, error, *999 )
-        call List_DetachAndDestroy( domain_list, num_domains, DOMAINS, err, error, *999 )
-
-      ! if node_idx and all of the nodes adjacent to it are located on the same sub-domain (eg. this local sub-domain),
-      ! we classify node_idx as INTERNAL
-        if ( (num_domains==1).and.(subdomain==DOMAINS(num_domains)) ) then
-           call List_ItemAdd( internal_node_list, node_idx, err, error, *999 )
-        else
-           if ( (num_domains>1).and.(subdomain==DOMAINS(num_domains)) ) then
-              call List_ItemAdd( boundary_node_list, node_idx, err, error, *999 )
-           else
-              call List_ItemAdd( ghost_node_list, node_idx, err, error, *999 )
-           endif
-        endif
-
-        deallocate( DOMAINS )
      enddo
+    
+     call LIST_REMOVE_DUPLICATES( ghost_node_list, err, error, *999 )
 
 !
-! PART THREE - DOMAIN MAPPING TYPE FILLING
-!             Define and fill are required parameters for the node domain mapping
+! PART FOUR - DOMAIN MAPPING TYPE FILLING
+!             Define and fill the required parameters for the node domain mapping
 !--------------------------------------------------------------------------------------------------------------------------------
-   ! get the # of INTERNAL, BOUNDARY and GHOST nodes on the local sub-domains.
-     call List_NumberOfItemsGet( internal_node_list, nodeMap%NUMBER_OF_INTERNAL, err, error, *999 )
-     call List_NumberOfItemsGet( boundary_node_list, nodeMap%NUMBER_OF_BOUNDARY, err, error, *999 )
-     call List_NumberOfItemsGet( ghost_node_list, nodeMap%NUMBER_OF_GHOST, err, error, *999 )
+     call List_DetachAndDestroy( internal_node_list, nodeMap%NUMBER_OF_INTERNAL, internalNODES, err, error, *999 )
+     call List_DetachAndDestroy( boundary_node_list, nodeMap%NUMBER_OF_BOUNDARY, boundaryNODES, err, error, *999 )
+     call List_DetachAndDestroy( ghost_node_list, nodeMap%NUMBER_OF_GHOST, ghostNODES, err, error, *999 )
 
    ! fill in some size parameters
      nodeMap%NUMBER_OF_LOCAL = nodeMap%NUMBER_OF_INTERNAL + nodeMap%NUMBER_OF_BOUNDARY
@@ -4971,22 +4872,17 @@ CONTAINS
      allocate( nodeMap%LOCAL_TO_GLOBAL_MAP(nodeMap%TOTAL_NUMBER_OF_LOCAL), STAT=err )
      if ( err/=0 ) call FlagError( "could not allocate nodal LOCAL_TO_GLOBAL_MAP", err, error, *999 )
 
-     call List_DetachAndDestroy( internal_node_list, n, temp, err, error, *999 )
-     nodeMap%LOCAL_TO_GLOBAL_MAP( 1:nodeMap%NUMBER_OF_INTERNAL ) = temp( 1:nodeMap%NUMBER_OF_INTERNAL )
-     deallocate( temp )
-
-     call List_DetachAndDestroy( boundary_node_list, n, temp, err, error, *999 )
+     nodeMap%LOCAL_TO_GLOBAL_MAP( 1:nodeMap%NUMBER_OF_INTERNAL ) = internalNODES( 1:nodeMap%NUMBER_OF_INTERNAL )
      if ( nodeMap%NUMBER_OF_BOUNDARY>0 ) then
-        nodeMap%LOCAL_TO_GLOBAL_MAP( nodeMap%BOUNDARY_START:nodeMap%BOUNDARY_FINISH ) = temp( 1:nodeMap%NUMBER_OF_BOUNDARY )
-     endif
-     deallocate( temp )
-
-     call List_DetachAndDestroy( ghost_node_list, n, ghostNODES, err, error, *999 )
+        nodeMap%LOCAL_TO_GLOBAL_MAP( nodeMap%BOUNDARY_START:nodeMap%BOUNDARY_FINISH ) = &
+                            & boundaryNODES( 1:nodeMap%NUMBER_OF_BOUNDARY )
+     endif 
      nodeMap%LOCAL_TO_GLOBAL_MAP( nodeMap%GHOST_START:nodeMap%GHOST_FINISH ) = ghostNODES( 1:nodeMap%NUMBER_OF_GHOST )
 
    ! allocate and fill the DOMAIN_LIST array
      allocate( nodeMap%DOMAIN_LIST(nodeMap%TOTAL_NUMBER_OF_LOCAL), STAT=err )
      if ( err/=0 ) call FlagError( "could not allocate nodal DOMAIN_LIST", err, error, *999 )
+
      do n = 1,nodeMap%TOTAL_NUMBER_OF_LOCAL
         nodeMap%DOMAIN_LIST(n) = n
      enddo
@@ -4994,12 +4890,17 @@ CONTAINS
    ! allocate and fill the LOCAL_TYPE array
      allocate( nodeMap%LOCAL_TYPE(nodeMap%TOTAL_NUMBER_OF_LOCAL), STAT=err )
      if ( err/=0 ) call FlagError( "could not allocate nodal DOMAIN_LIST", err, error, *999 )
+
      nodeMap%LOCAL_TYPE( 1:nodeMap%INTERNAL_FINISH ) = DOMAIN_LOCAL_INTERNAL
      if ( nodeMap%NUMBER_OF_BOUNDARY>0 ) then
         nodeMap%LOCAL_TYPE( nodeMap%BOUNDARY_START:nodeMap%BOUNDARY_FINISH ) = DOMAIN_LOCAL_BOUNDARY
      endif
      nodeMap%LOCAL_TYPE( nodeMap%GHOST_START:nodeMap%GHOST_FINISH ) = DOMAIN_LOCAL_GHOST
 
+!
+! PART FIVE - DOMAIN ADJACENCY INFO
+!             Determine what other sub-domains the local sub-domain must communicate with
+!--------------------------------------------------------------------------------------------------------------------------------
    ! gather the # of local nodes on every sub-domain into a global array
      allocate( recv_cnt(domain%DECOMPOSITION%NUMBER_OF_DOMAINS) )
      allocate( displ(domain%DECOMPOSITION%NUMBER_OF_DOMAINS) )
@@ -5021,50 +4922,32 @@ CONTAINS
      call MPI_Allgatherv( nodeMap%NUMBER_OF_GHOST, 1, MPI_INTEGER, nodeMap%NUMBER_OF_DOMAIN_GHOST, recv_cnt, displ, &
                         & MPI_INTEGER, COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
 
-!
-! PART FOUR - DOMAIN ADJACENCY INFO
-!             Define and fill are required parameters for the node domain mapping
-!--------------------------------------------------------------------------------------------------------------------------------
-   ! determine the # of unique adjacent sub-domains and a list of these sub-domains
-     call LIST_REMOVE_DUPLICATES( adjacent_domain_list, err, error, *999 )
-     call List_DetachAndDestroy( adjacent_domain_list, nodeMap%NUMBER_OF_ADJACENT_DOMAINS, ADJACENT_DOMAINS, err, error, *999 )
-
    ! construct the ADJACENT_DOMAINS_PTR array
-     allocate( recv_cnt2(domain%DECOMPOSITION%NUMBER_OF_DOMAINS) )
      allocate( nodeMap%ADJACENT_DOMAINS_PTR(0:domain%DECOMPOSITION%NUMBER_OF_DOMAINS-1), STAT=err )
      if (err/=0) call FlagError( "could not allocate nodal ADJACENT_DOMAINS_PTR array", err, error, *999 )
-
-     call MPI_Allgatherv( nodeMap%NUMBER_OF_ADJACENT_DOMAINS, 1, MPI_INTEGER, recv_cnt2, recv_cnt, displ, &
-                        & MPI_INTEGER, COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
-
-     deallocate( recv_cnt )
-     nodeMap%ADJACENT_DOMAINS_PTR( 0 ) = 0
-     do n = 1,domain%DECOMPOSITION%NUMBER_OF_DOMAINS-1
-        nodeMap%ADJACENT_DOMAINS_PTR( n ) = nodeMap%ADJACENT_DOMAINS_PTR( n-1 ) + recv_cnt2( n )
-     enddo
+     nodeMap%ADJACENT_DOMAINS_PTR = elementMap%ADJACENT_DOMAINS_PTR
 
    ! contruct the ADJACENT_DOMAINS_LIST array
-     num_nodes = sum( recv_cnt2 )
-     allocate( nodeMap%ADJACENT_DOMAINS_LIST(num_nodes), STAT=err )
+     allocate( nodeMap%ADJACENT_DOMAINS_LIST( size(elementMap%ADJACENT_DOMAINS_LIST) ), STAT=err )
      if (err/=0) call FlagError( "could not allocate nodal ADJACENT_DOMAINS_LIST array", err, error, *999 )
+     nodeMap%ADJACENT_DOMAINS_LIST = elementMap%ADJACENT_DOMAINS_LIST
 
-     displ = nodeMap%ADJACENT_DOMAINS_PTR( 0:domain%DECOMPOSITION%NUMBER_OF_DOMAINS-1 )
-     call MPI_Allgatherv( ADJACENT_DOMAINS(1:nodeMap%NUMBER_OF_ADJACENT_DOMAINS), nodeMap%NUMBER_OF_ADJACENT_DOMAINS, &
-                        & MPI_INTEGER, nodeMap%ADJACENT_DOMAINS_LIST, recv_cnt2, displ, MPI_INTEGER, &
-                        & COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
-     deallocate( recv_cnt2,displ )
+     nodeMap%NUMBER_OF_ADJACENT_DOMAINS = elementMap%NUMBER_OF_ADJACENT_DOMAINS
 
    ! allocate an array of ADJACENT_DOMAINS structures for the node mapping
      allocate( nodeMap%ADJACENT_DOMAINS(nodeMap%NUMBER_OF_ADJACENT_DOMAINS), STAT=err )
      if (err/=0) call FlagError( "could not allocate nodal ADJACENT_DOMAINS structure", err, error, *999 )
 
-   ! set the domain IDs and initialize the send/receive counts in the array of structures
-     do domain_no = 1,nodeMap%NUMBER_OF_ADJACENT_DOMAINS
-        nodeMap%ADJACENT_DOMAINS( domain_no )%DOMAIN_NUMBER = ADJACENT_DOMAINS( domain_no )
-        nodeMap%ADJACENT_DOMAINS( domain_no )%NUMBER_OF_SEND_GHOSTS = 0
-        nodeMap%ADJACENT_DOMAINS( domain_no )%NUMBER_OF_RECEIVE_GHOSTS = 0
+     do n = 1,nodeMap%NUMBER_OF_ADJACENT_DOMAINS
+        nodeMap%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER = elementMap%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER
+        nodeMap%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS = 0
+        nodeMap%ADJACENT_DOMAINS(n)%NUMBER_OF_RECEIVE_GHOSTS = 0
      enddo
 
+!
+! PART SIX - HALO EXCHANGE INFO (send)
+!            Determine the local IDs of the node values that need to be sent to adjacent sub-domains 
+!--------------------------------------------------------------------------------------------------------------------------------
      do domain_no = 0,domain%DECOMPOSITION%NUMBER_OF_DOMAINS-1
         allocate( temp(nodeMap%NUMBER_OF_DOMAIN_GHOST(domain_no)) )
 
@@ -5075,119 +4958,127 @@ CONTAINS
               call MPI_Send( temp, nodeMap%NUMBER_OF_DOMAIN_GHOST(domain_no), MPI_INTEGER, &
                           &  nodeMap%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER, 0, COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
            enddo
-        endif
+        else
 
-      ! the other sub-domains check if they are adjacent to domain_no.  If they are, they receive the sent GHOST node
-      ! IDs and update their NUMBER_OF_SEND_GHOSTS counter.
-        do n = 1,nodeMap%NUMBER_OF_ADJACENT_DOMAINS
-           if ( nodeMap%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER==domain_no ) then
-              call MPI_Recv( temp, nodeMap%NUMBER_OF_DOMAIN_GHOST(domain_no), MPI_INTEGER, domain_no, MPI_ANY_TAG, &
-                           & COMPUTATIONAL_ENVIRONMENT%MPI_COMM, status, err )
-
-              nullify( local_node_list )
-              call List_CreateStart( local_node_list, err, error, *999 )
-              call List_DataTypeSet( local_node_list, LIST_INTG_TYPE, err, error, *999 )
-              call List_InitialSizeSet( local_node_list, nodeMap%NUMBER_OF_DOMAIN_GHOST(domain_no), err, error, *999 )
-              call List_CreateFinish( local_node_list, err, error, *999 )
-
-              do np = 1,nodeMap%NUMBER_OF_LOCAL
-              do m = 1,nodeMap%NUMBER_OF_DOMAIN_GHOST(domain_no)
-                 if ( nodeMap%LOCAL_TO_GLOBAL_MAP(np)==temp(m) ) call List_ItemAdd( local_node_list, np, err, error, *999 )
-              enddo
-              enddo
-
-              call List_DetachAndDestroy( local_node_list, nodeMap%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS, tmp, &
-                                        & err, error, *999 )
-              allocate(nodeMap%ADJACENT_DOMAINS(n)%LOCAL_GHOST_SEND_INDICES(nodeMap%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS),&
-                 &      STAT=err )
-              if (err/=0) call FlagError( "could not allocate nodal LOCAL_GHOST_SEND_INDICES", err, error, *999 )
-              nodeMap%ADJACENT_DOMAINS(n)%LOCAL_GHOST_SEND_INDICES = tmp( 1:nodeMap%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS )
-              deallocate( tmp )
-              exit
-
-           endif
-        enddo
-
-        deallocate( temp )
-     enddo
-     call MPI_Barrier( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
-
-   ! next we need to determine which GHOST nodes on the local sub-domain need to be sent to
-   ! the appropriate adjacent sub-domains
-     do domain_no = 0,domain%DECOMPOSITION%NUMBER_OF_DOMAINS-1
-
-        if ( subdomain/=domain_no ) then
-           allocate( temp(nodeMap%NUMBER_OF_DOMAIN_GHOST(subdomain)) )
-           temp = ghostNODES( 1:nodeMap%NUMBER_OF_DOMAIN_GHOST(subdomain) )
-
-      ! all sub-domains check if they are adjacent to domain_no. If they are, they send their GHOST node global IDs to
-      ! domain_no
+      ! the other sub-domains check if they are adjacent to domain_no.
            do n = 1,nodeMap%NUMBER_OF_ADJACENT_DOMAINS
               if ( nodeMap%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER==domain_no ) then
-                 call MPI_Send( temp, nodeMap%NUMBER_OF_DOMAIN_GHOST(subdomain), MPI_INTEGER, &
-                             &  domain_no, 0, COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
+
+               ! If they are, they receive the sent GHOST node IDs 
+                 call MPI_Recv( temp, nodeMap%NUMBER_OF_DOMAIN_GHOST(domain_no), MPI_INTEGER, domain_no, MPI_ANY_TAG, &
+                              & COMPUTATIONAL_ENVIRONMENT%MPI_COMM, status, err )
+
+               ! Update the NUMBER_OF_SEND_GHOSTS counter
+                 allocate( tmp(nodeMap%NUMBER_OF_DOMAIN_GHOST(domain_no)), STAT=err )
+
+                 nn = 0
+                 do np = 1,nodeMap%NUMBER_OF_LOCAL
+                 do m = 1,nodeMap%NUMBER_OF_DOMAIN_GHOST(domain_no)
+                    if ( nodeMap%LOCAL_TO_GLOBAL_MAP(np)==temp(m) ) then
+                       nn = nn + 1
+                       tmp(nn) = np
+                    endif
+                 enddo
+                 enddo
+
+                 nodeMap%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS = nn
+
+               ! Allocate memory and fill in the local IDs of the ghost values to send domain_no
+                 allocate( nodeMap%ADJACENT_DOMAINS(n)%LOCAL_GHOST_SEND_INDICES(nodeMap%ADJACENT_DOMAINS(n)%&
+                          &NUMBER_OF_SEND_GHOSTS), STAT=err )
+                 if (err/=0) call FlagError( "could not allocate nodal LOCAL_GHOST_SEND_INDICES", err, error, *999 )
+
+                 nodeMap%ADJACENT_DOMAINS(n)%LOCAL_GHOST_SEND_INDICES = tmp( 1:nodeMap%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS)
+                 deallocate( tmp )
                  exit
+
               endif
            enddo
         endif
 
-      ! domain_no will receive a message from every adjacent sub-domain containing the global IDs of the GHOST nodes
-      ! on that sub-domain.
+        deallocate( temp )
+     enddo
+     deallocate( ghostNODES )
+
+!
+! PART SEVEN - HALO EXCHANGE INFO (receive)
+!              Determine the local IDs of the node values that the local sub-domain receives from adjacent sub-domains 
+!--------------------------------------------------------------------------------------------------------------------------------
+     do domain_no = 0,domain%DECOMPOSITION%NUMBER_OF_DOMAINS-1
+        allocate( temp(nodeMap%NUMBER_OF_DOMAIN_LOCAL(domain_no)) )
+
+      ! domain_no will send the global IDs of its LOCAL nodes to all sub-domains adjacent to it
         if ( subdomain==domain_no ) then
+           temp( 1:nodeMap%NUMBER_OF_INTERNAL ) = internalNODES( 1:nodeMap%NUMBER_OF_INTERNAL )
+           temp( nodeMap%BOUNDARY_START:nodeMap%BOUNDARY_FINISH ) = boundaryNODES( 1:nodeMap%NUMBER_OF_BOUNDARY )
            do n = 1,nodeMap%NUMBER_OF_ADJACENT_DOMAINS
-              allocate( temp(nodeMap%NUMBER_OF_DOMAIN_GHOST(nodeMap%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER)) )
-              call MPI_Recv( temp, nodeMap%NUMBER_OF_DOMAIN_GHOST(nodeMap%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER), MPI_INTEGER, &
-                          &  nodeMap%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER, MPI_ANY_TAG, COMPUTATIONAL_ENVIRONMENT%MPI_COMM, &
-                          &  status, err )
+              call MPI_Send( temp, nodeMap%NUMBER_OF_DOMAIN_LOCAL(domain_no), MPI_INTEGER, &
+                          &  nodeMap%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER, 0, COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
+           enddo
+        else
 
-              nullify( local_node_list )
-              call List_CreateStart( local_node_list, err, error, *999 )
-              call List_DataTypeSet( local_node_list, LIST_INTG_TYPE, err, error, *999 )
-              call List_InitialSizeSet( local_node_list, &
-                                      & nodeMap%NUMBER_OF_DOMAIN_GHOST(nodeMap%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER), &
-                                      & err, error, *999 )
-              call List_CreateFinish( local_node_list, err, error, *999 )
+      ! the other sub-domains check if they are adjacent to domain_no.
+           do n = 1,nodeMap%NUMBER_OF_ADJACENT_DOMAINS
+              if ( nodeMap%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER==domain_no ) then
 
-              do np = 1,nodeMap%NUMBER_OF_LOCAL
-              do m = 1,nodeMap%NUMBER_OF_DOMAIN_GHOST(nodeMap%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER)
-                 if ( nodeMap%LOCAL_TO_GLOBAL_MAP(np)==temp(m) ) call List_ItemAdd( local_node_list, np, err, error, *999 )
-              enddo
-              enddo
+               ! If they are, they receive the sent LOCAL node IDs 
+                 call MPI_Recv( temp, nodeMap%NUMBER_OF_DOMAIN_LOCAL(domain_no), MPI_INTEGER, domain_no, MPI_ANY_TAG, &
+                              & COMPUTATIONAL_ENVIRONMENT%MPI_COMM, status, err )
 
-              call List_DetachAndDestroy( local_node_list, nodeMap%ADJACENT_DOMAINS(n)%NUMBER_OF_RECEIVE_GHOSTS, tmp, &
-                                        & err, error, *999 )
-              allocate( nodeMap%ADJACENT_DOMAINS(n)%LOCAL_GHOST_RECEIVE_INDICES(nodeMap%ADJACENT_DOMAINS(n)&
-                      &%NUMBER_OF_RECEIVE_GHOSTS), STAT=err )
-              if (err/=0) call FlagError( "could not allocate nodal LOCAL_GHOST_RECEIVE_INDICES", err, error, *999 )
-              nodeMap%ADJACENT_DOMAINS(n)%LOCAL_GHOST_RECEIVE_INDICES &
-                &      = tmp( 1:nodeMap%ADJACENT_DOMAINS(n)%NUMBER_OF_RECEIVE_GHOSTS )
-              deallocate( temp,tmp )
+               ! Update the NUMBER_OF_RECEIVE_GHOSTS counter
+                 allocate( tmp(nodeMap%NUMBER_OF_DOMAIN_LOCAL(domain_no)), STAT=err )
+
+                 nn = 0
+                 do np = nodeMap%GHOST_START,nodeMap%GHOST_FINISH
+                 do m = 1,nodeMap%NUMBER_OF_DOMAIN_LOCAL(domain_no)
+                    if ( nodeMap%LOCAL_TO_GLOBAL_MAP(nodeMap%DOMAIN_LIST(np))==temp(m) ) then
+                       nn = nn + 1
+                       tmp(nn) = nodeMap%DOMAIN_LIST(np)
+                       exit
+                    endif
+                 enddo
+                 enddo
+
+               ! Allocate memory and fill in the local IDs of the ghost values to send domain_no
+                 nodeMap%ADJACENT_DOMAINS(n)%NUMBER_OF_RECEIVE_GHOSTS = nn
+                 allocate( nodeMap%ADJACENT_DOMAINS(n)%LOCAL_GHOST_RECEIVE_INDICES(nn), STAT=err )
+                 if (err/=0) call FlagError( "could not allocate nodal LOCAL_GHOST_RECEIVE_INDICES", err, error, *999 )
+
+                 nodeMap%ADJACENT_DOMAINS(n)%LOCAL_GHOST_RECEIVE_INDICES = tmp( 1:nn )
+                 deallocate( tmp )
+                 exit
+
+              endif
            enddo
         endif
 
-        if ( subdomain/=domain_no ) deallocate( temp )
+        deallocate( temp )
      enddo
+     deallocate( internalNODES,boundaryNODES )
 
-    ! call MPI_Barrier( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
-    ! write(*,*) "(NEW) Sub-domain [",subdomain,"] has ", nodeMap%NUMBER_OF_INTERNAL, " INTERNAL nodes, ", &
-    !         &  nodeMap%NUMBER_OF_BOUNDARY, " BOUNDARY nodes, ", nodeMap%NUMBER_OF_GHOST, " GHOST nodes"
-    ! if ( subdomain==0 ) then
-    !    write(*,*) "# of local nodes on each sub-domain: ", nodeMap%NUMBER_OF_DOMAIN_LOCAL
-    !    write(*,*) "# of ghost nodes on each sub-domain: ", nodeMap%NUMBER_OF_DOMAIN_GHOST
-    ! endif
-    ! write(*,*) "(NEW) Sub-domain [",subdomain,"] has ", nodeMap%NUMBER_OF_ADJACENT_DOMAINS, " ADJACENT domains "
-    ! if ( subdomain==0 ) then
-    !    write(*,*) "ADJACENT_DOMAINS_PTR: ", nodeMap%ADJACENT_DOMAINS_PTR
-    !    write(*,*) "ADJACENT_DOMAINS_LIST: ", nodeMap%ADJACENT_DOMAINS_LIST
-    ! endif
-    ! if ( subdomain==0 ) then
-    !    do n = 1,nodeMap%NUMBER_OF_ADJACENT_DOMAINS
-    !       write(*,*) "SEND_INDICIES : ", nodeMap%ADJACENT_DOMAINS(n)%LOCAL_GHOST_SEND_INDICES
-    !       write(*,*) "RECEIVE_INDICIES : ", nodeMap%ADJACENT_DOMAINS(n)%LOCAL_GHOST_RECEIVE_INDICES
-    !    enddo
-    ! endif
-    ! call MPI_Barrier( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
-    ! call MPI_Abort( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err, n )
+!************************************  D E B U G G I N G  **************************************************** 
+!     call MPI_Barrier( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
+!     write(*,*) "(NEW) Sub-domain [",subdomain,"] has ", nodeMap%NUMBER_OF_INTERNAL, " INTERNAL nodes, ", &
+!             &  nodeMap%NUMBER_OF_BOUNDARY, " BOUNDARY nodes, ", nodeMap%NUMBER_OF_GHOST, " GHOST nodes"
+!     if ( subdomain==0 ) then
+!        write(*,*) "# of local nodes on each sub-domain: ", nodeMap%NUMBER_OF_DOMAIN_LOCAL
+!        write(*,*) "# of ghost nodes on each sub-domain: ", nodeMap%NUMBER_OF_DOMAIN_GHOST
+!     endif
+!     write(*,*) "(NEW) Sub-domain [",subdomain,"] has ", nodeMap%NUMBER_OF_ADJACENT_DOMAINS, " ADJACENT domains "
+!     if ( subdomain==0 ) then
+!        write(*,*) "ADJACENT_DOMAINS_PTR: ", nodeMap%ADJACENT_DOMAINS_PTR
+!        write(*,*) "ADJACENT_DOMAINS_LIST: ", nodeMap%ADJACENT_DOMAINS_LIST
+!     endif
+!     if ( subdomain==0 ) then
+!        do n = 1,nodeMap%NUMBER_OF_ADJACENT_DOMAINS
+!           write(*,*) "ADJACENCY INFO FOR SUBDOMAIN ", nodeMap%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER
+!           write(*,*) "SEND_INDICIES : ", nodeMap%ADJACENT_DOMAINS(n)%LOCAL_GHOST_SEND_INDICES
+!           write(*,*) "RECEIVE_INDICIES : ", nodeMap%ADJACENT_DOMAINS(n)%LOCAL_GHOST_RECEIVE_INDICES
+!        enddo
+!     endif
+!     call MPI_Barrier( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
+!     call MPI_Abort( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err, n )
+!************************************  D E B U G G I N G  **************************************************** 
 
      EXITS("CalculateLocalNodeDomainMappings")
 
