@@ -35,7 +35,8 @@ set(IRON_Fortran_SRC
     computational_environment.f90
     constants.f90
     control_loop_routines.f90
-    coordinate_routines.f90
+    coordinate_routines.f90 
+    custom_profiling.f90
     Darcy_equations_routines.f90
     Darcy_pressure_equations_routines.f90
     data_point_routines.f90
@@ -96,6 +97,7 @@ set(IRON_Fortran_SRC
     opencmiss_iron.f90
     Poiseuille_equations_routines.f90
     Poisson_equations_routines.f90
+    print_types_routines.f90
     problem_constants.f90
     problem_routines.f90
     reaction_diffusion_equation_routines.f90

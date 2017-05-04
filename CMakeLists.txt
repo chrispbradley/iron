@@ -22,6 +22,8 @@ option(WITH_SCALAPACK "Build iron with SCALAPACK integration" ON)
 option(WITH_PETSC "Build iron with PETSC integration" ON)
 option(BUILD_TESTS "${PROJECT_NAME} - Build tests" ON)
 option(WITH_PROFILING "${PROJECT_NAME} - Build with profiling flags" OFF)
+option(USE_TAU_PROFILING "Build iron with TAU Profiling" OFF)
+option(USE_CUSTOM_PROFILING "Build iron with custom profiling" OFF)
 CMAKE_DEPENDENT_OPTION(WITH_DIAGNOSTICS "Build iron with diagnostics support" ON
                        "IS_DEBUG_BUILD" OFF)
 option(PRINT_CONFIG_SUMMARY "Show a summary of the configuration." TRUE)
@@ -68,8 +70,8 @@ if(NOT IRON_BUILD_SHARED_LIBRARY AND NOT IRON_BUILD_STATIC_LIBRARY )
   message(FATAL_ERROR "You have to build at least one of the types of libraries (shared or static)." )
 endif()
 
-include(OCMiscFunctions)
-include(OCMultiConfigEnvironment)
+#include(OCMiscFunctions)
+#include(OCMultiConfigEnvironment)
 
 # See http://cmake.3232098.n2.nabble.com/How-to-install-Fortran-module-files-td7584399.html
 SET(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/fortran_modules)
@@ -145,6 +147,25 @@ if(MSVC)
 else()
     set(IRON_TARGETS iron)
     add_library(iron ${IRON_SRC})
+    
+    
+    if (USE_TAU_PROFILING)
+      add_definitions(-DTAUPROF)
+      
+      if (NOT DEFINED TAU_HOME) 
+        if (NOT "$ENV{TAU_DIR}" STREQUAL "")
+          set (TAU_HOME $ENV{TAU_DIR})
+        endif ()
+      endif ()
+      
+      if (NOT DEFINED TAU_HOME) 
+        set(TAU_HOME "/store/DiHu/software/opencmiss/extras/TAU/tau-2.23.1/x86_64/lib")
+        message(WARNING "TAU Profiling is enabled but TAU_HOME is not set. Define environment variable TAU_DIR or cmake variable TAU_HOME as the path to where libTAU.so is located! Using default value ${TAU_HOME}.")
+      endif()
+      
+      target_link_libraries(iron PUBLIC "${TAU_HOME}/libTAU.so")
+    endif()
+      
     target_compile_options(iron PUBLIC $<BUILD_INTERFACE:-cpp>)
     source_group(headers FILES ${IRON_HEADERS})
     source_group(src FILES ${IRON_Fortran_SRC} ${IRON_C_SRC})
@@ -188,6 +209,9 @@ foreach(irontarget ${IRON_TARGETS})
     if (WITH_DIAGNOSTICS)
         target_compile_definitions(${irontarget} PUBLIC WITH_DIAGNOSTICS)
     endif()
+    if (USE_CUSTOM_PROFILING)
+        target_compile_definitions(${irontarget} PUBLIC USE_CUSTOM_PROFILING)
+    endif()
     
     # In case the compiler is not already the mpi wrapper,
     # we need all the include paths etc.
@@ -200,7 +224,7 @@ foreach(irontarget ${IRON_TARGETS})
     if(WITH_FIELDML)
         target_link_libraries(${irontarget} PUBLIC $<BUILD_INTERFACE:fieldml-api>)
     endif()
-    # Dont use "USEQ MPI" instructions if the percompiled mpi module files are incompatible.
+    # Dont use "USEQ MPI" instructions if the precompiled mpi module files are incompatible.
     # This happens when the fortran compiler used to build mpi differs from the currently used one.
     # This holds on windows (only pre-compiled mpi implementations available; MPICH2 and MSMPI)
     # and on e.g. clusters with inappropriately configured toolchain environments.
@@ -361,6 +385,16 @@ if (PRINT_CONFIG_SUMMARY)
 	  message(STATUS "           Profiling: ON")
 	else()
 	  message(STATUS "           Profiling: OFF")
+	endif()
+	if (USE_TAU_PROFILING)
+	  message(STATUS "       TAU Profiling: ON")
+	else()
+	  message(STATUS "       TAU Profiling: OFF")
+	endif()
+	if (USE_CUSTOM_PROFILING)
+	  message(STATUS "    Custom Profiling: ON")
+	else()
+	  message(STATUS "    Custom Profiling: OFF")
 	endif()
 	if (WITH_C_BINDINGS)
 	  message(STATUS "          C Bindings: ON")

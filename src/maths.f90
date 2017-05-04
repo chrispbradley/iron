@@ -1399,7 +1399,7 @@ CONTAINS
           IF(ABS(DET)>ZERO_TOLERANCE_SP) THEN
             B(1,1)=1.0_SP/A(1,1)
           ELSE
-            CALL FLAG_WARNING("Matrix A is zero and cannot be inverted",ERR,ERROR,*999)
+            CALL FLAG_WARNING("Matrix A is zero and cannot be inverted (SP)",ERR,ERROR,*999)
             B(1,1)=0.0_DP
           ENDIF
         CASE(2)

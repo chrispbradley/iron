@@ -61,6 +61,7 @@ MODULE FIELD_ROUTINES
 #endif
   USE MESH_ROUTINES
   USE NODE_ROUTINES
+  USE PRINT_TYPES_ROUTINES
   USE STRINGS
   USE TYPES
 
@@ -6092,11 +6093,18 @@ CONTAINS
     TYPE(FIELD_TYPE), POINTER :: FIELD
     TYPE(FIELD_INTERPOLATION_PARAMETERS_TYPE), POINTER :: INTERPOLATION_PARAMETERS
     TYPE(VARYING_STRING) :: LOCAL_ERROR
+    LOGICAL :: DEBUGGING = .FALSE.
 
     ENTERS("FIELD_INTERPOLATE_GAUSS",ERR,ERROR,*999)
 
     IF(ASSOCIATED(INTERPOLATED_POINT)) THEN
       INTERPOLATION_PARAMETERS=>INTERPOLATED_POINT%INTERPOLATION_PARAMETERS
+      
+      IF (DEBUGGING) THEN
+        !PRINT*, "In field_routines.f90:6102: INTERPOLATION_PARAMETERS: "
+        !CALL PRINT_FIELD_INTERPOLATION_PARAMETERS(INTERPOLATION_PARAMETERS, 1, 5)
+      ENDIF
+      
       IF(ASSOCIATED(INTERPOLATION_PARAMETERS)) THEN
         FIELD=>INTERPOLATION_PARAMETERS%FIELD
         IF(ASSOCIATED(FIELD)) THEN
@@ -6193,13 +6201,17 @@ CONTAINS
                     & ERR,ERROR,*999)
                 ENDDO !ni
               CASE(FIELD_NODE_BASED_INTERPOLATION)
+                
                 !Handle the first case of no partial derivative
-                INTERPOLATED_POINT%VALUES(component_idx,1)=BASIS_INTERPOLATE_GAUSS(INTERPOLATION_PARAMETERS%BASES( &
-                  & component_idx)%PTR,NO_PART_DERIV,QUADRATURE_SCHEME,GAUSS_POINT_NUMBER,INTERPOLATION_PARAMETERS% &
-                  & PARAMETERS(:,component_idx),ERR,ERROR)
+                INTERPOLATED_POINT%VALUES(component_idx,1) = &
+                  & BASIS_INTERPOLATE_GAUSS(INTERPOLATION_PARAMETERS%BASES(component_idx)%PTR, &
+                  &   NO_PART_DERIV,QUADRATURE_SCHEME,GAUSS_POINT_NUMBER,&
+                  &   INTERPOLATION_PARAMETERS%PARAMETERS(:,component_idx), &
+                  &   ERR,ERROR)
                 IF(ERR/=0) GOTO 999
                 CALL COORDINATE_INTERPOLATION_ADJUST(COORDINATE_SYSTEM,NO_PART_DERIV,INTERPOLATED_POINT%VALUES(component_idx,1), &
                   & ERR,ERROR,*999)
+                  
                 !Now process all the first partial derivatives
                 DO ni=1,INTERPOLATION_PARAMETERS%BASES(component_idx)%PTR%NUMBER_OF_XI
                   nu=PARTIAL_DERIVATIVE_FIRST_DERIVATIVE_MAP(ni)
@@ -7078,7 +7090,10 @@ CONTAINS
   !================================================================================================================================
   !
 
-  !>Interpolates a field at a xi location to give an interpolated point. XI is the element location to be interpolated at. PARTIAL_DERIVATIVE_TYPE controls which partial derivatives are evaluated. If it is NO_PART_DERIV then only the field values are interpolated. If it is FIRST_PART_DERIV then the field values and first partial derivatives are interpolated. If it is SECOND_PART_DERIV the the field values and first and second partial derivatives are evaluated. Old CMISS name PXI
+  !>Interpolates a field at a xi location to give an interpolated point. XI is the element location to be interpolated at. 
+  !>PARTIAL_DERIVATIVE_TYPE controls which partial derivatives are evaluated. If it is NO_PART_DERIV then only the field values are
+  !>interpolated. If it is FIRST_PART_DERIV then the field values and first partial derivatives are interpolated. 
+  !>If it is SECOND_PART_DERIV the field values and first and second partial derivatives are evaluated. Old CMISS name PXI
   SUBROUTINE FIELD_INTERPOLATE_XI(PARTIAL_DERIVATIVE_TYPE,XI,INTERPOLATED_POINT,ERR,ERROR,*,componentType)
 
     !Argument variables
@@ -8018,6 +8033,8 @@ CONTAINS
     TYPE(FIELD_TYPE), POINTER :: FIELD
     TYPE(FIELD_INTERPOLATED_POINT_TYPE), POINTER :: INTERPOLATED_POINT
     TYPE(FIELD_INTERPOLATION_PARAMETERS_TYPE), POINTER :: INTERPOLATION_PARAMETERS
+    LOGICAL :: DEBUGGING = .TRUE.
+    DEBUGGING = .FALSE.
 
     ENTERS("FIELD_INTERPOLATED_POINT_METRICS_CALCULATE",ERR,ERROR,*999)
 
@@ -8030,6 +8047,13 @@ CONTAINS
           & .OR.FIELD%TYPE==FIELD_GEOMETRIC_GENERAL_TYPE) THEN
         NULLIFY(COORDINATE_SYSTEM)
         CALL FIELD_COORDINATE_SYSTEM_GET(FIELD,COORDINATE_SYSTEM,ERR,ERROR,*999)
+        
+        IF (DEBUGGING) THEN
+          PRINT*, ""
+          PRINT*, "In FIELD_INTERPOLATED_POINT_METRICS_CALCULATE, coordinate system: "
+          CALL Print_COORDINATE_SYSTEM(COORDINATE_SYSTEM, 2, 5)
+        ENDIF
+        
         CALL COORDINATE_METRICS_CALCULATE(COORDINATE_SYSTEM,JACOBIAN_TYPE,INTERPOLATED_POINT_METRICS,ERR,ERROR,*999)
       ELSE
         CALL FlagError("The field is not a geometric or fibre field.",ERR,ERROR,*999)
@@ -12834,7 +12858,9 @@ CONTAINS
                     CALL FlagError(LOCAL_ERROR,ERR,ERROR,*999)
                   ENDIF
                 CASE(FIELD_VECTOR_DIMENSION_TYPE)
-                  IF(NUMBER_OF_COMPONENTS>0) THEN
+                  IF(NUMBER_OF_COMPONENTS>0) THEN !this is reason for issue #43572345
+                  WRITE(*,*) 'FIELD_NUMBER_OF_COMPONENTS_SET in field_routines.f90: configuring field variable for field number ',&
+                    & FIELD%USER_NUMBER,'.'
                     IF(FIELD%CREATE_VALUES_CACHE%NUMBER_OF_COMPONENTS(VARIABLE_TYPE)/=NUMBER_OF_COMPONENTS) THEN
                       OLD_NUMBER_OF_COMPONENTS=MAXVAL(FIELD%CREATE_VALUES_CACHE%NUMBER_OF_COMPONENTS)
                       NEW_NUMBER_OF_COMPONENTS=NUMBER_OF_COMPONENTS

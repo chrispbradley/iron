@@ -375,7 +375,9 @@ CONTAINS
     IF(DIAG_OR_TIMING) THEN
       !$OMP CRITICAL(ENTERS_1)
       ALLOCATE(NEW_ROUTINE_PTR,STAT=ERR)
+#ifndef _OPENMP
       IF(ERR/=0) CALL FlagError("Could not allocate new routine stack item.",ERR,ERROR,*999)
+#endif
       NEW_ROUTINE_PTR%DIAGNOSTICS=.FALSE.
       NEW_ROUTINE_PTR%TIMING=.FALSE.
       NEW_ROUTINE_PTR%NAME=NAME(1:LEN_TRIM(NAME))
@@ -424,14 +426,20 @@ CONTAINS
           DIAGNOSTICS5=.FALSE.
         ENDIF
         IF(ROUTINE_PTR%DIAGNOSTICS) THEN
-          WRITE(OP_STRING,'("*** Enters: ",A)') NAME(1:LEN_TRIM(NAME))
-          CALL WRITE_STR(DIAGNOSTIC_OUTPUT_TYPE,ERR,ERROR,*999)
+          IF(DIAGNOSTICS2) THEN
+            WRITE(OP_STRING,'("*** Enters: ",A)') NAME(1:LEN_TRIM(NAME))
+#ifndef _OPENMP
+            CALL WRITE_STR(DIAGNOSTIC_OUTPUT_TYPE,ERR,ERROR,*999)
+#endif
+          ENDIF
         ELSE IF(ASSOCIATED(ROUTINE_PTR%PREVIOUS_ROUTINE)) THEN
           !CPB 16/05/2007 Only show the calls if we have level 3 diagnostics or higher
           IF(DIAGNOSTICS3) THEN
             IF(ROUTINE_PTR%PREVIOUS_ROUTINE%DIAGNOSTICS) THEN
               WRITE(OP_STRING,'("*** Calls : ",A)') NAME(1:LEN_TRIM(NAME))
+#ifndef _OPENMP
               CALL WRITE_STR(DIAGNOSTIC_OUTPUT_TYPE,ERR,ERROR,*999)
+#endif
             ENDIF
           ENDIF
         ENDIF
@@ -518,8 +526,12 @@ CONTAINS
         PREVIOUS_ROUTINE_PTR=>ROUTINE_PTR%PREVIOUS_ROUTINE
         IF(DIAGNOSTICS) THEN
           IF(ROUTINE_PTR%DIAGNOSTICS) THEN
-            WRITE(OP_STRING,'("*** Exits : ",A)') NAME(1:LEN_TRIM(NAME))
-            CALL WRITE_STR(DIAGNOSTIC_OUTPUT_TYPE,ERR,ERROR,*999)
+            IF(DIAGNOSTICS2) THEN
+              WRITE(OP_STRING,'("*** Exits : ",A)') NAME(1:LEN_TRIM(NAME))
+#ifndef _OPENMP
+              CALL WRITE_STR(DIAGNOSTIC_OUTPUT_TYPE,ERR,ERROR,*999)
+#endif
+            ENDIF
           ENDIF
           IF(ASSOCIATED(PREVIOUS_ROUTINE_PTR)) THEN
             IF(PREVIOUS_ROUTINE_PTR%DIAGNOSTICS) THEN
@@ -563,6 +575,7 @@ CONTAINS
             ENDIF
           ENDIF
           IF(ROUTINE_PTR%TIMING) THEN
+#ifndef _OPENMP
             IF(.NOT.TIMING_SUMMARY) THEN
               WRITE(OP_STRING,'("*** Timing : ",A)') NAME(1:LEN_TRIM(NAME))
               CALL WRITE_STR(TIMING_OUTPUT_TYPE,ERR,ERROR,*999)
@@ -592,6 +605,7 @@ CONTAINS
                 CALL WRITE_STR(TIMING_OUTPUT_TYPE,ERR,ERROR,*999)
               ENDIF
             ENDIF
+#endif
           ENDIF
         ENDIF
 
