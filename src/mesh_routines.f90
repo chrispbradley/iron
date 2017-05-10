@@ -4735,13 +4735,10 @@ CONTAINS
     call CalculateLocalElementDomainMappings( domain, err, error )
     call DOMAIN_MAPPINGS_ELEMENTS_CALCULATE( domain, err, error, *999 )
 
-  ! Define and fill the local->global node mapping
+  ! Define and fill the local->global node and DOF mappings
     call CalculateLocalNodeDomainMappings( domain, err, error, *999 )
     call CalculateLocalDOFDomainMappings( domain, err, error, *999 )
-!    call DOMAIN_MAPPINGS_NODES_DOFS_CALCULATE( domain, err, error, *999 )
-    call MPI_Barrier( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
-    call MPI_Abort( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err, errorcode )
-!mpch
+    call DOMAIN_MAPPINGS_NODES_DOFS_CALCULATE( domain, err, error, *999 )
 
     EXITS("DOMAIN_MAPPINGS_INITIALISE")
     return
@@ -4854,16 +4851,8 @@ CONTAINS
 !     call MPI_Abort( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err, n )
 !********************************  D E B U G G I N G  ***************************************************************************
 
-   ! Determine the total number of DOFs in the input mesh
-     dofMap%NUMBER_OF_GLOBAL = 0
-     do node_idx = 1,meshTopology%NODES%numberOfNodes
-     do derivative_idx = 1,meshTopology%NODES%NODES(node_idx)%numberOfDerivatives
-        dofMap%NUMBER_OF_GLOBAL = dofMap%NUMBER_OF_GLOBAL &
-              & + meshTopology%NODES%NODES(node_idx)%DERIVATIVES(derivative_idx)%numberOfVersions
-     enddo 
-     enddo
-
    ! fill in some size parameters
+     dofMap%NUMBER_OF_GLOBAL = meshTopology%DOFS%numberOfDofs
      dofMap%NUMBER_OF_LOCAL = dofMap%NUMBER_OF_INTERNAL + dofMap%NUMBER_OF_BOUNDARY
      dofMap%TOTAL_NUMBER_OF_LOCAL = dofMap%NUMBER_OF_LOCAL + dofMap%NUMBER_OF_GHOST
      dofMap%NUMBER_OF_DOMAINS = domain%DECOMPOSITION%NUMBER_OF_DOMAINS
@@ -5185,17 +5174,46 @@ CONTAINS
            if ( nn==0 ) call List_ItemAdd( ghost_node_list, node_idx, err, error, *999 )
         enddo
      enddo
-    
-     call LIST_REMOVE_DUPLICATES( ghost_node_list, err, error, *999 )
 
 !
-! PART FOUR - DOMAIN MAPPING TYPE FILLING
-!             Define and fill the required parameters for the node domain mapping
+! PART FOUR - BOUNDARY NODE UNIQUENESS 
+!             Ensure that each boundary node exists on 1 sub-domain ONLY. 
 !--------------------------------------------------------------------------------------------------------------------------------
+     do domain_no = 0,domain%DECOMPOSITION%NUMBER_OF_DOMAINS-1
+
+        if ( subdomain==domain_no ) then
+           call List_DetachAndDestroy( boundary_node_list, nodeMap%NUMBER_OF_BOUNDARY, boundaryNODES, err, error, *999 )
+           num_nodes = nodeMap%NUMBER_OF_BOUNDARY
+        endif
+
+        call MPI_Bcast( num_nodes, 1, MPI_INTEGER, domain_no, COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
+        allocate( tmp(num_nodes) )      
+
+        if ( subdomain==domain_no ) tmp = boundaryNODES( 1:num_nodes )
+        call MPI_Bcast( tmp, num_nodes, MPI_INTEGER, domain_no, COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
+       
+        if ( subdomain>domain_no ) then 
+           do n = 1,num_nodes
+              call List_ItemInList( boundary_node_list, tmp(n), nn, err, error, *999 )
+              if (nn/=0)  then
+                 call List_ItemDelete( boundary_node_list, nn, err, error, *999 )
+                 call List_ItemAdd( ghost_node_list, tmp(n), err, error, *999 )
+              endif
+           enddo
+        endif
+
+        deallocate( tmp )
+     enddo
+
+     call LIST_REMOVE_DUPLICATES( ghost_node_list, err, error, *999 )
+
      call List_DetachAndDestroy( internal_node_list, nodeMap%NUMBER_OF_INTERNAL, internalNODES, err, error, *999 )
-     call List_DetachAndDestroy( boundary_node_list, nodeMap%NUMBER_OF_BOUNDARY, boundaryNODES, err, error, *999 )
      call List_DetachAndDestroy( ghost_node_list, nodeMap%NUMBER_OF_GHOST, ghostNODES, err, error, *999 )
 
+!
+! PART FIVE - DOMAIN MAPPING TYPE FILLING
+!             Define and fill the required parameters for the node domain mapping
+!--------------------------------------------------------------------------------------------------------------------------------
    ! fill in some size parameters
      nodeMap%NUMBER_OF_LOCAL = nodeMap%NUMBER_OF_INTERNAL + nodeMap%NUMBER_OF_BOUNDARY
      nodeMap%TOTAL_NUMBER_OF_LOCAL = nodeMap%NUMBER_OF_LOCAL + nodeMap%NUMBER_OF_GHOST
@@ -5240,8 +5258,8 @@ CONTAINS
      nodeMap%LOCAL_TYPE( nodeMap%GHOST_START:nodeMap%GHOST_FINISH ) = DOMAIN_LOCAL_GHOST
 
 !
-! PART FIVE - DOMAIN ADJACENCY INFO
-!             Determine what other sub-domains the local sub-domain must communicate with
+! PART SIX - DOMAIN ADJACENCY INFO
+!            Determine what other sub-domains the local sub-domain must communicate with
 !--------------------------------------------------------------------------------------------------------------------------------
    ! gather the # of local nodes on every sub-domain into a global array
      allocate( recv_cnt(domain%DECOMPOSITION%NUMBER_OF_DOMAINS) )
@@ -5287,8 +5305,8 @@ CONTAINS
      enddo
 
 !
-! PART SIX - HALO EXCHANGE INFO (send)
-!            Determine the local IDs of the node values that need to be sent to adjacent sub-domains 
+! PART SEVEN - HALO EXCHANGE INFO (send)
+!              Determine the local IDs of the node values that need to be sent to adjacent sub-domains 
 !--------------------------------------------------------------------------------------------------------------------------------
      do domain_no = 0,domain%DECOMPOSITION%NUMBER_OF_DOMAINS-1
         allocate( temp(nodeMap%NUMBER_OF_DOMAIN_GHOST(domain_no)) )
@@ -5343,7 +5361,7 @@ CONTAINS
      deallocate( ghostNODES )
 
 !
-! PART SEVEN - HALO EXCHANGE INFO (receive)
+! PART EIGHT - HALO EXCHANGE INFO (receive)
 !              Determine the local IDs of the node values that the local sub-domain receives from adjacent sub-domains 
 !--------------------------------------------------------------------------------------------------------------------------------
      do domain_no = 0,domain%DECOMPOSITION%NUMBER_OF_DOMAINS-1
@@ -5486,8 +5504,8 @@ CONTAINS
     if ( ERR/=0 ) goto 999
 
    ! set the total # of nodes and DOFs in the mesh
-    NODES_MAPPING%NUMBER_OF_GLOBAL = MESH_TOPOLOGY%NODES%numberOfNodes
-    DOFS_MAPPING%NUMBER_OF_GLOBAL = MESH_TOPOLOGY%DOFS%numberOfDofs
+   ! NODES_MAPPING%NUMBER_OF_GLOBAL = MESH_TOPOLOGY%NODES%numberOfNodes
+   ! DOFS_MAPPING%NUMBER_OF_GLOBAL = MESH_TOPOLOGY%DOFS%numberOfDofs
 
    ! allocate memory for the GLOBAL_TO_LOCAL_MAP for nodes and DOFs
     allocate( NODES_MAPPING%GLOBAL_TO_LOCAL_MAP( MESH_TOPOLOGY%NODES%numberOfNodes ), STAT=ERR )
@@ -5793,14 +5811,9 @@ CONTAINS
     DEALLOCATE(LOCAL_NODE_NUMBERS)
 
    !Calculate node and dof local to global maps from global to local map
+    
     CALL DOMAIN_MAPPINGS_LOCAL_FROM_GLOBAL_CALCULATE(NODES_MAPPING,ERR,ERROR,*999)
     CALL DOMAIN_MAPPINGS_LOCAL_FROM_GLOBAL_CALCULATE(DOFS_MAPPING,ERR,ERROR,*999)
-
-    !mpch
-    ! write(*,*) "(OLD) Sub-domain [",my_computational_node_number,"] has ", NODES_MAPPING%NUMBER_OF_INTERNAL," INTERNAL nodes, ",&
-    !         &  NODES_MAPPING%NUMBER_OF_BOUNDARY, " BOUNDARY nodes, ", NODES_MAPPING%NUMBER_OF_GHOST, " GHOST nodes"
-    ! call MPI_Barrier( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
-    ! call MPI_Abort( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err, n )
 
     IF(DIAGNOSTICS1) THEN
       CALL WRITE_STRING(DIAGNOSTIC_OUTPUT_TYPE,"Node decomposition :",ERR,ERROR,*999)
