@@ -4767,8 +4767,8 @@ CONTAINS
     FIELD%FIELD_FINISHED=.TRUE.
 
   ! Calculate dof mappings
-    call  new_field_mappings_calculate( FIELD, ERR, ERROR, *999 )
-!mpch    CALL FIELD_MAPPINGS_CALCULATE( FIELD, ERR, ERROR, *999 )
+    call new_field_mappings_calculate( FIELD, ERR, ERROR, *999 )
+    CALL FIELD_MAPPINGS_CALCULATE( FIELD, ERR, ERROR, *999 )
 
   ! Set up the geometric parameters
     CALL FIELD_GEOMETRIC_PARAMETERS_INITIALISE( FIELD, ERR, ERROR, *999 )
@@ -10175,7 +10175,7 @@ CONTAINS
 !  get_field_variable_dof_counts( field, err, error, * )
 !
 !      Count up all DOFs in all field variable components.  Allocate the appropriate DOF->mesh parameter and mesh parameter->DOF
-!      mapping arrays 
+!      mapping arrays
 !================================================================================================================================
   subroutine get_field_variable_dof_counts( field, err, error, * )
 
@@ -10186,7 +10186,7 @@ CONTAINS
 
    ! Local variables
      integer(INTG) :: variable_idx, component_idx, numNodeDOFS, NUMBER_OF_LOCAL_VARIABLE_DOFS, TOTAL_NUMBER_OF_VARIABLE_DOFS, &
-                    & NUMBER_OF_GLOBAL_VARIABLE_DOFS 
+                    & NUMBER_OF_GLOBAL_VARIABLE_DOFS
      integer(INTG), allocatable :: VARIABLE_LOCAL_DOFS_OFFSETS(:), VARIABLE_GHOST_DOFS_OFFSETS(:)
 
      type(DOMAIN_TOPOLOGY_TYPE),          pointer :: domainTopology
@@ -10247,7 +10247,7 @@ CONTAINS
 !================================================================================================================================
 !  set_field_mapping_separated_component_order
 !
-!      Set the domain mapping arrays and variables for a specific field variable that has the DOF order of its components 
+!      Set the domain mapping arrays and variables for a specific field variable that has the DOF order of its components
 !      defined as SEPARATED.  This means that the DOFs of each component of the field variable are fully mapped over all relevant
 !      mesh parameters (eg. nodes, elements, Guass points, etc) before moving to the next component.
 !================================================================================================================================
@@ -10263,15 +10263,12 @@ CONTAINS
       integer(INTG) :: node_nyy, variable_local_ny, subdomain, numSubdomains, VARIABLE_GLOBAL_DOFS_OFFSET, component_idx, &
                      & NUMBER_OF_LOCAL, cnt, n, derivative_idx, node_idx, version_idx, domain_type_stop, domain_type_idx, &
                      & ny, start_idx, stop_idx, variable_global_ny
-      integer(INTG), allocatable :: ghostOffset(:), localOffset(:)
+      integer(INTG), allocatable :: internalDOFS(:), boundaryDOFS(:), ghostDOFS(:)
 
-      type(DOMAIN_MAPPING_TYPE),           pointer :: dofMap, fieldDOFMap, nodeMap
+      type(DOMAIN_MAPPING_TYPE),           pointer :: dofMap, fieldDOFMap, nodeMap, elementMap
       type(FIELD_VARIABLE_COMPONENT_TYPE), pointer :: fieldComponent
       type(DOMAIN_TOPOLOGY_TYPE),          pointer :: domainTopology
-   
-
-      node_nyy = 0
-      variable_local_ny = 0
+      type(LIST_TYPE),                     pointer :: internal_dof_list, boundary_dof_list, ghost_dof_list
 
       fieldDOFMap => field%VARIABLES( variable_idx )%DOMAIN_MAPPING
       fieldDOFMap%NUMBER_OF_GLOBAL = field%VARIABLES( variable_idx )%NUMBER_OF_GLOBAL_DOFS
@@ -10280,153 +10277,171 @@ CONTAINS
       if ( err/=0 ) call FlagError( "could not get # of active sub-domains", err, error, *999 )
       subdomain = COMPUTATIONAL_NODE_NUMBER_GET( err, error )
       if ( err/=0 ) call FlagError( "could not get Sub-domain ID", err, error, *999 )
-  
+
+  !
+  ! STEP A - DOF GLOBAL ID COLLECTION
+  !          Collect all DOF global IDs into lists corresponding to the INTERNAL, BOUNDARY or GHOST classification
+  !----------------------------------------------------------------------------------------------------------------
+    ! create 3 empty lists to hold the global IDs of all DOFs classified as INTERNAL, BOUNDARY and GHOST
+      nullify( internal_dof_list )
+      call List_CreateStart( internal_dof_list, err, error, *999 )
+      call List_DataTypeSet( internal_dof_list, LIST_INTG_TYPE, err, error, *999 )
+      call List_InitialSizeSet( internal_dof_list, 100, err, error, *999 )
+      call List_CreateFinish( internal_dof_list, err, error, *999 )
+
+      nullify( boundary_dof_list )
+      call List_CreateStart( boundary_dof_list, err, error, *999 )
+      call List_DataTypeSet( boundary_dof_list, LIST_INTG_TYPE, err, error, *999 )
+      call List_InitialSizeSet( boundary_dof_list, 100, err, error, *999 )
+      call List_CreateFinish( boundary_dof_list, err, error, *999 )
+
+      nullify( ghost_dof_list )
+      call List_CreateStart( ghost_dof_list, err, error, *999 )
+      call List_DataTypeSet( ghost_dof_list, LIST_INTG_TYPE, err, error, *999 )
+      call List_InitialSizeSet( ghost_dof_list, 100, err, error, *999 )
+      call List_CreateFinish( ghost_dof_list, err, error, *999 )
+
+    ! initialize global DOF counter
+      VARIABLE_GLOBAL_DOFS_OFFSET = 0
+
+      do component_idx = 1,field%VARIABLES( variable_idx )%NUMBER_OF_COMPONENTS
+         fieldComponent => field%VARIABLES( variable_idx )%COMPONENTS( component_idx )
+         dofMap => fieldComponent%DOMAIN%MAPPINGS%DOFS
+         if ( .not.associated(dofMap) ) call FlagError("DOF map not associated for field component", err, error, *999)
+
+         select case( fieldComponent%INTERPOLATION_TYPE )
+
+                case( FIELD_NODE_BASED_INTERPOLATION )
+                    domainTopology => fieldComponent%DOMAIN%TOPOLOGY
+                    nodeMap => fieldComponent%DOMAIN%MAPPINGS%NODES
+                    if ( .not.associated(nodeMap) ) call FlagError("Node map not associated for field component",err,error, *999)
+
+                  ! Add/update DOFs to the list of INTERNAL DOFs for the field variable
+                    do n = 1,dofMap%NUMBER_OF_INTERNAL
+                       node_idx = dofMap%LOCAL_TO_GLOBAL_MAP(n) + VARIABLE_GLOBAL_DOFS_OFFSET
+                       call List_ItemAdd( internal_dof_list, node_idx, err, error, *999 )
+                    enddo
+
+                  ! Add/update DOFs to the list of BOUNDARY DOFs for the field variable
+                    do n = dofMap%BOUNDARY_START,dofMap%BOUNDARY_FINISH
+                       node_idx = dofMap%LOCAL_TO_GLOBAL_MAP(dofMap%DOMAIN_LIST(n)) + VARIABLE_GLOBAL_DOFS_OFFSET
+                       call List_ItemAdd( boundary_dof_list, node_idx, err, error, *999 )
+                    enddo
+
+                  ! Add/update DOFs to the list of GHOST DOFs for the field variable
+                    do n = dofMap%GHOST_START,dofMap%GHOST_FINISH
+                       node_idx = dofMap%LOCAL_TO_GLOBAL_MAP(dofMap%DOMAIN_LIST(n)) + VARIABLE_GLOBAL_DOFS_OFFSET
+                       call List_ItemAdd( ghost_dof_list, node_idx, err, error, *999 )
+                    enddo
+
+                  ! Adjust the global offset
+                    VARIABLE_GLOBAL_DOFS_OFFSET = VARIABLE_GLOBAL_DOFS_OFFSET + dofMap%NUMBER_OF_GLOBAL
+
+                case default
+                   call FlagError( "field component intepolation type not implemented/recognised", err, error, *999 )
+         end select
+      enddo ! component_idx
+
+      call List_DetachAndDestroy( internal_dof_list, fieldDOFMap%NUMBER_OF_INTERNAL, internalDOFS, err, error, *999 )
+      call List_DetachAndDestroy( boundary_dof_list, fieldDOFMap%NUMBER_OF_BOUNDARY, boundaryDOFS, err, error, *999 )
+      call List_DetachAndDestroy( ghost_dof_list, fieldDOFMap%NUMBER_OF_GHOST, ghostDOFS, err, error, *999 )
+
+    ! finish filling the domain mapping variables for the field variable DOFs
+      elementMap => fieldComponent%DOMAIN%MAPPINGS%ELEMENTS
+      call fill_domain_mapping( subdomain, fieldDOFMap, elementMap, field%DECOMPOSITION%NUMBER_OF_DOMAINS, internalDOFS, &
+                              & boundaryDOFS, ghostDOFS, *999 )
+      deallocate( internalDOFS,boundaryDOFS,ghostDOFS )
+
+  !
+  ! STEP B - FILLING OF DOF->PARAM and PARAM->DOF mapping arrays
+  !
+  !----------------------------------------------------------------------------------------------------------------
     ! We want to ensure that the ghost DOFs are at the end so loop over the DOFs in two passes. The first pass will process
     ! the local DOFs for each variable component and the second pass will process the ghost DOFs for each variable component.
       domain_type_stop = 2
       if ( numSubdomains==1 ) domain_type_stop = 1
 
-      allocate( localOffset(0:field%DECOMPOSITION%NUMBER_OF_DOMAINS-1), STAT=err )
-      allocate( ghostOffset(0:field%DECOMPOSITION%NUMBER_OF_DOMAINS-1), STAT=err )
-
-      ghostOffset(:) = 0
+      node_nyy = 0
+      variable_local_ny = 0
 
     ! Loop over the domain types. Here domain_type_idx=1 for the non-ghosted dofs and =2 for the ghosted dofs.
       do domain_type_idx = 1,domain_type_stop
+      do component_idx = 1,field%VARIABLES( variable_idx )%NUMBER_OF_COMPONENTS
 
-         VARIABLE_GLOBAL_DOFS_OFFSET = 0
-         localOffset(:) = 0
+         fieldComponent => field%VARIABLES( variable_idx )%COMPONENTS( component_idx )
+         select case( fieldComponent%INTERPOLATION_TYPE )
 
-       ! initlialise DOF counts for the field variable DOF domain mapping mapping
-         fieldDOFMap%NUMBER_OF_INTERNAL = 0
-         fieldDOFMap%NUMBER_OF_BOUNDARY = 0
-         fieldDOFMap%NUMBER_OF_GHOST = 0
- !        fieldDOFMap%NUMBER_OF_GLOBAL = 0
+            case( FIELD_NODE_BASED_INTERPOLATION )
+                domainTopology => fieldComponent%DOMAIN%TOPOLOGY
+                dofMap => fieldComponent%DOMAIN%MAPPINGS%DOFS
+                if ( domain_type_idx==1 ) then
 
-         do component_idx = 1,field%VARIABLES( variable_idx )%NUMBER_OF_COMPONENTS
-            NUMBER_OF_LOCAL = 0
-            fieldComponent => field%VARIABLES( variable_idx )%COMPONENTS( component_idx )
+                   cnt = domainTopology%NODES%TOTAL_NUMBER_OF_NODES
+                   allocate( fieldComponent%PARAM_TO_DOF_MAP%NODE_PARAM2DOF_MAP%NODES(cnt), STAT=err )
+!                   if ( err/=0 ) call FlagError("Could not allocate field component param->dof node map",error,err,*999)
+                   fieldComponent%PARAM_TO_DOF_MAP%NODE_PARAM2DOF_MAP%NUMBER_OF_NODE_PARAMETERS = cnt
 
-            select case( fieldComponent%INTERPOLATION_TYPE )
+                 ! Loop through all nodes in the input mesh
+                   do n = 1,domainTopology%NODES%TOTAL_NUMBER_OF_NODES
 
-                   case( FIELD_NODE_BASED_INTERPOLATION )
-                         domainTopology => fieldComponent%DOMAIN%TOPOLOGY
-                         dofMap => fieldComponent%DOMAIN%MAPPINGS%DOFS
-                         nodeMap => fieldComponent%DOMAIN%MAPPINGS%NODES
-                         if ( .not.associated(dofMap) ) call FlagError( "DOF map not associated for field component", err, &
-                                                                      & error, *999)
+                    ! How many deriviatives are to be stored at this node? Allocate memory to hold them
+                      cnt = domainTopology%NODES%NODES(n)%NUMBER_OF_DERIVATIVES
+                      allocate( fieldComponent%PARAM_TO_DOF_MAP%NODE_PARAM2DOF_MAP%NODES(n)%DERIVATIVES(cnt), STAT=err )
+                      if ( err/=0 ) call FlagError( "Could not allocate field component param->dof node map (deriv)", &
+                                                         & err, error,*999)
+                      fieldComponent%PARAM_TO_DOF_MAP%NODE_PARAM2DOF_MAP%NODES(n)%NUMBER_OF_DERIVATIVES = cnt
 
-                         fieldDOFMap%NUMBER_OF_INTERNAL = fieldDOFMap%NUMBER_OF_INTERNAL + dofMap%NUMBER_OF_INTERNAL
-                         fieldDOFMap%NUMBER_OF_BOUNDARY = fieldDOFMap%NUMBER_OF_BOUNDARY + dofMap%NUMBER_OF_BOUNDARY
-                         fieldDOFMap%NUMBER_OF_GHOST = fieldDOFMap%NUMBER_OF_GHOST + dofMap%NUMBER_OF_GHOST
- !                        fieldDOFMap%NUMBER_OF_GLOBAL = fieldDOFMap%NUMBER_OF_GLOBAL + dofMap%NUMBER_OF_GLOBAL
+                    ! How many versions are to be stored at this node? Allocate memory to hold them
+                      do derivative_idx = 1,domainTopology%NODES%NODES(n)%NUMBER_OF_DERIVATIVES
+                         cnt = domainTopology%NODES%NODES(n)%DERIVATIVES(derivative_idx)%numberOfVersions
+                         allocate( fieldComponent%PARAM_TO_DOF_MAP%NODE_PARAM2DOF_MAP%NODES(n)%&
+                                     &DERIVATIVES(derivative_idx)%VERSIONS( cnt ), STAT=err )
+                         if ( err/=0 ) call FlagError( "Could not allocate field component param->dof node map (ver)", &
+                                                      & err, error, *999 )
 
-                         if ( domain_type_idx==1 ) then
+                         fieldComponent%PARAM_TO_DOF_MAP%NODE_PARAM2DOF_MAP%NODES(n)%DERIVATIVES(derivative_idx)&
+                                     &%NUMBER_OF_VERSIONS = cnt
+                      enddo !derivative_idx
+                   enddo !n
 
-                            cnt = domainTopology%NODES%TOTAL_NUMBER_OF_NODES
-                            allocate( fieldComponent%PARAM_TO_DOF_MAP%NODE_PARAM2DOF_MAP%NODES(cnt), STAT=err )
-!                            if ( err/=0 ) call FlagError("Could not allocate field component param->dof node map",error,err,*999)
-                            fieldComponent%PARAM_TO_DOF_MAP%NODE_PARAM2DOF_MAP%NUMBER_OF_NODE_PARAMETERS = cnt
-                                               
-                          ! Loop through all nodes in the input mesh
-                            do n = 1,domainTopology%NODES%TOTAL_NUMBER_OF_NODES
+                   start_idx = 1
+                   stop_idx = dofMap%NUMBER_OF_LOCAL
 
-                             ! How many deriviatives are to be stored at this node? Allocate memory to hold them
-                               cnt = domainTopology%NODES%NODES(n)%NUMBER_OF_DERIVATIVES
-                               allocate( fieldComponent%PARAM_TO_DOF_MAP%NODE_PARAM2DOF_MAP%NODES(n)%DERIVATIVES(cnt), STAT=err )
-                               if ( err/=0 ) call FlagError( "Could not allocate field component param->dof node map (deriv)", &
-                                                           & err, error,*999)
-                               fieldComponent%PARAM_TO_DOF_MAP%NODE_PARAM2DOF_MAP%NODES(n)%NUMBER_OF_DERIVATIVES = cnt
- 
-                             ! How many versions are to be stored at this node? Allocate memory to hold them
-                               do derivative_idx = 1,domainTopology%NODES%NODES(n)%NUMBER_OF_DERIVATIVES
-                                  cnt = domainTopology%NODES%NODES(n)%DERIVATIVES(derivative_idx)%numberOfVersions
-                                  allocate( fieldComponent%PARAM_TO_DOF_MAP%NODE_PARAM2DOF_MAP%NODES(n)%&
-                                           &DERIVATIVES(derivative_idx)%VERSIONS( cnt ), STAT=err )
-                                  if ( err/=0 ) call FlagError( "Could not allocate field component param->dof node map (ver)", &
-                                                              & err, error, *999 )
+                else ! domain_type_idx
+                   start_idx = dofMap%NUMBER_OF_LOCAL + 1
+                   stop_idx = dofMap%TOTAL_NUMBER_OF_LOCAL
+                endif ! domain_type_idx
 
-                                  fieldComponent%PARAM_TO_DOF_MAP%NODE_PARAM2DOF_MAP%NODES(n)%DERIVATIVES(derivative_idx)&
-                                       &%NUMBER_OF_VERSIONS = cnt 
-                               enddo !derivative_idx
+              ! Handle local dofs domain mapping
+                do ny = start_idx,stop_idx
+                   variable_local_ny = variable_local_ny + 1
+                   node_nyy = node_nyy + 1
+                   version_idx = domainTopology%DOFS%DOF_INDEX(1,ny)
+                   derivative_idx = domainTopology%DOFS%DOF_INDEX(2,ny)
+                   node_idx = domainTopology%DOFS%DOF_INDEX(3,ny)
 
-                            enddo !n
+                 ! Setup dof to parameter map
+                   field%VARIABLES(variable_idx)%DOF_TO_PARAM_MAP%DOF_TYPE(1,variable_local_ny) = FIELD_NODE_DOF_TYPE
+                   field%VARIABLES(variable_idx)%DOF_TO_PARAM_MAP%DOF_TYPE(2,variable_local_ny) = node_nyy
+                   field%VARIABLES(variable_idx)%DOF_TO_PARAM_MAP%NODE_DOF2PARAM_MAP(1,node_nyy) = version_idx
+                   field%VARIABLES(variable_idx)%DOF_TO_PARAM_MAP%NODE_DOF2PARAM_MAP(2,node_nyy) = derivative_idx
+                   field%VARIABLES(variable_idx)%DOF_TO_PARAM_MAP%NODE_DOF2PARAM_MAP(3,node_nyy) = node_idx
+                   field%VARIABLES(variable_idx)%DOF_TO_PARAM_MAP%NODE_DOF2PARAM_MAP(4,node_nyy) = component_idx
 
-  ! need to change this to local / distributed mapping only
- !                           do ny = 1,dofMap%NUMBER_OF_GLOBAL
-                             ! Handle variable mapping
- !                                 variable_global_ny = ny + VARIABLE_GLOBAL_DOFS_OFFSET
- !                           enddo !ny (global)
+                 ! Setup reverse parameter to dof map
+                   fieldComponent%PARAM_TO_DOF_MAP%NODE_PARAM2DOF_MAP%NODES(node_idx)%DERIVATIVES(derivative_idx)% &
+                                      & VERSIONS(version_idx) = variable_local_ny
+                enddo !ny
 
-                            start_idx = 1
-                            stop_idx = dofMap%NUMBER_OF_LOCAL
-                          ! Adjust the local and ghost offsets
-                            if ( component_idx>1 ) ghostOffset(:) = ghostOffset(:) + dofMap%NUMBER_OF_DOMAIN_LOCAL
-                            localOffset(:) = localOffset(:) + dofMap%NUMBER_OF_DOMAIN_LOCAL + dofMap%NUMBER_OF_DOMAIN_GHOST
-
-                         else ! domain_type_idx
-
-                          ! Handle global dofs domain mapping. For the second pass adjust the local dof numbers to ensure that the ghost
-                          ! dofs are at the end of the local dofs.
-                          ! Adjust the ghost offsets
-                            if ( component_idx>1 ) ghostOffset(:) = ghostOffset(:) - dofMap%NUMBER_OF_DOMAIN_LOCAL
-
-!                            do ny = 1,dofMap%NUMBER_OF_GLOBAL
-                             ! Adjust variable mapping local numbers
- !                                 variable_global_ny = ny + VARIABLE_GLOBAL_DOFS_OFFSET
- !                           enddo !ny (global)
-
-                            start_idx = dofMap%NUMBER_OF_LOCAL + 1
-                            stop_idx = dofMap%TOTAL_NUMBER_OF_LOCAL
-                           ! Adjust the local offsets
-                            localOffset(:) = localOffset(:) - dofMap%NUMBER_OF_DOMAIN_GHOST
-
-                         endif ! domain_type_idx
-
-                       ! Adjust the global offset
-                         VARIABLE_GLOBAL_DOFS_OFFSET = VARIABLE_GLOBAL_DOFS_OFFSET + dofMap%NUMBER_OF_GLOBAL
-
-                       ! Handle local dofs domain mapping
-                         do ny = start_idx,stop_idx
-                            variable_local_ny = variable_local_ny + 1
-                            node_nyy = node_nyy + 1
-                            version_idx = domainTopology%DOFS%DOF_INDEX(1,ny)
-                            derivative_idx = domainTopology%DOFS%DOF_INDEX(2,ny)
-                            node_idx = domainTopology%DOFS%DOF_INDEX(3,ny)
-
-                          ! Setup dof to parameter map
-                            field%VARIABLES(variable_idx)%DOF_TO_PARAM_MAP%DOF_TYPE(1,variable_local_ny) = FIELD_NODE_DOF_TYPE
-                            field%VARIABLES(variable_idx)%DOF_TO_PARAM_MAP%DOF_TYPE(2,variable_local_ny) = node_nyy
-                            field%VARIABLES(variable_idx)%DOF_TO_PARAM_MAP%NODE_DOF2PARAM_MAP(1,node_nyy) = version_idx
-                            field%VARIABLES(variable_idx)%DOF_TO_PARAM_MAP%NODE_DOF2PARAM_MAP(2,node_nyy) = derivative_idx
-                            field%VARIABLES(variable_idx)%DOF_TO_PARAM_MAP%NODE_DOF2PARAM_MAP(3,node_nyy) = node_idx
-                            field%VARIABLES(variable_idx)%DOF_TO_PARAM_MAP%NODE_DOF2PARAM_MAP(4,node_nyy) = component_idx
-
-                          ! Setup reverse parameter to dof map
-                            fieldComponent%PARAM_TO_DOF_MAP%NODE_PARAM2DOF_MAP%NODES(node_idx)%DERIVATIVES(derivative_idx)% &
-                                        & VERSIONS(version_idx) = variable_local_ny
-                         enddo !ny
-
-                  case default
-                       call FlagError( "field component intepolation type not implemented/recognised", err, error, *999 )
-            end select
-         enddo ! component_idx
+            case default
+               call FlagError( "field component intepolation type not implemented/recognised", err, error, *999 )
+         end select
+      enddo ! component_idx
       enddo ! domain_idx
 
-      deallocate( ghostOffset,localOffset )
-
-    ! finish filling the domain maining variables for the field variable DOFs
-      fieldDOFMap%NUMBER_OF_LOCAL = fieldDOFMap%NUMBER_OF_INTERNAL + fieldDOFMap%NUMBER_OF_BOUNDARY
-      fieldDOFMap%TOTAL_NUMBER_OF_LOCAL = fieldDOFMap%NUMBER_OF_LOCAL + fieldDOFMap%NUMBER_OF_GHOST
-
+      write(*,*) "Ok up to this point"
       call MPI_Barrier( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
-
-      write(*,*) "# of internal = ", fieldDOFMap%NUMBER_OF_INTERNAL
-      write(*,*) "# of boundary = ", fieldDOFMap%NUMBER_OF_BOUNDARY
-      write(*,*) "# of ghost = ", fieldDOFMap%NUMBER_OF_GHOST
-      write(*,*) "# of local = ", fieldDOFMap%NUMBER_OF_LOCAL
-      write(*,*) "total # of local = ", fieldDOFMap%TOTAL_NUMBER_OF_LOCAL
-      write(*,*) "# of global = ", fieldDOFMap%NUMBER_OF_GLOBAL
+      call MPI_Abort( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err, n )
 
       EXITS( "get_field_variable_dof_counts" )
       return
@@ -10450,31 +10465,31 @@ CONTAINS
     ! field pointer check
       if ( .not.associated(field) ) call FlagError( "Field not associated", err, error, *999 )
 
-    ! get DOF counts for ALL components in al variables in the field
+    ! get DOF counts for ALL components in all variables in the field
       call get_field_variable_dof_counts( field, err, error, *999 )
 
+    ! loop through all field variables to produce a field variable DOF mapping for each.
       do variable_idx = 1,field%NUMBER_OF_VARIABLES
 
-      ! check if field variable DOF mapping pointer is associated
-        map => field%VARIABLES(variable_idx)%DOMAIN_MAPPING
-        if ( .not.associated(map) ) call FlagError( "field variable DOF mapping not associated", err, error, *999 )
+       ! pointer check on field variable DOF mapping
+         map => field%VARIABLES(variable_idx)%DOMAIN_MAPPING
+         if ( .not.associated(map) ) call FlagError( "field variable DOF mapping not associated", err, error, *999 )
 
-        select case( field%VARIABLES(variable_idx)%DOF_ORDER_TYPE )
+         select case( field%VARIABLES(variable_idx)%DOF_ORDER_TYPE )
+                case( FIELD_SEPARATED_COMPONENT_DOF_ORDER )
+                      call set_field_mapping_separated_component_order( field, variable_idx, err, error, *999 )
 
-             ! 1st DOF Order : process/map each component of variable_idx on all nodes/elements/guass points before moving
-             !                 onto the next component
-               case( FIELD_SEPARATED_COMPONENT_DOF_ORDER )
-                    call set_field_mapping_separated_component_order( field, variable_idx, err, error, *999 )
+                case ( FIELD_CONTIGUOUS_COMPONENT_DOF_ORDER )
+                      call FlagError( "contiguous DOF ordering not implemented yet", err, error, *999 )
 
-               case default
-                    call FlagError( "field component intepolation type not implemented/recognised", err, error, *999 )
-        end select
+                case default
+                      call FlagError( "field variable DOF order type not recognised", err, error, *999 )
+         end select
+      enddo
 
-     enddo
-
-     write(*,*) "Ok so far in new field mappings"
-     call MPI_Barrier( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
-     call MPI_Abort( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err, variable_idx )
+    !  write(*,*) "Ok so far in new field mappings"
+    !  call MPI_Barrier( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
+    !  call MPI_Abort( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err, variable_idx )
 
      EXITS( "new_field_mappings_calculate" )
      return
@@ -10629,9 +10644,11 @@ CONTAINS
           field%VARIABLES(variable_idx)%DOF_TO_PARAM_MAP%NUMBER_OF_ELEMENT_DOFS = NUMBER_OF_ELEMENT_DOFS
        endif
        if ( NUMBER_OF_NODE_DOFS>0 ) then
-          ALLOCATE( field%VARIABLES(variable_idx)%DOF_TO_PARAM_MAP%NODE_DOF2PARAM_MAP(4,NUMBER_OF_NODE_DOFS), STAT=err )
-          if ( err/=0 ) call FlagError( "Could not allocate dof to parameter node map", err, error, *999 )
-          field%VARIABLES(variable_idx)%DOF_TO_PARAM_MAP%NUMBER_OF_NODE_DOFS = NUMBER_OF_NODE_DOFS
+          if ( .not.allocated(field%VARIABLES(variable_idx)%DOF_TO_PARAM_MAP%NODE_DOF2PARAM_MAP) ) then
+             ALLOCATE( field%VARIABLES(variable_idx)%DOF_TO_PARAM_MAP%NODE_DOF2PARAM_MAP(4,NUMBER_OF_NODE_DOFS), STAT=err )
+             if ( err/=0 ) call FlagError( "Could not allocate dof to parameter node map", err, error, *999 )
+             field%VARIABLES(variable_idx)%DOF_TO_PARAM_MAP%NUMBER_OF_NODE_DOFS = NUMBER_OF_NODE_DOFS
+          endif
        endif
        if ( NUMBER_OF_GRID_POINT_DOFS>0 ) then
           ALLOCATE(field%VARIABLES(variable_idx)%DOF_TO_PARAM_MAP%GRID_POINT_DOF2PARAM_MAP(2,NUMBER_OF_GRID_POINT_DOFS),STAT=err)
@@ -10665,10 +10682,6 @@ CONTAINS
     else
         domain_type_stop = 2 !Local+Ghosts
     endif
-
-!    write(*,*) "Ok so far in field mappings"
-!    call MPI_Barrier( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
-!    call MPI_Abort( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err, variable_idx )
 
   ! Calculate the local and global numbers and set up the mappings
     do variable_idx = 1,field%NUMBER_OF_VARIABLES
@@ -10716,21 +10729,27 @@ CONTAINS
 
                          if ( domain_type_idx==1 ) then
 
+                            if ( .not.allocated(FIELD_COMPONENT%PARAM_TO_DOF_MAP%NODE_PARAM2DOF_MAP%NODES) ) then
                             allocate( FIELD_COMPONENT%PARAM_TO_DOF_MAP%NODE_PARAM2DOF_MAP%NODES( DOMAIN_TOPOLOGY%NODES%&
                                       &TOTAL_NUMBER_OF_NODES), STAT=err )
                             if ( err/=0 ) call FlagError( "Could not allocate field component parameter to dof node map (nodes)",&
                                                         &  err, error, *999 )
                             FIELD_COMPONENT%PARAM_TO_DOF_MAP%NODE_PARAM2DOF_MAP%NUMBER_OF_NODE_PARAMETERS = &
                                                 & DOMAIN_TOPOLOGY%NODES%TOTAL_NUMBER_OF_NODES
+                            endif
                           ! Loop through and allocate number of derivatives for each node in the domain
                             do node_idx = 1,DOMAIN_TOPOLOGY%NODES%TOTAL_NUMBER_OF_NODES
+                 if ( .not.allocated(FIELD_COMPONENT%PARAM_TO_DOF_MAP%NODE_PARAM2DOF_MAP%NODES(node_idx)%DERIVATIVES) ) then
                                allocate( FIELD_COMPONENT%PARAM_TO_DOF_MAP%NODE_PARAM2DOF_MAP%NODES(node_idx)%DERIVATIVES( &
                                         & DOMAIN_TOPOLOGY%NODES%NODES(node_idx)%NUMBER_OF_DERIVATIVES), STAT=err )
                                if ( err/=0 ) call FlagError( &
                                   & "Could not allocate field component parameter to dof node map (derivatives)", err, error,*999)
                                FIELD_COMPONENT%PARAM_TO_DOF_MAP%NODE_PARAM2DOF_MAP%NODES(node_idx)%NUMBER_OF_DERIVATIVES = &
                                           & DOMAIN_TOPOLOGY%NODES%NODES(node_idx)%NUMBER_OF_DERIVATIVES
+                               endif
                                do derivative_idx = 1,DOMAIN_TOPOLOGY%NODES%NODES(node_idx)%NUMBER_OF_DERIVATIVES
+                                  if ( .not.allocated(FIELD_COMPONENT%PARAM_TO_DOF_MAP%NODE_PARAM2DOF_MAP%NODES(node_idx)%&
+                                               &DERIVATIVES(derivative_idx)%VERSIONS) ) then
                                   allocate( FIELD_COMPONENT%PARAM_TO_DOF_MAP%NODE_PARAM2DOF_MAP%NODES(node_idx)&
                                            &%DERIVATIVES(derivative_idx)%VERSIONS(DOMAIN_TOPOLOGY%NODES%NODES(node_idx)&
                                            &%DERIVATIVES(derivative_idx)%numberOfVersions), STAT=err )
@@ -10740,6 +10759,7 @@ CONTAINS
                                   FIELD_COMPONENT%PARAM_TO_DOF_MAP%NODE_PARAM2DOF_MAP%NODES(node_idx)%DERIVATIVES(derivative_idx)&
                                        &%NUMBER_OF_VERSIONS = DOMAIN_TOPOLOGY%NODES%NODES(node_idx)%DERIVATIVES(derivative_idx)&
                                        &%numberOfVersions
+                                  endif
                                enddo !derivative_idx
                             enddo !node_idx
 
@@ -11628,10 +11648,9 @@ CONTAINS
           CALL FlagError(LOCAL_ERROR,ERR,ERROR,*999)
         END SELECT
         IF(ASSOCIATED(FIELD_VARIABLE_DOFS_MAPPING)) THEN
-          CALL DOMAIN_MAPPINGS_LOCAL_FROM_GLOBAL_CALCULATE2(FIELD_VARIABLE_DOFS_MAPPING,ERR,ERROR,*999)
-          write(*,*) "local # of DOFS: ", FIELD_VARIABLE_DOFS_MAPPING%NUMBER_OF_LOCAL, DOFS_MAPPING%NUMBER_OF_LOCAL
-          write(*,*) "# of internal DOFS: ", FIELD_VARIABLE_DOFS_MAPPING%NUMBER_OF_INTERNAL, DOFS_MAPPING%NUMBER_OF_INTERNAL
-          write(*,*) "# of boundary DOFS: ", FIELD_VARIABLE_DOFS_MAPPING%NUMBER_OF_BOUNDARY, DOFS_MAPPING%NUMBER_OF_BOUNDARY
+        !mpch  CALL DOMAIN_MAPPINGS_LOCAL_FROM_GLOBAL_CALCULATE2(FIELD_VARIABLE_DOFS_MAPPING,ERR,ERROR,*999)
+          write(*,*) "(old) node count = ", node_nyy
+          write(*,*) "(old) local DOF count = ", variable_local_ny
           call MPI_Barrier( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
           call MPI_Abort( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err, start_idx )
         endif
@@ -11776,7 +11795,7 @@ CONTAINS
         ENDDO !variable_idx
       ENDIF
 
-!mpch 
+!mpch
 
 !    ELSE
 !      CALL FlagError("Field is not associated.",ERR,ERROR,*999)
