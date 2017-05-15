@@ -88,8 +88,6 @@ MODULE DOMAIN_MAPPINGS
        & DOMAIN_MAPPINGS_GLOBAL_TO_LOCAL_GET,DOMAIN_MAPPINGS_LOCAL_FROM_GLOBAL_CALCULATE, &
        & DOMAIN_MAPPINGS_LOCAL_FROM_GLOBAL_CALCULATE2, fill_domain_mapping
 
-  PUBLIC CreateHaloExchangeNetwork
-
 CONTAINS
 
 !> Initialise and fill the components of a new DOMAIN MAPPING instance.
@@ -109,10 +107,19 @@ CONTAINS
       integer(INTG), allocatable :: displ(:), recv_cnt(:), temp(:), tmp(:)
       type(VARYING_STRING) :: error
 
-    ! Update counts and positions of each type (INTERNAL, BOUNDARY, GHOST)
+      EXITS( "fill_domain_mapping" )
+
+    ! Input array check
+      if ( .not.allocated(internalVAL) ) call FlagError( "INTERNAL values array not allocated", err, error, *999 )
+      if ( .not.allocated(boundaryVAL) ) call FlagError( "BOUNDARY values array not allocated", err, error, *999 )
+      if ( .not.allocated(ghostVAL) ) call FlagError( "GHOST values array not allocated", err, error, *999 )
+
+    ! set counts 
       map%NUMBER_OF_LOCAL = map%NUMBER_OF_INTERNAL + map%NUMBER_OF_BOUNDARY
       map%TOTAL_NUMBER_OF_LOCAL = map%NUMBER_OF_LOCAL + map%NUMBER_OF_GHOST
       map%NUMBER_OF_DOMAINS = numDomains
+ 
+    ! Set start/end of each type (INTERNAL, BOUNDARY, GHOST)
       map%INTERNAL_START = 1
       map%INTERNAL_FINISH = map%NUMBER_OF_INTERNAL
       map%BOUNDARY_START = map%INTERNAL_FINISH
@@ -121,11 +128,16 @@ CONTAINS
       map%GHOST_START = map%BOUNDARY_FINISH + 1
       map%GHOST_FINISH = map%BOUNDARY_FINISH + map%NUMBER_OF_GHOST
 
-    ! allocate but do not fill LOCAL_TO_GLOBAL_MAP array
+    ! Allocate and fill LOCAL_TO_GLOBAL_MAP array
       allocate( map%LOCAL_TO_GLOBAL_MAP(map%TOTAL_NUMBER_OF_LOCAL), STAT=err )
       if ( err/=0 ) call FlagError( "could not allocate LOCAL_TO_GLOBAL_MAP", err, error, *999 )
 
-    ! allocate and fill the DOMAIN_LIST array
+      map%LOCAL_TO_GLOBAL_MAP( 1:map%NUMBER_OF_INTERNAL ) = internalVAL( 1:map%NUMBER_OF_INTERNAL )
+      if ( map%NUMBER_OF_BOUNDARY>0 ) map%LOCAL_TO_GLOBAL_MAP( map%BOUNDARY_START:map%BOUNDARY_FINISH ) &
+                                  & = boundaryVAL( 1:map%NUMBER_OF_BOUNDARY )
+      map%LOCAL_TO_GLOBAL_MAP( map%GHOST_START:map%GHOST_FINISH ) = ghostVAL( 1:map%NUMBER_OF_GHOST )
+
+    ! Allocate and fill the DOMAIN_LIST array
       allocate( map%DOMAIN_LIST( map%TOTAL_NUMBER_OF_LOCAL), STAT=err )
       if ( err/=0 ) call FlagError( "could not allocate DOMAIN_LIST", err, error, *999 )
 
@@ -133,7 +145,7 @@ CONTAINS
          map%DOMAIN_LIST( n ) = n
       enddo
 
-    ! allocate and fill the LOCAL_TYPE array
+    ! Allocate and fill the LOCAL_TYPE array
       allocate( map%LOCAL_TYPE(map%TOTAL_NUMBER_OF_LOCAL), STAT=err )
       if ( err/=0 ) call FlagError( "could not allocate LOCAL_TYPE array", err, error, *999 )
 
@@ -198,18 +210,8 @@ CONTAINS
          map%ADJACENT_DOMAINS( n )%NUMBER_OF_RECEIVE_GHOSTS = 0
       enddo
 
-      if ( .not.allocated(internalVAL) ) call FlagError( "INTERNAL values array not allocated", err, error, *999 )
-      if ( .not.allocated(boundaryVAL) ) call FlagError( "BOUNDARY values array not allocated", err, error, *999 )
-      if ( .not.allocated(ghostVAL) ) call FlagError( "GHOST values array not allocated", err, error, *999 )
-
-    ! fill the LOCAL_TO_GLOBAL_MAP array
-      map%LOCAL_TO_GLOBAL_MAP( 1:map%NUMBER_OF_INTERNAL ) = internalVAL( 1:map%NUMBER_OF_INTERNAL )
-      if ( map%NUMBER_OF_BOUNDARY>0 ) map%LOCAL_TO_GLOBAL_MAP( map%BOUNDARY_START:map%BOUNDARY_FINISH ) &
-                                  & = boundaryVAL( 1:map%NUMBER_OF_BOUNDARY )
-      map%LOCAL_TO_GLOBAL_MAP( map%GHOST_START:map%GHOST_FINISH ) = ghostVAL( 1:map%NUMBER_OF_GHOST )
-
   !
-  ! PART SEVEN - HALO EXCHANGE INFO (send)
+  ! PART THREE - HALO EXCHANGE INFO (send)
   !              Determine the local IDs of the global ID values that need to be sent to adjacent sub-domains
   !--------------------------------------------------------------------------------------------------------------------------------
       call MPI_Barrier( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
@@ -224,9 +226,9 @@ CONTAINS
                call MPI_Send( temp, map%NUMBER_OF_GHOST, MPI_INTEGER, map%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER, 0, &
                             & COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
             enddo
-         else
 
-          ! the other sub-domains check if they are adjacent to domain_no.
+       ! the other sub-domains check if they are adjacent to domain_no.
+         else
             do n = 1,map%NUMBER_OF_ADJACENT_DOMAINS
                if ( map%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER==domain_no ) then
 
@@ -264,8 +266,8 @@ CONTAINS
       enddo
 
   !
-  ! PART EIGHT - HALO EXCHANGE INFO (receive)
-  !              Determine the local IDs of the ID values that the local sub-domain receives from adjacent sub-domains
+  ! PART FOUR - HALO EXCHANGE INFO (receive)
+  !             Determine the local IDs of the ID values that the local sub-domain receives from adjacent sub-domains
   !--------------------------------------------------------------------------------------------------------------------------------
       do domain_no = 0,numDomains-1
          allocate( temp(map%NUMBER_OF_DOMAIN_LOCAL(domain_no)) )
@@ -317,8 +319,41 @@ CONTAINS
          deallocate( temp )
       enddo
 
+   !*******************************************************************************************************************
+   !                                      DEBUGGING  /  DIAGNOSTICS
+   !*******************************************************************************************************************
+
+      if ( DIAGNOSTICS2 ) then
+         if ( DIAGNOSTICS1 ) then
+            call WRITE_STRING( DIAGNOSTIC_OUTPUT_TYPE, "Fill Domain:", err, error, *999 )
+            call WRITE_STRING_VALUE( DIAGNOSTIC_OUTPUT_TYPE,"  # of INTERNAL parameters = ", &
+                                   & map%NUMBER_OF_INTERNAL, err, error, *999 )
+            call WRITE_STRING_VALUE( DIAGNOSTIC_OUTPUT_TYPE,"  # of BOUNDARY parameters = ", &
+                                   & map%NUMBER_OF_BOUNDARY, err, error, *999 )
+            call WRITE_STRING_VALUE( DIAGNOSTIC_OUTPUT_TYPE,"  # of GHOST parameters = ", &
+                                   & map%NUMBER_OF_GHOST, err, error, *999 )
+         endif
+         call WRITE_STRING_VALUE( DIAGNOSTIC_OUTPUT_TYPE,"  # of adjacent domains = ", &
+                                & map%NUMBER_OF_ADJACENT_DOMAINS, err, error, *999 )
+         do n = 1,map%NUMBER_OF_ADJACENT_DOMAINS
+            call WRITE_STRING_VALUE( DIAGNOSTIC_OUTPUT_TYPE,"  Adjacent domain ID = ", &
+                                   & map%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER, err, error, *999 )
+            call WRITE_STRING_VECTOR( DIAGNOSTIC_OUTPUT_TYPE, 1, 1, &
+                                    & map%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS, 8, 8, &
+                                    & map%ADJACENT_DOMAINS(n)%LOCAL_GHOST_SEND_INDICES, &
+                                    & '("  Local Ghost Send Indices List :",8(X,I5))', '(33X,8(X,I5))', &
+                                    & err, error, *999 )
+            call WRITE_STRING_VECTOR( DIAGNOSTIC_OUTPUT_TYPE, 1, 1, &
+                                    & map%ADJACENT_DOMAINS(n)%NUMBER_OF_RECEIVE_GHOSTS, 8, 8, &
+                                    & map%ADJACENT_DOMAINS(n)%LOCAL_GHOST_RECEIVE_INDICES, &
+                                    & '("  Local Ghost Receive Indices List :",8(X,I5))', '(36X,8(X,I5))', &
+                                    & err, error, *999 )
+         enddo
+      endif
+
       return
- 999  return 1
+ 999  ERRORSEXITS( "fill_domain_mapping", err, error )
+      return 1
   end subroutine fill_domain_mapping
 
   !
@@ -417,236 +452,6 @@ CONTAINS
     RETURN 1
   END SUBROUTINE DOMAIN_MAPPINGS_GLOBAL_TO_LOCAL_GET
 
-  !
-  !================================================================================================================================
-  !
-  ! CreateHaloExchangeNetwork
-  !
-  !  Determine which sub-domain(s) need to communicate during their halo/ghost-id exchange.  Each sub-domain determines which
-  !  sub-domains it needs to exchange with, how many ids need to be exchanged and which specific values need updating.
-  !
-  !  Mark Cheeseman, CeR
-  !  Feb 14, 2017
-
-  SUBROUTINE CreateHaloExchangeNetwork( domain, err, error, * )
-
-     !Argument variables
-     type(DOMAIN_TYPE),         pointer :: domain
-     integer(INTG),         intent(out) :: err      !<The error code
-     type(VARYING_STRING),  intent(out) :: error    !<The error string
-
-     !Local variables
-     type(DOMAIN_MAPPING_TYPE), pointer :: mapping
-     integer(INTG) :: ierr, subdomain, n, m, nn, mm, cnt, idx, max_num_ghost
-     integer(INTG), dimension(MPI_STATUS_SIZE) :: status
-     integer(INTG), dimension(:),   allocatable  :: tmp
-     logical  :: found
-
-     ENTERS( "CreateHaloExchangeNetwork", err, error, *999 )
-
-     subdomain = COMPUTATIONAL_NODE_NUMBER_GET( err, error )
-     if (err/=0) goto 999
-
-     mapping => domain%MAPPINGS%ELEMENTS
-
-    !
-    ! STEP ONE: (ADJACENT DOMAIN COUNT)
-    !           Determine the number of sub-domains in which the local sub-domain must exchange ghost
-    !           values with.
-    !-------------------------------------------------------------------------------------------------------
-     allocate( tmp(mapping%NUMBER_OF_GHOST), STAT=ierr )
-     if ( ierr/=0 ) call FlagError( "Could not allocate temporary buffer", err, error, *999 )
-
-     cnt = 0
-     do n = mapping%GHOST_START,mapping%GHOST_FINISH
-        idx = mapping%LOCAL_TO_GLOBAL_MAP( mapping%DOMAIN_LIST(n) )
-        if ( domain%DECOMPOSITION%ELEMENT_DOMAIN(idx)/=subdomain ) then
-           cnt = cnt + 1
-           tmp(cnt) = domain%DECOMPOSITION%ELEMENT_DOMAIN(idx)
-        endif
-     enddo
-
-     ! Check to see if adjacent domains are defined multiple times
-     do n = 1,cnt
-     do nn = n+1,cnt
-        if ( tmp(n)==tmp(nn) ) tmp(nn) = -1
-     enddo
-     enddo
-
-     mapping%NUMBER_OF_ADJACENT_DOMAINS = 0
-     do n = 1,cnt
-        if ( tmp(n)>-1 ) mapping%NUMBER_OF_ADJACENT_DOMAINS = mapping%NUMBER_OF_ADJACENT_DOMAINS + 1
-     enddo
-
-    !
-    ! STEP TWO: (ADJACENT DOMAINS DEFINITION)
-    !           Define an ADJACENT_DOMAIN TYPE array for each sub-domain adjacent to the local sub-domain
-    !-------------------------------------------------------------------------------------------------------
-
-     allocate( mapping%ADJACENT_DOMAINS(mapping%NUMBER_OF_ADJACENT_DOMAINS), STAT=err )
-     if (err/=0) call FlagError( "Could not allocate adjacent_domains", err, error, *999 )
-
-     nn = 0
-     do n = 1,cnt
-        if ( tmp(n)>-1 ) then
-           nn = nn + 1
-           mapping%ADJACENT_DOMAINS(nn)%DOMAIN_NUMBER = tmp(n)
-        endif
-     enddo
-
-    !
-    ! STEP THREE: (RECEIVE COUNTS & INDICES)
-    !             Determine the # of ghost values received by each adjacent sub-domain
-    !-------------------------------------------------------------------------------------------------------
-
-     do m = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
-        nn = mapping%ADJACENT_DOMAINS(m)%DOMAIN_NUMBER
-
-        cnt = 0
-        do n = mapping%GHOST_START,mapping%GHOST_FINISH
-           idx = mapping%LOCAL_TO_GLOBAL_MAP( mapping%DOMAIN_LIST(n) )
-           if ( domain%DECOMPOSITION%ELEMENT_DOMAIN(idx)/=nn ) then
-              cnt = cnt + 1
-              tmp(cnt) = n
-           endif
-        enddo
-
-        mapping%ADJACENT_DOMAINS(m)%NUMBER_OF_RECEIVE_GHOSTS = cnt
-
-        allocate( mapping%ADJACENT_DOMAINS(m)%LOCAL_GHOST_RECEIVE_INDICES(cnt), STAT=err )
-        if (err/=0) call FlagError( "Could not allocate ghost receive index array", err, error, *999 )
-        mapping%ADJACENT_DOMAINS(m)%LOCAL_GHOST_RECEIVE_INDICES = tmp( 1:cnt )
-
-     enddo
-     deallocate( tmp )
-
-    !
-    ! STEP FOUR: (SEND COUNTS)
-    !             Determine the # of ghost values to be sent to each adjacent sub-domain
-    !-------------------------------------------------------------------------------------------------------
-
-    ! call MPI_Allreduce( mapping%NUMBER_OF_GHOST, cnt, 1, MPI_INTEGER, MPI_MAX, &
-    !                   & COMPUTATIONAL_ENVIRONMENT%MPI_COMM, n )
-     max_num_ghost = maxval( mapping%NUMBER_OF_DOMAIN_GHOST )
-
-    ! cnt = cnt + 1
-    ! allocate( tmp(cnt) )
-     allocate( tmp(max_num_ghost) )
-
-     do mm = 0,domain%DECOMPOSITION%NUMBER_OF_DOMAINS-1
-
-        if ( subdomain==mm ) then
-           idx = 0
-           do n = mapping%GHOST_START,mapping%GHOST_FINISH
-              idx = idx + 1
-              tmp(idx) = mapping%LOCAL_TO_GLOBAL_MAP( mapping%DOMAIN_LIST(n) )
-           enddo
-        !   tmp(cnt) = mapping%NUMBER_OF_GHOST
-
-           do n = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
-              !call MPI_Send( tmp, cnt, MPI_INTEGER, mapping%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER, 1, &
-              call MPI_Send( tmp, max_num_ghost, MPI_INTEGER, mapping%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER, 1, &
-                           & COMPUTATIONAL_ENVIRONMENT%MPI_COMM, m )
-           enddo
-        endif
-
-       ! call MPI_Bcast( tmp, cnt, MPI_INTEGER, mm, COMPUTATIONAL_ENVIRONMENT%MPI_COMM, n )
-
-        if ( subdomain/=mm ) then
-           do n = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
-              if ( mm==mapping%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER ) then
-               !  call MPI_Recv( tmp, cnt, MPI_INTEGER, mm, MPI_ANY_TAG, COMPUTATIONAL_ENVIRONMENT%MPI_COMM, status, m )
-                 call MPI_Recv( tmp, max_num_ghost, MPI_INTEGER, mm, MPI_ANY_TAG, COMPUTATIONAL_ENVIRONMENT%MPI_COMM, status, m )
-                 mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS = 0
-               !  do m = 1,tmp(cnt)
-                 do m = 1,mapping%NUMBER_OF_DOMAIN_GHOST(mm)
-                 do nn = 1,mapping%NUMBER_OF_LOCAL
-                    if ( tmp(m)==mapping%LOCAL_TO_GLOBAL_MAP(nn) ) then
-                       mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS = &
-                                      & mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS + 1
-                       exit
-                    endif
-                 enddo
-                 enddo
-
-                 idx = mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS
-                 allocate( mapping%ADJACENT_DOMAINS(n)%LOCAL_GHOST_SEND_INDICES(idx), STAT=err )
-                 if (err/=0) call FlagError( "could not allocate ghost_send indices array", err, error, *999 )
-
-                 idx = 0
-                ! do m = 1,tmp(cnt)
-                 do m = 1,mapping%NUMBER_OF_DOMAIN_GHOST(mm)
-                 do nn = 1,mapping%NUMBER_OF_LOCAL
-                    if ( tmp(m)==mapping%LOCAL_TO_GLOBAL_MAP(nn) ) then
-                       idx = idx + 1
-                       mapping%ADJACENT_DOMAINS(n)%LOCAL_GHOST_SEND_INDICES(idx) = nn
-                       exit
-                    endif
-                 enddo
-                 enddo
-
-              endif
-           enddo
-        endif
-
-     enddo
-     deallocate( tmp )
-
-    do m = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
-       deallocate( mapping%ADJACENT_DOMAINS(m)%LOCAL_GHOST_SEND_INDICES )
-       deallocate( mapping%ADJACENT_DOMAINS(m)%LOCAL_GHOST_RECEIVE_INDICES )
-    enddo
-    deallocate( mapping%ADJACENT_DOMAINS )
-
-    !*******************************************************************************************************
-    !                                      DEBUGGING  /  DIAGNOSTICS
-    !*******************************************************************************************************
-
-     if ( DIAGNOSTICS1 ) then
-        call WRITE_STRING( DIAGNOSTIC_OUTPUT_TYPE, "Halo Exchange Network (Elements):", err, error, *999 )
-        call WRITE_STRING_VALUE( DIAGNOSTIC_OUTPUT_TYPE,"  # of adjacent elements = ", &
-                               & mapping%NUMBER_OF_ADJACENT_DOMAINS, err, error, *999 )
-        call WRITE_STRING_VALUE( DIAGNOSTIC_OUTPUT_TYPE,"  # of ghost elements = ", &
-                               & mapping%NUMBER_OF_GHOST, err, error, *999 )
-        call WRITE_STRING_VALUE( DIAGNOSTIC_OUTPUT_TYPE,"  sum of all element receive  = ", &
-                               & sum(mapping%ADJACENT_DOMAINS(:)%NUMBER_OF_RECEIVE_GHOSTS), err, error, *999 )
-     if ( DIAGNOSTICS2 ) then
-        call WRITE_STRING( DIAGNOSTIC_OUTPUT_TYPE, "Halo Exchange Network (Elements):", err, error, *999 )
-        do n = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
-           call WRITE_STRING_VALUE( DIAGNOSTIC_OUTPUT_TYPE,"  Adjacent domain ID = ", &
-                                  & mapping%ADJACENT_DOMAINS(n)%DOMAIN_NUMBER, err, error, *999 )
-           call WRITE_STRING_VECTOR( DIAGNOSTIC_OUTPUT_TYPE, 1, 1, &
-                                   & mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_SEND_GHOSTS, 8, 8, &
-                                   & mapping%ADJACENT_DOMAINS(n)%LOCAL_GHOST_SEND_INDICES, &
-                                   & '("  Local Ghost Send Indices List :",8(X,I5))', '(33X,8(X,I5))', &
-                                   & err, error, *999 )
-           call WRITE_STRING_VECTOR( DIAGNOSTIC_OUTPUT_TYPE, 1, 1, &
-                                   & mapping%ADJACENT_DOMAINS(n)%NUMBER_OF_RECEIVE_GHOSTS, 8, 8, &
-                                   & mapping%ADJACENT_DOMAINS(n)%LOCAL_GHOST_RECEIVE_INDICES, &
-                                   & '("  Local Ghost Receive Indices List :",8(X,I5))', '(36X,8(X,I5))', &
-                                   & err, error, *999 )
-        enddo
-     endif
-     endif
-
-     EXITS( "CreateHaloExchangeNetwork" )
-     return
-
-999  if ( allocated(mapping%ADJACENT_DOMAINS) ) then
-        do n = 1,mapping%NUMBER_OF_ADJACENT_DOMAINS
-           if ( allocated(mapping%ADJACENT_DOMAINS(n)%LOCAL_GHOST_SEND_INDICES) ) &
-              & deallocate( mapping%ADJACENT_DOMAINS(n)%LOCAL_GHOST_SEND_INDICES )
-           if ( allocated(mapping%ADJACENT_DOMAINS(n)%LOCAL_GHOST_RECEIVE_INDICES) ) &
-              & deallocate( mapping%ADJACENT_DOMAINS(n)%LOCAL_GHOST_RECEIVE_INDICES )
-        enddo
-        deallocate( mapping%ADJACENT_DOMAINS )
-     endif
-     if ( allocated(tmp) ) deallocate( tmp )
-
-998  ERRORSEXITS( "CreateHaloExchangeNetwork", err, error )
-     return 1
-
-  END SUBROUTINE CreateHaloExchangeNetwork
 
   !
   !================================================================================================================================

@@ -4845,7 +4845,7 @@ CONTAINS
      call List_DetachAndDestroy( ghost_dof_list, dofMap%NUMBER_OF_GHOST, ghostDOFS, err, error, *999 )
 
 !********************************  D E B U G G I N G  ***************************************************************************
-!     write(*,*) "Sub-domain ", subdomain, " has # of internal/bnoundary/ghost DOFs: ", dofMap%NUMBER_OF_INTERNAL, &
+!     write(*,*) "Sub-domain ", subdomain, " has # of internal/boundary/ghost DOFs: ", dofMap%NUMBER_OF_INTERNAL, &
 !         &  dofMap%NUMBER_OF_BOUNDARY, dofMap%NUMBER_OF_GHOST
 !     call MPI_Barrier( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
 !     call MPI_Abort( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err, n )
@@ -4853,6 +4853,10 @@ CONTAINS
 
    ! fill in some size parameters
      dofMap%NUMBER_OF_GLOBAL = meshTopology%DOFS%numberOfDofs
+     call fill_domain_mapping( subdomain, dofMap, nodeMap, domain%DECOMPOSITION%NUMBER_OF_DOMAINS, internalDOFS, boundaryDOFS, &
+                             & ghostDOFS, *999 )
+     return
+
      dofMap%NUMBER_OF_LOCAL = dofMap%NUMBER_OF_INTERNAL + dofMap%NUMBER_OF_BOUNDARY
      dofMap%TOTAL_NUMBER_OF_LOCAL = dofMap%NUMBER_OF_LOCAL + dofMap%NUMBER_OF_GHOST
      dofMap%NUMBER_OF_DOMAINS = domain%DECOMPOSITION%NUMBER_OF_DOMAINS
