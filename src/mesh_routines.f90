@@ -207,7 +207,7 @@ MODULE MESH_ROUTINES
 
   PUBLIC MESHES_INITIALISE,MESHES_FINALISE
 
-  PUBLIC CalculateLocalElementDomainMappings, CalculateLocalNodeDomainMappings, CalculateLocalDOFSDomainMappings
+  PUBLIC CalculateLocalElementDomainMappings, CalculateLocalNodeDomainMappings, CalculateLocalDOFDomainMappings
 
 CONTAINS
 
@@ -276,20 +276,20 @@ CONTAINS
 
     ENTERS("DECOMPOSITION_CREATE_FINISH",ERR,ERROR,*999)
 
-    IF (.not.ASSOCIATED(DECOMPOSITION)) CALL FlagError("Decomposition is not associated.",ERR,ERROR,*999)
-
-  ! Calculate which elements belong to which domain
-    CALL DECOMPOSITION_ELEMENT_DOMAIN_CALCULATE(DECOMPOSITION,ERR,ERROR,*999)
-
-  ! Initialise the topology information for this decomposition
-    CALL DECOMPOSITION_TOPOLOGY_INITIALISE(DECOMPOSITION,ERR,ERROR,*999)
-
-  ! Initialise the domain for this computational node
-    CALL DOMAIN_INITIALISE(DECOMPOSITION,ERR,ERROR,*999)
-
-  ! Calculate the decomposition topology
-    CALL DECOMPOSITION_TOPOLOGY_CALCULATE(DECOMPOSITION,ERR,ERROR,*999)
-    DECOMPOSITION%DECOMPOSITION_FINISHED=.TRUE.
+    IF(ASSOCIATED(DECOMPOSITION)) THEN
+      !Calculate which elements belong to which domain
+      CALL DECOMPOSITION_ELEMENT_DOMAIN_CALCULATE(DECOMPOSITION,ERR,ERROR,*999)
+      !Initialise the topology information for this decomposition
+      CALL DECOMPOSITION_TOPOLOGY_INITIALISE(DECOMPOSITION,ERR,ERROR,*999)
+      !Initialise the domain for this computational node
+      CALL DOMAIN_INITIALISE(DECOMPOSITION,ERR,ERROR,*999)
+      !Calculate the decomposition topology
+      CALL DECOMPOSITION_TOPOLOGY_CALCULATE(DECOMPOSITION,ERR,ERROR,*999)
+      DECOMPOSITION%DECOMPOSITION_FINISHED=.TRUE.
+      !
+    ELSE
+      CALL FlagError("Decomposition is not associated.",ERR,ERROR,*999)
+    ENDIF
 
     IF(DIAGNOSTICS1) THEN
       MESH=>DECOMPOSITION%MESH
@@ -4199,6 +4199,14 @@ CONTAINS
                           & COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
      deallocate( recv_cnt2, displ )
 
+!*********************************************  D E B U G G I N G  ***************************************************** 
+!      call MPI_Barrier( COMPUTATIONAL_ENVIRONMENT%MPI_COMM, err )
+!      if ( subdomain==0 ) then
+!         write(*,*) "ADJACENT_DOMAINS_PTR : ", mapping%ADJACENT_DOMAINS_PTR
+!         write(*,*) "ADJACENT_DOMAINS_LIST : ", mapping%ADJACENT_DOMAINS_LIST
+!      endif
+!*********************************************  D E B U G G I N G  ***************************************************** 
+
    ! allocate an array of ADJACENT_DOMAINS structures for the element mapping
      allocate( mapping%ADJACENT_DOMAINS(mapping%NUMBER_OF_ADJACENT_DOMAINS), STAT=err )
      if (err/=0) call FlagError( "could not allocate element ADJACENT_DOMAINS structure", err, error, *999 )
@@ -7357,7 +7365,7 @@ CONTAINS
     ENTERS("DomainTopology_NodesSurroundingElementsCalculate",ERR,ERROR,*999)
 
     IF (.not.ASSOCIATED(TOPOLOGY)) CALL FlagError("Domain topology is not associated",ERR,ERROR,*999)
-    IF (.not.ASSOCIATED(TOPOLOGY%ELEMENTS)) CALL FlagError("Domain topology elements is not associated",ERR,ERROR,*999)
+    IF (.not.ASSOCIATED(TOPOLOGY%ELEMENTS)) CALL FlagError("Domain topoogy elements is not associated",ERR,ERROR,*999)
     IF (.not.ASSOCIATED(TOPOLOGY%NODES)) CALL FlagError("Domain topology nodes are not associated",ERR,ERROR,*999)
     IF (.not.ASSOCIATED(TOPOLOGY%NODES%NODES)) CALL FlagError("Domain topology nodes nodes are not associated",ERR,ERROR,*999)
 
