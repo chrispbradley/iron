@@ -168,7 +168,7 @@ contains
 
     integer(intg) :: ncells, i, d
     type(domain_ptr_type), pointer :: domain
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: CELLS_VARIABLE, ACTIV_VARIABLE
+    TYPE(FieldVariableType), POINTER :: CELLS_VARIABLE, ACTIV_VARIABLE
 
     ENTERS('bueno_orovio_integrate',err,error,*999)
 
@@ -379,7 +379,7 @@ contains
 
     integer(intg) :: ncells, i, d
     type(domain_ptr_type), pointer :: domain
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: CELLS_VARIABLE, ACTIV_VARIABLE
+    TYPE(FieldVariableType), POINTER :: CELLS_VARIABLE, ACTIV_VARIABLE
 
     ENTERS('tentusscher06_integrate',err,error,*999)
 

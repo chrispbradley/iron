@@ -875,7 +875,7 @@ CONTAINS
     TYPE(EquationsMatrixType), POINTER :: stiffnessMatrix
     TYPE(EquationsVectorType), POINTER :: vectorEquations
     TYPE(FIELD_TYPE), POINTER :: materialsField,dependentField,independentField
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: fieldVariable
+    TYPE(FieldVariableType), POINTER :: fieldVariable
     TYPE(VARYING_STRING) :: localError
     REAL(DP), POINTER :: dependentParameters(:),independentParameters(:),materialsParameters(:)
     REAL(DP) :: Q_BIF(4),A_BIF(4),A0_PARAM(4),E_PARAM(4),H0_PARAM(4),Beta(4),W(2,4),normalWave(2,4),SUM,rho
@@ -1097,7 +1097,7 @@ CONTAINS
     TYPE(EquationsJacobianType), POINTER :: jacobianMatrix
     TYPE(EquationsVectorType), POINTER :: vectorEquations
     TYPE(FIELD_TYPE), POINTER :: materialsField,dependentField,independentField
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: fieldVariable
+    TYPE(FieldVariableType), POINTER :: fieldVariable
     TYPE(VARYING_STRING) :: localError
     REAL(DP), POINTER :: dependentParameters(:),independentParameters(:),materialsParameters(:)
     REAL(DP) :: Q_BIF(4),A_BIF(4),A0_PARAM(4),E_PARAM(4),H0_PARAM(4),Beta(4),W(2,4),normalWave(2,4),rho
@@ -1582,7 +1582,7 @@ CONTAINS
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR
     !Local Variables
     TYPE(FIELD_TYPE), POINTER ::  dependentField,materialsField,independentField
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: fieldVariable
+    TYPE(FieldVariableType), POINTER :: fieldVariable
     TYPE(DOMAIN_NODES_TYPE), POINTER :: domainNodes
     TYPE(VARYING_STRING) :: localError
     INTEGER(INTG) :: nodeNumber,nodeIdx,derivativeIdx,versionIdx,componentIdx,numberOfVersions,dofNumber

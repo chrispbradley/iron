@@ -67,7 +67,7 @@ MODULE BOUNDARY_CONDITIONS_ROUTINES
   USE NODE_ROUTINES
   USE STRINGS
   USE TIMER
-  USE TYPES
+  USE Types
   USE LISTS
   USE LINKEDLIST_ROUTINES
 
@@ -196,7 +196,7 @@ CONTAINS
     INTEGER(INTG), POINTER :: ROW_INDICES(:), COLUMN_INDICES(:)
     TYPE(BOUNDARY_CONDITIONS_VARIABLE_TYPE), POINTER :: BOUNDARY_CONDITION_VARIABLE
     TYPE(DOMAIN_MAPPING_TYPE), POINTER :: VARIABLE_DOMAIN_MAPPING
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: FIELD_VARIABLE
+    TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE
     TYPE(BOUNDARY_CONDITIONS_DIRICHLET_TYPE), POINTER :: BOUNDARY_CONDITIONS_DIRICHLET
     TYPE(BOUNDARY_CONDITIONS_PRESSURE_INCREMENTED_TYPE), POINTER :: BOUNDARY_CONDITIONS_PRESSURE_INCREMENTED
     TYPE(VARYING_STRING) :: LOCAL_ERROR
@@ -1028,7 +1028,7 @@ CONTAINS
     !Local Variables
     INTEGER(INTG) :: local_ny,global_ny
     TYPE(BOUNDARY_CONDITIONS_VARIABLE_TYPE), POINTER :: BOUNDARY_CONDITIONS_VARIABLE
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: DEPENDENT_FIELD_VARIABLE
+    TYPE(FieldVariableType), POINTER :: DEPENDENT_FIELD_VARIABLE
     TYPE(VARYING_STRING) :: LOCAL_ERROR
  
     ENTERS("BOUNDARY_CONDITIONS_ADD_CONSTANT",ERR,ERROR,*999)
@@ -1089,7 +1089,7 @@ CONTAINS
     !Local Variables
     INTEGER(INTG) :: local_ny,global_ny
     TYPE(BOUNDARY_CONDITIONS_VARIABLE_TYPE), POINTER :: BOUNDARY_CONDITIONS_VARIABLE
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: FIELD_VARIABLE
+    TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE
     TYPE(VARYING_STRING) :: LOCAL_ERROR
  
     ENTERS("BOUNDARY_CONDITIONS_SET_CONSTANT",ERR,ERROR,*999)
@@ -1178,7 +1178,7 @@ CONTAINS
     REAL(DP) :: INITIAL_VALUE
     TYPE(BOUNDARY_CONDITIONS_VARIABLE_TYPE), POINTER :: BOUNDARY_CONDITIONS_VARIABLE
     TYPE(DOMAIN_MAPPING_TYPE), POINTER :: DOMAIN_MAPPING
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: DEPENDENT_VARIABLE
+    TYPE(FieldVariableType), POINTER :: DEPENDENT_VARIABLE
     TYPE(VARYING_STRING) :: LOCAL_ERROR
 
     ENTERS("BOUNDARY_CONDITIONS_ADD_LOCAL_DOFS",ERR,ERROR,*999)
@@ -1370,7 +1370,7 @@ CONTAINS
     INTEGER(INTG) :: i,global_ny,local_ny
     TYPE(BOUNDARY_CONDITIONS_VARIABLE_TYPE), POINTER :: BOUNDARY_CONDITIONS_VARIABLE
     TYPE(DOMAIN_MAPPING_TYPE), POINTER :: DOMAIN_MAPPING
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: DEPENDENT_VARIABLE
+    TYPE(FieldVariableType), POINTER :: DEPENDENT_VARIABLE
     TYPE(VARYING_STRING) :: LOCAL_ERROR
  
     ENTERS("BOUNDARY_CONDITIONS_SET_LOCAL_DOFS",ERR,ERROR,*999)
@@ -1668,7 +1668,7 @@ CONTAINS
     !Local Variables
     INTEGER(INTG) :: local_ny,global_ny
     TYPE(BOUNDARY_CONDITIONS_VARIABLE_TYPE), POINTER :: BOUNDARY_CONDITIONS_VARIABLE
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: FIELD_VARIABLE
+    TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE
     TYPE(VARYING_STRING) :: LOCAL_ERROR
 
     ENTERS("BOUNDARY_CONDITIONS_ADD_ELEMENT",ERR,ERROR,*999)
@@ -1961,7 +1961,7 @@ CONTAINS
     !Local Variables
     INTEGER(INTG) :: local_ny,global_ny
     TYPE(BOUNDARY_CONDITIONS_VARIABLE_TYPE), POINTER :: BOUNDARY_CONDITIONS_VARIABLE
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: FIELD_VARIABLE
+    TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE
     TYPE(VARYING_STRING) :: LOCAL_ERROR
  
     ENTERS("BOUNDARY_CONDITIONS_SET_ELEMENT",ERR,ERROR,*999)
@@ -2028,7 +2028,7 @@ CONTAINS
     !Local Variables
     INTEGER(INTG) :: local_ny,global_ny
     TYPE(BOUNDARY_CONDITIONS_VARIABLE_TYPE), POINTER :: BOUNDARY_CONDITIONS_VARIABLE
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: FIELD_VARIABLE
+    TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE
     TYPE(VARYING_STRING) :: LOCAL_ERROR
 
     ENTERS("BOUNDARY_CONDITIONS_ADD_NODE",ERR,ERROR,*999)
@@ -2135,7 +2135,7 @@ CONTAINS
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
     TYPE(BoundaryConditionsNeumannType), POINTER :: boundaryConditionsNeumann
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: rhsVariable
+    TYPE(FieldVariableType), POINTER :: rhsVariable
     TYPE(DOMAIN_MAPPING_TYPE), POINTER :: rowMapping, pointDofMapping
     TYPE(DOMAIN_TOPOLOGY_TYPE), POINTER :: topology
     TYPE(DOMAIN_LINE_TYPE), POINTER :: line
@@ -2573,7 +2573,7 @@ CONTAINS
     TYPE(BoundaryConditionsNeumannType), POINTER :: neumannConditions
     TYPE(BASIS_TYPE), POINTER :: basis
     TYPE(FIELD_TYPE), POINTER :: geometricField
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: rhsVariable
+    TYPE(FieldVariableType), POINTER :: rhsVariable
     TYPE(FIELD_INTERPOLATED_POINT_METRICS_PTR_TYPE), POINTER :: interpolatedPointMetrics(:)
     TYPE(FIELD_INTERPOLATED_POINT_PTR_TYPE), POINTER :: interpolatedPoints(:)
     TYPE(FIELD_INTERPOLATION_PARAMETERS_PTR_TYPE), POINTER :: interpolationParameters(:), scalingParameters(:)
@@ -2951,7 +2951,7 @@ CONTAINS
     !Local Variables
     INTEGER(INTG) :: local_ny,global_ny
     TYPE(BOUNDARY_CONDITIONS_VARIABLE_TYPE), POINTER :: BOUNDARY_CONDITIONS_VARIABLE
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: FIELD_VARIABLE
+    TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE
     TYPE(VARYING_STRING) :: LOCAL_ERROR
 
     ENTERS("BOUNDARY_CONDITIONS_SET_NODE",ERR,ERROR,*999)
@@ -3005,7 +3005,7 @@ CONTAINS
 
     !Argument variables
     TYPE(BOUNDARY_CONDITIONS_TYPE), POINTER, INTENT(IN) :: boundaryConditions !<The boundary conditions for the solver equations in which to constrain the DOF.
-    TYPE(FIELD_VARIABLE_TYPE), POINTER, INTENT(IN) :: fieldVariable !<A pointer to the field variable containing the DOFs.
+    TYPE(FieldVariableType), POINTER, INTENT(IN) :: fieldVariable !<A pointer to the field variable containing the DOFs.
     INTEGER(INTG), INTENT(IN) :: globalDofs(:) !<The global DOFs to be constrained to be equal.
     REAL(DP), INTENT(IN) :: coefficient !<The coefficient of constraint.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
@@ -3050,12 +3050,12 @@ CONTAINS
 
   !>Constrain multiple nodal equations dependent field DOFs to be a single solver DOF in the solver equations
   SUBROUTINE BoundaryConditions_ConstrainNodeDofsEqual( &
-      & boundaryConditions,field,fieldVariableType,versionNumber,derivativeNumber,component,nodes,coefficient,err,error,*)
+      & boundaryConditions,field,fieldVarType,versionNumber,derivativeNumber,component,nodes,coefficient,err,error,*)
 
     !Argument variables
     TYPE(BOUNDARY_CONDITIONS_TYPE), POINTER, INTENT(IN) :: boundaryConditions !<The solver equations boundary conditions to constrain the DOFs for.
     TYPE(FIELD_TYPE), POINTER, INTENT(IN) :: field !<The equations dependent field containing the field DOFs to be constrained.
-    INTEGER(INTG), INTENT(IN) :: fieldVariableType !<The field variable type of the DOFs to be constrained. \see OPENCMISS_FieldVariableTypes
+    INTEGER(INTG), INTENT(IN) :: fieldVarType !<The field variable type of the DOFs to be constrained. \see OPENCMISS_FieldVariableTypes
     INTEGER(INTG), INTENT(IN) :: versionNumber !<The derivative version number.
     INTEGER(INTG), INTENT(IN) :: derivativeNumber !<The derivative number.
     INTEGER(INTG), INTENT(IN) :: component !<The field component number of the DOFs to be constrained.
@@ -3064,7 +3064,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error message.
     !Local variables
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: fieldVariable
+    TYPE(FieldVariableType), POINTER :: fieldVariable
     INTEGER(INTG) :: numberOfNodes, nodeIdx, dof
     INTEGER(INTG), ALLOCATABLE :: globalDofs(:)
 
@@ -3081,11 +3081,11 @@ CONTAINS
     IF(err/=0) CALL FlagError("Could not allocate equal global DOFs array.",err,error,*998)
     !Get field DOFs for nodes
     DO nodeIdx=1,numberOfNodes
-      CALL FIELD_COMPONENT_DOF_GET_USER_NODE(field,fieldVariableType,versionNumber,derivativeNumber,nodes(nodeIdx), &
+      CALL FIELD_COMPONENT_DOF_GET_USER_NODE(field,fieldVarType,versionNumber,derivativeNumber,nodes(nodeIdx), &
         & component,dof,globalDofs(nodeIdx),err,error,*999)
     END DO
     !Get the field variable and boundary conditions variable for the field
-    CALL Field_VariableGet(field,fieldVariableType,fieldVariable,err,error,*999)
+    CALL Field_VariableGet(field,fieldVarType,fieldVariable,err,error,*999)
 
     !Now set DOF constraint
     CALL BoundaryConditions_ConstrainDofsEqual(boundaryConditions,fieldVariable,globalDofs,coefficient,err,error,*999)
@@ -3108,7 +3108,7 @@ CONTAINS
 
     !Argument variables
     TYPE(BOUNDARY_CONDITIONS_TYPE), POINTER, INTENT(IN) :: boundaryConditions !<The boundary conditions for the solver equations in which to constrain the DOF.
-    TYPE(FIELD_VARIABLE_TYPE), POINTER, INTENT(IN) :: fieldVariable !<A pointer to the field variable containing the DOFs.
+    TYPE(FieldVariableType), POINTER, INTENT(IN) :: fieldVariable !<A pointer to the field variable containing the DOFs.
     INTEGER(INTG), INTENT(IN) :: globalDof !<The global DOF to set the constraint on.
     INTEGER(INTG), INTENT(IN) :: dofs(:) !<The global DOFs that this DOF is constrained to depend on.
     REAL(DP), INTENT(IN) :: coefficients(:) !<The coefficient values in the DOF constraint.
@@ -3236,7 +3236,7 @@ CONTAINS
     TYPE(BoundaryConditionsDofConstraintType), POINTER :: dofConstraint
     TYPE(BoundaryConditionsCoupledDofsType), POINTER :: dofCoupling
     TYPE(DOMAIN_MAPPING_TYPE), POINTER :: variableDomainMapping
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: fieldVariable
+    TYPE(FieldVariableType), POINTER :: fieldVariable
 
     ENTERS("BoundaryConditions_DofConstraintsCreateFinish",err,error,*998)
 
@@ -3560,7 +3560,7 @@ CONTAINS
 
     !Argument variables
     TYPE(BOUNDARY_CONDITIONS_TYPE), POINTER :: BOUNDARY_CONDITIONS !<A pointer to the boundary conditions to initialise a variable type for.
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: FIELD_VARIABLE !<A pointer to the field variable to initialise the boundary conditions variable for.
+    TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE !<A pointer to the field variable to initialise the boundary conditions variable for.
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
@@ -3651,13 +3651,13 @@ CONTAINS
 
     !Argument variables
     TYPE(BOUNDARY_CONDITIONS_TYPE), POINTER :: BOUNDARY_CONDITIONS !<A pointer to the boundary conditions to initialise a variable type for.
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: FIELD_VARIABLE !<A pointer to the field variable to initialise the boundary conditions variable for.
+    TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE !<A pointer to the field variable to initialise the boundary conditions variable for.
     TYPE(BOUNDARY_CONDITIONS_VARIABLE_TYPE), POINTER, INTENT(OUT) :: BOUNDARY_CONDITIONS_VARIABLE !<On return, a pointer to the boundary conditions variable, or NULL if it wasn't found
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
     INTEGER(INTG) :: variable_idx
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: VARIABLE
+    TYPE(FieldVariableType), POINTER :: VARIABLE
     LOGICAL :: VARIABLE_FOUND
 
     ENTERS("BOUNDARY_CONDITIONS_VARIABLE_GET",ERR,ERROR,*999)

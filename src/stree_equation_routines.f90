@@ -688,7 +688,7 @@ CONTAINS
     TYPE(EquationsMatrixType), POINTER :: stiffnessMatrix
     TYPE(EquationsVectorType), POINTER :: vectorEquations
     TYPE(FIELD_TYPE), POINTER :: materialsField,dependentField
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: fieldVariable
+    TYPE(FieldVariableType), POINTER :: fieldVariable
     TYPE(VARYING_STRING) :: localError
     REAL(DP), POINTER :: dependentParameters(:),materialsParameters(:)
 
@@ -775,7 +775,7 @@ CONTAINS
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet,navierstokesEquationsSet
     TYPE(EquationsType), POINTER :: equations,navierstokesEquations
     TYPE(FIELD_TYPE), POINTER :: materialsField,navierstokesDependentField
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: dependentFieldVariable
+    TYPE(FieldVariableType), POINTER :: dependentFieldVariable
     TYPE(SOLVER_EQUATIONS_TYPE), POINTER :: solverEquations,navierstokesSolverEquations
     TYPE(SOLVER_MAPPING_TYPE), POINTER :: solverMapping,navierstokesSolverMapping
     TYPE(SOLVERS_TYPE), POINTER :: solvers

@@ -630,7 +630,7 @@ CONTAINS
     TYPE(COORDINATE_SYSTEM_TYPE), POINTER :: dataPointsCoordinateSystem,fieldCoordinateSystem
     TYPE(DataProjectionPtrType), ALLOCATABLE :: newDataProjections(:)
     TYPE(DECOMPOSITION_TYPE), POINTER :: fieldDecomposition
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: projectionFieldVariable
+    TYPE(FieldVariableType), POINTER :: projectionFieldVariable
     TYPE(VARYING_STRING) :: dummyError,localError
     
     ENTERS("DataProjection_CreateStart",err,error,*998)

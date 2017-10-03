@@ -138,7 +138,7 @@ CONTAINS
     TYPE(EquationsMatrixType), POINTER :: equationsMatrix
     TYPE(EquationsVectorType), POINTER :: vectorEquations
     TYPE(FIELD_TYPE), POINTER :: dependentField,geometricField,independentField,materialsField,sourceField
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: dataVariable,dataWeightVariable,dependentVariable,fieldVariable, &
+    TYPE(FieldVariableType), POINTER :: dataVariable,dataWeightVariable,dependentVariable,fieldVariable, &
       & independentVariable
     TYPE(FIELD_INTERPOLATED_POINT_TYPE), POINTER :: materialsInterpolatedPoint
     TYPE(FIELD_INTERPOLATED_POINT_TYPE), POINTER :: geometricInterpolatedPoint

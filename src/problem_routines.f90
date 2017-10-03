@@ -268,7 +268,7 @@ CONTAINS
     REAL(DP), POINTER :: intermediateData(:),parameterData(:)
     TYPE(CELLML_MODEL_TYPE), POINTER :: model
     TYPE(FIELD_TYPE), POINTER :: intermediateField,modelsField,parametersField
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: modelsVariable
+    TYPE(FieldVariableType), POINTER :: modelsVariable
     
     ENTERS("Problem_SolverDAECellMLRHSEvaluate",err,error,*999)
     
@@ -3016,7 +3016,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: fieldVariable
+    TYPE(FieldVariableType), POINTER :: fieldVariable
     TYPE(SOLVER_TYPE), POINTER :: solver
     TYPE(SOLVERS_TYPE), POINTER :: solvers
     TYPE(CONTROL_LOOP_TYPE), POINTER :: controlLoop

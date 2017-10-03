@@ -199,7 +199,7 @@ CONTAINS
     TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices
     TYPE(EQUATIONS_SET_EQUATIONS_SET_FIELD_TYPE), POINTER :: equations_EQUATIONS_SET_FIELD
     TYPE(FIELD_TYPE), POINTER :: equations_SET_FIELD_FIELD
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: FIELD_VARIABLE
+    TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE
     TYPE(EQUATIONS_SET_SOURCE_TYPE), POINTER :: equations_SOURCE
     TYPE(VARYING_STRING) :: localError
     INTEGER:: DEPENDENT_FIELD_NUMBER_OF_VARIABLES, DEPENDENT_FIELD_NUMBER_OF_COMPONENTS
@@ -1772,7 +1772,7 @@ CONTAINS
     TYPE(EquationsMatricesRHSType), POINTER :: rhsVector
     TYPE(EquationsMatrixType), POINTER :: stiffnessMatrix, dampingMatrix
     TYPE(FIELD_TYPE), POINTER :: dependentField,geometricField,materialsField,EQUATIONS_SET_FIELD
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: FIELD_VARIABLE
+    TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE
     TYPE(DECOMPOSITION_TYPE), POINTER :: DECOMPOSITION
     TYPE(MESH_ELEMENT_TYPE), POINTER :: MESH_ELEMENT
     TYPE(BOUNDARY_CONDITIONS_VARIABLE_TYPE), POINTER :: BOUNDARY_CONDITIONS_VARIABLE
@@ -3176,7 +3176,7 @@ CONTAINS
     !Argument variables
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet !<The equations set to calculate the RHS term for
     INTEGER(INTG), INTENT(IN) :: elementNumber !<The element number to calculat the RHS term for
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: dependentVariable
+    TYPE(FieldVariableType), POINTER :: dependentVariable
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local variables
@@ -4302,7 +4302,7 @@ CONTAINS
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equations_SET !<A pointer to the equations set
     TYPE(EquationsMappingVectorType), POINTER :: vectorMapping
     TYPE(EquationsVectorType), POINTER :: vectorEquations
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: FIELD_VARIABLE
+    TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE
     TYPE(VARYING_STRING) :: localError
 
     REAL(DP) :: ALPHA
@@ -4764,7 +4764,7 @@ CONTAINS
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equations_SET !<A pointer to the equations set
     TYPE(EquationsType), POINTER :: equations
     TYPE(EquationsMappingVectorType), POINTER :: vectorMapping
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: FIELD_VARIABLE
+    TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE
     TYPE(VARYING_STRING) :: localError
     TYPE(FIELD_TYPE), POINTER :: dependentField, geometricField
     TYPE(BOUNDARY_CONDITIONS_VARIABLE_TYPE), POINTER :: BOUNDARY_CONDITIONS_VARIABLE
@@ -5504,7 +5504,7 @@ CONTAINS
     TYPE(DOMAIN_TYPE), POINTER :: DOMAIN
     TYPE(DOMAIN_NODES_TYPE), POINTER :: DOMAIN_NODES
     TYPE(FIELD_TYPE), POINTER :: DEPENDENT_FIELD,geometricField
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: FIELD_VARIABLE,GEOMETRIC_VARIABLE
+    TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE,GEOMETRIC_VARIABLE
     TYPE(FIELD_INTERPOLATED_POINT_PTR_TYPE), POINTER :: INTERPOLATED_POINT (:)
     TYPE(FIELD_INTERPOLATION_PARAMETERS_PTR_TYPE), POINTER :: INTERPOLATION_PARAMETERS(:)
     TYPE(VARYING_STRING) :: localError
@@ -6769,7 +6769,7 @@ CONTAINS
     TYPE(SOLVER_MAPPING_TYPE), POINTER :: SOLVER_MAPPING !<A pointer to the solver mapping
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equations_SET !<A pointer to the equations set
     TYPE(EquationsMappingVectorType), POINTER :: vectorMapping
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: FIELD_VARIABLE
+    TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE
     TYPE(VARYING_STRING) :: localError
 
     REAL(DP) :: ALPHA
@@ -6914,7 +6914,7 @@ CONTAINS
     !Local Variables
     TYPE(FIELD_TYPE), POINTER :: DEPENDENT_FIELD,GEOMETRIC_FIELD
 !    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: FIELD_VARIABLE,GEOMETRIC_VARIABLE
+    TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE,GEOMETRIC_VARIABLE
     TYPE(SOLVER_EQUATIONS_TYPE), POINTER :: SOLVER_EQUATIONS  !<A pointer to the solver equations
     TYPE(SOLVER_MAPPING_TYPE), POINTER :: SOLVER_MAPPING !<A pointer to the solver mapping
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equations_SET !<A pointer to the equations set
@@ -7240,7 +7240,7 @@ CONTAINS
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equations_SET !<A pointer to the equations set
     TYPE(EquationsType), POINTER :: equations
     TYPE(EquationsMappingVectorType), POINTER :: vectorMapping
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: FIELD_VARIABLE
+    TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE
     TYPE(VARYING_STRING) :: localError
     CHARACTER(25) :: FILENAME
     TYPE(VARYING_STRING) :: FILEPATH
@@ -7478,7 +7478,7 @@ CONTAINS
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equations_SET !<A pointer to the equations set
     TYPE(EquationsType), POINTER :: equations
     TYPE(EquationsMappingVectorType), POINTER :: vectorMapping
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: FIELD_VARIABLE
+    TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE
     TYPE(VARYING_STRING) :: localError
 
     REAL(DP), POINTER :: ITERATION_VALUES_N(:),ITERATION_VALUES_N1(:)

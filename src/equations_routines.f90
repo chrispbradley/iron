@@ -1107,13 +1107,13 @@ CONTAINS
     !Argument variables
     TYPE(EquationsType), POINTER, INTENT(IN) :: equations !<A pointer to the equations to get the field variable for.
     INTEGER(INTG), INTENT(IN) :: derivedType !<The derived value type to get the field variable for. \see EQUATIONS_SET_CONSTANTS_DerivedTypes.
-    TYPE(FIELD_VARIABLE_TYPE), POINTER, INTENT(INOUT) :: fieldVariable !<On return, the field variable for the derived variable type.
+    TYPE(FieldVariableType), POINTER, INTENT(INOUT) :: fieldVariable !<On return, the field variable for the derived variable type.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local variables
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet
     TYPE(FIELD_TYPE), POINTER :: derivedField
-    INTEGER(INTG) :: fieldVariableType
+    INTEGER(INTG) :: fieldVarType
     TYPE(VARYING_STRING) :: localError
 
     ENTERS("Equations_DerivedVariableGet",err,error,*999)
@@ -1137,9 +1137,9 @@ CONTAINS
     IF(.NOT.ASSOCIATED(equationsSet%derived%derivedField))  &
       & CALL FlagError("Equations set derived field is not associated.",err,error,*999)
  
-    fieldVariableType=equationsSet%derived%variableTypes(derivedType)
+    fieldVarType=equationsSet%derived%variableTypes(derivedType)
     NULLIFY(fieldVariable)
-    CALL Field_VariableGet(equationsSet%derived%derivedField,fieldVariableType,fieldVariable,err,error,*999)
+    CALL Field_VariableGet(equationsSet%derived%derivedField,fieldVarType,fieldVariable,err,error,*999)
 
     EXITS("Equations_DerivedVariableGet")
     RETURN

@@ -391,7 +391,7 @@ CONTAINS
       & MATERIALS_INTERP_POINT(:)
     TYPE(FIELD_INTERPOLATED_POINT_METRICS_PTR_TYPE), POINTER :: GEOMETRIC_INTERPOLATED_POINT_METRICS(:)
     TYPE(FIELD_PHYSICAL_POINT_PTR_TYPE), POINTER :: ANALYTIC_PHYSICAL_POINT(:),MATERIALS_PHYSICAL_POINT(:)
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: FIELD_VARIABLE
+    TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE
     TYPE(VARYING_STRING) :: localError
 
     ENTERS("EQUATIONS_SET_ANALYTIC_EVALUATE",err,error,*999)
@@ -1732,7 +1732,7 @@ CONTAINS
     TYPE(EquationsMatrixType), POINTER :: equationsMatrix
     TYPE(EquationsVectorType), POINTER :: vectorEquations
     TYPE(FIELD_TYPE), POINTER :: dependentField
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: DEPENDENT_VARIABLE,rhsVariable
+    TYPE(FieldVariableType), POINTER :: DEPENDENT_VARIABLE,rhsVariable
     TYPE(VARYING_STRING) :: localError
 
     NULLIFY(DEPENDENT_PARAMETERS)
@@ -2001,7 +2001,7 @@ CONTAINS
     TYPE(EquationsVectorType), POINTER :: vectorEquations
     TYPE(DISTRIBUTED_VECTOR_TYPE), POINTER :: residualVector
     TYPE(FIELD_TYPE), POINTER :: RHS_FIELD
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: rhsVariable,residualVariable
+    TYPE(FieldVariableType), POINTER :: rhsVariable,residualVariable
     TYPE(BOUNDARY_CONDITIONS_VARIABLE_TYPE), POINTER :: RHS_BOUNDARY_CONDITIONS
     TYPE(DOMAIN_MAPPING_TYPE), POINTER :: RHS_DOMAIN_MAPPING
     TYPE(VARYING_STRING) :: localError
@@ -2920,7 +2920,7 @@ CONTAINS
     TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices
     TYPE(EquationsMatricesNonlinearType), POINTER :: nonlinearMatrices
     TYPE(EquationsVectorType), POINTER :: vectorEquations
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: rowVariable,columnVariable
+    TYPE(FieldVariableType), POINTER :: rowVariable,columnVariable
     TYPE(ElementVectorType) :: elementVector
     INTEGER(INTG) :: componentIdx,localDOF,version,derivativeIdx,derivative,nodeIdx,node,column
     INTEGER(INTG) :: componentInterpolationType
@@ -4997,7 +4997,7 @@ CONTAINS
     TYPE(EquationsMappingNonlinearType), POINTER :: nonlinearMapping
     TYPE(EquationsVectorType), POINTER :: vectorEquations
     TYPE(FIELD_PARAMETER_SET_TYPE), POINTER :: residualParameterSet
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: residualVariable
+    TYPE(FieldVariableType), POINTER :: residualVariable
     TYPE(VARYING_STRING) :: localError
  
     ENTERS("EquationsSet_ResidualEvaluate",err,error,*999)
@@ -6299,7 +6299,7 @@ CONTAINS
 
     !Local variables
     TYPE(FIELD_TYPE), POINTER :: dependentField
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: DEPENDENT_VARIABLE
+    TYPE(FieldVariableType), POINTER :: DEPENDENT_VARIABLE
     TYPE(DOMAIN_MAPPING_TYPE), POINTER :: DOMAIN_MAPPING
     TYPE(BOUNDARY_CONDITIONS_VARIABLE_TYPE), POINTER :: BOUNDARY_CONDITIONS_VARIABLE
     TYPE(BOUNDARY_CONDITIONS_DIRICHLET_TYPE), POINTER :: DIRICHLET_BOUNDARY_CONDITIONS

@@ -103,7 +103,7 @@ CONTAINS
     TYPE(QUADRATURE_SCHEME_TYPE), POINTER :: interfaceQuadratureScheme
     TYPE(FIELD_TYPE), POINTER :: coupledMeshDependentField,interfaceDependentField,interfaceGeometricField, &
       & interfacePenaltyField
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: interfaceMatrixVariable,lagrangeVariable
+    TYPE(FieldVariableType), POINTER :: interfaceMatrixVariable,lagrangeVariable
     TYPE(ElementMatrixType), POINTER :: interfaceElementMatrix
     TYPE(INTERFACE_EQUATIONS_DOMAIN_INTERPOLATION_TYPE), POINTER :: interfaceInterpolation
     TYPE(INTERFACE_ELEMENT_CONNECTIVITY_TYPE), POINTER :: elementConnectivity
@@ -873,7 +873,7 @@ CONTAINS
       & interfaceConnectivityBasis
     TYPE(QUADRATURE_SCHEME_TYPE), POINTER :: interfaceQuadratureScheme
     TYPE(FIELD_TYPE), POINTER :: coupledMeshDependentField,interfaceDependentField,interfaceGeometricField
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: interfaceMatrixVariable,lagrangeVariable
+    TYPE(FieldVariableType), POINTER :: interfaceMatrixVariable,lagrangeVariable
     TYPE(ElementMatrixType), POINTER :: interfaceElementMatrix
     TYPE(INTERFACE_EQUATIONS_DOMAIN_INTERPOLATION_TYPE), POINTER :: interfaceInterpolation
     TYPE(INTERFACE_ELEMENT_CONNECTIVITY_TYPE), POINTER :: elementConnectivity

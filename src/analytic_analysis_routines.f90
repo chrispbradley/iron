@@ -134,7 +134,7 @@ CONTAINS
     TYPE(DOMAIN_ELEMENTS_TYPE), POINTER :: ELEMENTS_DOMAIN
     TYPE(DOMAIN_NODES_TYPE), POINTER :: NODES_DOMAIN
     TYPE(DOMAIN_TOPOLOGY_TYPE), POINTER :: DOMAIN_TOPOLOGY
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: FIELD_VARIABLE
+    TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE
     TYPE(VARYING_STRING) :: LOCAL_ERROR,LOCAL_STRING
 
     NULLIFY(ANALYTIC_VALUES)
@@ -790,7 +790,7 @@ CONTAINS
   SUBROUTINE ANALYTIC_ANALYSIS_INTEGRAL_ERRORS(FIELD_VARIABLE,INTEGRAL_ERRORS,GHOST_INTEGRAL_ERRORS,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: FIELD_VARIABLE !<A pointer to the field variable to calculate the integral errors for
+    TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE !<A pointer to the field variable to calculate the integral errors for
     REAL(DP), INTENT(OUT) :: INTEGRAL_ERRORS(:,:) !<On exit, the integral errors for the local elements
     REAL(DP), INTENT(OUT) :: GHOST_INTEGRAL_ERRORS(:,:) !<On exit, the integral errors for the ghost elements
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
@@ -806,7 +806,7 @@ CONTAINS
     TYPE(FIELD_INTERPOLATED_POINT_METRICS_PTR_TYPE), POINTER :: GEOMETRIC_INTERP_POINT_METRICS(:)
     TYPE(FIELD_INTERPOLATION_PARAMETERS_PTR_TYPE), POINTER :: ANALYTIC_INTERP_PARAMETERS(:),GEOMETRIC_INTERP_PARAMETERS(:), &
       & NUMERICAL_INTERP_PARAMETERS(:)
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: GEOMETRIC_VARIABLE
+    TYPE(FieldVariableType), POINTER :: GEOMETRIC_VARIABLE
     TYPE(QUADRATURE_SCHEME_TYPE), POINTER :: QUADRATURE_SCHEME
     TYPE(VARYING_STRING) :: LOCAL_ERROR
 
@@ -1006,7 +1006,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: FIELD_VARIABLE
+    TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE
     REAL(DP), ALLOCATABLE :: INTEGRAL_ERRORS(:,:) !<the integral errors for the local elements
     REAL(DP), ALLOCATABLE :: GHOST_INTEGRAL_ERRORS(:,:) !<the integral errors for the ghost elements
 
@@ -1049,7 +1049,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: FIELD_VARIABLE
+    TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE
     REAL(DP), ALLOCATABLE :: INTEGRAL_ERRORS(:,:) !<the integral errors for the local elements
     REAL(DP), ALLOCATABLE :: GHOST_INTEGRAL_ERRORS(:,:) !<the integral errors for the ghost elements
 
@@ -1090,7 +1090,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: FIELD_VARIABLE
+    TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE
     REAL(DP), ALLOCATABLE :: INTEGRAL_ERRORS(:,:) !<the integral errors for the local elements
     REAL(DP), ALLOCATABLE :: GHOST_INTEGRAL_ERRORS(:,:) !<the integral errors for the ghost elements
 
@@ -1131,7 +1131,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: FIELD_VARIABLE
+    TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE
     REAL(DP), ALLOCATABLE :: INTEGRAL_ERRORS(:,:) !<the integral errors for the local elements
     REAL(DP), ALLOCATABLE :: GHOST_INTEGRAL_ERRORS(:,:) !<the integral errors for the ghost elements
 
@@ -1173,7 +1173,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: FIELD_VARIABLE
+    TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE
     REAL(DP), ALLOCATABLE :: INTEGRAL_ERRORS(:,:) !<the integral errors for the local elements
     REAL(DP), ALLOCATABLE :: GHOST_INTEGRAL_ERRORS(:,:) !<the integral errors for the ghost elements
 
@@ -1215,7 +1215,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: FIELD_VARIABLE
+    TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE
     REAL(DP), ALLOCATABLE :: INTEGRAL_ERRORS(:,:) !<the integral errors for the local elements
     REAL(DP), ALLOCATABLE :: GHOST_INTEGRAL_ERRORS(:,:) !<the integral errors for the ghost elements
 
@@ -1258,7 +1258,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: FIELD_VARIABLE
+    TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE
     REAL(DP), ALLOCATABLE :: INTEGRAL_ERRORS(:,:) !<the integral errors for the local elements
     REAL(DP), ALLOCATABLE :: GHOST_INTEGRAL_ERRORS(:,:) !<the integral errors for the ghost elements
 

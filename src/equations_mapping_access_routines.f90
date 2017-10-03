@@ -168,7 +168,7 @@ CONTAINS
     TYPE(EquationsMappingNonlinearType), POINTER :: nonlinearMapping !<A pointer to the nonlinear mapping to get the residual variable for
     INTEGER(INTG), INTENT(IN) :: residualIdx !<The index of the residual to get the field variable for. Currently will just be 1.
     INTEGER(INTG), INTENT(IN) :: variableIdx !<The index of the variable in the residual to get the field variable for. 
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: fieldVariable !<On exit, a pointer to the requested field variable. Must not be associated on entry.
+    TYPE(FieldVariableType), POINTER :: fieldVariable !<On exit, a pointer to the requested field variable. Must not be associated on entry.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables

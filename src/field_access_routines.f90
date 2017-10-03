@@ -439,7 +439,7 @@ CONTAINS
     !Argument variables
     TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to get the variable for.
     INTEGER(INTG), INTENT(IN) :: variableType !<The type of field variable to set. \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: fieldVariable !<On exit, a pointer to the field variable. Must not be associated on entry.
+    TYPE(FieldVariableType), POINTER :: fieldVariable !<On exit, a pointer to the field variable. Must not be associated on entry.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
@@ -486,7 +486,7 @@ CONTAINS
     !Argument variables
     TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to get the variable for.
     INTEGER(INTG), INTENT(IN) :: variableNumber !<The number of field variable to get. 
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: fieldVariable !<On exit, a pointer to the field variable. Must not be associated on entry.
+    TYPE(FieldVariableType), POINTER :: fieldVariable !<On exit, a pointer to the field variable. Must not be associated on entry.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
@@ -532,7 +532,7 @@ CONTAINS
   SUBROUTINE FieldVariable_DomainGet(fieldVariable,componentIdx,domain,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: fieldVariable !<A pointer to the field variable to get the domain for
+    TYPE(FieldVariableType), POINTER :: fieldVariable !<A pointer to the field variable to get the domain for
     INTEGER(INTG), INTENT(IN) :: componentIdx !<The component index of the field variable to get the domain for. If 0 then the component used to decompose the domain is used. 
     TYPE(DOMAIN_TYPE), POINTER :: domain  !<On exit, a pointer to domain for the field variable component. Must not be associated on entry.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code

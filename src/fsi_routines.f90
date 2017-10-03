@@ -679,7 +679,7 @@ CONTAINS
     TYPE(DOMAIN_TYPE), POINTER :: domain
     TYPE(EQUATIONS_SET_TYPE), POINTER :: solidEquationsSet,fluidEquationsSet,equationsSet
     TYPE(FIELD_TYPE), POINTER :: solidGeometricField,interfaceGeometricField,solidDependentField
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: geometricVariable
+    TYPE(FieldVariableType), POINTER :: geometricVariable
     TYPE(INTERFACE_CONDITION_TYPE), POINTER :: interfaceCondition
     TYPE(INTERFACE_TYPE), POINTER :: fsInterface
     TYPE(NODES_TYPE), POINTER :: interfaceNodes

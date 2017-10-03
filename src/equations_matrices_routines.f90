@@ -708,8 +708,8 @@ CONTAINS
     LOGICAL :: updateMatrix !<Is .TRUE. if the element matrix is to be updated, .FALSE. if not.
     INTEGER(INTG), INTENT(IN) :: rowElementNumbers(:) !<The row element number to calculate
     INTEGER(INTG), INTENT(IN) :: columnElementNumbers(:) !<The column element number to calculate
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: rowsFieldVariable !<A pointer to the field variable associated with the rows
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: colsFieldVariable !<A pointer to the field variable associated with the columns
+    TYPE(FieldVariableType), POINTER :: rowsFieldVariable !<A pointer to the field variable associated with the rows
+    TYPE(FieldVariableType), POINTER :: colsFieldVariable !<A pointer to the field variable associated with the columns
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
@@ -999,8 +999,8 @@ CONTAINS
 
     !Argument variables
     TYPE(ElementMatrixType) :: elementMatrix !<The element matrix to setup
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: rowsFieldVariable !<A pointer to the field variable associated with the rows
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: columnsFieldVariable !<A pointer to the field variable associated with the columns
+    TYPE(FieldVariableType), POINTER :: rowsFieldVariable !<A pointer to the field variable associated with the rows
+    TYPE(FieldVariableType), POINTER :: columnsFieldVariable !<A pointer to the field variable associated with the columns
     INTEGER(INTG), INTENT(IN)  :: rowsNumberOfElements !<Number of elements in the row variables whose dofs are present in this element matrix
     INTEGER(INTG), INTENT(IN)  :: colsNumberOfElements !<Number of elements in the col variables whose dofs are present in this element matrix
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
@@ -1055,7 +1055,7 @@ CONTAINS
     TYPE(ElementVectorType) :: elementVector !<The element vector to calculate.
     LOGICAL :: updateVector !<Is .TRUE. if the element vector is to be updated, .FALSE. if not.
     INTEGER(INTG), INTENT(IN) :: elementNumber !<The element number to calculate
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: rowsFieldVariable !<A pointer to the field variable associated with the rows
+    TYPE(FieldVariableType), POINTER :: rowsFieldVariable !<A pointer to the field variable associated with the rows
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
@@ -1195,7 +1195,7 @@ CONTAINS
 
     !Argument variables
     TYPE(ElementVectorType) :: elementVector !<The element vector to setup
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: rowsFieldVariable !<A pointer to the field variable associated with the rows
+    TYPE(FieldVariableType), POINTER :: rowsFieldVariable !<A pointer to the field variable associated with the rows
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
@@ -1385,7 +1385,7 @@ CONTAINS
     TYPE(EquationsMatricesRHSType), POINTER :: rhsVector
     TYPE(EquationsMatricesSourceType), POINTER :: sourceVector
     TYPE(EquationsMatrixType), POINTER :: equationsMatrix
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: fieldVariable,colFieldVariable
+    TYPE(FieldVariableType), POINTER :: fieldVariable,colFieldVariable
     TYPE(VARYING_STRING) :: localError
 
 #ifdef TAUPROF
@@ -1504,7 +1504,7 @@ CONTAINS
     TYPE(EquationsMatricesRHSType), POINTER :: rhsVector
     TYPE(EquationsMatricesSourceType), POINTER :: sourceVector
     TYPE(EquationsMatrixType), POINTER :: equationsMatrix
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: fieldVariable,colFieldVariable
+    TYPE(FieldVariableType), POINTER :: fieldVariable,colFieldVariable
     TYPE(VARYING_STRING) :: localError
 
 #ifdef TAUPROF
@@ -1609,8 +1609,8 @@ CONTAINS
     LOGICAL :: updateMatrix !<Is .TRUE. if the nodal matrix is to be updated, .FALSE. if not.
     INTEGER(INTG), INTENT(IN) :: rowNodeNumber !<The row nodal number to calculate
     INTEGER(INTG), INTENT(IN) :: columnNodeNumber !<The column nodal number to calculate
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: rowsFieldVariable !<A pointer to the field variable associated with the rows
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: colsFieldVariable !<A pointer to the field variable associated with the columns
+    TYPE(FieldVariableType), POINTER :: rowsFieldVariable !<A pointer to the field variable associated with the rows
+    TYPE(FieldVariableType), POINTER :: colsFieldVariable !<A pointer to the field variable associated with the columns
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
@@ -1799,7 +1799,7 @@ CONTAINS
     TYPE(NodalVectorType) :: nodalVector !<The nodal vector to calculate.
     LOGICAL :: updateVector !<Is .TRUE. if the nodal vector is to be updated, .FALSE. if not.
     INTEGER(INTG), INTENT(IN) :: rowNodeNumber !<The nodal number to calculate
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: rowsFieldVariable !<A pointer to the field variable associated with the rows
+    TYPE(FieldVariableType), POINTER :: rowsFieldVariable !<A pointer to the field variable associated with the rows
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
@@ -2027,7 +2027,7 @@ CONTAINS
     TYPE(EquationsMatricesRHSType), POINTER :: rhsVector
     TYPE(EquationsMatricesSourceType), POINTER :: sourceVector
     TYPE(EquationsMatrixType), POINTER :: equationsMatrix
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: fieldVariable,colFieldVariable
+    TYPE(FieldVariableType), POINTER :: fieldVariable,colFieldVariable
     TYPE(VARYING_STRING) :: localError
     
     ENTERS("EquationsMatrices_NodalInitialise",err,error,*999)
@@ -2123,8 +2123,8 @@ CONTAINS
 
     !Argument variables
     TYPE(NodalMatrixType) :: nodalMatrix !<The nodal matrix to setup
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: rowsFieldVariable !<A pointer to the field variable associated with the rows
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: colsFieldVariable !<A pointer to the field variable associated with the columns
+    TYPE(FieldVariableType), POINTER :: rowsFieldVariable !<A pointer to the field variable associated with the rows
+    TYPE(FieldVariableType), POINTER :: colsFieldVariable !<A pointer to the field variable associated with the columns
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
@@ -2165,7 +2165,7 @@ CONTAINS
 
     !Argument variables
     TYPE(NodalVectorType) :: nodalVector !<The nodal vector to setup
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: rowsFieldVariable !<A pointer to the field variable associated with the rows
+    TYPE(FieldVariableType), POINTER :: rowsFieldVariable !<A pointer to the field variable associated with the rows
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
@@ -2534,7 +2534,7 @@ CONTAINS
     TYPE(EquationsMatricesRHSType), POINTER :: rhsVector
     TYPE(EquationsMatricesSourceType), POINTER :: sourceVector
     TYPE(EquationsMatrixType), POINTER :: equationsMatrix
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: fieldVariable,colFieldVariable
+    TYPE(FieldVariableType), POINTER :: fieldVariable,colFieldVariable
     TYPE(VARYING_STRING) :: localError
     
     ENTERS("EquationsMatrices_ElementInitialise",err,error,*999)
@@ -4363,7 +4363,7 @@ CONTAINS
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet
     TYPE(FIELD_TYPE), POINTER :: dependentField
     TYPE(FIELD_DOF_TO_PARAM_MAP_TYPE), POINTER :: dependentDofsParamMapping
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: fieldVariable
+    TYPE(FieldVariableType), POINTER :: fieldVariable
     TYPE(LIST_PTR_TYPE), ALLOCATABLE :: columnIndicesLists(:)
     TYPE(VARYING_STRING) :: dummyError,localError
     
@@ -4653,7 +4653,7 @@ CONTAINS
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet
     TYPE(FIELD_TYPE), POINTER :: dependentField
     TYPE(FIELD_DOF_TO_PARAM_MAP_TYPE), POINTER :: dependentDofsParamMapping,rowDofsParamMapping
-    TYPE(FIELD_VARIABLE_TYPE), POINTER :: fieldVariable,rowVariable
+    TYPE(FieldVariableType), POINTER :: fieldVariable,rowVariable
     TYPE(LIST_PTR_TYPE), ALLOCATABLE :: columnIndicesLists(:)
     TYPE(VARYING_STRING) :: dummyError,localError
 
