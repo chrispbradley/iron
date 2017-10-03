@@ -1544,6 +1544,21 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     TYPE(EquationsHessianType), POINTER :: ptr
   END TYPE EquationsHessianPtrType
 
+  !>Contains information on equality constraint matrices for constraint equations
+  TYPE EquationsMatricesEqualityType
+    TYPE(EquationsMatricesConstraintType), POINTER :: constraintMatrices !<A pointer back to the constraint matrices
+  END TYPE EquationsMatricesEqualityType
+  
+  !>Contains information on inequality constraint matrices for constraint equations
+  TYPE EquationsMatricesInequalityType
+    TYPE(EquationsMatricesConstraintType), POINTER :: constraintMatrices !<A pointer back to the constraint matrices
+  END TYPE EquationsMatricesInequalityType
+  
+  !>Contains information on bounds constraint matrices for constraint equations
+  TYPE EquationsMatricesBoundsType
+    TYPE(EquationsMatricesConstraintType), POINTER :: constraintMatrices !<A pointer back to the constraint matrices
+  END TYPE EquationsMatricesBoundsType
+  
   !>Contains information on functions for scalar equations
   TYPE EquationsMatricesFunctionType
     TYPE(EquationsMatricesScalarType), POINTER :: scalarMatrices !<A pointer back to the scalar matrices
@@ -1635,6 +1650,17 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     TYPE(ElementVectorType) :: elementVector !<The element source information
     TYPE(NodalVectorType) :: NodalVector !<The nodal source information
   END TYPE EquationsMatricesSourceType
+  
+  !>Contains information on the constraint equations matrices and vectors 
+  TYPE EquationsMatricesConstraintType
+    TYPE(EquationsConstraintType), POINTER :: constraintEquations !<A pointer back to the constraint equations
+    LOGICAL :: constraintMatricesFinished !<Is .TRUE. if the constraint equations matrices have finished being created, .FALSE. if not.
+    TYPE(EquationsMappingConstraintType), POINTER :: constraintMapping !<A pointer to the constraint mapping for the constraint equations matrices.
+    TYPE(SOLVER_MAPPING_TYPE), POINTER :: solverMapping !<A pointer to the solver mapping for the equations matrices
+    TYPE(EquationsMatricesEqualityType), POINTER :: equalityConstraints !<A pointer to the equality constraint vectors for the constraint equations matrices
+    TYPE(EquationsMatricesInequalityType), POINTER :: inequalityConstraints !<A pointer to the inequality constraint vectors for the constraint equations matrices
+    TYPE(EquationsMatricesBoundsType), POINTER :: boundsConstraints !<A pointer to the bounds vectors for the constraint equations matrices
+  END TYPE EquationsMatricesConstraintType
   
   !>Contains information on the scalar equations matrices, vectors and scalars
   TYPE EquationsMatricesScalarType
@@ -1840,10 +1866,27 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     INTEGER(INTG), ALLOCATABLE :: equationsRowToSourceDOFMap(:) !<equationsRowToSourceDOFMap(rowIdx). The mapping from the rowIdx'th row of the equations to the source dof.
   END TYPE EquationsMappingSourceType
 
-   !>Contains information on the create values cache for the scalar equations mapping. Because we do not want to allocate and
+  !>Contains information on the create values cache for the constraint equations mapping. Because we do not want to allocate and
+  !deallocate large data structures as the equations mapping options are changed between create start and create finish we
+  !cache the important information and the allocate and process the data structures at create finish.
+  TYPE EquationsMappingConstraintCreateValuesCacheType
+    INTEGER(INTG) :: numberOfEqualityVariables !<The number of equality constraint variables
+    INTEGER(INTG) :: numberOfInequalityVariables !<The number of equality constraint variables
+  END TYPE EquationsMappingConstraintCreateValuesCacheType
+
+  !>Contains information on the create values cache for the scalar equations mapping. Because we do not want to allocate and
   !deallocate large data structures as the equations mapping options are changed between create start and create finish we
   !cache the important information and the allocate and process the data structures at create finish.
   TYPE EquationsMappingScalarCreateValuesCacheType
+    INTEGER(INTG) :: numberOfDotProducts !<The number of dot products in the scalar mapping
+    REAL(DP), ALLOCATABLE :: dotProductCoefficients(:) !<dotProductCoefficients(dotProductIdx). The coefficient for the dotProductIdx'th dot product in the scalar mapping
+    INTEGER(INTG), ALLOCATABLE :: dotProductVariableTypes(:,:) !<dotProductVariableTypes(1..2,dotProductIdx). The variable types for the 1st and 2nd field variables in the dotProductIdx'th dot product in the scalar mapping.
+    INTEGER(INTG) :: numberOfNorms !<The number of norms in the scalar mapping
+    REAL(DP), ALLOCATABLE :: normCoefficients(:) !<normCoefficients(normIdx). The coefficient for the normIdx'th norm in the scalar mapping
+    INTEGER(INTG), ALLOCATABLE :: normVariableTypes(:)!<normVariableTypes(normIdx). The variable type for the normIdx'th norm in the scalar mapping.
+    INTEGER(INTG) :: numberOfQuadraticForms !<The number of quadratic forms in the scalar mapping
+    REAL(DP), ALLOCATABLE :: quadraticFormCoefficients(:) !<quadratFormCoefficients(quadraticFormIdx). The coefficient for the quadraticFormIdx'th quadratic form in the scalar mapping
+    INTEGER(INTG), ALLOCATABLE :: quadraticFormVariableTypes(:,:) !<quadraticFormVariableTypes(1..2,quadraticFormIdx). The variable types for the 1st and 2nd field variables in the quadraticFormIdx'th quadratic form in the scalar mapping.
   END TYPE EquationsMappingScalarCreateValuesCacheType
 
   !>Contains information on the create values cache for the vector equations mapping. Because we do not want to allocate and
@@ -1882,6 +1925,14 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     INTEGER(INTG), ALLOCATABLE :: equationsRowToLHSDOFMap(:) !<equationsRowToLHSDOFMap(rowIdx). The mapping from the rowIdx'th row of the equations to the LHS dof.   
   END TYPE EquationsMappingLHSType
 
+  !>Contains information on the mapping of field variables for constraint equations
+  TYPE EquationsMappingConstraintType
+    TYPE(EquationsConstraintType), POINTER :: constraintEquations !<A pointer to the constraint equations for the mapping.
+    LOGICAL :: constraintMappingFinished !<Is .TRUE. if the constraint mapping has been finished. .FALSE. if not.
+    TYPE(EquationsMatricesConstraintType), POINTER :: constraintMatrices !<A pointer to the equations constraint matrices associated with this constraint equations mapping.
+    TYPE(EquationsMappingConstraintCreateValuesCacheType), POINTER :: createValuesCache !<The create values cache for the constraint equations mapping
+  END TYPE EquationsMappingConstraintType
+  
   !>Contains information on the mapping of field variables for a scalar equation
   TYPE EquationsMappingScalarType
     TYPE(EquationsScalarType), POINTER :: scalarEquations !<A pointer to the scalar equations for the mapping.
@@ -1892,7 +1943,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     TYPE(EquationsMappingDotProductsType), POINTER :: dotProductMappings !<A pointer to the equations mapping for vector dot products i.e., x^T.y
     TYPE(EquationsMappingQuadraticsType), POINTER :: quadraticMappings !<A pointer to the equations mapping for the quadratic matrices i.e., x^T.A.y
     TYPE(EquationsMappingScalarCreateValuesCacheType), POINTER :: createValuesCache !<The create values cache for the scalar equations mapping
-   END TYPE EquationsMappingScalarType
+  END TYPE EquationsMappingScalarType
   
   !>Contains information on the mapping of field variables for vector equations
   TYPE EquationsMappingVectorType
@@ -1952,6 +2003,13 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     TYPE(FIELD_INTERPOLATED_POINT_METRICS_PTR_TYPE), POINTER :: fibreInterpPointMetrics(:) !<fibreInterpPointMetrics(variableTypeIdx). A pointer to the variableTypeIdx'th fibre interpolated point metrics information 
   END TYPE EquationsInterpolationType
 
+  !>Contains information about constraint equations 
+  TYPE EquationsConstraintType
+    TYPE(EquationsType), POINTER :: equations !<A pointer to the equations
+    TYPE(EquationsMappingConstraintType), POINTER :: constraintMapping !<A pointer to the mapping for the constraint equations
+    TYPE(EquationsMatricesConstraintType), POINTER :: constraintMatrices !<A pointer to the matrices, vectors and scalars for the constraint equations
+  END TYPE EquationsConstraintType
+
   !>Contains information about scalar equations (i.e., a single equation row).
   TYPE EquationsScalarType
     TYPE(EquationsType), POINTER :: equations !<A pointer to the equations
@@ -1978,6 +2036,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     INTEGER(INTG) :: sparsityType !<The sparsity type for the equation matrices of the equations \see EquationsRoutines_EquationsSparsityTypes,EquationsRoutines
     INTEGER(INTG) :: lumpingType !<The lumping type for the equation matrices of the equations \see EquationsRoutines_EquationsLumpingTypes,EquationsRoutines
     TYPE(EquationsInterpolationType), POINTER :: interpolation !<A pointer to the interpolation information used in the equations.
+    TYPE(EquationsConstraintType), POINTER :: constraintEquations !<A pointer to the constraint equations
     TYPE(EquationsScalarType), POINTER :: scalarEquations !<A pointer to the scalar equations
     TYPE(EquationsVectorType), POINTER :: vectorEquations !<A pointer to the vector equations
   END TYPE EquationsType

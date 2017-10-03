@@ -169,6 +169,8 @@ MODULE EquationsMatricesRoutines
 
   PUBLIC EQUATIONS_HESSIAN_FINITE_DIFFERENCE_CALCULATED,EQUATIONS_HESSIAN_ANALYTIC_CALCULATED
 
+  PUBLIC EquationsMatrices_ConstraintDestroy
+
   PUBLIC EquationsMatrices_DynamicLumpingTypeSet
 
   PUBLIC EquationsMatrices_DynamicStorageTypeSet
@@ -242,6 +244,99 @@ MODULE EquationsMatricesRoutines
 
 
 CONTAINS
+
+  !
+  !================================================================================================================================
+  !
+
+  !>Destroy the constraint equations matrices
+  SUBROUTINE EquationsMatrices_ConstraintDestroy(constraintMatrices,err,error,*)
+
+    !Argument variables
+    TYPE(EquationsMatricesConstraintType), POINTER :: constraintMatrices !<A pointer the constraint equations matrices to destroy
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+
+    ENTERS("EquationsMatrices_ConstraintDestroy",err,error,*999)
+
+    IF(.NOT.ASSOCIATED(constraintMatrices)) CALL FlagError("Constraint matrices is not associated",err,error,*999)
+    
+    CALL EquationsMatrices_ConstraintFinalise(constraintMatrices,err,error,*999)
+        
+    EXITS("EquationsMatrices_ConstraintDestroy")
+    RETURN
+999 ERRORSEXITS("EquationsMatrices_ConstraintDestroy",err,error)    
+    RETURN 1
+   
+  END SUBROUTINE EquationsMatrices_ConstraintDestroy
+
+  !
+  !================================================================================================================================
+  !
+
+  !>Finalise the constraint equations matrices and deallocate all memory.
+  SUBROUTINE EquationsMatrices_ConstraintFinalise(constraintMatrices,err,error,*)
+
+    !Argument variables
+    TYPE(EquationsMatricesConstraintType), POINTER :: constraintMatrices !<A pointer to the constraint equations matrices
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+   
+    ENTERS("EquationsMatrices_ConstraintFinalise",err,error,*999)
+
+    IF(ASSOCIATED(constraintMatrices)) THEN
+      DEALLOCATE(constraintMatrices)
+    ENDIF
+       
+    EXITS("EquationsMatrices_ConstraintFinalise")
+    RETURN
+999 ERRORSEXITS("EquationsMatrices_ConstraintFinalise",err,error)
+    RETURN 1
+    
+  END SUBROUTINE EquationsMatrices_ConstraintFinalise
+
+  !
+  !================================================================================================================================
+  !
+
+  !>Initialise the constraint equations matrices for the constraint equations.
+  SUBROUTINE EquationsMatrices_ConstraintInitialise(constraintEquations,err,error,*)
+    
+    !Argument variables
+    TYPE(EquationsConstraintType), POINTER :: constraintEquations !<A pointer to the constraint equations to initialise the constraint equations matrices for
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+    INTEGER(INTG) :: dummyErr
+    TYPE(EquationsMappingConstraintType), POINTER :: constraintMapping
+    TYPE(VARYING_STRING) :: dummyError
+    
+    ENTERS("EquationsMatrices_ConstraintInitialise",err,error,*998)
+
+    IF(.NOT.ASSOCIATED(constraintEquations)) CALL FlagError("Constraint equations is not associated.",err,error,*998)
+    IF(ASSOCIATED(constraintEquations%constraintMatrices)) &
+      & CALL FlagError("Constraint matrices is already associated for this equations.",err,error,*998)
+    NULLIFY(constraintMapping)
+    CALL EquationsConstraint_ConstraintMappingGet(constraintEquations,constraintMapping,err,error,*998)
+    IF(.NOT.constraintMapping%constraintMappingFinished) &
+      & CALL FlagError("Constraint equations mapping has not been finished.",err,error,*998)
+    
+    ALLOCATE(constraintEquations%constraintMatrices,STAT=err)
+    IF(err/=0) CALL FlagError("Could not allocate constraint equations constraint matrices.",err,error,*999)
+    constraintEquations%constraintMatrices%constraintEquations=>constraintEquations
+    constraintEquations%constraintMatrices%constraintMatricesFinished=.FALSE.
+    constraintEquations%constraintMatrices%constraintMapping=>constraintMapping
+    NULLIFY(constraintEquations%constraintMatrices%solverMapping)
+       
+    EXITS("EquationsMatrices_ConstraintInitialise")
+    RETURN
+999 CALL EquationsMatrices_ConstraintFinalise(constraintEquations%constraintMatrices,dummyErr,dummyError,*998)
+998 ERRORSEXITS("EquationsMatrices_ConstraintInitialise",err,error)
+    RETURN 1
+    
+  END SUBROUTINE EquationsMatrices_ConstraintInitialise
 
   !
   !================================================================================================================================
@@ -3382,7 +3477,7 @@ CONTAINS
     
   END SUBROUTINE EquationsMatrices_RHSInitialise
   
-   !
+  !
   !================================================================================================================================
   !
 

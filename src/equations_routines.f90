@@ -183,6 +183,71 @@ CONTAINS
   !================================================================================================================================
   !
 
+  !>Finalise the constraint equations and deallocate all memory.
+  SUBROUTINE Equations_ConstraintFinalise(constraintEquations,err,error,*)
+
+    !Argument variables
+    TYPE(EquationsConstraintType), POINTER :: constraintEquations !<A pointer to the constraint equations to finalise
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+
+    ENTERS("Equations_ConstraintFinalise",err,error,*999)
+
+    IF(ASSOCIATED(constraintEquations)) THEN
+      IF(ASSOCIATED(constraintEquations%constraintMapping)) &
+        & CALL EquationsMapping_ConstraintDestroy(constraintEquations%constraintMapping,err,error,*999)
+      IF(ASSOCIATED(constraintEquations%constraintMatrices)) &
+        & CALL EquationsMatrices_ConstraintDestroy(constraintEquations%constraintMatrices,err,error,*999)
+      DEALLOCATE(constraintEquations)
+    ENDIF
+       
+    EXITS("Equations_ConstraintFinalise")
+    RETURN
+999 ERRORSEXITS("Equations_ConstraintFinalise",err,error)
+    RETURN 1
+    
+  END SUBROUTINE Equations_ConstraintFinalise
+
+  !
+  !================================================================================================================================
+  !
+
+  !>Initialise the constraint equations for an equations
+  SUBROUTINE Equations_ConstraintInitialise(equations,err,error,*)
+
+    !Argument variables
+    TYPE(EquationsType), POINTER :: equations !<A pointer to the equations to initialise the constraint equations for
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+    INTEGER(INTG) :: dummyErr
+    TYPE(VARYING_STRING) :: dummyError
+
+    ENTERS("Equations_ConstraintInitialise",err,error,*998)
+
+    IF(.NOT.ASSOCIATED(equations)) CALL FlagError("Equations is not associated.",err,error,*998)
+    IF(ASSOCIATED(equations%constraintEquations)) &
+      & CALL FlagError("Equations constraint equations are already associated.",err,error,*998)
+
+    ALLOCATE(equations%constraintEquations,STAT=err)
+    IF(err/=0) CALL FlagError("Could not allocate equations constraint equations.",err,error,*999)
+    equations%constraintEquations%equations=>equations
+    NULLIFY(equations%constraintEquations%constraintMapping)
+    NULLIFY(equations%constraintEquations%constraintMatrices)
+        
+    EXITS("Equations_ConstraintInitialise")
+    RETURN
+999 CALL Equations_ConstraintFinalise(equations%constraintEquations,dummyErr,dummyError,*998)
+998 ERRORSEXITS("Equations_ConstraintInitialise",err,error)
+    RETURN 1
+    
+  END SUBROUTINE Equations_ConstraintInitialise
+
+  !
+  !================================================================================================================================
+  !
+
   !>Finish the creation of equations.
   SUBROUTINE Equations_CreateFinish(equations,err,error,*)
 
@@ -446,6 +511,7 @@ CONTAINS
 
     IF(ASSOCIATED(equations)) THEN
       CALL Equations_InterpolationFinalise(equations%interpolation,err,error,*999)
+      CALL Equations_ConstraintFinalise(equations%constraintEquations,err,error,*999)
       CALL Equations_ScalarFinalise(equations%scalarEquations,err,error,*999)
       CALL Equations_VectorFinalise(equations%vectorEquations,err,error,*999)
       DEALLOCATE(equations)
@@ -490,6 +556,7 @@ CONTAINS
     equationsSet%equations%sparsityType=EQUATIONS_SPARSE_MATRICES
     equationsSet%equations%lumpingType=EQUATIONS_UNLUMPED_MATRICES
     NULLIFY(equationsSet%equations%interpolation)
+    NULLIFY(equationsSet%equations%constraintEquations)
     NULLIFY(equationsSet%equations%scalarEquations)
     NULLIFY(equationsSet%equations%vectorEquations)
     CALL Equations_VectorInitialise(equationsSet%equations,err,error,*999)
@@ -1839,4 +1906,4 @@ CONTAINS
   !
 
 END MODULE EquationsRoutines
-!
+

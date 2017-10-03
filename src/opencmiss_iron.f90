@@ -17946,8 +17946,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
     TYPE(COORDINATE_SYSTEM_TYPE), POINTER :: coordinateSystem
-    TYPE(VARYING_STRING) :: localError
-
+ 
     ENTERS("cmfe_CoordinateSystem_CreateFinishNumber",err,error,*999)
 
     NULLIFY(coordinateSystem)

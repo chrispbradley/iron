@@ -65,12 +65,20 @@ MODULE EquationsAccessRoutines
 
   PUBLIC Equations_EquationsSetGet
   
+  PUBLIC Equations_ConstraintEquationsGet
+  
   PUBLIC Equations_ScalarEquationsGet
   
   PUBLIC Equations_VectorEquationsGet
   
-  PUBLIC EquationsScalar_EquationsGet
+  PUBLIC EquationsConstraint_EquationsGet
 
+  PUBLIC EquationsConstraint_ConstraintMappingGet
+
+  PUBLIC EquationsConstraint_ConstraintMatricesGet
+
+  PUBLIC EquationsScalar_EquationsGet
+  
   PUBLIC EquationsScalar_ScalarMappingGet
 
   PUBLIC EquationsScalar_ScalarMatricesGet
@@ -112,6 +120,37 @@ CONTAINS
     RETURN 1
     
   END SUBROUTINE Equations_EquationsSetGet
+
+  !
+  !================================================================================================================================
+  !
+
+  !>Gets the constraint equations for equations.
+  SUBROUTINE Equations_ConstraintEquationsGet(equations,constraintEquations,err,error,*)
+
+    !Argument variables
+    TYPE(EquationsType), POINTER :: equations !<A pointer to the equations to get the constraint equations for
+    TYPE(EquationsConstraintType), POINTER :: constraintEquations !<On exit, a pointer to the constraint equations for the specified equations. Must not be associated on entry
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+ 
+    ENTERS("Equations_ConstraintEquationsGet",err,error,*998)
+
+    IF(ASSOCIATED(constraintEquations)) CALL FlagError("Constraint equations is already associated.",err,error,*998)
+    IF(.NOT.ASSOCIATED(equations)) CALL FlagError("Equations is not associated.",err,error,*999)
+
+    constraintEquations=>equations%constraintEquations
+    IF(.NOT.ASSOCIATED(constraintEquations)) &
+      & CALL FlagError("Constraint equations is not associated for the equations.",err,error,*999)
+       
+    EXITS("Equations_ConstrainEquationsGet")
+    RETURN
+999 NULLIFY(constraintEquations)
+998 ERRORSEXITS("Equations_ConstraintEquationsGet",err,error)
+    RETURN 1
+    
+  END SUBROUTINE Equations_ConstraintEquationsGet
 
   !
   !================================================================================================================================
@@ -172,6 +211,98 @@ CONTAINS
     RETURN 1
     
   END SUBROUTINE Equations_VectorEquationsGet
+
+  !
+  !================================================================================================================================
+  !
+
+  !>Gets the equations for a constraint equations.
+  SUBROUTINE EquationsConstraint_EquationsGet(constraintEquations,equations,err,error,*)
+
+    !Argument variables
+    TYPE(EquationsConstraintType), POINTER :: constraintEquations !<A pointer to the constraint equations to get the equations for
+    TYPE(EquationsType), POINTER :: equations !<On exit, a pointer to the equations in the specified constraint equations. Must not be associated on entry
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+ 
+    ENTERS("EquationsConstraint_EquationsGet",err,error,*998)
+
+    IF(ASSOCIATED(equations)) CALL FlagError("Equations is already associated.",err,error,*998)
+    IF(.NOT.ASSOCIATED(constraintEquations)) CALL FlagError("Constraint equations is not associated.",err,error,*999)
+
+    equations=>constraintEquations%equations
+    IF(.NOT.ASSOCIATED(equations)) CALL FlagError("Equations is not associated for the constraint equations.",err,error,*999)
+       
+    EXITS("EquationsConstraint_EquationsGet")
+    RETURN
+999 NULLIFY(equations)
+998 ERRORSEXITS("EquationsConstraint_EquationsGet",err,error)
+    RETURN 1
+    
+  END SUBROUTINE EquationsConstraint_EquationsGet
+  
+  !
+  !================================================================================================================================
+  !
+
+  !>Gets the constraint mapping for a constraint equations.
+  SUBROUTINE EquationsConstraint_ConstraintMappingGet(constraintEquations,constraintMapping,err,error,*)
+
+    !Argument variables
+    TYPE(EquationsConstraintType), POINTER :: constraintEquations !<A pointer to the constraint equations to get the constraint mapping for
+    TYPE(EquationsMappingConstraintType), POINTER :: constraintMapping !<On exit, a pointer to the constraint mapping in the specified constraint equations. Must not be associated on entry
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+ 
+    ENTERS("EquationsConstraint_ConstraintMappingGet",err,error,*998)
+
+    IF(ASSOCIATED(constraintMapping)) CALL FlagError("Constraint mapping is already associated.",err,error,*998)
+    IF(.NOT.ASSOCIATED(constraintEquations)) CALL FlagError("Constraint equations is not associated.",err,error,*999)
+
+    constraintMapping=>constraintEquations%constraintMapping
+    IF(.NOT.ASSOCIATED(constraintMapping)) &
+      & CALL FlagError("Constraint mapping is not associated for the constraint equations.",err,error,*999)
+       
+    EXITS("EquationsConstraint_ConstraintMappingGet")
+    RETURN
+999 NULLIFY(constraintMapping)
+998 ERRORSEXITS("EquationsConstraint_ConstraintMappingGet",err,error)
+    RETURN 1
+    
+  END SUBROUTINE EquationsConstraint_ConstraintMappingGet
+
+  !
+  !================================================================================================================================
+  !
+
+  !>Gets the constraint matrices for a constraint equations.
+  SUBROUTINE EquationsConstraint_ConstraintMatricesGet(constraintEquations,constraintMatrices,err,error,*)
+
+    !Argument variables
+    TYPE(EquationsConstraintType), POINTER :: constraintEquations !<A pointer to the constraint equations to get the constraint matrices for
+    TYPE(EquationsMatricesConstraintType), POINTER :: constraintMatrices !<On exit, a pointer to the constraint matrices in the specified constraint equations. Must not be associated on entry
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+ 
+    ENTERS("EquationsConstraint_ConstraintMatricesGet",err,error,*998)
+
+    IF(ASSOCIATED(constraintMatrices)) CALL FlagError("Constraint matrices is already associated.",err,error,*998)
+    IF(.NOT.ASSOCIATED(constraintEquations)) CALL FlagError("Constraint equations is not associated.",err,error,*999)
+
+    constraintMatrices=>constraintEquations%constraintMatrices
+    IF(.NOT.ASSOCIATED(constraintMatrices)) &
+      & CALL FlagError("Constraint matrices is not associated for the constraint equations.",err,error,*999)
+       
+    EXITS("EquationsConstraint_ConstraintMatricesGet")
+    RETURN
+999 NULLIFY(constraintMatrices)
+998 ERRORSEXITS("EquationsConstraint_ConstraintMatricesGet",err,error)
+    RETURN 1
+    
+  END SUBROUTINE EquationsConstraint_ConstraintMatricesGet
 
   !
   !================================================================================================================================

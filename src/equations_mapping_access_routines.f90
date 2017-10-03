@@ -63,6 +63,10 @@ MODULE EquationsMappingAccessRoutines
 
   !Interfaces
 
+  PUBLIC EquationsMappingConstraint_ConstraintEquationsGet
+  
+  PUBLIC EquationsMappingConstraint_CreateValuesCacheGet
+  
   PUBLIC EquationsMappingNonlinear_ResidualVariableGet
   
   PUBLIC EquationsMappingScalar_CreateValuesCacheGet
@@ -88,6 +92,70 @@ MODULE EquationsMappingAccessRoutines
   PUBLIC EquationsMappingVector_VectorMatricesGet
  
 CONTAINS
+
+  !
+  !================================================================================================================================
+  !
+
+  !>Gets the create values cache for a constraint equations mapping.
+  SUBROUTINE EquationsMappingConstraint_CreateValuesCacheGet(constraintMapping,createValuesCache,err,error,*)
+
+    !Argument variables
+    TYPE(EquationsMappingConstraintType), POINTER :: constraintMapping !<A pointer to the equations constraint mapping to get the create values cache for
+    TYPE(EquationsMappingConstraintCreateValuesCacheType), POINTER :: createValuesCache !<On exit, a pointer to the create values cache in the specified constraint equations mapping. Must not be associated on entry
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+ 
+    ENTERS("EquationsMappingConstraint_CreateValuesCacheGet",err,error,*998)
+
+    IF(ASSOCIATED(createValuesCache)) CALL FlagError("Create values cache is already associated.",err,error,*998)
+    IF(.NOT.ASSOCIATED(constraintMapping)) CALL FlagError("Constraint mapping is not associated.",err,error,*999)
+
+    createValuesCache=>constraintMapping%createValuesCache
+    IF(.NOT.ASSOCIATED(createValuesCache)) &
+      & CALL FlagError("Create values cache is not associated for the constraint mapping.",err,error,*999)
+       
+    EXITS("EquationsMappingConstraint_CreateValuesCacheGet")
+    RETURN
+999 NULLIFY(createValuesCache)
+998 ERRORS("EquationsMappingConstraint_CreateValuesCacheGet",err,error)
+    EXITS("EquationsMappingConstraint_CreateValuesCacheGet")
+    RETURN 1
+    
+  END SUBROUTINE EquationsMappingConstraint_CreateValuesCacheGet
+
+  !
+  !================================================================================================================================
+  !
+
+  !>Gets the constraint equations for a constraint equations mapping.
+  SUBROUTINE EquationsMappingConstraint_ConstraintEquationsGet(constraintMapping,constraintEquations,err,error,*)
+
+    !Argument variables
+    TYPE(EquationsMappingConstraintType), POINTER :: constraintMapping !<A pointer to the equations constraint mapping to get the constraint equations for
+    TYPE(EquationsConstraintType), POINTER :: constraintEquations !<On exit, a pointer to the constraint equations in the specified constraint equations mapping. Must not be associated on entry
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+ 
+    ENTERS("EquationsMappingConstraint_ConstraintEquationsGet",err,error,*998)
+
+    IF(ASSOCIATED(constraintEquations)) CALL FlagError("Constraint equations is already associated.",err,error,*998)
+    IF(.NOT.ASSOCIATED(constraintMapping)) CALL FlagError("Constraint mapping is not associated.",err,error,*999)
+
+    constraintEquations=>constraintMapping%constraintEquations
+    IF(.NOT.ASSOCIATED(constraintEquations)) &
+      & CALL FlagError("Constraint equations is not associated for the constraint mapping.",err,error,*999)
+       
+    EXITS("EquationsMappingConstraint_ConstraintEquationsGet")
+    RETURN
+999 NULLIFY(constraintEquations)
+998 ERRORS("EquationsMappingConstraint_ConstraintEquationsGet",err,error)
+    EXITS("EquationsMappingConstraint_ConstraintEquationsGet")
+    RETURN 1
+    
+  END SUBROUTINE EquationsMappingConstraint_ConstraintEquationsGet
 
   !
   !================================================================================================================================

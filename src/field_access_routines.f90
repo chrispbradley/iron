@@ -172,6 +172,8 @@ MODULE FieldAccessRoutines
 
   PUBLIC Field_VariableGet
 
+  PUBLIC Field_VariableNumberGet
+
   PUBLIC FieldVariable_DomainGet
 
 CONTAINS
@@ -472,6 +474,54 @@ CONTAINS
     RETURN 1
     
   END SUBROUTINE Field_VariableGet
+
+  !
+  !
+  !================================================================================================================================
+  !
+
+  !>Returns a pointer to a field variable of a specified number
+  SUBROUTINE Field_VariableNumberGet(field,variableNumber,fieldVariable,err,error,*)
+
+    !Argument variables
+    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to get the variable for.
+    INTEGER(INTG), INTENT(IN) :: variableNumber !<The number of field variable to get. 
+    TYPE(FIELD_VARIABLE_TYPE), POINTER :: fieldVariable !<On exit, a pointer to the field variable. Must not be associated on entry.
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+    TYPE(VARYING_STRING) :: localError
+
+    ENTERS("Field_VariableNumberGet",err,error,*998)
+
+    IF(ASSOCIATED(fieldVariable)) CALL FlagError("Field variable is already associated.",err,error,*998)
+    IF(.NOT.ASSOCIATED(field)) CALL FlagError("Field is not associated.",err,error,*999)
+    IF(.NOT.field%FIELD_FINISHED) THEN
+      localError="Field number "//TRIM(NumberToVString(field%USER_NUMBER,"*",err,error))//" has not been finished."
+      CALL FlagError(localError,err,error,*999)
+    ENDIF
+    IF(variableNumber<1.OR.variableNumber>field%NUMBER_OF_VARIABLES) THEN
+      localError="The specified field variable number of "//TRIM(NumberToVString(variableNumber,"*",err,error))// &
+        & " is invalid. The field variable number must be between 1 and "// &
+        & TRIM(NumberToVString(FIELD_NUMBER_OF_VARIABLE_TYPES,"*",err,error))//"."
+      CALL FlagError(localError,err,error,*999)
+    ENDIF
+    IF(ALLOCATED(field%variables)) CALL FlagError("Field variables is not allocated.",err,error,*999)
+
+    fieldVariable=>field%variables(variableNumber)
+    IF(.NOT.ASSOCIATED(fieldVariable)) THEN
+      localError="Problem associating field variable number of "//TRIM(NumberToVString(variableNumber,"*",err,error))// &
+        & " on field number "//TRIM(NumberToVString(field%USER_NUMBER,"*",err,error))//"."
+      CALL FlagError(localError,err,error,*999)
+    ENDIF
+
+    EXITS("Field_VariableNumberGet")
+    RETURN
+999 NULLIFY(fieldVariable)
+998 ERRORSEXITS("Field_VariableNumberGet",err,error)
+    RETURN 1
+    
+  END SUBROUTINE Field_VariableNumberGet
 
   !
   !
