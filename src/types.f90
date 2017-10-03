@@ -1363,9 +1363,9 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
   END TYPE FIELD_VARIABLE_TYPE
   
   !>A buffer type to allow for an array of pointers to a FIELD_VARIABLE_TYPE.
-  TYPE FIELD_VARIABLE_PTR_TYPE
+  TYPE FieldVariablePtrType
     TYPE(FIELD_VARIABLE_TYPE), POINTER :: PTR !<The pointer to the field variable. 
-  END TYPE FIELD_VARIABLE_PTR_TYPE
+  END TYPE FieldVariablePtrType
 
   !>A type to temporarily hold (cache) the user modifiable values which are used to create a field. 
   TYPE FIELD_CREATE_VALUES_CACHE_TYPE
@@ -1410,7 +1410,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     INTEGER(INTG) :: DEPENDENT_TYPE !<The dependent type of the field. \see FIELD_ROUTINES_DependentTypes
     TYPE(DECOMPOSITION_TYPE), POINTER :: DECOMPOSITION !<A pointer to the decomposition of the mesh for which the field is defined on.
     INTEGER(INTG) :: NUMBER_OF_VARIABLES !<The number of variable types in the field. Old CMISS name NCT(nr,nx)
-    TYPE(FIELD_VARIABLE_PTR_TYPE), ALLOCATABLE :: VARIABLE_TYPE_MAP(:) !<VARIABLE_TYPE_MAP(variable_idx). The map from the available field variable types to the field variable types that are defined for the field. variable_idx varies from 1 to FIELD_ROUTINES::FIELD_NUMBER_OF_VARIABLE_TYPES. If the particular field variable type has not been defined on the field then the VARIABLE_TYPE_MAP will be NULL. \see FIELD_ROUTINES_VariableTypes
+    TYPE(FieldVariablePtrType), ALLOCATABLE :: VARIABLE_TYPE_MAP(:) !<VARIABLE_TYPE_MAP(variable_idx). The map from the available field variable types to the field variable types that are defined for the field. variable_idx varies from 1 to FIELD_ROUTINES::FIELD_NUMBER_OF_VARIABLE_TYPES. If the particular field variable type has not been defined on the field then the VARIABLE_TYPE_MAP will be NULL. \see FIELD_ROUTINES_VariableTypes
     TYPE(FIELD_VARIABLE_TYPE), ALLOCATABLE :: VARIABLES(:) !<VARIABLES(variable_idx). The array of field variables. 
     TYPE(FIELD_SCALINGS_TYPE) :: SCALINGS !<The scaling parameters for the field
     TYPE(FIELD_TYPE), POINTER :: GEOMETRIC_FIELD !<A pointer to the geometric field that this field uses. If the field itself is a geometric field then this will be a pointer back to itself.
@@ -1755,7 +1755,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
   !>Contains information for mapping field variables to a dot product i.e., x^T.y in the scalar equations mapping
   TYPE EquationsMappingDotProductType
     INTEGER(INTG) :: dotProductNumber !<The number of dot product in the dot products scalar mapping
-    TYPE(FIELD_VARIABLE_PTR_TYPE) :: dotProductVariables(2) !<dotProductVaraibles(variableIdx). The variableIdx'th field variable in the dot product. For x^T.y the first variable is x and the second variable is y.
+    TYPE(FieldVariablePtrType) :: dotProductVariables(2) !<dotProductVaraibles(variableIdx). The variableIdx'th field variable in the dot product. For x^T.y the first variable is x and the second variable is y.
     REAL(DP) :: dotProductCoefficient !<The multiplicative coefficient applied to the dot product.
   END TYPE EquationsMappingDotProductType
     
@@ -1769,7 +1769,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
   !>Contains information for mapping field variables to a quadratic form i.e., x^T.A.y in the scalar equations mapping
   TYPE EquationsMappingQuadraticType
     INTEGER(INTG) :: quadraticNumber !<The number of dot product in the dot products scalar mapping    
-    TYPE(FIELD_VARIABLE_PTR_TYPE) :: quadraticVariables(2) !<dotProductVaraibles(variableIdx). The variableIdx'th field variable in the dot product. For x^T.A.y the first variable is x and the second variable is y.
+    TYPE(FieldVariablePtrType) :: quadraticVariables(2) !<dotProductVaraibles(variableIdx). The variableIdx'th field variable in the dot product. For x^T.A.y the first variable is x and the second variable is y.
     REAL(DP) :: quadraticCoefficient !<The multiplicative coefficient applied to the quadratic form.
   END TYPE EquationsMappingQuadraticType
     
@@ -1835,7 +1835,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     TYPE(EquationsMappingVectorType), POINTER :: vectorMapping !<A pointer to the equations vector mapping
     INTEGER(INTG) :: numberOfResiduals !<The number of residuals in this mapping. Currently just one.
     INTEGER(INTG) :: numberOfResidualVariables !<The number of residual variables in this mapping
-    TYPE(FIELD_VARIABLE_PTR_TYPE), ALLOCATABLE :: residualVariables(:) !<residualVariables(variableIdx). The variableIdx'th residual variable.
+    TYPE(FieldVariablePtrType), ALLOCATABLE :: residualVariables(:) !<residualVariables(variableIdx). The variableIdx'th residual variable.
     TYPE(VarToEquationsJacobianMapType), ALLOCATABLE :: varToJacobianMap(:) !<varToJacobianMap(variableIdx). The mapping from the residual variable to the Jacobain matrix for the variableIdx'th residual variable.
     TYPE(EquationsJacobianToVarMapType), ALLOCATABLE :: jacobianToVarMap(:) !<jacobianToVarMap(jacobianIdx). The mapping from the Jacobian matrix to the residual variables for the jacobianIdx'th Jacobian.
     REAL(DP) :: residualCoefficient !<The multiplicative coefficient applied to the residual vector
@@ -2447,7 +2447,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     TYPE(INTERFACE_CONDITION_TYPE), POINTER :: INTERFACE_CONDITION !<A pointer to the interface condition
     INTEGER(INTG) :: NUMBER_OF_DEPENDENT_VARIABLES !<The number of dependent variables in the interface condition
     TYPE(EQUATIONS_SET_PTR_TYPE), POINTER :: EQUATIONS_SETS(:) !<EQUATIONS_SETS(variable_idx). The pointer to the equations set containing the dependent variable for the variable_idx'th added dependent variable.
-    TYPE(FIELD_VARIABLE_PTR_TYPE), POINTER :: FIELD_VARIABLES(:) !<FIELD_VARIABLES(variable_idx). The pointer to the variable_idx'th dependent variable in the interface condition.
+    TYPE(FieldVariablePtrType), POINTER :: FIELD_VARIABLES(:) !<FIELD_VARIABLES(variable_idx). The pointer to the variable_idx'th dependent variable in the interface condition.
     INTEGER(INTG), POINTER :: VARIABLE_MESH_INDICES(:) !<VARIABLE_MESH_INDICES(variable_idx). The mesh index of the variable_idx'th dependent variable in the interface condition.
   END TYPE INTERFACE_DEPENDENT_TYPE
 
@@ -3195,7 +3195,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
 
     INTEGER(INTG) :: NUMBER_OF_VARIABLES !<The number of variables mapped to this solver matrix
     INTEGER(INTG), ALLOCATABLE :: VARIABLE_TYPES(:) !<VARIABLE_TYPES(variable_idx). The variable type for the variable_idx'th variable that is mapped to the solver matrix.
-    TYPE(FIELD_VARIABLE_PTR_TYPE), ALLOCATABLE :: VARIABLES(:) !<VARIABLES(variable_idx). VARIABLES(variable_idx)%PTR points to the variable_idx'th variable that is mapped to the solver matrix.
+    TYPE(FieldVariablePtrType), ALLOCATABLE :: VARIABLES(:) !<VARIABLES(variable_idx). VARIABLES(variable_idx)%PTR points to the variable_idx'th variable that is mapped to the solver matrix.
     TYPE(VARIABLE_TO_SOLVER_COL_MAP_TYPE), ALLOCATABLE :: VARIABLE_TO_SOLVER_COL_MAPS(:) !<VARIABLE_TO_SOLVER_COL_MAPS(variable_idx). The mappings from the variable dofs to the solver dofs for the variable_idx'th variable in the equations set that is mapped to the solver matrix.
     INTEGER(INTG) :: NUMBER_OF_DYNAMIC_EQUATIONS_MATRICES !<The number of dynamic equations matrices mapped to this solver matrix
     TYPE(EQUATIONS_TO_SOLVER_MAPS_PTR_TYPE), ALLOCATABLE :: DYNAMIC_EQUATIONS_TO_SOLVER_MATRIX_MAPS(:) !<DYNAMIC_EQUATIONS_TO_SOLVER_MATRIX_MAPS(equations_matrix_idx). The maps from the equations_idx'th linear equations matrix to solver matrix
@@ -3240,7 +3240,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     TYPE(VARIABLE_TO_SOLVER_COL_MAP_TYPE) :: LAGRANGE_VARIABLE_TO_SOLVER_COL_MAP !<The mappings from the Lagrange variable dofs to the solver dofs.
     INTEGER(INTG) :: NUMBER_OF_DEPENDENT_VARIABLES !<The number of dependent variables mapped to this solver matrix
     INTEGER(INTG), ALLOCATABLE :: DEPENDENT_VARIABLE_TYPES(:) !<DEPENDENT_VARIABLE_TYPES(variable_idx). The variable type for the variable_idx'th dependent variable that is mapped to the solver matrix.
-    TYPE(FIELD_VARIABLE_PTR_TYPE), ALLOCATABLE :: DEPENDENT_VARIABLES(:) !<DEPENDENT_VARIABLES(variable_idx). DEPENDENT_VARIABLES(variable_idx)%PTR points to the variable_idx'th dependent variable that is mapped to the solver matrix.
+    TYPE(FieldVariablePtrType), ALLOCATABLE :: DEPENDENT_VARIABLES(:) !<DEPENDENT_VARIABLES(variable_idx). DEPENDENT_VARIABLES(variable_idx)%PTR points to the variable_idx'th dependent variable that is mapped to the solver matrix.
     TYPE(VARIABLE_TO_SOLVER_COL_MAP_TYPE), ALLOCATABLE :: DEPENDENT_VARIABLE_TO_SOLVER_COL_MAPS(:) !<DEPENDENT_VARIABLE_TO_SOLVER_COL_MAPS(interface_matrix_idx). The mappings from the dependent variable dofs to the solver dofs for the interface_matrix_idx'th interface matrix dependent variable in the interface condition that is mapped to the solver matrix.
     INTEGER(INTG) :: NUMBER_OF_INTERFACE_MATRICES !<The number of interface matrices mapped to this solver matrix
     TYPE(INTERFACE_TO_SOLVER_MAPS_PTR_TYPE), ALLOCATABLE :: INTERFACE_EQUATIONS_TO_SOLVER_MATRIX_MAPS(:) !<INTERFACE_EQUATIONS_TO_SOLVER_MATRIX_MAPS(interface_matrix_idx). The maps from the interface)matrix_idx'th interface matrix to solver matrix
@@ -3311,7 +3311,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     INTEGER(INTG) :: NUMBER_OF_EQUATION_DOFS !<The number of equation dofs this solver dof is mapped to
     INTEGER(INTG), ALLOCATABLE :: EQUATIONS_TYPES(:) !<EQUATION_TYPES(equation_idx). The type of equation of the equation_idx'th dof that the solver dof is mapped to.
     INTEGER(INTG), ALLOCATABLE :: EQUATIONS_INDICES(:) !<EQUATIONS_INDICES(equation_idx). The index of either the equations set or interface condition of the equation_idx'th dof that this solver dof is mapped to.
-    TYPE(FIELD_VARIABLE_PTR_TYPE), ALLOCATABLE :: VARIABLE(:) !<VARIABLE(equation_idx)%PTR is a pointer to the field variable that the solver dof is mapped to in the equation_idx'th equation
+    TYPE(FieldVariablePtrType), ALLOCATABLE :: VARIABLE(:) !<VARIABLE(equation_idx)%PTR is a pointer to the field variable that the solver dof is mapped to in the equation_idx'th equation
     INTEGER(INTG), ALLOCATABLE :: VARIABLE_DOF(:) !<VARIABLE_DOF(equation_idx). The variable dof number that the solver dof is mapped to in the equation_idx'th equation
     REAL(DP), ALLOCATABLE :: VARIABLE_COEFFICIENT(:) !<VARIABLE_COEFFICIENT(equation_idx). The mulitplicative coefficient for the mapping to the equation_idx'th equations
     REAL(DP), ALLOCATABLE :: ADDITIVE_CONSTANT(:) !<ADDITIVE_CONSTANT(equation_idx). The additive constant for the mapping to the equation_idx'th equations
