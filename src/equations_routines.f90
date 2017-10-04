@@ -73,15 +73,16 @@ MODULE EquationsRoutines
   INTEGER(INTG), PARAMETER :: EQUATIONS_FUNCTIONAL_TYPE=3 !<Vector of functional equations. \see EquationsRoutines_EquationsTypes,EquationsRoutines
   !>@}
 
-  !> \addtogroup EquationsRoutines_EquationEqualityTypes EquationsRoutines::EquationEqualityTypes
-  !> \brief The types of equality for the equations
-  !> \see EquationsRoutines,OPENCMISS_EquationsEqualityTypes
+  !> \addtogroup EquationsRoutines_EquationBoundsTypes EquationsRoutines::EquationBoundsTypes
+  !> \brief The types of bounds for the equations
+  !> \see EquationsRoutines,OPENCMISS_EquationsBoundsTypes
   !>@{
-  INTEGER(INTG), PARAMETER :: EQUATIONS_EQUALS_TYPE=1 !<The equations equal zero \see EquationsRoutines_EquationEqualityTypes,EquationsRoutines
-  INTEGER(INTG), PARAMETER :: EQUATIONS_LESS_THAN_TYPE=2 !<The equations are less than zero. \see EquationsRoutines_EquationsEqualityTypes,EquationsRoutines
-  INTEGER(INTG), PARAMETER :: EQUATIONS_LESS_THAN_EQUALS_TYPE=3 !<The equations are less than or equal to zero. \see EquationsRoutines_EquationsEqualityTypes,EquationsRoutines
-  INTEGER(INTG), PARAMETER :: EQUATIONS_GREATER_THAN_TYPE=4 !<The equations are greater than zero. \see EquationsRoutines_EquationsEqualityTypes,EquationsRoutines
-  INTEGER(INTG), PARAMETER :: EQUATIONS_GREATER_THAN_EQUALS_TYPE=5 !<The equations are greater than or equal to zero. \see EquationsRoutines_EquationsEqualityTypes,EquationsRoutines
+  INTEGER(INTG), PARAMETER :: EQUATIONS_BOUNDS_NONE_TYPE=1 !<The equations equal zero \see EquationsRoutines_EquationEqualityTypes,EquationsRoutines
+  INTEGER(INTG), PARAMETER :: EQUATIONS_BOUNDS_EQUALS_TYPE=2 !<The equations equal zero \see EquationsRoutines_EquationEqualityTypes,EquationsRoutines
+  INTEGER(INTG), PARAMETER :: EQUATIONS_BOUNDS_LESS_THAN_TYPE=3 !<The equations are less than zero. \see EquationsRoutines_EquationsEqualityTypes,EquationsRoutines
+  INTEGER(INTG), PARAMETER :: EQUATIONS_BOUNDS_LESS_THAN_EQUALS_TYPE=4 !<The equations are less than or equal to zero. \see EquationsRoutines_EquationsEqualityTypes,EquationsRoutines
+  INTEGER(INTG), PARAMETER :: EQUATIONS_BOUNDS_GREATER_THAN_TYPE=5 !<The equations are greater than zero. \see EquationsRoutines_EquationsEqualityTypes,EquationsRoutines
+  INTEGER(INTG), PARAMETER :: EQUATIONS_BOUNDS_GREATER_THAN_EQUALS_TYPE=6 !<The equations are greater than or equal to zero. \see EquationsRoutines_EquationsEqualityTypes,EquationsRoutines
   !>@}
 
   !> \addtogroup EquationsRoutines_OutputTypes EquationsRoutines::OutputTypes
