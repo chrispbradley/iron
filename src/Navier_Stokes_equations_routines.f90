@@ -306,7 +306,7 @@ CONTAINS
     TYPE(EQUATIONS_SET_ANALYTIC_TYPE), POINTER :: EQUATIONS_ANALYTIC
     TYPE(EQUATIONS_SET_MATERIALS_TYPE), POINTER :: EQUATIONS_MATERIALS
     TYPE(EQUATIONS_SET_EQUATIONS_SET_FIELD_TYPE), POINTER :: EQUATIONS_EQUATIONS_SET_FIELD
-    TYPE(FIELD_TYPE), POINTER :: EQUATIONS_SET_FIELD_FIELD,ANALYTIC_FIELD,dependentField,geometricField
+    TYPE(FieldType), POINTER :: EQUATIONS_SET_FIELD_FIELD,ANALYTIC_FIELD,dependentField,geometricField
     TYPE(VARYING_STRING) :: localError
     INTEGER(INTG) :: GEOMETRIC_SCALING_TYPE,GEOMETRIC_MESH_COMPONENT,INDEPENDENT_FIELD_NUMBER_OF_COMPONENTS
     INTEGER(INTG) :: NUMBER_OF_ANALYTIC_COMPONENTS,DEPENDENT_FIELD_NUMBER_OF_VARIABLES,DEPENDENT_FIELD_NUMBER_OF_COMPONENTS
@@ -2626,7 +2626,7 @@ CONTAINS
     TYPE(EQUATIONS_SET_TYPE), POINTER :: EQUATIONS_SET
     TYPE(EQUATIONS_SET_ANALYTIC_TYPE), POINTER :: EQUATIONS_ANALYTIC
     TYPE(NONLINEAR_SOLVER_TYPE), POINTER :: nonlinearSolver
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
     TYPE(FieldVariableType), POINTER :: fieldVariable
     TYPE(SOLVER_EQUATIONS_TYPE), POINTER :: SOLVER_EQUATIONS
     TYPE(SOLVER_MAPPING_TYPE), POINTER :: SOLVER_MAPPING
@@ -5125,7 +5125,7 @@ CONTAINS
     TYPE(EquationsMatricesRHSType), POINTER :: rhsVector
     TYPE(EquationsMatrixType), POINTER :: stiffnessMatrix,dampingMatrix
     TYPE(EquationsVectorType), POINTER :: vectorEquations
-    TYPE(FIELD_TYPE), POINTER :: dependentField,geometricField,materialsField,independentField
+    TYPE(FieldType), POINTER :: dependentField,geometricField,materialsField,independentField
     TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE
     TYPE(QUADRATURE_SCHEME_TYPE), POINTER :: QUADRATURE_SCHEME,QUADRATURE_SCHEME1,QUADRATURE_SCHEME2
     INTEGER(INTG) :: ng,mh,mhs,mi,ms,nh,nhs,ni,ns,nhs_max,mhs_max,nhs_min,mhs_min,xv,out
@@ -6059,7 +6059,7 @@ CONTAINS
     TYPE(EquationsJacobianType), POINTER :: jacobianMatrix
     TYPE(EquationsMatrixType), POINTER :: stiffnessMatrix 
     TYPE(EquationsVectorType), POINTER :: vectorEquations
-    TYPE(FIELD_TYPE), POINTER :: dependentField,geometricField,materialsField,independentField
+    TYPE(FieldType), POINTER :: dependentField,geometricField,materialsField,independentField
     TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE
     TYPE(QUADRATURE_SCHEME_TYPE), POINTER :: QUADRATURE_SCHEME,QUADRATURE_SCHEME1,QUADRATURE_SCHEME2
     TYPE(VARYING_STRING) :: localError
@@ -6616,7 +6616,7 @@ CONTAINS
     TYPE(CONTROL_LOOP_TYPE), POINTER :: CONTROL_LOOP
     TYPE(EquationsType), POINTER :: equations
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
     TYPE(FieldVariableType), POINTER :: fieldVariable
     TYPE(SOLVER_TYPE), POINTER :: SOLVER2
     TYPE(SOLVER_EQUATIONS_TYPE), POINTER :: solverEquations
@@ -6991,8 +6991,8 @@ CONTAINS
     TYPE(EquationsType), POINTER :: EQUATIONS,SOLID_EQUATIONS,FLUID_EQUATIONS
     TYPE(FIELD_INTERPOLATED_POINT_PTR_TYPE), POINTER :: INTERPOLATED_POINT(:)
     TYPE(FIELD_INTERPOLATION_PARAMETERS_PTR_TYPE), POINTER :: INTERPOLATION_PARAMETERS(:)
-    TYPE(FIELD_TYPE), POINTER :: ANALYTIC_FIELD,dependentField,geometricField,materialsField
-    TYPE(FIELD_TYPE), POINTER :: independentField,SOLID_dependentField,FLUID_GEOMETRIC_FIELD
+    TYPE(FieldType), POINTER :: ANALYTIC_FIELD,dependentField,geometricField,materialsField
+    TYPE(FieldType), POINTER :: independentField,SOLID_dependentField,FLUID_GEOMETRIC_FIELD
     TYPE(FieldVariableType), POINTER :: ANALYTIC_VARIABLE,FIELD_VARIABLE,GEOMETRIC_VARIABLE,MATERIALS_VARIABLE
     TYPE(FieldVariableType), POINTER :: dependentFieldVariable,independentFieldVariable
     TYPE(SOLVER_EQUATIONS_TYPE), POINTER :: SOLVER_EQUATIONS,SOLID_SOLVER_EQUATIONS,FLUID_SOLVER_EQUATIONS
@@ -8741,7 +8741,7 @@ CONTAINS
     TYPE(DOMAIN_NODES_TYPE), POINTER :: domainNodes
     TYPE(DOMAIN_TOPOLOGY_TYPE), POINTER :: domainTopology
     TYPE(EQUATIONS_SET_TYPE), POINTER :: laplaceEquationsSet,fluidEquationsSet,solidEquationsSet    
-    TYPE(FIELD_TYPE), POINTER :: laplaceDependentField,laplaceGeometricField,fluidIndependentField,fluidGeometricField, &
+    TYPE(FieldType), POINTER :: laplaceDependentField,laplaceGeometricField,fluidIndependentField,fluidGeometricField, &
       & solidDependentField,interfaceGeometricField
     TYPE(FieldVariableType), POINTER :: fluidGeometricVariable,interfaceGeometricVariable
     TYPE(INTERFACE_TYPE), POINTER :: fsiInterface
@@ -9155,7 +9155,7 @@ CONTAINS
     TYPE(CONTROL_LOOP_TYPE), POINTER :: CONTROL_LOOP
     TYPE(DOMAIN_NODES_TYPE), POINTER :: DOMAIN_NODES
     TYPE(DOMAIN_TYPE), POINTER :: DOMAIN
-    TYPE(FIELD_TYPE), POINTER :: independentField
+    TYPE(FieldType), POINTER :: independentField
     TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE
     TYPE(EQUATIONS_SET_TYPE), POINTER :: EQUATIONS_SET
     TYPE(EquationsType), POINTER :: EQUATIONS
@@ -9719,7 +9719,7 @@ CONTAINS
     TYPE(DOMAIN_TYPE), POINTER :: domain
     TYPE(FIELD_INTERPOLATED_POINT_PTR_TYPE), POINTER :: interpolatedPoint(:)
     TYPE(FIELD_INTERPOLATION_PARAMETERS_PTR_TYPE), POINTER :: interpolationParameters(:)
-    TYPE(FIELD_TYPE), POINTER :: analyticField,dependentField,geometricField,materialsField
+    TYPE(FieldType), POINTER :: analyticField,dependentField,geometricField,materialsField
     TYPE(FieldVariableType), POINTER :: fieldVariable,geometricVariable,analyticVariable,materialsVariable
     TYPE(VARYING_STRING) :: localError
     INTEGER(INTG) :: componentIdx,derivativeIdx,dimensionIdx,local_ny,nodeIdx,numberOfDimensions,variableIdx,variableType,I,J,K
@@ -11228,7 +11228,7 @@ CONTAINS
     TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices
     TYPE(EquationsMatricesNonlinearType), POINTER :: nonlinearMatrices
     TYPE(EquationsVectorType), POINTER :: vectorEquations
-    TYPE(FIELD_TYPE), POINTER :: dependentField,equationsSetField,geometricField,independentField
+    TYPE(FieldType), POINTER :: dependentField,equationsSetField,geometricField,independentField
     TYPE(FieldVariableType), POINTER :: fieldVariable
     TYPE(FIELD_INTERPOLATED_POINT_METRICS_TYPE), POINTER :: pointMetrics
     TYPE(QUADRATURE_SCHEME_TYPE), POINTER :: quadratureVelocity,quadraturePressure
@@ -11831,9 +11831,9 @@ CONTAINS
     TYPE(EquationsMappingVectorType), POINTER :: vectorMapping
     TYPE(EquationsMappingNonlinearType), POINTER :: nonlinearMapping
     TYPE(EquationsVectorType), POINTER :: vectorEquations
-    TYPE(FIELD_TYPE), POINTER :: equationsSetField
+    TYPE(FieldType), POINTER :: equationsSetField
     TYPE(QUADRATURE_SCHEME_TYPE), POINTER :: quadratureVelocity
-    TYPE(FIELD_TYPE), POINTER :: dependentField,geometricField,independentField
+    TYPE(FieldType), POINTER :: dependentField,geometricField,independentField
     TYPE(FieldVariableType), POINTER :: fieldVariable
 
     INTEGER(INTG) :: fieldVarType,meshComponent1
@@ -12122,7 +12122,7 @@ CONTAINS
     TYPE(EquationsMatricesNonlinearType), POINTER :: nonlinearMatrices
     TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices
     TYPE(EquationsVectorType), POINTER :: vectorEquations
-    TYPE(FIELD_TYPE), POINTER :: geometricField,equationsSetField,dependentField,independentField
+    TYPE(FieldType), POINTER :: geometricField,equationsSetField,dependentField,independentField
     TYPE(FieldVariableType), POINTER :: fieldVariable,geometricVariable
     TYPE(FIELD_INTERPOLATION_PARAMETERS_TYPE), POINTER :: dependentInterpolationParameters,geometricInterpolationParameters, &
       & pressureInterpolationParameters,independentInterpolationParameters
@@ -12531,7 +12531,7 @@ CONTAINS
     TYPE(EquationsVectorType), POINTER :: vectorEquations
     TYPE(DOMAIN_MAPPING_TYPE), POINTER :: elementsMapping3D
     TYPE(VARYING_STRING) :: localError
-    TYPE(FIELD_TYPE), POINTER :: geometricField
+    TYPE(FieldType), POINTER :: geometricField
     TYPE(FieldVariableType), POINTER :: dependentVariable3D
     TYPE(FieldVariableType), POINTER :: fieldVariable,geometricVariable
     TYPE(DECOMPOSITION_TYPE), POINTER :: decomposition3D
@@ -12549,10 +12549,10 @@ CONTAINS
     TYPE(FIELD_INTERPOLATION_PARAMETERS_TYPE), POINTER :: geometricInterpolationParameters
     TYPE(FIELD_INTERPOLATED_POINT_METRICS_TYPE), POINTER :: pointMetrics
     TYPE(EQUATIONS_SET_EQUATIONS_SET_FIELD_TYPE), POINTER :: equationsEquationsSetField
-    TYPE(FIELD_TYPE), POINTER :: equationsSetField3D
-    TYPE(FIELD_TYPE), POINTER :: dependentField3D
-    TYPE(FIELD_TYPE), POINTER :: dependentField1D
-    TYPE(FIELD_TYPE), POINTER :: independentField1D
+    TYPE(FieldType), POINTER :: equationsSetField3D
+    TYPE(FieldType), POINTER :: dependentField3D
+    TYPE(FieldType), POINTER :: dependentField1D
+    TYPE(FieldType), POINTER :: independentField1D
     TYPE(EquationsMatricesRHSType), POINTER :: rhsVector
     INTEGER(INTG) :: faceIdx, faceNumber,elementIdx,nodeNumber,versionNumber
     INTEGER(INTG) :: componentIdx,gaussIdx
@@ -13242,7 +13242,7 @@ CONTAINS
     TYPE(EquationsMappingDynamicType), POINTER :: dynamicMapping
     TYPE(EquationsVectorType), POINTER :: vectorEquations
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet
-    TYPE(FIELD_TYPE), POINTER :: dependentField,materialsField,independentField
+    TYPE(FieldType), POINTER :: dependentField,materialsField,independentField
     TYPE(SOLVER_EQUATIONS_TYPE), POINTER :: solverEquations  
     TYPE(SOLVER_MAPPING_TYPE), POINTER :: solverMapping 
     TYPE(SOLVER_TYPE), POINTER :: solver1D
@@ -13537,7 +13537,7 @@ CONTAINS
     TYPE(EquationsMappingVectorType), POINTER :: vectorMapping1D,vectorMapping3D
     TYPE(EquationsMappingDynamicType), POINTER :: dynamicMapping1D,dynamicMapping3D
     TYPE(EquationsVectorType), POINTER :: vectorEquations1D,vectorEquations3D
-    TYPE(FIELD_TYPE), POINTER :: dependentField1D,dependentField3D,independentField
+    TYPE(FieldType), POINTER :: dependentField1D,dependentField3D,independentField
     TYPE(SOLVER_TYPE), POINTER :: solver1D
     TYPE(FieldVariableType), POINTER :: fieldVariable
     TYPE(DOMAIN_NODES_TYPE), POINTER :: domainNodes
@@ -13837,7 +13837,7 @@ CONTAINS
     TYPE(CONTROL_LOOP_WHILE_TYPE), POINTER :: iterativeLoop
     TYPE(DOMAIN_NODES_TYPE), POINTER :: domainNodes
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet
-    TYPE(FIELD_TYPE), POINTER :: dependentField,independentField,materialsField
+    TYPE(FieldType), POINTER :: dependentField,independentField,materialsField
     TYPE(SOLVER_EQUATIONS_TYPE), POINTER :: solverEquations  
     TYPE(SOLVER_MAPPING_TYPE), POINTER :: solverMapping 
     TYPE(SOLVER_TYPE), POINTER :: solver1DNavierStokes
@@ -14111,8 +14111,8 @@ CONTAINS
     TYPE(FIELD_INTERPOLATION_PARAMETERS_TYPE), POINTER :: dependentInterpolationParameters
     TYPE(FIELD_INTERPOLATED_POINT_TYPE), POINTER :: geometricInterpolatedPoint
     TYPE(FIELD_INTERPOLATED_POINT_METRICS_TYPE), POINTER :: pointMetrics
-    TYPE(FIELD_TYPE), POINTER :: dependentField
-    TYPE(FIELD_TYPE), POINTER :: materialsField
+    TYPE(FieldType), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: materialsField
     INTEGER(INTG) :: elementIdx,decompositionLocalElementNumber
     INTEGER(INTG) :: gaussIdx
     INTEGER(INTG) :: meshComponentNumber,numberOfDimensions,i,j,userElementNumber
@@ -14335,7 +14335,7 @@ CONTAINS
     TYPE(SOLVER_TYPE), POINTER :: navierStokesSolver,navierStokesSolver3D,navierStokesSolver1D,solver
     TYPE(SOLVER_MAPPING_TYPE), POINTER :: solverMapping,solverMapping2
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet,equationsSet2,coupledEquationsSet
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
     TYPE(FieldVariableType), POINTER :: fieldVariable
     TYPE(VARYING_STRING) :: localError
     INTEGER(INTG) :: numberOfSolvers,solverIdx,solverIdx2,equationsSetIdx,equationsSetIdx2
@@ -14663,7 +14663,7 @@ CONTAINS
     TYPE(BOUNDARY_CONDITIONS_VARIABLE_TYPE), POINTER :: boundaryConditionsVariable
     TYPE(DOMAIN_TYPE), POINTER :: dependentDomain
     TYPE(EquationsType), POINTER :: equations
-    TYPE(FIELD_TYPE), POINTER :: dependentField,materialsField,independentField,geometricField
+    TYPE(FieldType), POINTER :: dependentField,materialsField,independentField,geometricField
     TYPE(FieldVariableType), POINTER :: fieldVariable
     TYPE(VARYING_STRING) :: localError
     REAL(DP) :: rho,A0,H0,E,beta,pExternal,lengthScale,timeScale,massScale
@@ -15013,8 +15013,8 @@ CONTAINS
     TYPE(FIELD_INTERPOLATED_POINT_TYPE), POINTER :: geometricInterpolatedPoint
     TYPE(FIELD_INTERPOLATION_PARAMETERS_TYPE), POINTER :: geometricInterpolationParameters
     TYPE(FIELD_INTERPOLATED_POINT_METRICS_TYPE), POINTER :: pointMetrics
-    TYPE(FIELD_TYPE), POINTER :: equationsSetField3D
-    TYPE(FIELD_TYPE), POINTER :: dependentField3D
+    TYPE(FieldType), POINTER :: equationsSetField3D
+    TYPE(FieldType), POINTER :: dependentField3D
     INTEGER(INTG) :: faceIdx, faceNumber,elementIdx,nodeNumber,versionNumber
     INTEGER(INTG) :: componentIdx,gaussIdx
     INTEGER(INTG) :: faceNodeIdx, elementNodeIdx
@@ -15471,7 +15471,7 @@ CONTAINS
     TYPE(EquationsMappingNonlinearType), POINTER :: nonlinearMapping
     TYPE(EquationsMappingVectorType), POINTER :: vectorMapping
     TYPE(EquationsVectorType), POINTER :: vectorEquations
-    TYPE(FIELD_TYPE), POINTER :: dependentField,geometricField,materialsField
+    TYPE(FieldType), POINTER :: dependentField,geometricField,materialsField
     TYPE(FIELD_INTERPOLATION_PARAMETERS_TYPE), POINTER :: dependentInterpolationParameters,geometricInterpolationParameters, &
       & materialsInterpolationParameters
     TYPE(FIELD_INTERPOLATED_POINT_TYPE), POINTER :: dependentInterpolatedPoint,geometricInterpolatedPoint, &

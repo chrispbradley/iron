@@ -137,7 +137,7 @@ CONTAINS
     TYPE(EquationsMatricesSourceType), POINTER :: sourceVector
     TYPE(EquationsMatrixType), POINTER :: equationsMatrix
     TYPE(EquationsVectorType), POINTER :: vectorEquations
-    TYPE(FIELD_TYPE), POINTER :: dependentField,geometricField,independentField,materialsField,sourceField
+    TYPE(FieldType), POINTER :: dependentField,geometricField,independentField,materialsField,sourceField
     TYPE(FieldVariableType), POINTER :: dataVariable,dataWeightVariable,dependentVariable,fieldVariable, &
       & independentVariable
     TYPE(FIELD_INTERPOLATED_POINT_TYPE), POINTER :: materialsInterpolatedPoint
@@ -1351,7 +1351,7 @@ CONTAINS
     INTEGER(INTG) :: DEPENDENT_FIELD_NUMBER_OF_COMPONENTS,numberOfDimensions,I,MATERIAL_FIELD_NUMBER_OF_VARIABLES
     INTEGER(INTG) :: INDEPENDENT_FIELD_NUMBER_OF_COMPONENTS,INDEPENDENT_FIELD_NUMBER_OF_VARIABLES
     TYPE(DECOMPOSITION_TYPE), POINTER :: GEOMETRIC_DECOMPOSITION
-!     TYPE(FIELD_TYPE), POINTER :: ANALYTIC_FIELD,DEPENDENT_FIELD,geometricField
+!     TYPE(FieldType), POINTER :: ANALYTIC_FIELD,DEPENDENT_FIELD,geometricField
     TYPE(EquationsType), POINTER :: equations
     TYPE(EquationsMappingVectorType), POINTER :: vectorMapping
     TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices
@@ -3401,7 +3401,7 @@ CONTAINS
     INTEGER(INTG) :: dimensionIdx
     TYPE(BOUNDARY_CONDITIONS_TYPE), POINTER :: BOUNDARY_CONDITIONS
     TYPE(DECOMPOSITION_TYPE), POINTER :: GEOMETRIC_DECOMPOSITION
-!     TYPE(FIELD_TYPE), POINTER :: ANALYTIC_FIELD,DEPENDENT_FIELD,GEOMETRIC_FIELD
+!     TYPE(FieldType), POINTER :: ANALYTIC_FIELD,DEPENDENT_FIELD,GEOMETRIC_FIELD
     TYPE(EquationsType), POINTER :: equations
     TYPE(EquationsMappingVectorType), POINTER :: vectorMapping
     TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices

@@ -620,7 +620,7 @@ CONTAINS
     !Argument variables
     INTEGER(INTG), INTENT(IN) :: dataProjectionUserNumber !<The user number of the data projection
     TYPE(DataPointsType), POINTER :: dataPoints !<A pointer to the data points in which to create data projection
-    TYPE(FIELD_TYPE), POINTER :: projectionField !<A pointer to the field for the data projection
+    TYPE(FieldType), POINTER :: projectionField !<A pointer to the field for the data projection
     INTEGER(INTG), INTENT(IN) :: projectionVariableType !<The field variable type of the projection field for the data projection \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     TYPE(DataProjectionType), POINTER :: dataProjection !<On exit, a pointer to the created data projection. Must not be associated on entry.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
@@ -2023,7 +2023,7 @@ CONTAINS
 
     !Argument variables
     TYPE(DataProjectionType), POINTER :: dataProjection !<Data projection to give the xi locations and element number for the data points
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to be interpolated
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to be interpolated
     INTEGER(INTG), INTENT(IN) :: fieldVariableType !<The field variable type to be interpolated
     INTEGER(INTG), INTENT(IN) :: fieldParameterSetType !<The parameter set to be interpolated
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
@@ -4697,7 +4697,7 @@ CONTAINS
     TYPE(DOMAIN_TYPE), POINTER :: domain
     TYPE(DOMAIN_ELEMENTS_TYPE), POINTER :: domainElements
     TYPE(DOMAIN_TOPOLOGY_TYPE), POINTER :: domainTopology
-    TYPE(FIELD_TYPE), POINTER :: projectionField
+    TYPE(FieldType), POINTER :: projectionField
     TYPE(VARYING_STRING) :: localError
         
     ENTERS("DataProjection_ResultAnalysisOutput",err,error,*999)

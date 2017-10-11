@@ -215,7 +215,7 @@ CONTAINS
     TYPE(CELLML_FIELD_MAPS_TYPE), POINTER :: FIELD_MAPS
     TYPE(CELLML_MODEL_MAP_TYPE), POINTER :: MODEL_MAP
     TYPE(CELLML_MODEL_MAPS_TYPE), POINTER :: MODEL_MAPS
-    TYPE(FIELD_TYPE), POINTER :: MODELS_FIELD
+    TYPE(FieldType), POINTER :: MODELS_FIELD
     TYPE(FieldVariableType), POINTER :: MODELS_VARIABLE
     TYPE(VARYING_STRING) :: LOCAL_ERROR
     
@@ -762,7 +762,7 @@ CONTAINS
     TYPE(CELLML_FIELD_MAPS_TYPE), POINTER :: FIELD_MAPS
     TYPE(CELLML_MODEL_MAP_TYPE), POINTER :: MODEL_MAP
     TYPE(CELLML_MODEL_MAPS_TYPE), POINTER :: MODEL_MAPS
-    TYPE(FIELD_TYPE), POINTER :: MODELS_FIELD
+    TYPE(FieldType), POINTER :: MODELS_FIELD
     TYPE(FieldVariableType), POINTER :: MODELS_VARIABLE
     TYPE(VARYING_STRING) :: LOCAL_ERROR
     
@@ -1953,7 +1953,7 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: MODEL_INDEX !<The index of the CellML model to map from.
     CHARACTER(LEN=*), INTENT(IN) :: VARIABLE_ID !<The ID of the CellML variable in the given model to map from.
     INTEGER(INTG), INTENT(IN) :: CELLML_PARAMETER_SET !<The CellML parameter set to map from.
-    TYPE(FIELD_TYPE), POINTER, INTENT(IN) :: FIELD !<The field to map to.
+    TYPE(FieldType), POINTER, INTENT(IN) :: FIELD !<The field to map to.
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable to map to.
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The field variable component number to map to.
     INTEGER(INTG), INTENT(IN) :: FIELD_PARAMETER_SET !<The field variable parameter set to map to.
@@ -2160,7 +2160,7 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: MODEL_USER_NUMBER !<The user number of the CellML model to map from.
     TYPE(VARYING_STRING), INTENT(IN) :: VARIABLE_ID !<The ID of the CellML variable in the given model to map from.
     INTEGER(INTG), INTENT(IN) :: CELLML_PARAMETER_SET !<The CellML parameter set to map from.
-    TYPE(FIELD_TYPE), POINTER, INTENT(IN) :: FIELD !<The field to map to.
+    TYPE(FieldType), POINTER, INTENT(IN) :: FIELD !<The field to map to.
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable to map to.
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The field variable component number to map to.
     INTEGER(INTG), INTENT(IN) :: FIELD_PARAMETER_SET !<The field variable parameter set to map to.
@@ -2197,7 +2197,7 @@ CONTAINS
     
     !Argument variables
     TYPE(CELLML_TYPE), POINTER :: CELLML !<The CellML environment object in which to create the map.
-    TYPE(FIELD_TYPE), POINTER, INTENT(IN) :: FIELD !<The field to map from.
+    TYPE(FieldType), POINTER, INTENT(IN) :: FIELD !<The field to map from.
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to map from.
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The field variable component number to map from.
     INTEGER(INTG), INTENT(IN) :: FIELD_PARAMETER_SET !<The field variable parameter set to map from.
@@ -2391,7 +2391,7 @@ CONTAINS
     
     !Argument variables
     TYPE(CELLML_TYPE), POINTER :: CELLML !<The CellML environment object in which to create the map.
-    TYPE(FIELD_TYPE), POINTER, INTENT(IN) :: FIELD !<The field to map from.
+    TYPE(FieldType), POINTER, INTENT(IN) :: FIELD !<The field to map from.
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to map from.
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The field variable component number to map from.
     INTEGER(INTG), INTENT(IN) :: FIELD_PARAMETER_SET !<The field variable parameter set to map from.
@@ -2432,7 +2432,7 @@ CONTAINS
     !Argument variables
     TYPE(FieldVariableType), POINTER :: modelVariable !<A pointer to the model field variable
     INTEGER(INTG), INTENT(IN) :: modelDofIdx !<The model dof to set.
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to set the value for
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to set the value for
     INTEGER(INTG), INTENT(IN) :: variableType !<The variable type to set the value for
     INTEGER(INTG), INTENT(IN) :: parameterSetIdx !<The parameter set index of the field variable to set.
     INTEGER(INTG), INTENT(IN) :: componentIdx !<The component index of the field variable to set.
@@ -2614,12 +2614,12 @@ CONTAINS
     !Argument variables
     INTEGER(INTG), INTENT(IN) :: MODEL_FIELD_USER_NUMBER !<The unique identifier for the models field to be created for the given CellML environment object.
     TYPE(CELLML_TYPE), POINTER :: CELLML !<The CellML environment object for which we need to create the models field.
-    TYPE(FIELD_TYPE), POINTER :: MODELS_FIELD !<If associated on entry, a pointer to the user created models field which has the same user number as the specified models field user number. If not associated on entry, on exit, a pointer to the created models field for the CellML environment.
+    TYPE(FieldType), POINTER :: MODELS_FIELD !<If associated on entry, a pointer to the user created models field which has the same user number as the specified models field user number. If not associated on entry, on exit, a pointer to the created models field for the CellML environment.
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code.
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string.
     !Local variables
     TYPE(CELLML_FIELD_MAPS_TYPE), POINTER :: CELLML_FIELD_MAPS
-    TYPE(FIELD_TYPE), POINTER :: FIELD
+    TYPE(FieldType), POINTER :: FIELD
     TYPE(REGION_TYPE), POINTER :: REGION,MODELS_FIELD_REGION
     TYPE(VARYING_STRING) :: LOCAL_ERROR
  
@@ -2855,7 +2855,7 @@ CONTAINS
     
     !Argument variables
     TYPE(CELLML_TYPE), POINTER :: CELLML !<The CellML environment object from which to get the models field.
-    TYPE(FIELD_TYPE), POINTER :: MODELS_FIELD !<On return, a pointer to the models field for this CellML environment. Must not be associated on entry.
+    TYPE(FieldType), POINTER :: MODELS_FIELD !<On return, a pointer to the models field for this CellML environment. Must not be associated on entry.
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code.
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string.
     !Local variables
@@ -2950,13 +2950,13 @@ CONTAINS
     !Argument variables
     INTEGER(INTG), INTENT(IN) :: STATE_FIELD_USER_NUMBER !<The unique identifier for the state field to be created for the given CellML environment object.
     TYPE(CELLML_TYPE), POINTER :: CELLML !<The CellML environment object for which to create the state field.
-    TYPE(FIELD_TYPE), POINTER :: STATE_FIELD  !<If associated on entry, a pointer to the user created state field which has the same user number as the specified state field user number. If not associated on entry, on exit, a pointer to the created state field for the CellML environment.
+    TYPE(FieldType), POINTER :: STATE_FIELD  !<If associated on entry, a pointer to the user created state field which has the same user number as the specified state field user number. If not associated on entry, on exit, a pointer to the created state field for the CellML environment.
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code.
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string.
     !Local variables
     INTEGER(INTG) :: component_idx
     TYPE(CELLML_FIELD_MAPS_TYPE), POINTER :: CELLML_FIELD_MAPS
-    TYPE(FIELD_TYPE), POINTER :: FIELD
+    TYPE(FieldType), POINTER :: FIELD
     TYPE(REGION_TYPE), POINTER :: REGION,STATE_FIELD_REGION
     TYPE(VARYING_STRING) :: LOCAL_ERROR
 
@@ -3277,7 +3277,7 @@ CONTAINS
     
     !Argument variables
     TYPE(CELLML_TYPE), POINTER :: CELLML !<The CellML environment object from which to get the state field.
-    TYPE(FIELD_TYPE), POINTER :: STATE_FIELD !<On successful return will be set to the state field for this CellML environment
+    TYPE(FieldType), POINTER :: STATE_FIELD !<On successful return will be set to the state field for this CellML environment
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code.
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string.
     !Local variables
@@ -3465,13 +3465,13 @@ CONTAINS
     !Argument variables
     INTEGER(INTG), INTENT(IN) :: INTERMEDIATE_FIELD_USER_NUMBER !<The unique identifier for the intermediate field to be created for the given CellML environment object.
     TYPE(CELLML_TYPE), POINTER :: CELLML !<The CellML environment object from which to get the field component.
-    TYPE(FIELD_TYPE), POINTER :: INTERMEDIATE_FIELD !<If associated on entry, a pointer to the user created intermediate field which has the same user number as the specified intermediate field user number. If not associated on entry, on exit, a pointer to the created intermediate field for the CellML environment.
+    TYPE(FieldType), POINTER :: INTERMEDIATE_FIELD !<If associated on entry, a pointer to the user created intermediate field which has the same user number as the specified intermediate field user number. If not associated on entry, on exit, a pointer to the created intermediate field for the CellML environment.
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code.
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string.
     !Local variables
     INTEGER(INTG) :: component_idx
     TYPE(CELLML_FIELD_MAPS_TYPE), POINTER :: CELLML_FIELD_MAPS
-    TYPE(FIELD_TYPE), POINTER :: FIELD
+    TYPE(FieldType), POINTER :: FIELD
     TYPE(REGION_TYPE), POINTER :: REGION,INTERMEDIATE_FIELD_REGION
     TYPE(VARYING_STRING) :: LOCAL_ERROR
 
@@ -3724,7 +3724,7 @@ CONTAINS
   SUBROUTINE CELLML_INTERMEDIATE_FIELD_GET(CELLML,INTERMEDIATE_FIELD,ERR,ERROR,*)
     !Argument variables
     TYPE(CELLML_TYPE), POINTER :: CELLML !<The CellML environment object from which to get the intermediate field.
-    TYPE(FIELD_TYPE), POINTER :: INTERMEDIATE_FIELD !<On return, a pointer to the intermediate field for this CellML environment.
+    TYPE(FieldType), POINTER :: INTERMEDIATE_FIELD !<On return, a pointer to the intermediate field for this CellML environment.
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code.
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string.
     !Local variables
@@ -3819,13 +3819,13 @@ CONTAINS
     !Argument variables
     INTEGER(INTG), INTENT(IN) :: PARAMETERS_FIELD_USER_NUMBER !<The unique identifier for the parameters field to be created for the given CellML environment object.
     TYPE(CELLML_TYPE), POINTER :: CELLML !<The CellML environment object for which we will be defining the parameters field.
-    TYPE(FIELD_TYPE), POINTER :: PARAMETERS_FIELD  !<If associated on entry, a pointer to the user created parameters field which has the same user number as the specified parameters field user number. If not associated on entry, on exit, a pointer to the created parameters field for the CellML environment.
+    TYPE(FieldType), POINTER :: PARAMETERS_FIELD  !<If associated on entry, a pointer to the user created parameters field which has the same user number as the specified parameters field user number. If not associated on entry, on exit, a pointer to the created parameters field for the CellML environment.
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code.
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string.
     !Local variables
     INTEGER(INTG) :: component_idx
     TYPE(CELLML_FIELD_MAPS_TYPE), POINTER :: CELLML_FIELD_MAPS
-    TYPE(FIELD_TYPE), POINTER :: FIELD
+    TYPE(FieldType), POINTER :: FIELD
     TYPE(REGION_TYPE), POINTER :: REGION,PARAMETERS_FIELD_REGION
     TYPE(VARYING_STRING) :: LOCAL_ERROR
  
@@ -4152,7 +4152,7 @@ CONTAINS
   SUBROUTINE CELLML_PARAMETERS_FIELD_GET(CELLML,PARAMETERS_FIELD,ERR,ERROR,*)
     !Argument variables
     TYPE(CELLML_TYPE), POINTER :: CELLML !<The CellML environment object from which to get the parameters field.
-    TYPE(FIELD_TYPE), POINTER :: PARAMETERS_FIELD !<On return, a pointer to the parameters field for this CellML environment. Must not be associated on entry.
+    TYPE(FieldType), POINTER :: PARAMETERS_FIELD !<On return, a pointer to the parameters field for this CellML environment. Must not be associated on entry.
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code.
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string.
     !Local variables

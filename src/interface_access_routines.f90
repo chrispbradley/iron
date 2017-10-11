@@ -195,7 +195,7 @@ CONTAINS
     !Argument variables
     TYPE(INTERFACE_TYPE), POINTER :: INTERFACE !<A pointer to the interface to get the field for
     INTEGER(INTG), INTENT(IN) :: userNumber !<The user number of the field to get.
-    TYPE(FIELD_TYPE), POINTER :: field !<On exit, a pointer to the field for the interface. Must not be associated on entry.
+    TYPE(FieldType), POINTER :: field !<On exit, a pointer to the field for the interface. Must not be associated on entry.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables

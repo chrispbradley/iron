@@ -138,7 +138,7 @@ CONTAINS
 
     !Argument variables
     TYPE(INTERFACE_CONDITION_TYPE), POINTER :: interfaceCondition !<A pointer to the interface condition to get the geometric field for
-    TYPE(FIELD_TYPE), POINTER :: geometricField !<On exit, a pointer to the geometric field in the specified interface condition. Must not be associated on entry
+    TYPE(FieldType), POINTER :: geometricField !<On exit, a pointer to the geometric field in the specified interface condition. Must not be associated on entry
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables

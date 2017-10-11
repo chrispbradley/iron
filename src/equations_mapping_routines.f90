@@ -260,7 +260,7 @@ CONTAINS
     !Local Variables
     TYPE(EquationsType), POINTER :: equations
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
     TYPE(FieldVariableType), POINTER :: lhsVariable
     
     ENTERS("EquationsMapping_ConstraintCreateStart",err,error,*998)
@@ -641,7 +641,7 @@ CONTAINS
     TYPE(EquationsScalarType), POINTER :: scalarEquations
     TYPE(EquationsMappingScalarCreateValuesCacheType), POINTER :: createValuesCache
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
     TYPE(FieldVariableType), POINTER :: fieldVariable
     TYPE(FieldVariablePtrType), ALLOCATABLE :: newDotProductVariables(:,:)
     TYPE(VARYING_STRING) :: localError
@@ -1241,7 +1241,7 @@ CONTAINS
     TYPE(EquationsMappingVectorCreateValuesCacheType), POINTER :: createValuesCache
     TYPE(EquationsVectorType), POINTER :: vectorEquations
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
     TYPE(VARYING_STRING) :: localError
     LOGICAL :: isResidualType
 
@@ -1548,7 +1548,7 @@ CONTAINS
     TYPE(EquationsScalarType), POINTER :: scalarEquations
     TYPE(EquationsMappingScalarCreateValuesCacheType), POINTER :: createValuesCache
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
     TYPE(FieldVariableType), POINTER :: fieldVariable
     TYPE(FieldVariablePtrType), ALLOCATABLE :: newFunctionVariables(:,:)
     TYPE(VARYING_STRING) :: localError
@@ -1853,7 +1853,7 @@ CONTAINS
     TYPE(EquationsScalarType), POINTER :: scalarEquations
     TYPE(EquationsMappingScalarCreateValuesCacheType), POINTER :: createValuesCache
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
     TYPE(FieldVariableType), POINTER :: fieldVariable
     TYPE(FieldVariablePtrType), ALLOCATABLE :: newNormVariables(:)
     TYPE(VARYING_STRING) :: localError
@@ -2035,7 +2035,7 @@ CONTAINS
     TYPE(EquationsScalarType), POINTER :: scalarEquations
     TYPE(EquationsMappingScalarCreateValuesCacheType), POINTER :: createValuesCache
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
     TYPE(FieldVariableType), POINTER :: fieldVariable
     TYPE(FieldVariablePtrType), ALLOCATABLE :: newQuadraticFormVariables(:,:)
     TYPE(VARYING_STRING) :: localError
@@ -2229,7 +2229,7 @@ CONTAINS
     !Local Variables
     TYPE(EquationsType), POINTER :: equations
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
     TYPE(FieldVariableType), POINTER :: lhsVariable
     
     ENTERS("EquationsMapping_ScalarCreateStart",err,error,*998)
@@ -2604,7 +2604,7 @@ CONTAINS
     TYPE(EquationsMappingVectorCreateValuesCacheType), POINTER :: createValuesCache
     TYPE(EquationsVectorType), POINTER :: vectorEquations
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
     TYPE(VARYING_STRING) :: localError
 
     ENTERS("EquationsMapping_LinearMatricesNumberSet",err,error,*999)
@@ -2804,7 +2804,7 @@ CONTAINS
     TYPE(EquationsMappingVectorCreateValuesCacheType), POINTER :: createValuesCache
     TYPE(EquationsVectorType), POINTER :: vectorEquations
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
     TYPE(VARYING_STRING) :: localError
     
     ENTERS("EquationsMapping_LinearMatricesVariableTypesSet",err,error,*999)
@@ -3287,7 +3287,7 @@ CONTAINS
     TYPE(EquationsMappingVectorCreateValuesCacheType), POINTER :: createValuesCache
     TYPE(EquationsVectorType), POINTER :: vectorEquations
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
     TYPE(VARYING_STRING) :: localError
 
     ENTERS("EquationsMapping_ResidualVariableTypesSet",err,error,*999)
@@ -3488,7 +3488,7 @@ CONTAINS
     TYPE(EquationsMappingVectorCreateValuesCacheType), POINTER :: createValuesCache
     TYPE(EquationsVectorType), POINTER :: vectorEquations
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
     TYPE(VARYING_STRING) :: localError
 
     ENTERS("EquationsMapping_RHSVariableTypeSet",err,error,*999)
@@ -3768,7 +3768,7 @@ CONTAINS
     TYPE(EquationsMappingVectorCreateValuesCacheType), POINTER :: createValuesCache
     TYPE(EquationsVectorType), POINTER :: vectorEquations
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet
-    TYPE(FIELD_TYPE), POINTER :: sourceField
+    TYPE(FieldType), POINTER :: sourceField
     TYPE(VARYING_STRING) :: localError
 
     ENTERS("EquationsMapping_SourceVariableTypeSet",err,error,*999)
@@ -3976,7 +3976,7 @@ CONTAINS
     TYPE(EquationsMappingRHSType), POINTER :: rhsMapping
     TYPE(EquationsMappingSourceType), POINTER :: sourceMapping
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet
-    TYPE(FIELD_TYPE), POINTER :: dependentField,sourceField
+    TYPE(FieldType), POINTER :: dependentField,sourceField
     TYPE(FieldVariableType), POINTER :: dependentVariable,sourceVariable,rowVariable
     TYPE(VARYING_STRING) :: localError
 
@@ -4826,7 +4826,7 @@ CONTAINS
     TYPE(EquationsType), POINTER :: equations
     TYPE(EquationsMappingLHSType), POINTER :: lhsMapping
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
     TYPE(FieldVariableType), POINTER :: lhsVariable
     
     ENTERS("EquationsMapping_VectorCreateStart",err,error,*998)
@@ -4913,7 +4913,7 @@ CONTAINS
     TYPE(EquationsType), POINTER :: equations
     TYPE(EquationsVectorType), POINTER :: vectorEquations
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
     TYPE(VARYING_STRING) :: dummyError,localError
 
     ENTERS("EquationsMapping_VectorCreateValuesCacheInitialise",err,error,*998)

@@ -1125,7 +1125,7 @@ CONTAINS
     TYPE(REGION_TYPE), POINTER, INTENT(IN) :: REGION !<The region in which to create the field.
     TYPE(DECOMPOSITION_TYPE), POINTER, INTENT(IN) :: DECOMPOSITION !<The decomposition to use when creating the field.
     INTEGER(INTG), INTENT(IN) :: FIELD_NUMBER !<The user number to assign to the created field.
-    TYPE(FIELD_TYPE), POINTER, INTENT(INOUT) :: FIELD !<The OpenCMISS field object to create.
+    TYPE(FieldType), POINTER, INTENT(INOUT) :: FIELD !<The OpenCMISS field object to create.
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The OpenCMISS variable type.
     TYPE(VARYING_STRING), INTENT(IN) :: EVALUATOR_NAME !<The name of the field evaluator.
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code.
@@ -1187,7 +1187,7 @@ CONTAINS
     !Argument variables
     TYPE(FIELDML_IO_TYPE), INTENT(INOUT) :: FIELDML_INFO !<The FieldML parsing state.
     TYPE(VARYING_STRING), INTENT(IN) :: EVALUATOR_NAME !<The name of the nodal dofs evaluator.
-    TYPE(FIELD_TYPE), POINTER, INTENT(INOUT) :: FIELD !<The field whose parameters are to be updated.
+    TYPE(FieldType), POINTER, INTENT(INOUT) :: FIELD !<The field whose parameters are to be updated.
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The OpenCMISS variable type.
     INTEGER(INTG), INTENT(IN) :: SET_TYPE !<The parameter set type.
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code.
@@ -1247,7 +1247,7 @@ CONTAINS
     !Arguments
     TYPE(FIELDML_IO_TYPE), INTENT(INOUT) :: FIELDML_INFO !<The FieldML parsing state.
     TYPE(VARYING_STRING), INTENT(IN) :: EVALUATOR_NAME !<The name of the nodal dofs evaluator.
-    TYPE(FIELD_TYPE), POINTER, INTENT(INOUT) :: FIELD !<The field whose parameters are to be updated.
+    TYPE(FieldType), POINTER, INTENT(INOUT) :: FIELD !<The field whose parameters are to be updated.
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The OpenCMISS variable type.
     INTEGER(INTG), INTENT(IN) :: SET_TYPE !<The parameter set type.
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code.

@@ -81,7 +81,7 @@ contains
 
   ! initialize field
   subroutine bueno_orovio_initialize(field,err,error,*)
-    type(field_type), intent(inout), pointer :: field
+    TYPE(FieldType), intent(inout), pointer :: field
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     
@@ -156,7 +156,7 @@ contains
 
   ! integrates all cell models
   subroutine bueno_orovio_integrate(cells,materials,t0,t1,err,error,*)
-    type(field_type), intent(inout), pointer :: cells, materials !<Independent field storing the cell data, and material field component 1 the activation flags
+    TYPE(FieldType), intent(inout), pointer :: cells, materials !<Independent field storing the cell data, and material field component 1 the activation flags
     real(dp), intent(in)    :: t0, t1 !<Integrate from time t0 to t1 
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -224,7 +224,7 @@ contains
 
   ! initialize field
   subroutine tentusscher06_initialize(field,err,error,*)
-    type(field_type), intent(inout), pointer :: field
+    TYPE(FieldType), intent(inout), pointer :: field
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     
@@ -366,7 +366,7 @@ contains
 
   ! integrates all cell models
   subroutine tentusscher06_integrate(cells,materials,t0,t1,err,error,*)
-    type(field_type), intent(inout), pointer :: cells, materials !<Independent field storing the cell data, and material field component 1 the activation flags
+    TYPE(FieldType), intent(inout), pointer :: cells, materials !<Independent field storing the cell data, and material field component 1 the activation flags
     real(dp), intent(in)    :: t0, t1 !<Integrate from time t0 to t1 
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string

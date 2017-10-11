@@ -236,7 +236,7 @@ CONTAINS
     TYPE(EquationsVectorType), POINTER :: vectorEquations
     TYPE(EQUATIONS_SET_MATERIALS_TYPE), POINTER :: equationsMaterials
     TYPE(EQUATIONS_SET_EQUATIONS_SET_FIELD_TYPE), POINTER :: equationsEquationsSetField
-    TYPE(FIELD_TYPE), POINTER :: equationsSetField
+    TYPE(FieldType), POINTER :: equationsSetField
     INTEGER(INTG) :: componentIdx,geometricScalingType,geometricMeshComponent,geometricComponentNumber
     INTEGER(INTG) :: dependentFieldNumberOfVariables,dependentFieldNumberOfComponents
     INTEGER(INTG) :: independentFieldNumberOfVariables,independentFieldNumberOfComponents
@@ -874,7 +874,7 @@ CONTAINS
     TYPE(EquationsMatricesNonlinearType), POINTER :: nonlinearMatrices
     TYPE(EquationsMatrixType), POINTER :: stiffnessMatrix
     TYPE(EquationsVectorType), POINTER :: vectorEquations
-    TYPE(FIELD_TYPE), POINTER :: materialsField,dependentField,independentField
+    TYPE(FieldType), POINTER :: materialsField,dependentField,independentField
     TYPE(FieldVariableType), POINTER :: fieldVariable
     TYPE(VARYING_STRING) :: localError
     REAL(DP), POINTER :: dependentParameters(:),independentParameters(:),materialsParameters(:)
@@ -1096,7 +1096,7 @@ CONTAINS
     TYPE(EquationsMatricesNonlinearType), POINTER :: nonlinearMatrices
     TYPE(EquationsJacobianType), POINTER :: jacobianMatrix
     TYPE(EquationsVectorType), POINTER :: vectorEquations
-    TYPE(FIELD_TYPE), POINTER :: materialsField,dependentField,independentField
+    TYPE(FieldType), POINTER :: materialsField,dependentField,independentField
     TYPE(FieldVariableType), POINTER :: fieldVariable
     TYPE(VARYING_STRING) :: localError
     REAL(DP), POINTER :: dependentParameters(:),independentParameters(:),materialsParameters(:)
@@ -1336,7 +1336,7 @@ CONTAINS
     TYPE(DOMAIN_TYPE), POINTER :: dependentDomain,materialsDomain
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet
     TYPE(EquationsType), POINTER :: equations
-    TYPE(FIELD_TYPE), POINTER ::  dependentField,materialsField,independentField,geometricField
+    TYPE(FieldType), POINTER ::  dependentField,materialsField,independentField,geometricField
     TYPE(SOLVER_EQUATIONS_TYPE), POINTER :: solverEquations
     TYPE(SOLVER_MAPPING_TYPE), POINTER :: solverMapping
     REAL(DP) :: W(2,4),Q_EX(4),A_EX(4),XI(1),A0_PARAM(4),H0_PARAM(4),E_PARAM(4),Beta(4),normalWave(2,4),elementLengths(4)
@@ -1581,7 +1581,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: ERR
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR
     !Local Variables
-    TYPE(FIELD_TYPE), POINTER ::  dependentField,materialsField,independentField
+    TYPE(FieldType), POINTER ::  dependentField,materialsField,independentField
     TYPE(FieldVariableType), POINTER :: fieldVariable
     TYPE(DOMAIN_NODES_TYPE), POINTER :: domainNodes
     TYPE(VARYING_STRING) :: localError

@@ -198,7 +198,7 @@ CONTAINS
     TYPE(EquationsMappingVectorType), POINTER :: vectorMapping
     TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices
     TYPE(EQUATIONS_SET_EQUATIONS_SET_FIELD_TYPE), POINTER :: equations_EQUATIONS_SET_FIELD
-    TYPE(FIELD_TYPE), POINTER :: equations_SET_FIELD_FIELD
+    TYPE(FieldType), POINTER :: equations_SET_FIELD_FIELD
     TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE
     TYPE(EQUATIONS_SET_SOURCE_TYPE), POINTER :: equations_SOURCE
     TYPE(VARYING_STRING) :: localError
@@ -1771,14 +1771,14 @@ CONTAINS
     TYPE(EquationsMatricesDynamicType), POINTER :: dynamicMatrices
     TYPE(EquationsMatricesRHSType), POINTER :: rhsVector
     TYPE(EquationsMatrixType), POINTER :: stiffnessMatrix, dampingMatrix
-    TYPE(FIELD_TYPE), POINTER :: dependentField,geometricField,materialsField,EQUATIONS_SET_FIELD
+    TYPE(FieldType), POINTER :: dependentField,geometricField,materialsField,EQUATIONS_SET_FIELD
     TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE
     TYPE(DECOMPOSITION_TYPE), POINTER :: DECOMPOSITION
     TYPE(MESH_ELEMENT_TYPE), POINTER :: MESH_ELEMENT
     TYPE(BOUNDARY_CONDITIONS_VARIABLE_TYPE), POINTER :: BOUNDARY_CONDITIONS_VARIABLE
     TYPE(BOUNDARY_CONDITIONS_TYPE), POINTER :: BOUNDARY_CONDITIONS
     TYPE(EquationsMatricesSourceType), POINTER :: sourceVector
-    TYPE(FIELD_TYPE), POINTER :: sourceField
+    TYPE(FieldType), POINTER :: sourceField
     TYPE(FieldVariablePtrType) :: FIELD_VARIABLES(99)
     TYPE(EquationsMatrixPtrType) :: COUPLING_MATRICES(99)
     REAL(DP), ALLOCATABLE :: PRESSURE_COEFF(:),PRESSURE(:),GRAD_PRESSURE(:,:)
@@ -4296,7 +4296,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
-    TYPE(FIELD_TYPE), POINTER :: dependentField, geometricField
+    TYPE(FieldType), POINTER :: dependentField, geometricField
     TYPE(SOLVER_EQUATIONS_TYPE), POINTER :: SOLVER_EQUATIONS  !<A pointer to the solver equations
     TYPE(SOLVER_MAPPING_TYPE), POINTER :: SOLVER_MAPPING !<A pointer to the solver mapping
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equations_SET !<A pointer to the equations set
@@ -4466,7 +4466,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
-    TYPE(FIELD_TYPE), POINTER :: geometricField
+    TYPE(FieldType), POINTER :: geometricField
     TYPE(SOLVER_EQUATIONS_TYPE), POINTER :: SOLVER_EQUATIONS  !<A pointer to the solver equations
     TYPE(SOLVER_MAPPING_TYPE), POINTER :: SOLVER_MAPPING !<A pointer to the solver mapping
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equations_SET !<A pointer to the equations set
@@ -4585,7 +4585,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
-    TYPE(FIELD_TYPE), POINTER :: geometricField
+    TYPE(FieldType), POINTER :: geometricField
     TYPE(SOLVER_TYPE), POINTER :: SOLVER_ALE_DARCY !<A pointer to the solvers
     TYPE(SOLVER_EQUATIONS_TYPE), POINTER :: SOLVER_EQUATIONS  !<A pointer to the solver equations
     TYPE(SOLVER_MAPPING_TYPE), POINTER :: SOLVER_MAPPING !<A pointer to the solver mapping
@@ -4766,7 +4766,7 @@ CONTAINS
     TYPE(EquationsMappingVectorType), POINTER :: vectorMapping
     TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE
     TYPE(VARYING_STRING) :: localError
-    TYPE(FIELD_TYPE), POINTER :: dependentField, geometricField
+    TYPE(FieldType), POINTER :: dependentField, geometricField
     TYPE(BOUNDARY_CONDITIONS_VARIABLE_TYPE), POINTER :: BOUNDARY_CONDITIONS_VARIABLE
     TYPE(BOUNDARY_CONDITIONS_TYPE), POINTER :: BOUNDARY_CONDITIONS
     TYPE(CONTROL_LOOP_TYPE), POINTER :: CONTROL_TIME_LOOP
@@ -5027,7 +5027,7 @@ CONTAINS
 
     !Local Variables
     TYPE(SOLVER_TYPE), POINTER :: SOLVER_MAT_PROPERTIES, SOLVER_ALE_DARCY  !<A pointer to the solvers
-    TYPE(FIELD_TYPE), POINTER :: DEPENDENT_FIELD_MAT_PROPERTIES, MATERIALS_FIELD_ALE_DARCY
+    TYPE(FieldType), POINTER :: DEPENDENT_FIELD_MAT_PROPERTIES, MATERIALS_FIELD_ALE_DARCY
     TYPE(SOLVER_EQUATIONS_TYPE), POINTER :: SOLVER_EQUATIONS_MAT_PROPERTIES, SOLVER_EQUATIONS_ALE_DARCY  !<A pointer to the solver equations
     TYPE(SOLVER_MAPPING_TYPE), POINTER :: SOLVER_MAPPING_MAT_PROPERTIES, SOLVER_MAPPING_ALE_DARCY !<A pointer to the solver mapping
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equations_SET_MAT_PROPERTIES, EQUATIONS_SET_ALE_DARCY !<A pointer to the equations set
@@ -5503,7 +5503,7 @@ CONTAINS
     REAL(DP), POINTER :: GEOMETRIC_PARAMETERS(:)
     TYPE(DOMAIN_TYPE), POINTER :: DOMAIN
     TYPE(DOMAIN_NODES_TYPE), POINTER :: DOMAIN_NODES
-    TYPE(FIELD_TYPE), POINTER :: DEPENDENT_FIELD,geometricField
+    TYPE(FieldType), POINTER :: DEPENDENT_FIELD,geometricField
     TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE,GEOMETRIC_VARIABLE
     TYPE(FIELD_INTERPOLATED_POINT_PTR_TYPE), POINTER :: INTERPOLATED_POINT (:)
     TYPE(FIELD_INTERPOLATION_PARAMETERS_PTR_TYPE), POINTER :: INTERPOLATION_PARAMETERS(:)
@@ -6415,7 +6415,7 @@ CONTAINS
 
     !Local Variables
     TYPE(SOLVER_TYPE), POINTER :: SOLVER_FINITE_ELASTICITY, SOLVER_DARCY  !<A pointer to the solvers
-    TYPE(FIELD_TYPE), POINTER :: DEPENDENT_FIELD_FINITE_ELASTICITY, GEOMETRIC_FIELD_DARCY
+    TYPE(FieldType), POINTER :: DEPENDENT_FIELD_FINITE_ELASTICITY, GEOMETRIC_FIELD_DARCY
     TYPE(SOLVER_EQUATIONS_TYPE), POINTER :: SOLVER_EQUATIONS_FINITE_ELASTICITY, SOLVER_EQUATIONS_DARCY  !<A pointer to the solver equations
     TYPE(SOLVER_MAPPING_TYPE), POINTER :: SOLVER_MAPPING_FINITE_ELASTICITY, SOLVER_MAPPING_DARCY !<A pointer to the solver mapping
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equations_SET_FINITE_ELASTICITY, EQUATIONS_SET_DARCY !<A pointer to the equations set
@@ -6764,7 +6764,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
-    TYPE(FIELD_TYPE), POINTER :: DEPENDENT_FIELD
+    TYPE(FieldType), POINTER :: DEPENDENT_FIELD
     TYPE(SOLVER_EQUATIONS_TYPE), POINTER :: SOLVER_EQUATIONS  !<A pointer to the solver equations
     TYPE(SOLVER_MAPPING_TYPE), POINTER :: SOLVER_MAPPING !<A pointer to the solver mapping
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equations_SET !<A pointer to the equations set
@@ -6912,8 +6912,8 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
-    TYPE(FIELD_TYPE), POINTER :: DEPENDENT_FIELD,GEOMETRIC_FIELD
-!    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field
+    TYPE(FieldType), POINTER :: DEPENDENT_FIELD,GEOMETRIC_FIELD
+!    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field
     TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE,GEOMETRIC_VARIABLE
     TYPE(SOLVER_EQUATIONS_TYPE), POINTER :: SOLVER_EQUATIONS  !<A pointer to the solver equations
     TYPE(SOLVER_MAPPING_TYPE), POINTER :: SOLVER_MAPPING !<A pointer to the solver mapping
@@ -7234,7 +7234,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
-    TYPE(FIELD_TYPE), POINTER :: DEPENDENT_FIELD
+    TYPE(FieldType), POINTER :: DEPENDENT_FIELD
     TYPE(SOLVER_EQUATIONS_TYPE), POINTER :: SOLVER_EQUATIONS  !<A pointer to the solver equations
     TYPE(SOLVER_MAPPING_TYPE), POINTER :: SOLVER_MAPPING !<A pointer to the solver mapping
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equations_SET !<A pointer to the equations set
@@ -7472,7 +7472,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
-    TYPE(FIELD_TYPE), POINTER :: DEPENDENT_FIELD
+    TYPE(FieldType), POINTER :: DEPENDENT_FIELD
     TYPE(SOLVER_EQUATIONS_TYPE), POINTER :: SOLVER_EQUATIONS  !<A pointer to the solver equations
     TYPE(SOLVER_MAPPING_TYPE), POINTER :: SOLVER_MAPPING !<A pointer to the solver mapping
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equations_SET !<A pointer to the equations set
@@ -7667,7 +7667,7 @@ CONTAINS
 
     !Local Variables
     TYPE(SOLVER_TYPE), POINTER :: SOLVER_FINITE_ELASTICITY, SOLVER_DARCY  !<A pointer to the solvers
-    TYPE(FIELD_TYPE), POINTER :: DEPENDENT_FIELD_DARCY
+    TYPE(FieldType), POINTER :: DEPENDENT_FIELD_DARCY
     TYPE(SOLVER_EQUATIONS_TYPE), POINTER :: SOLVER_EQUATIONS_DARCY  !<A pointer to the solver equations
     TYPE(SOLVER_MAPPING_TYPE), POINTER :: SOLVER_MAPPING_DARCY !<A pointer to the solver mapping
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equations_SET_DARCY !<A pointer to the equations set
@@ -7825,7 +7825,7 @@ CONTAINS
     !Local variables
     TYPE(EquationsType), POINTER :: equations
     TYPE(EquationsVectorType), POINTER :: vectorEquations
-    TYPE(FIELD_TYPE), POINTER :: dependentField, independentField
+    TYPE(FieldType), POINTER :: dependentField, independentField
     TYPE(DECOMPOSITION_TYPE), POINTER :: DECOMPOSITION
     TYPE(DECOMPOSITION_ELEMENT_TYPE), POINTER :: DECOMP_ELEMENT
     TYPE(EquationsMatricesDynamicType), POINTER :: dynamicMatrices

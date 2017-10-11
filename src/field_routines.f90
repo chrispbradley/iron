@@ -1359,7 +1359,7 @@ CONTAINS
   SUBROUTINE FIELD_COMPONENT_INTERPOLATION_CHECK(FIELD,VARIABLE_TYPE,COMPONENT_NUMBER,INTERPOLATION_TYPE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to check the interpolation for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to check the interpolation for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type of the field variable component to check \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The field component number of the field variable component to check
     INTEGER(INTG), INTENT(IN) :: INTERPOLATION_TYPE !<The interpolation type of the field variable component to check \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
@@ -1485,7 +1485,7 @@ CONTAINS
   SUBROUTINE FIELD_COMPONENT_INTERPOLATION_GET(FIELD,VARIABLE_TYPE,COMPONENT_NUMBER,INTERPOLATION_TYPE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the interpolation for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the interpolation for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type of the field variable component to get \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The field component number of the field variable component to set
     INTEGER(INTG), INTENT(OUT) :: INTERPOLATION_TYPE !<On return, the interpolation type of the field variable component \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
@@ -1546,7 +1546,7 @@ CONTAINS
   SUBROUTINE FIELD_COMPONENT_INTERPOLATION_SET(FIELD,VARIABLE_TYPE,COMPONENT_NUMBER,INTERPOLATION_TYPE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set the interpolation for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set the interpolation for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type of the field variable component to set \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The field component number of the field variable component to set
     INTEGER(INTG), INTENT(IN) :: INTERPOLATION_TYPE !<The interpolation type to set \see FIELD_ROUTINES_InterpolationTypes,FIELD_ROUTINES
@@ -1635,7 +1635,7 @@ CONTAINS
   SUBROUTINE FIELD_COMPONENT_INTERPOLATION_SET_AND_LOCK(FIELD,VARIABLE_TYPE,COMPONENT_NUMBER,INTERPOLATION_TYPE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set the interpolation for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set the interpolation for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type of the field variable component to set \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The field component number of the field variable component to set
     INTEGER(INTG), INTENT(IN) :: INTERPOLATION_TYPE !<The interpolation type to set \see FIELD_ROUTINES_InterpolationTypes,FIELD_ROUTINES
@@ -1673,7 +1673,7 @@ CONTAINS
   SUBROUTINE FIELD_COMPONENT_DOF_GET_CONSTANT(FIELD,VARIABLE_TYPE,COMPONENT_NUMBER,LOCAL_DOF,GLOBAL_DOF,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the dof for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the dof for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to get the dof for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The field component number to get the dof for
     INTEGER(INTG), INTENT(OUT) :: LOCAL_DOF !<On exit, the local dof corresponding to the constant
@@ -1784,7 +1784,7 @@ CONTAINS
     & globalDof,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to get the dof for
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to get the dof for
     INTEGER(INTG), INTENT(IN) :: variableType !<The field variable type to get the dof for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: userDataPointNumber !<The user data point number to get the dof for
     INTEGER(INTG), INTENT(IN) :: componentNumber !<The field component number to get the dof for
@@ -1917,7 +1917,7 @@ CONTAINS
     & GLOBAL_DOF,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the dof for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the dof for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to get the dof for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: USER_ELEMENT_NUMBER !<The user element number to get the dof for
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The field component number to get the dof for
@@ -2048,7 +2048,7 @@ CONTAINS
     & COMPONENT_NUMBER,LOCAL_DOF,GLOBAL_DOF,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the dof for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the dof for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to get the dof for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: VERSION_NUMBER !<The version number to get the dof for
     INTEGER(INTG), INTENT(IN) :: DERIVATIVE_NUMBER !<The derivative number to get the dof for
@@ -2197,7 +2197,7 @@ CONTAINS
   SUBROUTINE FIELD_COMPONENT_LABEL_GET_C(FIELD,VARIABLE_TYPE,COMPONENT_NUMBER,LABEL,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the label for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the label for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The field component number to get
     CHARACTER(LEN=*), INTENT(OUT) :: LABEL !<On return, the field variable label
@@ -2264,7 +2264,7 @@ CONTAINS
   SUBROUTINE FIELD_COMPONENT_LABEL_GET_VS(FIELD,VARIABLE_TYPE,COMPONENT_NUMBER,LABEL,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the label for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the label for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The field component number to get
     TYPE(VARYING_STRING), INTENT(OUT) :: LABEL !<On return, the field variable label
@@ -2324,7 +2324,7 @@ CONTAINS
   SUBROUTINE FIELD_COMPONENT_LABEL_SET_C(FIELD,VARIABLE_TYPE,COMPONENT_NUMBER,LABEL,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set/change the dimension for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set/change the dimension for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The field component number to get
     CHARACTER(LEN=*), INTENT(IN) :: LABEL !<The label to set/change
@@ -2396,7 +2396,7 @@ CONTAINS
   SUBROUTINE FIELD_COMPONENT_LABEL_SET_VS(FIELD,VARIABLE_TYPE,COMPONENT_NUMBER,LABEL,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set/change the dimension for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set/change the dimension for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The field component number to get
     TYPE(VARYING_STRING), INTENT(IN) :: LABEL !<The label to set/change
@@ -2468,7 +2468,7 @@ CONTAINS
   SUBROUTINE FIELD_COMPONENT_LABEL_SET_AND_LOCK_C(FIELD,VARIABLE_TYPE,COMPONENT_NUMBER,LABEL,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set/change the label for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set/change the label for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The field component number to get
     CHARACTER(LEN=*), INTENT(IN) :: LABEL !<The label to set/change 
@@ -2506,7 +2506,7 @@ CONTAINS
   SUBROUTINE FIELD_COMPONENT_LABEL_SET_AND_LOCK_VS(FIELD,VARIABLE_TYPE,COMPONENT_NUMBER,LABEL,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set/change the label for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set/change the label for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The field component number to get
     TYPE(VARYING_STRING), INTENT(IN) :: LABEL !<The label to set/change 
@@ -2544,7 +2544,7 @@ CONTAINS
   SUBROUTINE FIELD_COMPONENT_MESH_COMPONENT_CHECK(FIELD,VARIABLE_TYPE,COMPONENT_NUMBER,MESH_COMPONENT,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to check the mesh component for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to check the mesh component for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to check the field variable component for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The field component number to check the field variable component for
     INTEGER(INTG), INTENT(IN) :: MESH_COMPONENT !<The mesh component to check for the specified field variable component
@@ -2613,7 +2613,7 @@ CONTAINS
   SUBROUTINE FIELD_COMPONENT_MESH_COMPONENT_GET(FIELD,VARIABLE_TYPE,COMPONENT_NUMBER,MESH_COMPONENT,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the mesh component for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the mesh component for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to get the field variable component for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The field component number to get the field variable component for
     INTEGER(INTG), INTENT(OUT) :: MESH_COMPONENT !<On return, the mesh component to get for the specified field variable component
@@ -2673,7 +2673,7 @@ CONTAINS
   SUBROUTINE FIELD_COMPONENT_MESH_COMPONENT_SET(FIELD,VARIABLE_TYPE,COMPONENT_NUMBER,MESH_COMPONENT_NUMBER,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set the mesh component for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set the mesh component for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to set the mesh component for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The field component number to set the mesh component for
     INTEGER(INTG), INTENT(IN) :: MESH_COMPONENT_NUMBER !<The mesh component to set for the specified field variable component
@@ -2786,7 +2786,7 @@ CONTAINS
   SUBROUTINE FIELD_COMPONENT_MESH_COMPONENT_SET_AND_LOCK(FIELD,VARIABLE_TYPE,COMPONENT_NUMBER,MESH_COMPONENT_NUMBER,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set the mesh component for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set the mesh component for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to set the mesh component for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The field component number to set the mesh component for
     INTEGER(INTG), INTENT(IN) :: MESH_COMPONENT_NUMBER !<The mesh component to set for the specified field variable component
@@ -2826,7 +2826,7 @@ CONTAINS
   SUBROUTINE FIELD_COMPONENT_VALUES_INITIALISE_INTG(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
     
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to initialise the values for 
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to initialise the values for 
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to intialise \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier to initialise \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The field component number to initialise
@@ -3048,7 +3048,7 @@ CONTAINS
   SUBROUTINE FIELD_COMPONENT_VALUES_INITIALISE_SP(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
     
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to initialise the values for 
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to initialise the values for 
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to intiialise \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier to initialise \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The field component number to initialise
@@ -3267,7 +3267,7 @@ CONTAINS
   SUBROUTINE FIELD_COMPONENT_VALUES_INITIALISE_DP(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
     
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to initialise the values for 
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to initialise the values for 
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to intiialise \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier to initialise \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The field component number to initialise
@@ -3519,7 +3519,7 @@ CONTAINS
   SUBROUTINE FIELD_COMPONENT_VALUES_INITIALISE_L(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
     
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to initialise the values for 
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to initialise the values for 
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to intiialise \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier to initialise \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The field component number to initialise
@@ -3716,7 +3716,7 @@ CONTAINS
   SUBROUTINE FIELD_DATA_TYPE_CHECK(FIELD,VARIABLE_TYPE,DATA_TYPE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to check the data type for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to check the data type for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to check \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: DATA_TYPE !<The data type of the field variable to check \see FIELD_ROUTINES_DataTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
@@ -3812,7 +3812,7 @@ CONTAINS
   SUBROUTINE FIELD_DATA_TYPE_GET(FIELD,VARIABLE_TYPE,DATA_TYPE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the data type for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the data type for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to get \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(OUT) :: DATA_TYPE !<On return, the data type of the field variable \see FIELD_ROUTINES_DataTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
@@ -3863,7 +3863,7 @@ CONTAINS
   SUBROUTINE FIELD_DATA_TYPE_SET(FIELD,VARIABLE_TYPE,DATA_TYPE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set the interpolation for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set the interpolation for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type of the field variable component to set \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: DATA_TYPE !<The data type to set \see FIELD_ROUTINES_DataTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
@@ -3935,7 +3935,7 @@ CONTAINS
   SUBROUTINE FIELD_DATA_TYPE_SET_AND_LOCK(FIELD,VARIABLE_TYPE,DATA_TYPE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set the interpolation for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set the interpolation for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type of the field variable component to set \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: DATA_TYPE !<The data type to set \see FIELD_ROUTINES_DataTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
@@ -3972,7 +3972,7 @@ CONTAINS
   SUBROUTINE FIELD_DOF_ORDER_TYPE_CHECK(FIELD,VARIABLE_TYPE,DOF_ORDER_TYPE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to check the DOF order type for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to check the DOF order type for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to check \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: DOF_ORDER_TYPE !<The DOF order type of the field variable to check \see FIELD_ROUTINES_DOFOrderTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
@@ -4046,7 +4046,7 @@ CONTAINS
   SUBROUTINE FIELD_DOF_ORDER_TYPE_GET(FIELD,VARIABLE_TYPE,DOF_ORDER_TYPE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the DOF order type for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the DOF order type for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to get \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(OUT) :: DOF_ORDER_TYPE !<On return, the DOF order type of the field variable \see FIELD_ROUTINES_DOFOrderTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
@@ -4100,7 +4100,7 @@ CONTAINS
   SUBROUTINE FIELD_DOF_ORDER_TYPE_SET(FIELD,VARIABLE_TYPE,DOF_ORDER_TYPE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set the DOF order type for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set the DOF order type for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to set \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: DOF_ORDER_TYPE !<The DOF order type to set \see FIELD_ROUTINES_DOFOrderTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
@@ -4190,7 +4190,7 @@ CONTAINS
   SUBROUTINE FIELD_DOF_ORDER_TYPE_SET_AND_LOCK(FIELD,VARIABLE_TYPE,DOF_ORDER_TYPE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set the DOF order for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set the DOF order for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to set \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: DOF_ORDER_TYPE !<The DOF order type to set \see FIELD_ROUTINES_DOFOrderTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
@@ -4261,7 +4261,7 @@ CONTAINS
     TYPE(BASIS_TYPE), POINTER :: BASIS
     TYPE(DECOMPOSITION_TYPE), POINTER :: DECOMPOSITION    
     TYPE(DOMAIN_TYPE), POINTER :: DOMAIN
-    TYPE(FIELD_TYPE), POINTER :: FIELD
+    TYPE(FieldType), POINTER :: FIELD
     TYPE(MESH_TYPE), POINTER :: MESH
     TYPE(VARYING_STRING) :: DUMMY_ERROR,LOCAL_ERROR
 
@@ -4506,7 +4506,7 @@ CONTAINS
   SUBROUTINE FIELD_VARIABLE_COMPONENTS_INITIALISE(FIELD,VARIABLE_TYPE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to initialise the field variable components for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to initialise the field variable components for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to initialise the field variable components for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -4563,7 +4563,7 @@ CONTAINS
   SUBROUTINE FIELD_CREATE_FINISH(FIELD,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to finish the creation of
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to finish the creation of
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
@@ -4694,12 +4694,12 @@ CONTAINS
     !Argument variables
     TYPE(FIELDS_TYPE), POINTER :: FIELDS !<A pointer to the fields
     INTEGER(INTG), INTENT(IN) :: USER_NUMBER !<The user number for the field to create
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<On return, a pointer to the field. Must not be associated on entry
+    TYPE(FieldType), POINTER :: FIELD !<On return, a pointer to the field. Must not be associated on entry
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
     INTEGER(INTG) :: field_no
-    TYPE(FIELD_TYPE), POINTER :: NEW_FIELD
+    TYPE(FieldType), POINTER :: NEW_FIELD
     TYPE(FIELD_PTR_TYPE), POINTER :: NEW_FIELDS(:)
 
     NULLIFY(NEW_FIELD)
@@ -4768,7 +4768,7 @@ CONTAINS
     !Argument variables
     INTEGER(INTG), INTENT(IN) :: USER_NUMBER !<The user number for the field
     TYPE(INTERFACE_TYPE), POINTER :: INTERFACE !<A pointer to the interface in which to create the field
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<On return, a pointer to the field being created. Must not be associated on entry.
+    TYPE(FieldType), POINTER :: FIELD !<On return, a pointer to the field being created. Must not be associated on entry.
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
@@ -4821,7 +4821,7 @@ CONTAINS
     !Argument variables
     INTEGER(INTG), INTENT(IN) :: USER_NUMBER !<The user number for the field
     TYPE(REGION_TYPE), POINTER :: REGION !<A pointer to the region in which to create the field
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<On return, a pointer to the field being created
+    TYPE(FieldType), POINTER :: FIELD !<On return, a pointer to the field being created
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
@@ -4918,7 +4918,7 @@ CONTAINS
   SUBROUTINE FIELD_CREATE_VALUES_CACHE_INITIALISE(FIELD,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to initialise the create values cache for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to initialise the create values cache for
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
@@ -5168,14 +5168,14 @@ CONTAINS
   SUBROUTINE Field_GeometricGeneralFieldGet(field,geometricField,generalFound,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER, INTENT(IN) :: field !<A pointer to the field to get the geometric field for
-    TYPE(FIELD_TYPE), POINTER, INTENT(OUT) :: geometricField !<On return, a pointer to the geometric field. Must not be associated on entry.
+    TYPE(FieldType), POINTER, INTENT(IN) :: field !<A pointer to the field to get the geometric field for
+    TYPE(FieldType), POINTER, INTENT(OUT) :: geometricField !<On return, a pointer to the geometric field. Must not be associated on entry.
     LOGICAL, INTENT(OUT) :: generalFound !<On return, true if we found a geometric general field, otherwise false.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
     INTEGER(INTG) :: fieldIdx
-    TYPE(FIELD_TYPE), POINTER :: otherField
+    TYPE(FieldType), POINTER :: otherField
     TYPE(VARYING_STRING) :: localError
 
     ENTERS("Field_GeometricGeneralFieldGet",err,error,*999)
@@ -5239,7 +5239,7 @@ CONTAINS
   SUBROUTINE FIELD_DEPENDENT_TYPE_CHECK(FIELD,DEPENDENT_TYPE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to check the dependent type for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to check the dependent type for
     INTEGER(INTG), INTENT(IN) :: DEPENDENT_TYPE !<The dependent type to check \see FIELD_ROUTINES_DependentTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -5294,7 +5294,7 @@ CONTAINS
   SUBROUTINE FIELD_DEPENDENT_TYPE_GET(FIELD,DEPENDENT_TYPE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the dependent type for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the dependent type for
     INTEGER(INTG), INTENT(OUT) :: DEPENDENT_TYPE !<On return, the dependent type to get \see FIELD_ROUTINES_DependentTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -5328,7 +5328,7 @@ CONTAINS
   SUBROUTINE FIELD_DEPENDENT_TYPE_SET(FIELD,DEPENDENT_TYPE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set/change the dependent type for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set/change the dependent type for
     INTEGER(INTG), INTENT(IN) :: DEPENDENT_TYPE !<The dependent type to set/change \see FIELD_ROUTINES_DependentTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -5382,7 +5382,7 @@ CONTAINS
   SUBROUTINE FIELD_DEPENDENT_TYPE_SET_AND_LOCK(FIELD,DEPENDENT_TYPE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set/change the dependent type for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set/change the dependent type for
     INTEGER(INTG), INTENT(IN) :: DEPENDENT_TYPE !<The dependent type to set/change \see FIELD_ROUTINES_DependentTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -5418,12 +5418,12 @@ CONTAINS
   SUBROUTINE FIELD_DESTROY(FIELD,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to destroy
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to destroy
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
     INTEGER(INTG) :: field_idx,field_position,field_position2
-    TYPE(FIELD_TYPE), POINTER :: FIELD2,GEOMETRIC_FIELD
+    TYPE(FieldType), POINTER :: FIELD2,GEOMETRIC_FIELD
     TYPE(FIELDS_TYPE), POINTER :: FIELDS
     TYPE(FIELD_PTR_TYPE), POINTER :: NEW_FIELDS(:),NEW_FIELDS_USING(:)
 
@@ -5510,7 +5510,7 @@ CONTAINS
   SUBROUTINE FIELD_DIMENSION_CHECK(FIELD,VARIABLE_TYPE,DIMENSION_TYPE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to check the dimension for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to check the dimension for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to check \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: DIMENSION_TYPE !<The field dimension to check \see FIELD_ROUTINES_DimensionTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
@@ -5593,7 +5593,7 @@ CONTAINS
   SUBROUTINE FIELD_DIMENSION_GET(FIELD,VARIABLE_TYPE,DIMENSION,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the dimension for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the dimension for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(OUT) :: DIMENSION !<On return, the field dimension to get \see FIELD_ROUTINES_DimensionTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
@@ -5643,7 +5643,7 @@ CONTAINS
   SUBROUTINE FIELD_DIMENSION_SET(FIELD,VARIABLE_TYPE,FIELD_DIMENSION,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set/change the dimension for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set/change the dimension for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: FIELD_DIMENSION !<The field dimension to set/change \see FIELD_ROUTINES_DimensionTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
@@ -5772,7 +5772,7 @@ CONTAINS
   SUBROUTINE FIELD_DIMENSION_SET_AND_LOCK(FIELD,VARIABLE_TYPE,FIELD_DIMENSION,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set/change the dimension for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set/change the dimension for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: FIELD_DIMENSION !<The field dimension to set/change \see FIELD_ROUTINES_DimensionTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
@@ -5809,7 +5809,7 @@ CONTAINS
   SUBROUTINE FIELD_FINALISE(FIELD,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to finalise
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to finalise
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
@@ -5840,7 +5840,7 @@ CONTAINS
   SUBROUTINE FIELD_INITIALISE(FIELD,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the new field to initialise. Must not be associated on entry.
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the new field to initialise. Must not be associated on entry.
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
@@ -5902,7 +5902,7 @@ CONTAINS
     INTEGER(INTG) :: component_idx,ni,nu
     INTEGER(INTG) :: startComponentIdx,endComponentIdx
     TYPE(COORDINATE_SYSTEM_TYPE), POINTER :: COORDINATE_SYSTEM
-    TYPE(FIELD_TYPE), POINTER :: FIELD
+    TYPE(FieldType), POINTER :: FIELD
     TYPE(FIELD_INTERPOLATION_PARAMETERS_TYPE), POINTER :: INTERPOLATION_PARAMETERS
     TYPE(VARYING_STRING) :: LOCAL_ERROR
 
@@ -6126,7 +6126,7 @@ CONTAINS
     TYPE(DOMAIN_ELEMENTS_TYPE), POINTER :: ELEM_TOPOLOGY
     TYPE(DOMAIN_NODES_TYPE), POINTER :: NODES_TOPOLOGY
     TYPE(DOMAIN_TOPOLOGY_TYPE), POINTER :: DOMAIN_TOPOLOGY
-    TYPE(FIELD_TYPE), POINTER :: FIELD
+    TYPE(FieldType), POINTER :: FIELD
     TYPE(FIELD_INTERPOLATED_POINT_TYPE), POINTER :: FIELD_INTERPOLATED_POINT,GEOMETRIC_INTERPOLATED_POINT
     TYPE(FIELD_INTERPOLATION_PARAMETERS_TYPE), POINTER :: FIELD_INTERPOLATION_PARAMETERS,GEOMETRIC_INTERPOLATION_PARAMETERS
     TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE,GEOMETRIC_VARIABLE
@@ -6382,7 +6382,7 @@ CONTAINS
     !Argument variables
     INTEGER(INTG), INTENT(IN) :: PHYSICAL_DERIVATIVE_TYPE !<The physical derivative type of the field interpolation \see CONSTANTS_PhysicalDerivativeConstants
     INTEGER(INTG), INTENT(IN) :: PARAMETER_SET_TYPE !<The parameter set of the field to interpolate.
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<The field containing the node to interpolate at.
+    TYPE(FieldType), POINTER :: FIELD !<The field containing the node to interpolate at.
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The variable type containing the node to interpolate at
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The component number to field that contains the node to interpolate at
     INTEGER(INTG), INTENT(IN) :: NODE_NUMBER !<The node number in the field variable component to interpolate the field at
@@ -6399,7 +6399,7 @@ CONTAINS
     TYPE(DOMAIN_ELEMENTS_TYPE), POINTER :: ELEM_TOPOLOGY
     TYPE(DOMAIN_NODES_TYPE), POINTER :: NODES_TOPOLOGY
     TYPE(DOMAIN_TOPOLOGY_TYPE), POINTER :: DOMAIN_TOPOLOGY
-    TYPE(FIELD_TYPE), POINTER :: INTERP_FIELD
+    TYPE(FieldType), POINTER :: INTERP_FIELD
     TYPE(FIELD_INTERPOLATED_POINT_TYPE), POINTER :: FIELD_INTERPOLATED_POINT,GEOMETRIC_INTERPOLATED_POINT
     TYPE(FIELD_INTERPOLATION_PARAMETERS_TYPE), POINTER :: FIELD_INTERPOLATION_PARAMETERS,GEOMETRIC_INTERPOLATION_PARAMETERS
     TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE,INTERP_VARIABLE,GEOMETRIC_VARIABLE
@@ -6672,7 +6672,7 @@ CONTAINS
     !Local Variables
     INTEGER(INTG) :: component_idx,ni,nu,startComponentIdx,endComponentIdx
     TYPE(COORDINATE_SYSTEM_TYPE), POINTER :: COORDINATE_SYSTEM
-    TYPE(FIELD_TYPE), POINTER :: FIELD
+    TYPE(FieldType), POINTER :: FIELD
     TYPE(FIELD_INTERPOLATION_PARAMETERS_TYPE), POINTER :: INTERPOLATION_PARAMETERS
     TYPE(VARYING_STRING) :: LOCAL_ERROR
 
@@ -6904,7 +6904,7 @@ CONTAINS
     !Local Variables
     INTEGER(INTG) :: component_idx,ni,nu,startComponentIdx,endComponentIdx
     TYPE(COORDINATE_SYSTEM_TYPE), POINTER :: COORDINATE_SYSTEM
-    TYPE(FIELD_TYPE), POINTER :: FIELD
+    TYPE(FieldType), POINTER :: FIELD
     TYPE(FIELD_INTERPOLATION_PARAMETERS_TYPE), POINTER :: INTERPOLATION_PARAMETERS
     TYPE(VARYING_STRING) :: LOCAL_ERROR
 
@@ -7234,7 +7234,7 @@ CONTAINS
     & POSITION,NORMAL,TANGENTS,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER, INTENT(IN) :: FIELD !<A pointer to the field to interpolate the geometric information for
+    TYPE(FieldType), POINTER, INTENT(IN) :: FIELD !<A pointer to the field to interpolate the geometric information for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The variable type of the node to compute the geometric information for
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The component number of the node to compute the geometric information for
     INTEGER(INTG), INTENT(IN) :: LOCAL_NODE_NUMBER !<The local node number to compute the geometric information for
@@ -7256,7 +7256,7 @@ CONTAINS
     TYPE(DECOMPOSITION_TYPE), POINTER :: DECOMPOSITION
     TYPE(DECOMPOSITION_TOPOLOGY_TYPE), POINTER :: DECOMP_TOPOLOGY
     TYPE(DECOMPOSITION_ELEMENTS_TYPE), POINTER :: DECOMP_ELEMENTS
-    TYPE(FIELD_TYPE), POINTER :: GEOMETRIC_FIELD
+    TYPE(FieldType), POINTER :: GEOMETRIC_FIELD
     TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE
     TYPE(FIELD_INTERPOLATION_PARAMETERS_PTR_TYPE), POINTER :: INTERPOLATION_PARAMETERS(:)
     TYPE(FIELD_INTERPOLATED_POINT_PTR_TYPE), POINTER :: INTERPOLATED_POINTS(:)
@@ -7824,7 +7824,7 @@ CONTAINS
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
     TYPE(COORDINATE_SYSTEM_TYPE), POINTER :: COORDINATE_SYSTEM
-    TYPE(FIELD_TYPE), POINTER :: FIELD
+    TYPE(FieldType), POINTER :: FIELD
     TYPE(FIELD_INTERPOLATED_POINT_TYPE), POINTER :: INTERPOLATED_POINT
     TYPE(FIELD_INTERPOLATION_PARAMETERS_TYPE), POINTER :: INTERPOLATION_PARAMETERS
 
@@ -8072,7 +8072,7 @@ CONTAINS
     !Local Variables
     INTEGER(INTG) :: component_idx,DUMMY_ERR,numberOfComponents
 
-    TYPE(FIELD_TYPE), POINTER :: FIELD
+    TYPE(FieldType), POINTER :: FIELD
     TYPE(VARYING_STRING) :: DUMMY_ERROR,localError
 
     ENTERS("FIELD_INTERPOLATION_PARAMETER_INITIALISE",ERR,ERROR,*998)
@@ -8176,7 +8176,7 @@ CONTAINS
     TYPE(COORDINATE_SYSTEM_TYPE), POINTER :: COORDINATE_SYSTEM
     TYPE(DOMAIN_ELEMENTS_TYPE), POINTER :: ELEMENTS_TOPOLOGY
     TYPE(DOMAIN_NODES_TYPE), POINTER :: NODES_TOPOLOGY
-    TYPE(FIELD_TYPE), POINTER :: FIELD
+    TYPE(FieldType), POINTER :: FIELD
     TYPE(FIELD_PARAMETER_SET_TYPE), POINTER :: PARAMETER_SET
     TYPE(VARYING_STRING) :: LOCAL_ERROR
 
@@ -8415,7 +8415,7 @@ CONTAINS
   SUBROUTINE FIELD_INTERPOLATION_PARAMETERS_INITIALISE(FIELD,INTERPOLATION_PARAMETERS,ERR,ERROR,*,componentType)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to initialise the interpolation parameters for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to initialise the interpolation parameters for
     TYPE(FIELD_INTERPOLATION_PARAMETERS_PTR_TYPE), POINTER :: INTERPOLATION_PARAMETERS(:) !<On exit, a pointer to the initialised interpolation parameters.
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -8485,7 +8485,7 @@ CONTAINS
     TYPE(COORDINATE_SYSTEM_TYPE), POINTER :: COORDINATE_SYSTEM
     TYPE(DOMAIN_LINES_TYPE), POINTER :: LINES_TOPOLOGY
     TYPE(DOMAIN_NODES_TYPE), POINTER :: NODES_TOPOLOGY
-    TYPE(FIELD_TYPE), POINTER :: FIELD
+    TYPE(FieldType), POINTER :: FIELD
     TYPE(FIELD_PARAMETER_SET_TYPE), POINTER :: PARAMETER_SET
     TYPE(VARYING_STRING) :: LOCAL_ERROR
 
@@ -8693,7 +8693,7 @@ CONTAINS
     TYPE(COORDINATE_SYSTEM_TYPE), POINTER :: COORDINATE_SYSTEM
     TYPE(DOMAIN_FACES_TYPE), POINTER :: FACES_TOPOLOGY
     TYPE(DOMAIN_NODES_TYPE), POINTER :: NODES_TOPOLOGY
-    TYPE(FIELD_TYPE), POINTER :: FIELD
+    TYPE(FieldType), POINTER :: FIELD
     TYPE(FIELD_PARAMETER_SET_TYPE), POINTER :: PARAMETER_SET
     TYPE(VARYING_STRING) :: LOCAL_ERROR
 
@@ -9008,7 +9008,7 @@ CONTAINS
     & derivativeNumber,nodeUserNumber,componentNumber,scaleFactor,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to get scale factor for
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to get scale factor for
     INTEGER(INTG),  INTENT(IN) :: variableType !<The field variable type to get the scale factor for
     INTEGER(INTG), INTENT(IN) :: versionNumber !<The user number of the node derivative version to get the scale factor for
     INTEGER(INTG), INTENT(IN) :: derivativeNumber !<The user number of the node derivative to get the scale factor for
@@ -9161,7 +9161,7 @@ CONTAINS
   SUBROUTINE Field_ParameterSetNodeScaleFactorsGet(field,variableType,meshComponentNumber,scaleFactors,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to get scale factor for
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to get scale factor for
     INTEGER(INTG),  INTENT(IN) :: variableType !<The field variable type to get the scale factor for
     INTEGER(INTG), INTENT(IN) :: meshComponentNumber !<The mesh component number of the field to get the scale factor for
     REAL(DP), INTENT(OUT) :: scaleFactors(:) !<The scale factor for all nodes
@@ -9242,7 +9242,7 @@ CONTAINS
     & err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<The field to get the number of scale factor dofs for
+    TYPE(FieldType), POINTER :: field !<The field to get the number of scale factor dofs for
     INTEGER(INTG),  INTENT(IN) :: variableType !<The field variable type to get the number of scale factor dofs for
     INTEGER(INTG), INTENT(IN) :: meshComponentNumber !<The mesh component number of the field to get the number of scale factor dofs for
     INTEGER(INTG), INTENT(OUT) :: numberOfScaleFactorsDofs !<The number of scale factor dofs
@@ -9325,7 +9325,7 @@ CONTAINS
     & derivativeNumber,nodeUserNumber,componentNumber,scaleFactor,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to set scale factor for
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to set scale factor for
     INTEGER(INTG),  INTENT(IN) :: variableType !<The field variable type to set the scale factor for
     INTEGER(INTG), INTENT(IN) :: versionNumber !<The user number of the node derivative version to set the scale factor for
     INTEGER(INTG), INTENT(IN) :: derivativeNumber !<The user number of the node derivative to set the scale factor for
@@ -9479,7 +9479,7 @@ CONTAINS
   SUBROUTINE Field_ParameterSetNodeScaleFactorsSet(field,variableType,meshComponentNumber,scaleFactors,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to set scale factor for
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to set scale factor for
     INTEGER(INTG),  INTENT(IN) :: variableType !<The field variable type to set the scale factor for
     INTEGER(INTG), INTENT(IN) :: meshComponentNumber !<The mesh component number of the field to set the scale factor for
     REAL(DP), INTENT(IN) :: scaleFactors(:) !<The scale factor for all nodes
@@ -9854,7 +9854,7 @@ CONTAINS
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
     INTEGER(INTG) :: DUMMY_ERR
-    TYPE(FIELD_TYPE), POINTER :: FIELD,GEOMETRIC_FIELD
+    TYPE(FieldType), POINTER :: FIELD,GEOMETRIC_FIELD
     TYPE(FIELD_INTERPOLATION_PARAMETERS_TYPE), POINTER :: FIELD_INTERPOLATION_PARAMETERS,GEOMETRIC_INTERPOLATION_PARAMETERS
     TYPE(VARYING_STRING) :: DUMMY_ERROR
 
@@ -10002,7 +10002,7 @@ CONTAINS
   SUBROUTINE FIELD_MAPPINGS_CALCULATE(FIELD,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to calculate the mappings for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to calculate the mappings for
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
@@ -11307,8 +11307,8 @@ CONTAINS
   SUBROUTINE FIELD_GEOMETRIC_FIELD_GET(FIELD,GEOMETRIC_FIELD,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the geometric field for
-    TYPE(FIELD_TYPE), POINTER :: GEOMETRIC_FIELD !<On return, a pointer to the geometric field. Must not be associated on entry.
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the geometric field for
+    TYPE(FieldType), POINTER :: GEOMETRIC_FIELD !<On return, a pointer to the geometric field. Must not be associated on entry.
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
@@ -11346,8 +11346,8 @@ CONTAINS
   SUBROUTINE FIELD_GEOMETRIC_FIELD_SET(FIELD,GEOMETRIC_FIELD,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set the geometric field for
-    TYPE(FIELD_TYPE), POINTER :: GEOMETRIC_FIELD !<A pointer to the geometric field
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set the geometric field for
+    TYPE(FieldType), POINTER :: GEOMETRIC_FIELD !<A pointer to the geometric field
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
@@ -11432,8 +11432,8 @@ CONTAINS
   SUBROUTINE FIELD_GEOMETRIC_FIELD_SET_AND_LOCK(FIELD,GEOMETRIC_FIELD,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set the geometric field for
-    TYPE(FIELD_TYPE), POINTER :: GEOMETRIC_FIELD !<A pointer to the geometric field
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set the geometric field for
+    TYPE(FieldType), POINTER :: GEOMETRIC_FIELD !<A pointer to the geometric field
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
@@ -11468,7 +11468,7 @@ CONTAINS
   SUBROUTINE FIELD_GEOMETRIC_PARAMETERS_CALCULATE(FIELD,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<The field to calculate the geometric parameters for
+    TYPE(FieldType), POINTER :: FIELD !<The field to calculate the geometric parameters for
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
@@ -11516,7 +11516,7 @@ CONTAINS
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
     INTEGER(INTG) :: field_idx
-    TYPE(FIELD_TYPE), POINTER :: FIELD2
+    TYPE(FieldType), POINTER :: FIELD2
 
     ENTERS("FIELD_GEOMETRIC_PARAMETERS_FINALISE",ERR,ERROR,*999)
 
@@ -11547,7 +11547,7 @@ CONTAINS
   SUBROUTINE FIELD_GEOMETRIC_PARAMETERS_INITIALISE(FIELD,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to initialise the geometric parameters for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to initialise the geometric parameters for
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
@@ -11621,7 +11621,7 @@ CONTAINS
   SUBROUTINE Field_GeometricParametersElementLineLengthGet(field,elementNumber,elementLineNumber,lineLength,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to get the line length for
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to get the line length for
     INTEGER(INTG),  INTENT(IN) :: elementNumber !<The element to get the line length for
     INTEGER(INTG), INTENT(IN) :: elementLineNumber !<The element basis line to get the length for
     REAL(DP), INTENT(OUT) :: lineLength !<The line length of the chosen element line number
@@ -11691,7 +11691,7 @@ CONTAINS
   SUBROUTINE Field_GeometricParametersLineLengthsCalculate(FIELD,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to calculate the line lengths for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to calculate the line lengths for
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
@@ -11851,7 +11851,7 @@ CONTAINS
   SUBROUTINE Field_GeometricParametersFaceAreasCalculate(FIELD,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to calculate the face areas for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to calculate the face areas for
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
@@ -11957,13 +11957,13 @@ CONTAINS
   SUBROUTINE Field_GeometricParametersScaleFactorsUpdate(FIELD,UPDATE_FIELDS_USING,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to update the scale factors for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to update the scale factors for
     LOGICAL, INTENT(IN) :: UPDATE_FIELDS_USING !<If .TRUE. then update the fields that use this fields geometric parameters.
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
     INTEGER(INTG) :: field_idx,LAST_FIELD_IDX
-    TYPE(FIELD_TYPE), POINTER :: FIELD2
+    TYPE(FieldType), POINTER :: FIELD2
 
     ENTERS("Field_GeometricParametersScaleFactorsUpdate",ERR,ERROR,*999)
 
@@ -12000,7 +12000,7 @@ CONTAINS
   SUBROUTINE FIELD_LABEL_GET_C(FIELD,LABEL,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the label for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the label for
     CHARACTER(LEN=*), INTENT(OUT) :: LABEL !<On return, the field label for the specified field
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -12042,7 +12042,7 @@ CONTAINS
   SUBROUTINE FIELD_LABEL_GET_VS(FIELD,LABEL,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the label for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the label for
     TYPE(VARYING_STRING), INTENT(OUT) :: LABEL !<On return, the field label for the specified field
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -12077,7 +12077,7 @@ CONTAINS
   SUBROUTINE FIELD_LABEL_SET_C(FIELD,LABEL,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set the type for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set the type for
     CHARACTER(LEN=*), INTENT(IN) :: LABEL !<The field label to set
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -12124,7 +12124,7 @@ CONTAINS
   SUBROUTINE FIELD_LABEL_SET_VS(FIELD,LABEL,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set the type for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set the type for
     TYPE(VARYING_STRING), INTENT(IN) :: LABEL !<The field label to set
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -12171,7 +12171,7 @@ CONTAINS
   SUBROUTINE FIELD_LABEL_SET_AND_LOCK_C(FIELD,LABEL,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set the type for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set the type for
     CHARACTER(LEN=*), INTENT(IN) :: LABEL !<The field label to set 
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -12207,7 +12207,7 @@ CONTAINS
   SUBROUTINE FIELD_LABEL_SET_AND_LOCK_VS(FIELD,LABEL,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set the type for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set the type for
     TYPE(VARYING_STRING), INTENT(IN) :: LABEL !<The field label to set 
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -12243,7 +12243,7 @@ CONTAINS
   SUBROUTINE FIELD_MESH_DECOMPOSITION_GET(FIELD,MESH_DECOMPOSITION,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the decomposition for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the decomposition for
     TYPE(DECOMPOSITION_TYPE), POINTER :: MESH_DECOMPOSITION !<On return, a pointer to the mesh decomposition for the field. Must not be associated on entry
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -12284,7 +12284,7 @@ CONTAINS
   SUBROUTINE FIELD_MESH_DECOMPOSITION_SET(FIELD,MESH_DECOMPOSITION,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set the decomposition for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set the decomposition for
     TYPE(DECOMPOSITION_TYPE), POINTER :: MESH_DECOMPOSITION !<A pointer to the mesh decomposition to set
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -12425,7 +12425,7 @@ CONTAINS
   SUBROUTINE FIELD_MESH_DECOMPOSITION_SET_AND_LOCK(FIELD,MESH_DECOMPOSITION,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set the decomposition for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set the decomposition for
     TYPE(DECOMPOSITION_TYPE), POINTER :: MESH_DECOMPOSITION !<A pointer to the mesh decomposition to set
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -12461,7 +12461,7 @@ CONTAINS
   SUBROUTINE Field_DataProjectionSet(field,dataProjection,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to set the decomposition for
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to set the decomposition for
     TYPE(DataProjectionType), POINTER :: dataProjection !<A pointer to the data projection to set
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
@@ -12511,7 +12511,7 @@ CONTAINS
   SUBROUTINE Field_NumberOfComponentsCheck(field,variableType,numberOfComponents,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to check the number of components
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to check the number of components
     INTEGER(INTG), INTENT(IN) :: variableType !<The field variable type to check \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: numberOfComponents !The number of components in the field variable to check
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
@@ -12589,7 +12589,7 @@ CONTAINS
   SUBROUTINE Field_NumberOfComponentsGet(field,variableType,numberOfComponents,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to get the number of components
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to get the number of components
     INTEGER(INTG), INTENT(IN) :: variableType !<The field variable type to get \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(OUT) :: numberOfComponents !<On return, the number of components in the field variable
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
@@ -12650,7 +12650,7 @@ CONTAINS
   SUBROUTINE FIELD_NUMBER_OF_COMPONENTS_SET(FIELD,VARIABLE_TYPE,NUMBER_OF_COMPONENTS,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set the number of components
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set the number of components
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: NUMBER_OF_COMPONENTS !<The number of components to be set.
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
@@ -12808,7 +12808,7 @@ CONTAINS
   SUBROUTINE FIELD_NUMBER_OF_COMPONENTS_SET_AND_LOCK(FIELD,VARIABLE_TYPE,NUMBER_OF_COMPONENTS,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set the number of components
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set the number of components
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: NUMBER_OF_COMPONENTS !<The number of components to be set.
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
@@ -12845,7 +12845,7 @@ CONTAINS
   SUBROUTINE FIELD_NUMBER_OF_VARIABLES_CHECK(FIELD,NUMBER_OF_VARIABLES,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to check the number of variables for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to check the number of variables for
     INTEGER(INTG), INTENT(IN) :: NUMBER_OF_VARIABLES !<The number of variables in the specified field to check
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -12887,7 +12887,7 @@ CONTAINS
   SUBROUTINE FIELD_NUMBER_OF_VARIABLES_GET(FIELD,NUMBER_OF_VARIABLES,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the number of variables for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the number of variables for
     INTEGER(INTG), INTENT(OUT) :: NUMBER_OF_VARIABLES !<On return, the number of variables in the specified field
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -12922,7 +12922,7 @@ CONTAINS
   SUBROUTINE FIELD_NUMBER_OF_VARIABLES_SET(FIELD,NUMBER_OF_VARIABLES,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set the number of variables for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set the number of variables for
     INTEGER(INTG), INTENT(IN) :: NUMBER_OF_VARIABLES !<The number of variables to set for the field
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -13071,7 +13071,7 @@ CONTAINS
   SUBROUTINE FIELD_NUMBER_OF_VARIABLES_SET_AND_LOCK(FIELD,NUMBER_OF_VARIABLES,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set the number of variables for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set the number of variables for
     INTEGER(INTG), INTENT(IN) :: NUMBER_OF_VARIABLES !<The number of variables to set for the field
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -13108,7 +13108,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SETS_ADD_DP(FIELD,VARIABLE_TYPE,ALPHA,FIELD_FROM_SET_TYPE,FIELD_TO_SET_TYPE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to add the parameter sets for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to add the parameter sets for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to add \see \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     REAL(DP), INTENT(IN) :: ALPHA(:) !<The multiplicative factor for the add.
     INTEGER(INTG), INTENT(IN) :: FIELD_FROM_SET_TYPE(:) !<The field parameter set identifier to add the parameters from \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
@@ -13227,7 +13227,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SETS_ADD_DP1(FIELD,VARIABLE_TYPE,ALPHA,FIELD_FROM_SET_TYPE,FIELD_TO_SET_TYPE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to add the parameter sets for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to add the parameter sets for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to add \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINE
     REAL(DP), INTENT(IN) :: ALPHA !<The multiplicative factor for the add.
     INTEGER(INTG), INTENT(IN) :: FIELD_FROM_SET_TYPE !<The field parameter set identifier to add the parameters from
@@ -13254,7 +13254,7 @@ CONTAINS
   SUBROUTINE Field_ParameterSetsCopy(field,variableType,parameterFromSetType,parameterToSetType,alpha,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to copy the parameters set for
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to copy the parameters set for
     INTEGER(INTG), INTENT(IN) :: variableType !<The field variable type to copy \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: parameterFromSetType !<The field parameter set identifier to copy the parameters from \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: parameterToSetType !<The field parameter set identifier to copy the parameters to \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
@@ -13292,7 +13292,7 @@ CONTAINS
   SUBROUTINE Field_ParameterSetsCopyIfExists(field,variableType,parameterFromSetType,parameterToSetType,alpha,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to copy the parameters set for
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to copy the parameters set for
     INTEGER(INTG), INTENT(IN) :: variableType !<The field variable type to copy \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: parameterFromSetType !<The field parameter set identifier to copy the parameters from \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: parameterToSetType !<The field parameter set identifier to copy the parameters to \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
@@ -13332,11 +13332,11 @@ CONTAINS
     & FROM_COMPONENT_NUMBER,TO_FIELD,TO_VARIABLE_TYPE,TO_PARAMETER_SET_TYPE,TO_COMPONENT_NUMBER,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FROM_FIELD !<A pointer to the field to copy from
+    TYPE(FieldType), POINTER :: FROM_FIELD !<A pointer to the field to copy from
     INTEGER(INTG), INTENT(IN) :: FROM_VARIABLE_TYPE !<The field variable type to copy from
     INTEGER(INTG), INTENT(IN) :: FROM_PARAMETER_SET_TYPE !<The field parameter set type to copy from
     INTEGER(INTG), INTENT(IN) :: FROM_COMPONENT_NUMBER !<The field variable component number to copy from
-    TYPE(FIELD_TYPE), POINTER :: TO_FIELD !<A pointer to the field to copy to
+    TYPE(FieldType), POINTER :: TO_FIELD !<A pointer to the field to copy to
     INTEGER(INTG), INTENT(IN) :: TO_VARIABLE_TYPE !<The field variable type to copy to
     INTEGER(INTG), INTENT(IN) :: TO_PARAMETER_SET_TYPE !<The parameter set type to copy to
     INTEGER(INTG), INTENT(IN) :: TO_COMPONENT_NUMBER !<The field variable component to copy to
@@ -13787,7 +13787,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_ADD_CONSTANT_INTG(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to add to
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to add to
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to add \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The field variable component number to add
@@ -13920,7 +13920,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_ADD_CONSTANT_SP(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to add to
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to add to
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to add \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The field variable component number to add
@@ -14053,7 +14053,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_ADD_CONSTANT_DP(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to add to
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to add to
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to add \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The field variable component number to add
@@ -14186,7 +14186,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_ADD_CONSTANT_L(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to add to
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to add to
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to add \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The field variable component number to add
@@ -14319,7 +14319,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_ADD_LOCAL_DOF_INTG(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,DOF_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to add
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to add
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to add \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: DOF_NUMBER !<The dof number to add
@@ -14413,7 +14413,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_ADD_LOCAL_DOF_SP(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,DOF_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to add
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to add
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to add \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: DOF_NUMBER !<The dof number to add
@@ -14507,7 +14507,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_ADD_LOCAL_DOF_DP(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,DOF_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to add
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to add
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to add \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: DOF_NUMBER !<The dof number to add
@@ -14601,7 +14601,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_ADD_LOCAL_DOF_L(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,DOF_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to add
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to add
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to add \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: DOF_NUMBER !<The dof number to add
@@ -14696,7 +14696,7 @@ CONTAINS
     & VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to add
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to add
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to add \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: USER_ELEMENT_NUMBER !<The user element number to add
@@ -14851,7 +14851,7 @@ CONTAINS
     & VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to add
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to add
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to add \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: USER_ELEMENT_NUMBER !<The user element number to add
@@ -15007,7 +15007,7 @@ CONTAINS
     & VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to add
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to add
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to add \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: USER_ELEMENT_NUMBER !<The user element number to add
@@ -15162,7 +15162,7 @@ CONTAINS
     & VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to add
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to add
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to add \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: USER_ELEMENT_NUMBER !<The user element number to add
@@ -15317,7 +15317,7 @@ CONTAINS
     & componentNumber,value,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to add
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to add
     INTEGER(INTG), INTENT(IN) :: variableType !<The field variable type to add \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: fieldSetType !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: gaussPointNumber !<The Gauss point number in the element to add
@@ -15481,7 +15481,7 @@ CONTAINS
     & componentNumber,value,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to add
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to add
     INTEGER(INTG), INTENT(IN) :: variableType !<The field variable type to add \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: fieldSetType !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: gaussPointNumber !<The Gauss point number in the element to add
@@ -15645,7 +15645,7 @@ CONTAINS
     & componentNumber,value,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to add
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to add
     INTEGER(INTG), INTENT(IN) :: variableType !<The field variable type to add \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: fieldSetType !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: gaussPointNumber !<The Gauss point number in the element to add
@@ -15809,7 +15809,7 @@ CONTAINS
     & componentNumber,value,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to add
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to add
     INTEGER(INTG), INTENT(IN) :: variableType !<The field variable type to add \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: fieldSetType !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: gaussPointNumber !<The Gauss point number in the element to add
@@ -15973,7 +15973,7 @@ CONTAINS
     & VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to add
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to add
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to add \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: LOCAL_ELEMENT_NUMBER !<The local element number to add
@@ -16112,7 +16112,7 @@ CONTAINS
     & VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to add
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to add
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to add \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: LOCAL_ELEMENT_NUMBER !<The local element number to add
@@ -16251,7 +16251,7 @@ CONTAINS
     & VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to add
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to add
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to add \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: LOCAL_ELEMENT_NUMBER !<The local element number to add
@@ -16390,7 +16390,7 @@ CONTAINS
     & VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to add
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to add
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to add \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: LOCAL_ELEMENT_NUMBER !<The local element number to add
@@ -16529,7 +16529,7 @@ CONTAINS
     & USER_NODE_NUMBER,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to add
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to add
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to add \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: VERSION_NUMBER !<The node derivative version number to add
@@ -16723,7 +16723,7 @@ CONTAINS
     & USER_NODE_NUMBER,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to add
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to add
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to add \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: VERSION_NUMBER !<The node derivative version number to add
@@ -16917,7 +16917,7 @@ CONTAINS
     & USER_NODE_NUMBER,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to add
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to add
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to add \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: VERSION_NUMBER !<The node derivative version number to add
@@ -17111,7 +17111,7 @@ CONTAINS
     & USER_NODE_NUMBER,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to add
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to add
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to add \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: VERSION_NUMBER !<The node derivative version number to add
@@ -17305,7 +17305,7 @@ CONTAINS
     & LOCAL_NODE_NUMBER,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to add
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to add
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to add \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: VERSION_NUMBER !<The node derivative version number to add
@@ -17476,7 +17476,7 @@ CONTAINS
     & LOCAL_NODE_NUMBER,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to add
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to add
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to add \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: VERSION_NUMBER !<The node derivative version number to add
@@ -17647,7 +17647,7 @@ CONTAINS
     & LOCAL_NODE_NUMBER,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to add
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to add
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to add \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: VERSION_NUMBER !<The node derivative version number to add
@@ -17818,7 +17818,7 @@ CONTAINS
     & LOCAL_NODE_NUMBER,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to add
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to add
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to add \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: VERSION_NUMBER !<The node derivative version number to add
@@ -17989,7 +17989,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_CREATE(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to create the parameter set for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to create the parameter set for
     INTEGER(INTG),  INTENT(IN) :: VARIABLE_TYPE !<The variable type to create the parameter set for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
@@ -18115,7 +18115,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_CREATED(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,PARAMETER_SET_CREATED,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field
     INTEGER(INTG),  INTENT(IN) :: VARIABLE_TYPE !<The field variable type to check the parameter set creation for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     LOGICAL, INTENT(OUT) :: PARAMETER_SET_CREATED
@@ -18175,7 +18175,7 @@ CONTAINS
   SUBROUTINE Field_ParameterSetEnsureCreated(field,variableType,fieldSetType,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to create the parameter set for
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to create the parameter set for
     INTEGER(INTG),  INTENT(IN) :: variableType !<The variable type to create the parameter set for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: fieldSetType !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
@@ -18204,7 +18204,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_DESTROY(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to destroy a parameter set for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to destroy a parameter set for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to destroy the parameter set for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
@@ -18313,7 +18313,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_DATA_GET_INTG(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,PARAMETERS,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the parameter set from
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the parameter set from
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to get the parameter set data for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), POINTER :: PARAMETERS(:) !<On return, a pointer to the field parameter set data
@@ -18392,7 +18392,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_DATA_GET_SP(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,PARAMETERS,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the parameter set from
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the parameter set from
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to get the parameter set data for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     REAL(SP), POINTER :: PARAMETERS(:) !<On return, a pointer to the field parameter set data
@@ -18471,7 +18471,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_DATA_GET_DP(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,PARAMETERS,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the parameter set from
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the parameter set from
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to get the parameter set data for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     REAL(DP), POINTER :: PARAMETERS(:) !<On return, a pointer to the field parameter set data
@@ -18550,7 +18550,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_DATA_GET_L(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,PARAMETERS,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the parameter set from
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the parameter set from
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to get the parameter set data for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     LOGICAL, POINTER :: PARAMETERS(:) !<On return, a pointer to the field parameter set data
@@ -18629,7 +18629,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_DATA_RESTORE_INTG(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,PARAMETERS,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to restore the parameter set from
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to restore the parameter set from
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field varaible type to restore the parameter set data for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), POINTER :: PARAMETERS(:) !<The pointer to the field parameter set data obtained with the parameter set get call
@@ -18707,7 +18707,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_DATA_RESTORE_SP(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,PARAMETERS,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to restore the parameter set from
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to restore the parameter set from
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field varaible type to restore the parameter set data for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     REAL(SP), POINTER :: PARAMETERS(:) !<The pointer to the field parameter set data obtained with the parameter set get call
@@ -18785,7 +18785,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_DATA_RESTORE_DP(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,PARAMETERS,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to restore the parameter set from
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to restore the parameter set from
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field varaible type to restore the parameter set data for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     REAL(DP), POINTER :: PARAMETERS(:) !<The pointer to the field parameter set data obtained with the parameter set get call
@@ -18863,7 +18863,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_DATA_RESTORE_L(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,PARAMETERS,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to restore the parameter set from
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to restore the parameter set from
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field varaible type to restore the parameter set data for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     LOGICAL, POINTER :: PARAMETERS(:) !<The pointer to the field parameter set data obtained with the parameter set get call
@@ -18941,7 +18941,7 @@ CONTAINS
   SUBROUTINE Field_ParameterSetGet(field,variableType,fieldSetType,parameterSet,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to get the parameter set for
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to get the parameter set for
     INTEGER(INTG), INTENT(IN) :: variableType!<The field variable type to get the parameter set for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: fieldSetType !<The field parameter set identifier to get \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     TYPE(FIELD_PARAMETER_SET_TYPE), POINTER :: parameterSet !<On return, a pointer to the specified parameter set. Must not be associated on entry.
@@ -18974,7 +18974,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_GET_CONSTANT_INTG(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
     
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the value for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the value for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to get the value for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The field variable component number to get the value for
@@ -19108,7 +19108,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_GET_CONSTANT_SP(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
     
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the value for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the value for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to get the value for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The field variable component number to get the value for
@@ -19241,7 +19241,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_GET_CONSTANT_DP(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
     
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the value for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the value for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to get the value for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The field variable component number to get the value for
@@ -19375,7 +19375,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_GET_CONSTANT_L(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
     
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the value for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the value for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to get the value for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The field variable component number to get the value for
@@ -19510,7 +19510,7 @@ CONTAINS
       & err,error,*)
     
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to get the value for
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to get the value for
     INTEGER(INTG), INTENT(IN) :: variableType !<The field variable type to get the value for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: fieldSetType !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: userDataPointNumber !<The data point number to get the value for
@@ -19661,7 +19661,7 @@ CONTAINS
   SUBROUTINE Field_ParameterSetGetDataPointSP(field,variableType,fieldSetType,userDataPointNumber,componentNumber,value,err,error,*)
     
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to get the value for
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to get the value for
     INTEGER(INTG), INTENT(IN) :: variableType !<The field variable type to get the value for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: fieldSetType !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: userDataPointNumber !<The data point number to get the value for
@@ -19812,7 +19812,7 @@ CONTAINS
   SUBROUTINE Field_ParameterSetGetDataPointDP(field,variableType,fieldSetType,userDataPointNumber,componentNumber,value,err,error,*)
     
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to get the value for
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to get the value for
     INTEGER(INTG), INTENT(IN) :: variableType !<The field variable type to get the value for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: fieldSetType !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: userDataPointNumber !<The data point number to get the value for
@@ -19963,7 +19963,7 @@ CONTAINS
   SUBROUTINE Field_ParameterSetGetDataPointL(field,variableType,fieldSetType,userDataPointNumber,componentNumber,value,err,error,*)
     
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to get the value for
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to get the value for
     INTEGER(INTG), INTENT(IN) :: variableType !<The field variable type to get the value for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: fieldSetType !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: userDataPointNumber !<The data point number to get the value for
@@ -20115,7 +20115,7 @@ CONTAINS
     & VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the value for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the value for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to get the value for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: USER_ELEMENT_NUMBER !<The element number to get the value for
@@ -20265,7 +20265,7 @@ CONTAINS
 
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the value for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the value for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to get the value for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: USER_ELEMENT_NUMBER !<The element number to get the value for
@@ -20413,7 +20413,7 @@ CONTAINS
     & VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the value for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the value for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to get the value for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: USER_ELEMENT_NUMBER !<The element number to get the value for
@@ -20561,7 +20561,7 @@ CONTAINS
     & VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the value for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the value for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to get the value for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: USER_ELEMENT_NUMBER !<The element number to get the value for
@@ -20708,7 +20708,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_GET_LOCAL_DOF_INTG(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,DOF_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to get \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: DOF_NUMBER !<The dof number to get
@@ -20791,7 +20791,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_GET_LOCAL_DOF_SP(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,DOF_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to get \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: DOF_NUMBER !<The dof number to get
@@ -20874,7 +20874,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_GET_LOCAL_DOF_DP(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,DOF_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to get \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: DOF_NUMBER !<The dof number to get
@@ -20957,7 +20957,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_GET_LOCAL_DOF_L(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,DOF_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to get \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: DOF_NUMBER !<The dof number to get
@@ -21041,7 +21041,7 @@ CONTAINS
     & USER_NODE_NUMBER,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the value for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the value for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to get the value for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: VERSION_NUMBER !<The node derivative version number to add
@@ -21229,7 +21229,7 @@ CONTAINS
     & USER_NODE_NUMBER,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the value for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the value for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to get the value for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: VERSION_NUMBER !<The node derivative version number to add
@@ -21417,7 +21417,7 @@ CONTAINS
     & USER_NODE_NUMBER,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the value for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the value for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to get the value for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: VERSION_NUMBER !<The node derivative version number to add
@@ -21605,7 +21605,7 @@ CONTAINS
     & USER_NODE_NUMBER,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the value for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the value for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to get the value for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: VERSION_NUMBER !<The node derivative version number to add
@@ -21796,7 +21796,7 @@ CONTAINS
    & componentNumber,VALUE,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to get the value for
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to get the value for
     INTEGER(INTG), INTENT(IN) :: variableType !<The field variable type to get the value for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: fieldSetType !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: versionNumber !<The node derivative version number to get the value for
@@ -21986,7 +21986,7 @@ CONTAINS
    & componentNumber,VALUE,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to get the value for
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to get the value for
     INTEGER(INTG), INTENT(IN) :: variableType !<The field variable type to get the value for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: fieldSetType !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: versionNumber !<The node derivative version number to get the value for
@@ -22176,7 +22176,7 @@ CONTAINS
    & componentNumber,VALUE,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to get the value for
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to get the value for
     INTEGER(INTG), INTENT(IN) :: variableType !<The field variable type to get the value for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: fieldSetType !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: versionNumber !<The node derivative version number to get the value for
@@ -22366,7 +22366,7 @@ CONTAINS
    & componentNumber,VALUE,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to get the value for
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to get the value for
     INTEGER(INTG), INTENT(IN) :: variableType !<The field variable type to get the value for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: fieldSetType !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: versionNumber !<The node derivative version number to get the value for
@@ -22557,7 +22557,7 @@ CONTAINS
    & componentNumber,VALUE,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to get the value for
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to get the value for
     INTEGER(INTG), INTENT(IN) :: variableType !<The field variable type to get the value for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: fieldSetType !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: localElementNumber !<The local element number to get the value for
@@ -22715,7 +22715,7 @@ CONTAINS
    & componentNumber,VALUE,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to get the value for
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to get the value for
     INTEGER(INTG), INTENT(IN) :: variableType !<The field variable type to get the value for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: fieldSetType !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: localElementNumber !<The local element number to get the value for
@@ -22873,7 +22873,7 @@ CONTAINS
    & componentNumber,VALUE,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to get the value for
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to get the value for
     INTEGER(INTG), INTENT(IN) :: variableType !<The field variable type to get the value for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: fieldSetType !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: localElementNumber !<The local element number to get the value for
@@ -23031,7 +23031,7 @@ CONTAINS
    & componentNumber,VALUE,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to get the value for
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to get the value for
     INTEGER(INTG), INTENT(IN) :: variableType !<The field variable type to get the value for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: fieldSetType !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: localElementNumber !<The local element number to get the value for
@@ -23188,7 +23188,7 @@ CONTAINS
     & componentNumber,value,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to get the value for
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to get the value for
     INTEGER(INTG), INTENT(IN) :: variableType !<The field variable type to get the value for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: fieldSetType !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: gaussPointNumber !<The gauss point number to get the value for
@@ -23346,7 +23346,7 @@ CONTAINS
     & componentNumber,value,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to get the value for
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to get the value for
     INTEGER(INTG), INTENT(IN) :: variableType !<The field variable type to get the value for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: fieldSetType !<The field parameter set identifier \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: gaussPointNumber !<The gauss point number to get the value for
@@ -23508,7 +23508,7 @@ CONTAINS
   & componentNumber,value,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to update
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to update
     INTEGER(INTG), INTENT(IN) :: variableType !<The field variable type to update \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: fieldSetType !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: userElementNumber !<The element number the data point is projected on
@@ -23713,7 +23713,7 @@ CONTAINS
 
    !Argument variables
     INTEGER(INTG), INTENT(IN) :: ID !<The ID of the output stream
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to output the parameter set for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to output the parameter set for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to output the parameter set for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier to output
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
@@ -23779,7 +23779,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_UPDATE_CONSTANT_INTG(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
     
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to update
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to update
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to update \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The field variable component number to update
@@ -23912,7 +23912,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_UPDATE_CONSTANT_SP(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
     
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to update
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to update
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to update \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The field variable component number to update
@@ -24046,7 +24046,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_UPDATE_CONSTANT_DP(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
     
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to update
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to update
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to update \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The field variable component number to update
@@ -24179,7 +24179,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_UPDATE_CONSTANT_L(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
     
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to update
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to update
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to update \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The field variable component number to update
@@ -24313,7 +24313,7 @@ CONTAINS
       & err,error,*)
     
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to Update the value for
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to Update the value for
     INTEGER(INTG), INTENT(IN) :: variableType !<The field variable type to Update the value for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: fieldSetType !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: userDataPointNumber !<The data point number to Update the value for
@@ -24465,7 +24465,7 @@ CONTAINS
       & err,error,*)
     
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to Update the value for
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to Update the value for
     INTEGER(INTG), INTENT(IN) :: variableType !<The field variable type to Update the value for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: fieldSetType !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: userDataPointNumber !<The data point number to Update the value for
@@ -24617,7 +24617,7 @@ CONTAINS
       & err,error,*)
     
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to Update the value for
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to Update the value for
     INTEGER(INTG), INTENT(IN) :: variableType !<The field variable type to Update the value for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: fieldSetType !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: userDataPointNumber !<The data point number to Update the value for
@@ -24769,7 +24769,7 @@ CONTAINS
       & err,error,*)
     
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to Update the value for
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to Update the value for
     INTEGER(INTG), INTENT(IN) :: variableType !<The field variable type to Update the value for \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: fieldSetType !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: userDataPointNumber !<The data point number to Update the value for
@@ -24920,7 +24920,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_UPDATE_LOCAL_DOF_INTG(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,DOF_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to update
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to update
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to update \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: DOF_NUMBER !<The dof number to update
@@ -25004,7 +25004,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_UPDATE_LOCAL_DOF_SP(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,DOF_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to update
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to update
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to update \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: DOF_NUMBER !<The dof number to update
@@ -25088,7 +25088,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_UPDATE_LOCAL_DOF_DP(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,DOF_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to update
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to update
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to update \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: DOF_NUMBER !<The dof number to update
@@ -25172,7 +25172,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_UPDATE_LOCAL_DOF_L(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,DOF_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to update
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to update
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to update \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: DOF_NUMBER !<The dof number to update
@@ -25256,7 +25256,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_UPDATE_LOCAL_DOFS_DP(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,VALUES,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to update
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to update
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to update \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier
     REAL(DP), INTENT(IN) :: VALUES(:) !<The values to update to
@@ -25343,7 +25343,7 @@ CONTAINS
     & VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to update
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to update
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to update \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: USER_ELEMENT_NUMBER !<The element number to update
@@ -25498,7 +25498,7 @@ CONTAINS
     & VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to update
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to update
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to update \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: USER_ELEMENT_NUMBER !<The element number to update
@@ -25652,7 +25652,7 @@ CONTAINS
     & VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to update
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to update
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to update \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: USER_ELEMENT_NUMBER !<The element number to update
@@ -25806,7 +25806,7 @@ CONTAINS
     & VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to update
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to update
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to update \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: USER_ELEMENT_NUMBER !<The element number to update
@@ -25960,7 +25960,7 @@ CONTAINS
     & COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to update
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to update
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to update \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: LOCAL_ELEMENT_NUMBER !<The local element number to update
@@ -26100,7 +26100,7 @@ CONTAINS
     & VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to update
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to update
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to update \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: LOCAL_ELEMENT_NUMBER !<The local element number to update
@@ -26238,7 +26238,7 @@ CONTAINS
     & VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to update
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to update
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to update \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: LOCAL_ELEMENT_NUMBER !<The local element number to update
@@ -26376,7 +26376,7 @@ CONTAINS
     & VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to update
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to update
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to update \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: LOCAL_ELEMENT_NUMBER !<The local element number to update
@@ -26513,7 +26513,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_UPDATE_FINISH(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,ERR,ERROR,*)
 
      !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to finish the update for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to finish the update for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to update \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier to finish the update for \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
@@ -26584,7 +26584,7 @@ CONTAINS
     & USER_NODE_NUMBER,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to update
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to update
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to update \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier to finish the update for \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: VERSION_NUMBER !<The node derivative version number to add
@@ -26778,7 +26778,7 @@ CONTAINS
     & USER_NODE_NUMBER,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to update
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to update
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to update \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier to finish the update for \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: VERSION_NUMBER !<The node derivative version number to add
@@ -26972,7 +26972,7 @@ CONTAINS
     & USER_NODE_NUMBER,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to update
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to update
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to update \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier to finish the update for \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: VERSION_NUMBER !<The node derivative version number to add
@@ -27166,7 +27166,7 @@ CONTAINS
     & USER_NODE_NUMBER,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to update
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to update
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to update \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier to finish the update for \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: VERSION_NUMBER !<The node derivative version number to add
@@ -27360,7 +27360,7 @@ CONTAINS
     & LOCAL_NODE_NUMBER,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to update
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to update
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to update \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier to finish the update for \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: VERSION_NUMBER !<The node derivative version number to add
@@ -27531,7 +27531,7 @@ CONTAINS
     & LOCAL_NODE_NUMBER,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to update
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to update
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to update \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier to finish the update for \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: VERSION_NUMBER !<The node derivative version number to add
@@ -27702,7 +27702,7 @@ CONTAINS
     & LOCAL_NODE_NUMBER,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to update
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to update
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to update \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier to finish the update for \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: VERSION_NUMBER !<The node derivative version number to add
@@ -27873,7 +27873,7 @@ CONTAINS
     & LOCAL_NODE_NUMBER,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to update
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to update
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to update \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier to finish the update for \see FIELD_ROUTINES_ParameterSetTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: VERSION_NUMBER !<The node derivative version number to add
@@ -28046,7 +28046,7 @@ CONTAINS
     & componentNumber,value,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to update
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to update
     INTEGER(INTG), INTENT(IN) :: variableType!<The field variable type to update \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: fieldSetType !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: gaussPointNumber !<The gauss point number to update
@@ -28212,7 +28212,7 @@ CONTAINS
     & componentNumber,value,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to update
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to update
     INTEGER(INTG), INTENT(IN) :: variableType!<The field variable type to update \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: fieldSetType !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: gaussPointNumber !<The gauss point number to update
@@ -28378,7 +28378,7 @@ CONTAINS
     & componentNumber,value,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to update
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to update
     INTEGER(INTG), INTENT(IN) :: variableType!<The field variable type to update \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: fieldSetType !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: gaussPointNumber !<The gauss point number to update
@@ -28544,7 +28544,7 @@ CONTAINS
     & componentNumber,value,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to update
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to update
     INTEGER(INTG), INTENT(IN) :: variableType!<The field variable type to update \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: fieldSetType !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: gaussPointNumber !<The gauss point number to update
@@ -28708,7 +28708,7 @@ CONTAINS
     & componentNumber,value,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to update
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to update
     INTEGER(INTG), INTENT(IN) :: variableType!<The field variable type to update \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: fieldSetType !<The field parameter set identifier
     INTEGER(INTG), INTENT(IN) :: gaussPointNumber !<The gauss point number to update
@@ -28869,7 +28869,7 @@ CONTAINS
     & USER_ELEMENT_NUMBER,XI,VALUES,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to interpolate.
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to interpolate.
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to interpolate. \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier.
     INTEGER(INTG), INTENT(IN) :: DERIVATIVE_NUMBER !<The derivative number of the field to interpolate.
@@ -28988,7 +28988,7 @@ CONTAINS
     & USER_ELEMENT_NUMBER,XI,VALUES,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to interpolate.
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to interpolate.
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to interpolate. \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier.
     INTEGER(INTG), INTENT(IN) :: DERIVATIVE_NUMBER !<The derivative number of the field to interpolate.
@@ -29115,7 +29115,7 @@ CONTAINS
     & USER_ELEMENT_NUMBER,SCHEME,GAUSS_POINT,VALUES,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to interpolate.
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to interpolate.
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to interpolate. \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier.
     INTEGER(INTG), INTENT(IN) :: DERIVATIVE_NUMBER !<The derivative number of the field to interpolate.
@@ -29238,7 +29238,7 @@ CONTAINS
     & USER_ELEMENT_NUMBER,SCHEME,GAUSS_POINTS,VALUES,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to interpolate.
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to interpolate.
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to interpolate. \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier.
     INTEGER(INTG), INTENT(IN) :: DERIVATIVE_NUMBER !<The derivative number of the field to interpolate.
@@ -29396,7 +29396,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_UPDATE_START(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to start the update for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to start the update for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to update \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier to update
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
@@ -29456,7 +29456,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SET_VECTOR_GET(FIELD,VARIABLE_TYPE,FIELD_SET_TYPE,DISTRIBUTED_VECTOR,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the parameter set vector from
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the parameter set vector from
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to update \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     INTEGER(INTG), INTENT(IN) :: FIELD_SET_TYPE !<The field parameter set identifier
     TYPE(DISTRIBUTED_VECTOR_TYPE), POINTER :: DISTRIBUTED_VECTOR !<On return, a pointer to the field parameter set distributed vector. Must not be associated on entry
@@ -29561,7 +29561,7 @@ CONTAINS
   SUBROUTINE FIELD_PARAMETER_SETS_INITIALISE(FIELD,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to initialise the variable parameter sets for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to initialise the variable parameter sets for
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR
     !Local Variables
@@ -29605,7 +29605,7 @@ CONTAINS
   SUBROUTINE FIELD_SCALING_FINALISE(FIELD,SCALING_INDEX,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to finalise the scalings for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to finalise the scalings for
     INTEGER(INTG), INTENT(IN) :: SCALING_INDEX !<The scaling index to finalise
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -29645,7 +29645,7 @@ CONTAINS
   SUBROUTINE FIELD_SCALING_INITIALISE(FIELD,SCALING_INDEX,MESH_COMPONENT_NUMBER,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to initialise the scaling for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to initialise the scaling for
     INTEGER(INTG), INTENT(IN) :: SCALING_INDEX !<The scaling index to initialise
     INTEGER(INTG), INTENT(IN) :: MESH_COMPONENT_NUMBER !<The mesh component number to initialise for the scaling
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
@@ -29721,7 +29721,7 @@ CONTAINS
   SUBROUTINE FIELD_SCALINGS_CALCULATE(FIELD,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to calculate the scalings for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to calculate the scalings for
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
@@ -29734,7 +29734,7 @@ CONTAINS
     TYPE(DOMAIN_TYPE), POINTER :: DOMAIN
     TYPE(DOMAIN_LINES_TYPE), POINTER :: DOMAIN_LINES
     TYPE(DOMAIN_NODES_TYPE), POINTER :: DOMAIN_NODES
-    TYPE(FIELD_TYPE), POINTER :: GEOMETRIC_FIELD
+    TYPE(FieldType), POINTER :: GEOMETRIC_FIELD
     TYPE(FIELD_SCALING_TYPE), POINTER :: FIELD_SCALING
     TYPE(FIELD_SCALINGS_TYPE), POINTER :: FIELD_SCALINGS
     TYPE(VARYING_STRING) :: LOCAL_ERROR
@@ -29998,7 +29998,7 @@ CONTAINS
   SUBROUTINE FIELD_SCALINGS_FINALISE(FIELD,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to finalise the scalings for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to finalise the scalings for
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
@@ -30029,7 +30029,7 @@ CONTAINS
   SUBROUTINE FIELD_SCALINGS_INITIALISE(FIELD,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to initialise the scalings for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to initialise the scalings for
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
@@ -30099,7 +30099,7 @@ CONTAINS
   SUBROUTINE FIELD_SCALING_TYPE_CHECK(FIELD,SCALING_TYPE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to check the scaling type for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to check the scaling type for
     INTEGER(INTG), INTENT(IN) :: SCALING_TYPE !<The scaling type for the specified field to check \see FIELD_ROUTINES_ScalingTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -30189,7 +30189,7 @@ CONTAINS
   SUBROUTINE FIELD_SCALING_TYPE_GET(FIELD,SCALING_TYPE,ERR,ERROR,*)
 
     !Argument variables
-     TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the scaling type for
+     TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the scaling type for
     INTEGER(INTG), INTENT(OUT) :: SCALING_TYPE !<On return, the scaling type for the specified field to get \see FIELD_ROUTINES_ScalingTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -30224,7 +30224,7 @@ CONTAINS
   SUBROUTINE FIELD_SCALING_TYPE_SET(FIELD,SCALING_TYPE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set the scaling type for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set the scaling type for
     INTEGER(INTG), INTENT(IN) :: SCALING_TYPE !<The scaling type to set \see FIELD_ROUTINES_ScalingTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -30288,7 +30288,7 @@ CONTAINS
   SUBROUTINE FIELD_SCALING_TYPE_SET_AND_LOCK(FIELD,SCALING_TYPE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set the scaling type for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set the scaling type for
     INTEGER(INTG), INTENT(IN) :: SCALING_TYPE !<The scaling type to set \see FIELD_ROUTINES_ScalingTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -30324,7 +30324,7 @@ CONTAINS
   SUBROUTINE FIELD_TYPE_CHECK(FIELD,TYPE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to check the type for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to check the type for
     INTEGER(INTG), INTENT(IN) :: TYPE !<The field type to check \see FIELD_ROUTINES_FieldTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -30403,7 +30403,7 @@ CONTAINS
   SUBROUTINE FIELD_TYPE_GET(FIELD,TYPE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the type for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the type for
     INTEGER(INTG), INTENT(OUT) :: TYPE !<On return, the field type for the specified field \see FIELD_ROUTINES_FieldTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -30438,7 +30438,7 @@ CONTAINS
   SUBROUTINE FIELD_TYPE_SET(FIELD,TYPE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set the type for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set the type for
     INTEGER(INTG), INTENT(IN) :: TYPE !<The field type to set \see FIELD_ROUTINES_FieldTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -30504,7 +30504,7 @@ CONTAINS
   SUBROUTINE FIELD_TYPE_SET_AND_LOCK(FIELD,TYPE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set the type for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set the type for
     INTEGER(INTG), INTENT(IN) :: TYPE !<The field type to set \see FIELD_ROUTINES_FieldTypes,FIELD_ROUTINES
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -30570,7 +30570,7 @@ CONTAINS
   SUBROUTINE FIELD_VARIABLE_INITIALISE(FIELD,VARIABLE_NUMBER,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to initialise the variable for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to initialise the variable for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_NUMBER !<The variable number of the field to initialise
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -30670,7 +30670,7 @@ CONTAINS
   SUBROUTINE FIELD_VARIABLE_LABEL_GET_C(FIELD,VARIABLE_TYPE,LABEL,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the dimension for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the dimension for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     CHARACTER(LEN=*), INTENT(OUT) :: LABEL !<On return, the field variable label
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
@@ -30727,7 +30727,7 @@ CONTAINS
   SUBROUTINE FIELD_VARIABLE_LABEL_GET_VS(FIELD,VARIABLE_TYPE,LABEL,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the dimension for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the dimension for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     TYPE(VARYING_STRING), INTENT(OUT) :: LABEL !<On return, the field variable label
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
@@ -30777,7 +30777,7 @@ CONTAINS
   SUBROUTINE FIELD_VARIABLE_LABEL_SET_C(FIELD,VARIABLE_TYPE,LABEL,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set/change the dimension for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set/change the dimension for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     CHARACTER(LEN=*), INTENT(IN) :: LABEL !<The label to set/change
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
@@ -30839,7 +30839,7 @@ CONTAINS
   SUBROUTINE FIELD_VARIABLE_LABEL_SET_VS(FIELD,VARIABLE_TYPE,LABEL,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set/change the dimension for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set/change the dimension for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     TYPE(VARYING_STRING), INTENT(IN) :: LABEL !<The label to set/change
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
@@ -30900,7 +30900,7 @@ CONTAINS
   SUBROUTINE FIELD_VARIABLE_LABEL_SET_AND_LOCK_C(FIELD,VARIABLE_TYPE,LABEL,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set/change the label for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set/change the label for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     CHARACTER(LEN=*), INTENT(IN) :: LABEL !<The label to set/change 
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
@@ -30937,7 +30937,7 @@ CONTAINS
   SUBROUTINE FIELD_VARIABLE_LABEL_SET_AND_LOCK_VS(FIELD,VARIABLE_TYPE,LABEL,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set/change the label for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set/change the label for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES 
     TYPE(VARYING_STRING), INTENT(IN) :: LABEL !<The label to set/change 
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
@@ -30974,7 +30974,7 @@ CONTAINS
   SUBROUTINE FIELD_VARIABLE_TYPES_CHECK(FIELD,VARIABLE_TYPES,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to check the variable types for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to check the variable types for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPES(:) !<VARIABLE_TYPES(variable_idx). The field variable type for the variable_idx'th field variable to check
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -31035,7 +31035,7 @@ CONTAINS
   SUBROUTINE FIELD_VARIABLE_TYPE_CHECK(FIELD,VARIABLE_TYPE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to check the variable type for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to check the variable type for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The field variable type to check for
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -31082,7 +31082,7 @@ CONTAINS
   SUBROUTINE FIELD_VARIABLE_TYPES_GET(FIELD,VARIABLE_TYPES,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to get the variable types for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to get the variable types for
     INTEGER(INTG), INTENT(OUT) :: VARIABLE_TYPES(:) !<VARIABLE_TYPES(variable_idx). On return, the field variable type variable_idx'th field variable
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -31128,7 +31128,7 @@ CONTAINS
   SUBROUTINE FIELD_VARIABLE_TYPES_SET(FIELD,VARIABLE_TYPES,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set the type for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set the type for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPES(:) !<VARIABLE_TYPES(variable_idx). The field variable type for the variable_idx'th field variable to set 
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -31288,7 +31288,7 @@ CONTAINS
   SUBROUTINE FIELD_VARIABLE_TYPES_SET_AND_LOCK(FIELD,VARIABLE_TYPES,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set the type for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set the type for
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPES(:) !<VARIABLE_TYPES(variable_idx). The field variable type for the variable_idx'th field variable to set 
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -31324,7 +31324,7 @@ CONTAINS
   SUBROUTINE FieldVariablesCheck(field,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to check the variables for
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to check the variables for
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
@@ -31382,7 +31382,7 @@ CONTAINS
   SUBROUTINE FIELD_VARIABLES_FINALISE(FIELD,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to finalise the variables for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to finalise the variables for
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
@@ -31416,7 +31416,7 @@ CONTAINS
   SUBROUTINE FIELD_VARIABLES_INITIALISE(FIELD,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to initialise the variables for
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to initialise the variables for
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
@@ -31459,7 +31459,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(FIELD_PARAMETER_SET_TYPE), POINTER :: fromParameterSet,toParameterSet
     TYPE(VARYING_STRING) :: localError
 
@@ -31626,7 +31626,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD
+    TYPE(FieldType), POINTER :: FIELD
 
     ENTERS("FIELDS_FINALISE",ERR,ERROR,*999)
 
@@ -31751,8 +31751,8 @@ CONTAINS
     TYPE(MESH_EMBEDDING_TYPE), INTENT(INOUT) :: MESH_EMBEDDING !<The mesh embedding object
     INTEGER(INTG), INTENT(OUT) :: ERR              !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR     !<The error string
-    TYPE(FIELD_TYPE), POINTER :: PARENT_FIELD      !<Field for the parent nodes
-    TYPE(FIELD_TYPE), POINTER :: CHILD_FIELD       !<Field for the child nodes
+    TYPE(FieldType), POINTER :: PARENT_FIELD      !<Field for the parent nodes
+    TYPE(FieldType), POINTER :: CHILD_FIELD       !<Field for the child nodes
     INTEGER(INTG), INTENT(IN) :: PARENT_COMPONENT  !<Component of the parent field, must be nodally based
     INTEGER(INTG), INTENT(IN) ::  CHILD_COMPONENT  !<Component of the child  field, must be nodally based
 
@@ -31810,8 +31810,8 @@ CONTAINS
     TYPE(MESH_EMBEDDING_TYPE), INTENT(INOUT) :: MESH_EMBEDDING !<The mesh embedding object
     INTEGER(INTG), INTENT(OUT) :: ERR              !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR     !<The error string
-    TYPE(FIELD_TYPE), POINTER :: PARENT_FIELD      !<Field for the parent nodes
-    TYPE(FIELD_TYPE), POINTER :: CHILD_FIELD       !<Field for the child nodes
+    TYPE(FieldType), POINTER :: PARENT_FIELD      !<Field for the parent nodes
+    TYPE(FieldType), POINTER :: CHILD_FIELD       !<Field for the child nodes
     INTEGER(INTG), INTENT(IN) :: PARENT_COMPONENT  !<Component of the parent field, must be nodally based
     INTEGER(INTG), INTENT(IN) ::  CHILD_COMPONENT  !<Component of the child  field, must be nodally based
 

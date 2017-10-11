@@ -605,7 +605,7 @@ CONTAINS
     INTEGER(INTG) :: loopIdx,matrixIdx,solverIdx,variableIdx,variableLinearity,variableTimeDependence
     TYPE(CONTROL_LOOP_TYPE), POINTER :: controlLoop2
     TYPE(DYNAMIC_SOLVER_TYPE), POINTER :: dynamicSolver
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(FieldVariableType), POINTER :: fieldVariable
     TYPE(SOLVER_TYPE), POINTER :: solver
     TYPE(SOLVER_EQUATIONS_TYPE), POINTER :: solverEquations

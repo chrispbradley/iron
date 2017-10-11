@@ -213,14 +213,14 @@ MODULE FIELD_IO_ROUTINES
       INTEGER(C_INT) :: FieldExport_CoordinateVariable
     END FUNCTION FieldExport_CoordinateVariable
 
-    FUNCTION FieldExport_Variable( handle, variableName, variableNumber, fieldType, variableType, componentCount ) &
+    FUNCTION FieldExport_Variable( handle, variableName, variableNumber, field_Type, variableType, componentCount ) &
       & BIND(C,NAME="FieldExport_Variable")
       USE TYPES
       USE ISO_C_BINDING
       INTEGER(C_INT), VALUE :: handle
       CHARACTER(LEN=1, KIND=C_CHAR) :: variableName(*)
       INTEGER(C_INT), VALUE :: variableNumber
-      INTEGER(C_INT), VALUE :: fieldType
+      INTEGER(C_INT), VALUE :: field_Type
       INTEGER(C_INT), VALUE :: variableType
       INTEGER(C_INT), VALUE :: componentCount
       INTEGER(C_INT) :: FieldExport_Variable
@@ -351,13 +351,13 @@ MODULE FIELD_IO_ROUTINES
       INTEGER(C_INT) :: FieldExport_CoordinateDerivativeIndices
     END FUNCTION FieldExport_CoordinateDerivativeIndices
 
-    FUNCTION FieldExport_DerivativeIndices( handle, componentNumber, fieldType, variableType, numberOfDerivatives, &
+    FUNCTION FieldExport_DerivativeIndices( handle, componentNumber, field_Type, variableType, numberOfDerivatives, &
       & derivatives, valueIndex ) BIND(C,NAME="FieldExport_DerivativeIndices")
       USE TYPES
       USE ISO_C_BINDING
       INTEGER(C_INT), VALUE :: handle
       INTEGER(C_INT), VALUE :: componentNumber
-      INTEGER(C_INT), VALUE :: fieldType
+      INTEGER(C_INT), VALUE :: field_Type
       INTEGER(C_INT), VALUE :: variableType
       INTEGER(C_INT), VALUE :: numberOfDerivatives
       TYPE(C_PTR), VALUE :: derivatives
@@ -1024,7 +1024,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<field
+    TYPE(FieldType), POINTER :: FIELD !<field
     TYPE(DOMAIN_NODES_TYPE), POINTER :: DOMAIN_NODES
     TYPE(VARYING_STRING), ALLOCATABLE :: LIST_STR(:)
     TYPE(VARYING_STRING) :: FILE_NAME, FILE_STATUS, LINE, LINE1
@@ -1033,7 +1033,7 @@ CONTAINS
     INTEGER(INTG), ALLOCATABLE :: tmp_pointer(:), LIST_DEV(:), LIST_DEV_POS(:)
     INTEGER(INTG) :: FILE_ID
     !INTEGER(INTG) :: NUMBER_FIELDS
-    INTEGER(INTG) :: NODAL_USER_NUMBER, NODAL_LOCAL_NUMBER, FIELDTYPE, NUMBER_NODAL_VALUE_LINES, NUMBER_OF_LINES, &
+    INTEGER(INTG) :: NODAL_USER_NUMBER, NODAL_LOCAL_NUMBER, field_type, NUMBER_NODAL_VALUE_LINES, NUMBER_OF_LINES, &
       & NUMBER_OF_COMPONENTS !, LABEL_TYPE, FOCUS
     INTEGER(INTG) :: MPI_IERROR
     INTEGER(INTG) :: idx_comp, idx_comp1, pos, idx_field, idx_exnode, idx_nodal_line, idx_node
@@ -1147,12 +1147,12 @@ CONTAINS
       CALL FIELD_SCALING_TYPE_SET(FIELD, FIELD_SCALING_TYPE, ERR, ERROR, *999)
 
       IF(MASTER_COMPUTATIONAL_NUMBER==myComputationalNodeNumber) THEN
-        CALL FIELD_IO_FIELD_INFO(LIST_STR(idx_field), FIELD_IO_FIELD_LABEL, FIELDTYPE, ERR, ERROR, *999)
+        CALL FIELD_IO_FIELD_INFO(LIST_STR(idx_field), FIELD_IO_FIELD_LABEL, field_type, ERR, ERROR, *999)
       ENDIF
-      CALL MPI_BCAST(FIELDTYPE,1,MPI_LOGICAL,MASTER_COMPUTATIONAL_NUMBER,computationalEnvironment%mpiCommunicator,MPI_IERROR)
+      CALL MPI_BCAST(field_type,1,MPI_LOGICAL,MASTER_COMPUTATIONAL_NUMBER,computationalEnvironment%mpiCommunicator,MPI_IERROR)
       CALL MPI_ERROR_CHECK("MPI_BCAST",MPI_IERROR,ERR,ERROR,*999)
       !Set FIELD TYPE
-      CALL FIELD_TYPE_SET(FIELD, FIELDTYPE, ERR, ERROR, *999)
+      CALL FIELD_TYPE_SET(FIELD, field_type, ERR, ERROR, *999)
       !Finish creating the field
       CALL FIELD_CREATE_FINISH(FIELD,ERR,ERROR,*999)
     ENDDO
@@ -4104,7 +4104,7 @@ CONTAINS
     !Local Variables
     LOGICAL :: ININTERFACE,INREGION
     TYPE(VARYING_STRING) :: LOCAL_ERROR
-    TYPE(FIELD_TYPE), POINTER :: FIELD
+    TYPE(FieldType), POINTER :: FIELD
     TYPE(DOMAIN_MAPPING_TYPE), POINTER:: DOMAIN_ELEMENTS_MAPPING !nodes in local mapping--it is different as exnode
     TYPE(FieldVariableType), POINTER:: FIELD_VARIABLE !field variable
     INTEGER(INTG) :: num_field, var_idx, component_idx, np, nn !temporary variable
@@ -4691,7 +4691,7 @@ CONTAINS
   !>Get the field information
   FUNCTION FIELD_IO_GET_FIELD_INFO_LABEL(FIELD, ERR, ERROR)
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD
+    TYPE(FieldType), POINTER :: FIELD
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
@@ -4738,7 +4738,7 @@ CONTAINS
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
     TYPE(COORDINATE_SYSTEM_TYPE), POINTER :: COORDINATE_SYSTEM
-    TYPE(FIELD_TYPE), POINTER :: FIELD
+    TYPE(FieldType), POINTER :: FIELD
     TYPE(FieldVariableType), POINTER :: VARIABLE
     TYPE(VARYING_STRING) :: FIELD_IO_GET_VARIABLE_INFO_LABEL
 
@@ -4875,7 +4875,7 @@ CONTAINS
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
     TYPE(COORDINATE_SYSTEM_TYPE), POINTER :: COORDINATE_SYSTEM
-    TYPE(FIELD_TYPE), POINTER :: FIELD
+    TYPE(FieldType), POINTER :: FIELD
     TYPE(FieldVariableType), POINTER :: VARIABLE
     TYPE(VARYING_STRING) :: FIELD_IO_GET_COMPONENT_INFO_LABEL
 
@@ -4942,7 +4942,7 @@ CONTAINS
   !  INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
   !  TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
   !  !Local Variables
-  !  TYPE(FIELD_TYPE), POINTER :: field_ptr
+  !  TYPE(FieldType), POINTER :: field_ptr
   !  TYPE(FieldVariableType), POINTER :: variable_ptr
   !  TYPE(DOMAIN_MAPPING_TYPE), POINTER :: DOMAIN_MAPPING_NODES !The domain mapping to calculate nodal mappings
   !  TYPE(DOMAIN_NODES_TYPE), POINTER :: DOMAIN_NODES ! domain nodes
@@ -5152,7 +5152,7 @@ CONTAINS
     CHARACTER(LEN=MAXSTRLEN) :: fvar_name
     CHARACTER(LEN=1, KIND=C_CHAR) :: cvar_name(MAXSTRLEN+1)
     TYPE(COORDINATE_SYSTEM_TYPE), POINTER :: COORDINATE_SYSTEM
-    TYPE(FIELD_TYPE), POINTER :: field_ptr
+    TYPE(FieldType), POINTER :: field_ptr
     TYPE(FieldVariableType), POINTER :: variable_ptr
     TYPE(DOMAIN_NODES_TYPE), POINTER :: DOMAIN_NODES ! domain nodes
     TYPE(FIELD_VARIABLE_COMPONENT_TYPE), POINTER :: component, fieldComponent
@@ -5952,7 +5952,7 @@ CONTAINS
 
     !Local Variables
     LOGICAL :: ININTERFACE,INREGION
-    TYPE(FIELD_TYPE), POINTER :: FIELD
+    TYPE(FieldType), POINTER :: FIELD
     TYPE(DOMAIN_NODES_TYPE), POINTER:: DOMAIN_NODES !nodes in local domain
     TYPE(FieldVariableType), POINTER:: FIELD_VARIABLE !field variable
     INTEGER(INTG) :: field_idx, var_idx, component_idx, deriv_idx, np, nn, num_field !temporary variable

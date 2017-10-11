@@ -678,7 +678,7 @@ CONTAINS
     REAL(DP) :: startTime,currentTime,stopTime,timeIncrement,VALUE
     TYPE(DOMAIN_TYPE), POINTER :: domain
     TYPE(EQUATIONS_SET_TYPE), POINTER :: solidEquationsSet,fluidEquationsSet,equationsSet
-    TYPE(FIELD_TYPE), POINTER :: solidGeometricField,interfaceGeometricField,solidDependentField
+    TYPE(FieldType), POINTER :: solidGeometricField,interfaceGeometricField,solidDependentField
     TYPE(FieldVariableType), POINTER :: geometricVariable
     TYPE(INTERFACE_CONDITION_TYPE), POINTER :: interfaceCondition
     TYPE(INTERFACE_TYPE), POINTER :: fsInterface

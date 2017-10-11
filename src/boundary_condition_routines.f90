@@ -1018,7 +1018,7 @@ CONTAINS
     
     !Argument variables
     TYPE(BOUNDARY_CONDITIONS_TYPE), POINTER :: BOUNDARY_CONDITIONS !<A pointer to the boundary conditions to set the boundary condition for
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<The dependent field to set the boundary condition on.
+    TYPE(FieldType), POINTER :: FIELD !<The dependent field to set the boundary condition on.
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The variable type to set the boundary condition at
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The component number to set the boundary condition at
     INTEGER(INTG), INTENT(IN) :: CONDITION !<The boundary condition type to set \see BOUNDARY_CONDITIONS_ROUTINES_BoundaryConditions,BOUNDARY_CONDITIONS_ROUTINES
@@ -1079,7 +1079,7 @@ CONTAINS
     
     !Argument variables
     TYPE(BOUNDARY_CONDITIONS_TYPE), POINTER :: BOUNDARY_CONDITIONS !<A pointer to the boundary conditions to set the boundary condition for
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<The dependent field to set the boundary condition on.
+    TYPE(FieldType), POINTER :: FIELD !<The dependent field to set the boundary condition on.
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The variable type to set the boundary condition at
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The component number to set the boundary condition at
     INTEGER(INTG), INTENT(IN) :: CONDITION !<The boundary condition type to set \see BOUNDARY_CONDITIONS_ROUTINES_BoundaryConditions,BOUNDARY_CONDITIONS_ROUTINES
@@ -1137,7 +1137,7 @@ CONTAINS
     
     !Argument variables
     TYPE(BOUNDARY_CONDITIONS_TYPE), POINTER :: BOUNDARY_CONDITIONS !<A pointer to the boundary conditions to set the boundary condition for
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<The dependent field to set the boundary condition on.
+    TYPE(FieldType), POINTER :: FIELD !<The dependent field to set the boundary condition on.
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The variable type to set the boundary condition at
     INTEGER(INTG), INTENT(IN) :: DOF_INDEX !<The local dof index to set the boundary condition at
     INTEGER(INTG), INTENT(IN) :: CONDITION !<The boundary condition type to set \see BOUNDARY_CONDITIONS_ROUTINES_BoundaryConditions,BOUNDARY_CONDITIONS_ROUTINES
@@ -1166,7 +1166,7 @@ CONTAINS
 
     !Argument variables
     TYPE(BOUNDARY_CONDITIONS_TYPE), POINTER :: BOUNDARY_CONDITIONS !<A pointer to the boundary conditions to set the boundary condition for
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<The dependent field to set the boundary condition on.
+    TYPE(FieldType), POINTER :: FIELD !<The dependent field to set the boundary condition on.
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The variable type to set the boundary condition at
     INTEGER(INTG), INTENT(IN) :: DOF_INDICES(:) !<DOF_INDICES(:). The local dof index for the i'th dof to set the boundary condition at
     INTEGER(INTG), INTENT(IN) :: CONDITIONS(:) !<CONDITIONS(:). The boundary condition type to set for the i'th dof \see BOUNDARY_CONDITIONS_ROUTINES_BoundaryConditions,BOUNDARY_CONDITIONS_ROUTINES
@@ -1331,7 +1331,7 @@ CONTAINS
     
     !Argument variables
     TYPE(BOUNDARY_CONDITIONS_TYPE), POINTER :: BOUNDARY_CONDITIONS !<A pointer to the boundary conditions to set the boundary condition for
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<The dependent field to set the boundary condition on.
+    TYPE(FieldType), POINTER :: FIELD !<The dependent field to set the boundary condition on.
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The variable type to set the boundary condition at
     INTEGER(INTG), INTENT(IN) :: DOF_INDEX !<The local dof index to set the boundary condition at
     INTEGER(INTG), INTENT(IN) :: CONDITION !<The boundary condition type to set \see BOUNDARY_CONDITIONS_ROUTINES_BoundaryConditions,BOUNDARY_CONDITIONS_ROUTINES
@@ -1359,7 +1359,7 @@ CONTAINS
     
     !Argument variables
     TYPE(BOUNDARY_CONDITIONS_TYPE), POINTER :: BOUNDARY_CONDITIONS !<A pointer to the boundary conditions to set the boundary condition for
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<The dependent field to set the boundary condition on.
+    TYPE(FieldType), POINTER :: FIELD !<The dependent field to set the boundary condition on.
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The variable type to set the boundary condition at
     INTEGER(INTG), INTENT(IN) :: DOF_INDICES(:) !<DOF_INDICES(:). The local dof index for the i'th dof to set the boundary condition at
     INTEGER(INTG), INTENT(IN) :: CONDITIONS(:) !<CONDITIONS(:). The boundary condition type to set for the i'th dof \see BOUNDARY_CONDITIONS_ROUTINES_BoundaryConditions,BOUNDARY_CONDITIONS_ROUTINES
@@ -1657,7 +1657,7 @@ CONTAINS
     
     !Argument variables
     TYPE(BOUNDARY_CONDITIONS_TYPE), POINTER :: BOUNDARY_CONDITIONS !<A pointer to the boundary conditions to set the boundary condition for
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<The dependent field to set the boundary condition on.
+    TYPE(FieldType), POINTER :: FIELD !<The dependent field to set the boundary condition on.
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The variable type to set the boundary condition at
     INTEGER(INTG), INTENT(IN) :: USER_ELEMENT_NUMBER !<The user element number to set the boundary condition at
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The component number to set the boundary condition at
@@ -1721,7 +1721,7 @@ CONTAINS
 
     ! Argument variables
     INTEGER(INTG), INTENT(IN) :: condition !<The boundary condition type being set
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field the boundary condition is set on
+    TYPE(FieldType), POINTER :: field !<A pointer to the field the boundary condition is set on
     INTEGER(INTG), INTENT(IN) :: variableType !<The variable type the boundary condition is set on
     INTEGER(INTG), INTENT(IN) :: componentNumber !<The component number the boundary condition is set on
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
@@ -1950,7 +1950,7 @@ CONTAINS
     
     !Argument variables
     TYPE(BOUNDARY_CONDITIONS_TYPE), POINTER :: BOUNDARY_CONDITIONS !<A pointer to the boundary conditions to set the boundary condition for
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<The dependent field to set the boundary condition on.
+    TYPE(FieldType), POINTER :: FIELD !<The dependent field to set the boundary condition on.
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The variable type to set the boundary condition at
     INTEGER(INTG), INTENT(IN) :: USER_ELEMENT_NUMBER !<The user element number to set the boundary condition at
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<The component number to set the boundary condition at
@@ -2015,7 +2015,7 @@ CONTAINS
 
     !Argument variables
     TYPE(BOUNDARY_CONDITIONS_TYPE), POINTER :: BOUNDARY_CONDITIONS !<A pointer to the boundary conditions to set the boundary condition for
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to set the boundary condition on.
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to set the boundary condition on.
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The variable type to set the boundary condition at
     INTEGER(INTG), INTENT(IN) :: VERSION_NUMBER !<The derivative version to set the boundary condition at
     INTEGER(INTG), INTENT(IN) :: DERIVATIVE_NUMBER !<The derivative to set the boundary condition at
@@ -2572,7 +2572,7 @@ CONTAINS
     REAL(DP) :: integratedValue,phim,phio
     TYPE(BoundaryConditionsNeumannType), POINTER :: neumannConditions
     TYPE(BASIS_TYPE), POINTER :: basis
-    TYPE(FIELD_TYPE), POINTER :: geometricField
+    TYPE(FieldType), POINTER :: geometricField
     TYPE(FieldVariableType), POINTER :: rhsVariable
     TYPE(FIELD_INTERPOLATED_POINT_METRICS_PTR_TYPE), POINTER :: interpolatedPointMetrics(:)
     TYPE(FIELD_INTERPOLATED_POINT_PTR_TYPE), POINTER :: interpolatedPoints(:)
@@ -2938,7 +2938,7 @@ CONTAINS
 
     !Argument variables
     TYPE(BOUNDARY_CONDITIONS_TYPE), POINTER :: BOUNDARY_CONDITIONS !<A pointer to the boundary conditions to set the boundary condition for
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<The dependent field to set the boundary condition on.
+    TYPE(FieldType), POINTER :: FIELD !<The dependent field to set the boundary condition on.
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<The variable type to set the boundary condition at
     INTEGER(INTG), INTENT(IN) :: VERSION_NUMBER !<The derivative version to set the boundary condition at
     INTEGER(INTG), INTENT(IN) :: DERIVATIVE_NUMBER !<The derivative to set the boundary condition at
@@ -3054,7 +3054,7 @@ CONTAINS
 
     !Argument variables
     TYPE(BOUNDARY_CONDITIONS_TYPE), POINTER, INTENT(IN) :: boundaryConditions !<The solver equations boundary conditions to constrain the DOFs for.
-    TYPE(FIELD_TYPE), POINTER, INTENT(IN) :: field !<The equations dependent field containing the field DOFs to be constrained.
+    TYPE(FieldType), POINTER, INTENT(IN) :: field !<The equations dependent field containing the field DOFs to be constrained.
     INTEGER(INTG), INTENT(IN) :: fieldVarType !<The field variable type of the DOFs to be constrained. \see OPENCMISS_FieldVariableTypes
     INTEGER(INTG), INTENT(IN) :: versionNumber !<The derivative version number.
     INTEGER(INTG), INTENT(IN) :: derivativeNumber !<The derivative number.

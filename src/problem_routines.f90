@@ -267,7 +267,7 @@ CONTAINS
     INTEGER(INTG), POINTER :: modelsData(:)
     REAL(DP), POINTER :: intermediateData(:),parameterData(:)
     TYPE(CELLML_MODEL_TYPE), POINTER :: model
-    TYPE(FIELD_TYPE), POINTER :: intermediateField,modelsField,parametersField
+    TYPE(FieldType), POINTER :: intermediateField,modelsField,parametersField
     TYPE(FieldVariableType), POINTER :: modelsVariable
     
     ENTERS("Problem_SolverDAECellMLRHSEvaluate",err,error,*999)
@@ -3366,7 +3366,7 @@ CONTAINS
     TYPE(INTERFACE_TYPE), POINTER :: interface !<A pointer to the interface 
     TYPE(INTERFACE_CONDITION_TYPE), POINTER :: interfaceCondition
     TYPE(InterfacePointsConnectivityType), POINTER :: pointsConnectivity !<A pointer to the interface points connectivity
-    TYPE(FIELD_TYPE), POINTER :: coupledMeshDependentField
+    TYPE(FieldType), POINTER :: coupledMeshDependentField
     TYPE(FIELD_INTERPOLATION_PARAMETERS_PTR_TYPE), POINTER :: interpolationParameters(:)
     TYPE(FIELD_INTERPOLATED_POINT_PTR_TYPE), POINTER :: interpolatedPoints(:)
     TYPE(FIELD_INTERPOLATED_POINT_TYPE), POINTER :: interpolatedPoint

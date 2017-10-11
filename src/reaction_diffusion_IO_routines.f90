@@ -91,7 +91,7 @@ CONTAINS
     !Local Variables
     TYPE(EQUATIONS_SET_TYPE), POINTER :: EQUATIONS_SET
     TYPE(DOMAIN_TYPE), POINTER :: COMPUTATIONAL_DOMAIN
-    TYPE(FIELD_TYPE), POINTER :: SOURCE_FIELD
+    TYPE(FieldType), POINTER :: SOURCE_FIELD
     REAL(DP) :: NodeXValue,NodeYValue,NodeZValue,NodeUValue
     INTEGER(INTG):: myComputationalNodeNumber,NumberOfOutputFields,NumberOfDimensions,NumberOfElements,NumberOfNodes
     INTEGER(INTG):: NumberOfVariableComponents,NumberOfSourceComponents,I,J,K,ValueIndex,NODE_GLOBAL_NUMBER

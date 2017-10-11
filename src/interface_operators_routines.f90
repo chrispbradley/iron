@@ -101,7 +101,7 @@ CONTAINS
     TYPE(BASIS_TYPE), POINTER :: interfaceDependentBasis,coupledMeshBasis,interfaceGeometricBasis, &
       & interfacePenaltyBasis,interfaceConnectivityBasis
     TYPE(QUADRATURE_SCHEME_TYPE), POINTER :: interfaceQuadratureScheme
-    TYPE(FIELD_TYPE), POINTER :: coupledMeshDependentField,interfaceDependentField,interfaceGeometricField, &
+    TYPE(FieldType), POINTER :: coupledMeshDependentField,interfaceDependentField,interfaceGeometricField, &
       & interfacePenaltyField
     TYPE(FieldVariableType), POINTER :: interfaceMatrixVariable,lagrangeVariable
     TYPE(ElementMatrixType), POINTER :: interfaceElementMatrix
@@ -115,7 +115,7 @@ CONTAINS
     TYPE(InterfacePointsConnectivityType), POINTER :: pointsConnectivity !<A pointer to the interface points connectivity
     TYPE(DecompositionElementDataPointsType), POINTER :: decompositionElementData !<A pointer to the decomposition data point topology
     TYPE(BASIS_TYPE), POINTER :: coupledMeshDependentBasis
-    TYPE(FIELD_TYPE), POINTER :: coupledMeshGeometricField
+    TYPE(FieldType), POINTER :: coupledMeshGeometricField
     INTEGER(INTG) :: meshComponentNumber,numberOfCoupledMeshGeoComp,numberOfInterfaceMeshXi,numberOfCoupledMeshXi, &
       & numberOfMatrixCoupledElements
     INTEGER(INTG) :: dataPointIdx,localElementNumber,matrixElementIdx
@@ -528,7 +528,7 @@ CONTAINS
     TYPE(INTERFACE_TYPE), POINTER :: interface !<A pointer to the interface 
     TYPE(InterfacePointsConnectivityType), POINTER :: pointsConnectivity !<A pointer to the interface points connectivity
     TYPE(DecompositionElementDataPointsType), POINTER :: decompositionElementData !<A pointer to the decomposition data point topology
-    TYPE(FIELD_TYPE), POINTER :: coupledMeshDependentField,penaltyField
+    TYPE(FieldType), POINTER :: coupledMeshDependentField,penaltyField
     TYPE(INTERFACE_PENALTY_TYPE), POINTER :: interfacePenalty
     TYPE(FIELD_INTERPOLATED_POINT_PTR_TYPE), POINTER :: interpolatedPoints(:)
     TYPE(FIELD_INTERPOLATED_POINT_TYPE), POINTER :: interpolatedPoint
@@ -872,7 +872,7 @@ CONTAINS
     TYPE(BASIS_TYPE), POINTER :: interfaceDependentBasis,coupledMeshBasis,interfaceGeometricBasis, &
       & interfaceConnectivityBasis
     TYPE(QUADRATURE_SCHEME_TYPE), POINTER :: interfaceQuadratureScheme
-    TYPE(FIELD_TYPE), POINTER :: coupledMeshDependentField,interfaceDependentField,interfaceGeometricField
+    TYPE(FieldType), POINTER :: coupledMeshDependentField,interfaceDependentField,interfaceGeometricField
     TYPE(FieldVariableType), POINTER :: interfaceMatrixVariable,lagrangeVariable
     TYPE(ElementMatrixType), POINTER :: interfaceElementMatrix
     TYPE(INTERFACE_EQUATIONS_DOMAIN_INTERPOLATION_TYPE), POINTER :: interfaceInterpolation

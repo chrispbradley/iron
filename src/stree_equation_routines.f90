@@ -229,7 +229,7 @@ CONTAINS
     TYPE(EquationsVectorType), POINTER :: vectorEquations
     TYPE(EQUATIONS_SET_MATERIALS_TYPE), POINTER :: equationsMaterials
     TYPE(EQUATIONS_SET_EQUATIONS_SET_FIELD_TYPE), POINTER :: equationsEquationsSetField
-    TYPE(FIELD_TYPE), POINTER :: equationsSetField
+    TYPE(FieldType), POINTER :: equationsSetField
     INTEGER(INTG) :: I,geometricScalingType,geometricMeshComponent,geometricComponentNumber
     INTEGER(INTG) :: dependentFieldNumberOfVariables,dependentFieldNumberOfComponents
     INTEGER(INTG) :: materialsFieldNumberOfVariables,materialsFieldNumberOfComponents
@@ -687,7 +687,7 @@ CONTAINS
     TYPE(EquationsMatricesLinearType), POINTER :: linearMatrices
     TYPE(EquationsMatrixType), POINTER :: stiffnessMatrix
     TYPE(EquationsVectorType), POINTER :: vectorEquations
-    TYPE(FIELD_TYPE), POINTER :: materialsField,dependentField
+    TYPE(FieldType), POINTER :: materialsField,dependentField
     TYPE(FieldVariableType), POINTER :: fieldVariable
     TYPE(VARYING_STRING) :: localError
     REAL(DP), POINTER :: dependentParameters(:),materialsParameters(:)
@@ -774,7 +774,7 @@ CONTAINS
     TYPE(DOMAIN_TYPE), POINTER :: domain
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet,navierstokesEquationsSet
     TYPE(EquationsType), POINTER :: equations,navierstokesEquations
-    TYPE(FIELD_TYPE), POINTER :: materialsField,navierstokesDependentField
+    TYPE(FieldType), POINTER :: materialsField,navierstokesDependentField
     TYPE(FieldVariableType), POINTER :: dependentFieldVariable
     TYPE(SOLVER_EQUATIONS_TYPE), POINTER :: solverEquations,navierstokesSolverEquations
     TYPE(SOLVER_MAPPING_TYPE), POINTER :: solverMapping,navierstokesSolverMapping

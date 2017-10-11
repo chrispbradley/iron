@@ -178,7 +178,7 @@ CONTAINS
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
     TYPE(EQUATIONS_SET_SETUP_TYPE) :: EQUATIONS_SET_SETUP_INFO
-    TYPE(FIELD_TYPE), POINTER :: ANALYTIC_FIELD
+    TYPE(FieldType), POINTER :: ANALYTIC_FIELD
 
     ENTERS("EQUATIONS_SET_ANALYTIC_CREATE_FINISH",err,error,*999)
 
@@ -228,13 +228,13 @@ CONTAINS
     TYPE(EQUATIONS_SET_TYPE), POINTER :: EQUATIONS_SET !<A pointer to the equations set to start the creation of an analytic for.
     INTEGER(INTG), INTENT(IN) :: ANALYTIC_FUNCTION_TYPE !<The analytic function type to setup \see EQUATIONS_SET_CONSTANTS_AnalyticFunctionTypes,EQUATIONS_SET_CONSTANTS
     INTEGER(INTG), INTENT(IN) :: ANALYTIC_FIELD_USER_NUMBER !<The user specified analytic field number
-    TYPE(FIELD_TYPE), POINTER :: ANALYTIC_FIELD !<If associated on entry, a pointer to the user created analytic field which has the same user number as the specified analytic field user number. If not associated on entry, on exit, a pointer to the created analytic field for the equations set.
+    TYPE(FieldType), POINTER :: ANALYTIC_FIELD !<If associated on entry, a pointer to the user created analytic field which has the same user number as the specified analytic field user number. If not associated on entry, on exit, a pointer to the created analytic field for the equations set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
     INTEGER(INTG) :: dummyErr
     TYPE(EQUATIONS_SET_SETUP_TYPE) :: EQUATIONS_SET_SETUP_INFO
-    TYPE(FIELD_TYPE), POINTER :: FIELD,GEOMETRIC_FIELD
+    TYPE(FieldType), POINTER :: FIELD,GEOMETRIC_FIELD
     TYPE(REGION_TYPE), POINTER :: REGION,ANALYTIC_FIELD_REGION
     TYPE(VARYING_STRING) :: dummyError,localError
 
@@ -384,7 +384,7 @@ CONTAINS
     TYPE(DOMAIN_TYPE), POINTER :: DOMAIN
     TYPE(DOMAIN_ELEMENTS_TYPE), POINTER :: DOMAIN_ELEMENTS
     TYPE(DOMAIN_NODES_TYPE), POINTER :: DOMAIN_NODES
-    TYPE(FIELD_TYPE), POINTER :: ANALYTIC_FIELD,dependentField,GEOMETRIC_FIELD,MATERIALS_FIELD
+    TYPE(FieldType), POINTER :: ANALYTIC_FIELD,dependentField,GEOMETRIC_FIELD,MATERIALS_FIELD
     TYPE(FIELD_INTERPOLATION_PARAMETERS_PTR_TYPE), POINTER :: ANALYTIC_INTERP_PARAMETERS(:),GEOMETRIC_INTERP_PARAMETERS(:), &
       & MATERIALS_INTERP_PARAMETERS(:)
     TYPE(FIELD_INTERPOLATED_POINT_PTR_TYPE), POINTER :: ANALYTIC_INTERP_POINT(:),GEOMETRIC_INTERP_POINT(:), &
@@ -1159,7 +1159,7 @@ CONTAINS
     TYPE(EquationsType), POINTER :: equations
     TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices
     TYPE(EquationsVectorType), POINTER :: vectorEquations
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
     
     ENTERS("EquationsSet_AssembleDynamicLinearFEM",err,error,*999)
 
@@ -1281,7 +1281,7 @@ CONTAINS
     TYPE(EquationsType), POINTER :: equations
     TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices
     TYPE(EquationsVectorType), POINTER :: vectorEquations
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
     
 !#ifdef TAUPROF
 !    CHARACTER(28) :: CVAR
@@ -1449,7 +1449,7 @@ CONTAINS
     TYPE(EquationsType), POINTER :: equations
     TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices
     TYPE(EquationsVectorType), POINTER :: vectorEquations
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
     
     ENTERS("EquationsSet_AssembleStaticNonlinearFEM",err,error,*999)
 
@@ -1596,7 +1596,7 @@ CONTAINS
     TYPE(EquationsType), POINTER :: equations
     TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices
     TYPE(EquationsVectorType), POINTER :: vectorEquations
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
     
     ENTERS("EquationsSet_AssembleQuasistaticLinearFEM",err,error,*999)
 
@@ -1731,7 +1731,7 @@ CONTAINS
     TYPE(EquationsMatricesSourceType), POINTER :: sourceVector
     TYPE(EquationsMatrixType), POINTER :: equationsMatrix
     TYPE(EquationsVectorType), POINTER :: vectorEquations
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
     TYPE(FieldVariableType), POINTER :: DEPENDENT_VARIABLE,rhsVariable
     TYPE(VARYING_STRING) :: localError
 
@@ -2000,7 +2000,7 @@ CONTAINS
     TYPE(EquationsMatricesNonlinearType), POINTER :: nonlinearMatrices
     TYPE(EquationsVectorType), POINTER :: vectorEquations
     TYPE(DISTRIBUTED_VECTOR_TYPE), POINTER :: residualVector
-    TYPE(FIELD_TYPE), POINTER :: RHS_FIELD
+    TYPE(FieldType), POINTER :: RHS_FIELD
     TYPE(FieldVariableType), POINTER :: rhsVariable,residualVariable
     TYPE(BOUNDARY_CONDITIONS_VARIABLE_TYPE), POINTER :: RHS_BOUNDARY_CONDITIONS
     TYPE(DOMAIN_MAPPING_TYPE), POINTER :: RHS_DOMAIN_MAPPING
@@ -2248,10 +2248,10 @@ CONTAINS
     !Argument variables
     INTEGER(INTG), INTENT(IN) :: USER_NUMBER !<The user number of the equations set
     TYPE(REGION_TYPE), POINTER :: REGION !<A pointer to the region to create the equations set on
-    TYPE(FIELD_TYPE), POINTER :: GEOM_FIBRE_FIELD !<A pointer to the either the geometry or, if appropriate, the fibre field for the equation set
+    TYPE(FieldType), POINTER :: GEOM_FIBRE_FIELD !<A pointer to the either the geometry or, if appropriate, the fibre field for the equation set
     INTEGER(INTG), INTENT(IN) :: EQUATIONS_SET_SPECIFICATION(:) !<The equations set specification array to set
     INTEGER(INTG), INTENT(IN) :: EQUATIONS_SET_FIELD_USER_NUMBER !<The user number of the equations set field
-    TYPE(FIELD_TYPE), POINTER :: EQUATIONS_SET_FIELD_FIELD !<On return, a pointer to the equations set field
+    TYPE(FieldType), POINTER :: EQUATIONS_SET_FIELD_FIELD !<On return, a pointer to the equations set field
     TYPE(EQUATIONS_SET_TYPE), POINTER :: EQUATIONS_SET !<On return, a pointer to the equations set
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
@@ -2263,7 +2263,7 @@ CONTAINS
     TYPE(REGION_TYPE), POINTER :: GEOM_FIBRE_FIELD_REGION,EQUATIONS_SET_FIELD_REGION
     TYPE(VARYING_STRING) :: dummyError,localError
     TYPE(EQUATIONS_SET_EQUATIONS_SET_FIELD_TYPE), POINTER :: EQUATIONS_EQUATIONS_SET_FIELD
-    TYPE(FIELD_TYPE), POINTER :: FIELD
+    TYPE(FieldType), POINTER :: FIELD
 
     NULLIFY(NEW_EQUATIONS_SET)
     NULLIFY(NEW_EQUATIONS_SETS)
@@ -3214,7 +3214,7 @@ CONTAINS
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
     TYPE(EQUATIONS_SET_SETUP_TYPE) :: EQUATIONS_SET_SETUP_INFO
-    TYPE(FIELD_TYPE), POINTER :: independentField
+    TYPE(FieldType), POINTER :: independentField
 
     ENTERS("EQUATIONS_SET_INDEPENDENT_CREATE_FINISH",err,error,*999)
 
@@ -3264,13 +3264,13 @@ CONTAINS
     !Argument variables
     TYPE(EQUATIONS_SET_TYPE), POINTER :: EQUATIONS_SET !<A pointer to the equations set to start the creation of the materials field for
     INTEGER(INTG), INTENT(IN) :: INDEPENDENT_FIELD_USER_NUMBER !<The user specified independent field number
-    TYPE(FIELD_TYPE), POINTER :: independentField !<If associated on entry, a pointer to the user created independent field which has the same user number as the specified independent field user number. If not associated on entry, on exit, a pointer to the created independent field for the equations set.
+    TYPE(FieldType), POINTER :: independentField !<If associated on entry, a pointer to the user created independent field which has the same user number as the specified independent field user number. If not associated on entry, on exit, a pointer to the created independent field for the equations set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
     INTEGER(INTG) :: dummyErr
     TYPE(EQUATIONS_SET_SETUP_TYPE) :: EQUATIONS_SET_SETUP_INFO
-    TYPE(FIELD_TYPE), POINTER :: FIELD,GEOMETRIC_FIELD
+    TYPE(FieldType), POINTER :: FIELD,GEOMETRIC_FIELD
     TYPE(REGION_TYPE), POINTER :: REGION,INDEPENDENT_FIELD_REGION
     TYPE(VARYING_STRING) :: dummyError,localError
 
@@ -3577,7 +3577,7 @@ CONTAINS
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
     TYPE(EQUATIONS_SET_SETUP_TYPE) :: EQUATIONS_SET_SETUP_INFO
-    TYPE(FIELD_TYPE), POINTER :: MATERIALS_FIELD
+    TYPE(FieldType), POINTER :: MATERIALS_FIELD
 
     ENTERS("EQUATIONS_SET_MATERIALS_CREATE_FINISH",err,error,*999)
 
@@ -3627,13 +3627,13 @@ CONTAINS
     !Argument variables
     TYPE(EQUATIONS_SET_TYPE), POINTER :: EQUATIONS_SET !<A pointer to the equations set to start the creation of the materials field for
     INTEGER(INTG), INTENT(IN) :: MATERIALS_FIELD_USER_NUMBER !<The user specified materials field number
-    TYPE(FIELD_TYPE), POINTER :: MATERIALS_FIELD !<If associated on entry, a pointer to the user created materials field which has the same user number as the specified materials field user number. If not associated on entry, on exit, a pointer to the created materials field for the equations set.
+    TYPE(FieldType), POINTER :: MATERIALS_FIELD !<If associated on entry, a pointer to the user created materials field which has the same user number as the specified materials field user number. If not associated on entry, on exit, a pointer to the created materials field for the equations set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
     INTEGER(INTG) :: dummyErr
     TYPE(EQUATIONS_SET_SETUP_TYPE) :: EQUATIONS_SET_SETUP_INFO
-    TYPE(FIELD_TYPE), POINTER :: FIELD,GEOMETRIC_FIELD
+    TYPE(FieldType), POINTER :: FIELD,GEOMETRIC_FIELD
     TYPE(REGION_TYPE), POINTER :: REGION,MATERIALS_FIELD_REGION
     TYPE(VARYING_STRING) :: dummyError,localError
 
@@ -3837,7 +3837,7 @@ CONTAINS
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
     TYPE(EQUATIONS_SET_SETUP_TYPE) :: EQUATIONS_SET_SETUP_INFO
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
 
     ENTERS("EQUATIONS_SET_DEPENDENT_CREATE_FINISH",err,error,*999)
 
@@ -3883,13 +3883,13 @@ CONTAINS
     !Argument variables
     TYPE(EQUATIONS_SET_TYPE), POINTER :: EQUATIONS_SET !<A pointer to the equations set to start the creation of a dependent field on
     INTEGER(INTG), INTENT(IN) :: DEPENDENT_FIELD_USER_NUMBER !<The user specified dependent field number
-    TYPE(FIELD_TYPE), POINTER :: dependentField !<If associated on entry, a pointer to the user created dependent field which has the same user number as the specified dependent field user number. If not associated on entry, on exit, a pointer to the created dependent field for the equations set.
+    TYPE(FieldType), POINTER :: dependentField !<If associated on entry, a pointer to the user created dependent field which has the same user number as the specified dependent field user number. If not associated on entry, on exit, a pointer to the created dependent field for the equations set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
     INTEGER(INTG) :: dummyErr
     TYPE(EQUATIONS_SET_SETUP_TYPE) :: EQUATIONS_SET_SETUP_INFO
-    TYPE(FIELD_TYPE), POINTER :: FIELD,GEOMETRIC_FIELD
+    TYPE(FieldType), POINTER :: FIELD,GEOMETRIC_FIELD
     TYPE(REGION_TYPE), POINTER :: REGION,DEPENDENT_FIELD_REGION
     TYPE(VARYING_STRING) :: dummyError,localError
     
@@ -4078,7 +4078,7 @@ CONTAINS
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
     TYPE(EQUATIONS_SET_SETUP_TYPE) :: equationsSetSetupInfo
-    TYPE(FIELD_TYPE), POINTER :: derivedField
+    TYPE(FieldType), POINTER :: derivedField
 
     ENTERS("EquationsSet_DerivedCreateFinish",err,error,*999)
 
@@ -4128,13 +4128,13 @@ CONTAINS
     !Argument variables
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet !<A pointer to the equations set to start the creation of a derived field on
     INTEGER(INTG), INTENT(IN) :: derivedFieldUserNumber !<The user specified derived field number
-    TYPE(FIELD_TYPE), POINTER :: derivedField !<If associated on entry, a pointer to the user created derived field which has the same user number as the specified derived field user number. If not associated on entry, on exit, a pointer to the created derived field for the equations set.
+    TYPE(FieldType), POINTER :: derivedField !<If associated on entry, a pointer to the user created derived field which has the same user number as the specified derived field user number. If not associated on entry, on exit, a pointer to the created derived field for the equations set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
     INTEGER(INTG) :: dummyErr
     TYPE(EQUATIONS_SET_SETUP_TYPE) :: equationsSetSetupInfo
-    TYPE(FIELD_TYPE), POINTER :: field,geometricField
+    TYPE(FieldType), POINTER :: field,geometricField
     TYPE(REGION_TYPE), POINTER :: region,derivedFieldRegion
     TYPE(VARYING_STRING) :: dummyError,localError
 
@@ -4754,7 +4754,7 @@ CONTAINS
     TYPE(EquationsType), POINTER :: equations
     TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices
     TYPE(EquationsVectorType), POINTER :: vectorEquations
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
   
     ENTERS("EquationsSet_JacobianEvaluateStaticFEM",err,error,*999)
 
@@ -4875,7 +4875,7 @@ CONTAINS
     TYPE(EquationsType), POINTER :: equations
     TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices
     TYPE(EquationsVectorType), POINTER :: vectorEquations
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
   
     ENTERS("EquationsSet_JacobianEvaluateDynamicFEM",err,error,*999)
 
@@ -5120,7 +5120,7 @@ CONTAINS
     TYPE(EquationsType), POINTER :: equations
     TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices
     TYPE(EquationsVectorType), POINTER :: vectorEquations
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
  
     ENTERS("EquationsSet_ResidualEvaluateDynamicFEM",err,error,*999)
 
@@ -5241,7 +5241,7 @@ CONTAINS
     TYPE(EquationsType), POINTER :: equations
     TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices
     TYPE(EquationsVectorType), POINTER :: vectorEquations
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
  
     ENTERS("EquationsSet_ResidualEvaluateStaticFEM",err,error,*999)
 
@@ -5573,7 +5573,7 @@ CONTAINS
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
     TYPE(EQUATIONS_SET_SETUP_TYPE) :: EQUATIONS_SET_SETUP_INFO
-    TYPE(FIELD_TYPE), POINTER :: SOURCE_FIELD
+    TYPE(FieldType), POINTER :: SOURCE_FIELD
 
     ENTERS("EQUATIONS_SET_SOURCE_CREATE_FINISH",err,error,*999)
 
@@ -5623,13 +5623,13 @@ CONTAINS
     !Argument variables
     TYPE(EQUATIONS_SET_TYPE), POINTER :: EQUATIONS_SET !<A pointer to the equations set to start the creation of a source for
     INTEGER(INTG), INTENT(IN) :: SOURCE_FIELD_USER_NUMBER !<The user specified source field number
-    TYPE(FIELD_TYPE), POINTER :: SOURCE_FIELD !<If associated on entry, a pointer to the user created source field which has the same user number as the specified source field user number. If not associated on entry, on exit, a pointer to the created source field for the equations set.
+    TYPE(FieldType), POINTER :: SOURCE_FIELD !<If associated on entry, a pointer to the user created source field which has the same user number as the specified source field user number. If not associated on entry, on exit, a pointer to the created source field for the equations set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
     INTEGER(INTG) :: dummyErr
     TYPE(EQUATIONS_SET_SETUP_TYPE) :: EQUATIONS_SET_SETUP_INFO
-    TYPE(FIELD_TYPE), POINTER :: FIELD,GEOMETRIC_FIELD
+    TYPE(FieldType), POINTER :: FIELD,GEOMETRIC_FIELD
     TYPE(REGION_TYPE), POINTER :: REGION,SOURCE_FIELD_REGION
     TYPE(VARYING_STRING) :: dummyError,localError
 
@@ -6298,7 +6298,7 @@ CONTAINS
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
 
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
     TYPE(FieldVariableType), POINTER :: DEPENDENT_VARIABLE
     TYPE(DOMAIN_MAPPING_TYPE), POINTER :: DOMAIN_MAPPING
     TYPE(BOUNDARY_CONDITIONS_VARIABLE_TYPE), POINTER :: BOUNDARY_CONDITIONS_VARIABLE
@@ -6647,7 +6647,7 @@ CONTAINS
     TYPE(EquationsType), POINTER :: equations
     TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices
     TYPE(EquationsVectorType), POINTER :: vectorEquations
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
     
     ENTERS("EquationsSet_AssembleStaticNonlinearNodal",err,error,*999)
 
@@ -7017,7 +7017,7 @@ CONTAINS
     TYPE(EquationsType), POINTER :: equations
     TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices
     TYPE(EquationsVectorType), POINTER :: vectorEquations
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
   
     ENTERS("EquationsSet_JacobianEvaluateStaticNodal",err,error,*999)
 
@@ -7136,7 +7136,7 @@ CONTAINS
     TYPE(EquationsType), POINTER :: equations
     TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices
     TYPE(EquationsVectorType), POINTER :: vectorEquations
-    TYPE(FIELD_TYPE), POINTER :: dependentField,geometricField
+    TYPE(FieldType), POINTER :: dependentField,geometricField
  
     ENTERS("EquationsSet_ResidualEvaluateStaticNodal",err,error,*999)
 

@@ -139,7 +139,7 @@ CONTAINS
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
     INTEGER(INTG) :: variable_idx
-    TYPE(FIELD_TYPE), POINTER :: DEPENDENT_FIELD,GEOMETRIC_FIELD,LAGRANGE_FIELD,PENALTY_FIELD
+    TYPE(FieldType), POINTER :: DEPENDENT_FIELD,GEOMETRIC_FIELD,LAGRANGE_FIELD,PENALTY_FIELD
     TYPE(FieldVariableType), POINTER :: DEPENDENT_VARIABLE
     TYPE(INTERFACE_CONDITION_TYPE), POINTER :: INTERFACE_CONDITION
     TYPE(INTERFACE_DEPENDENT_TYPE), POINTER :: INTERFACE_DEPENDENT
@@ -373,9 +373,9 @@ CONTAINS
 
     !Argument variables
     TYPE(INTERFACE_EQUATIONS_DOMAIN_INTERPOLATION_TYPE) :: DOMAIN_INTERPOLATION !<The domain interpolation to initialise
-    TYPE(FIELD_TYPE), POINTER :: GEOMETRIC_FIELD !<A pointer to the geometric field to set up the domain interpolation for
-    TYPE(FIELD_TYPE), POINTER :: LAGRANGE_FIELD !<A pointer to the Lagrange field to set up the domain interpoaltion for
-    TYPE(FIELD_TYPE), POINTER :: PENALTY_FIELD !<A pointer to the penalty field to set up the domain interpoaltion for
+    TYPE(FieldType), POINTER :: GEOMETRIC_FIELD !<A pointer to the geometric field to set up the domain interpolation for
+    TYPE(FieldType), POINTER :: LAGRANGE_FIELD !<A pointer to the Lagrange field to set up the domain interpoaltion for
+    TYPE(FieldType), POINTER :: PENALTY_FIELD !<A pointer to the penalty field to set up the domain interpoaltion for
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables
@@ -459,8 +459,8 @@ CONTAINS
 
     !Argument variables
     TYPE(INTERFACE_EQUATIONS_DOMAIN_INTERPOLATION_TYPE) :: DOMAIN_INTERPOLATION !<The domain interpolation to initialise
-    TYPE(FIELD_TYPE), POINTER :: GEOMETRIC_FIELD !<A pointer to the geometric field to set up the domain interpolation for
-    TYPE(FIELD_TYPE), POINTER :: DEPENDENT_FIELD !<A pointer to the depdendent field to set up the domain interpoaltion for
+    TYPE(FieldType), POINTER :: GEOMETRIC_FIELD !<A pointer to the geometric field to set up the domain interpolation for
+    TYPE(FieldType), POINTER :: DEPENDENT_FIELD !<A pointer to the depdendent field to set up the domain interpoaltion for
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
     !Local Variables

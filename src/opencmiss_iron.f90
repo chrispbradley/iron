@@ -197,7 +197,7 @@ MODULE OpenCMISS_Iron
   !>Contains information for a field defined on a region.
   TYPE cmfe_FieldType
     PRIVATE
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
   END TYPE cmfe_FieldType
 
   !>Contains information for a fields defined on a region.
@@ -9512,7 +9512,7 @@ CONTAINS
     CHARACTER(LEN=*), INTENT(IN) :: fileName !<If not empty, the filename to output the analytic analysis to. If empty, the analysis will be output to the standard output.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_AnalyticAnalysis_OutputNumber",err,error,*999)
@@ -9577,7 +9577,7 @@ CONTAINS
     REAL(DP), INTENT(OUT) :: VALUE !<On return, the absolute error
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_AnalyticAnalysis_AbsoluteErrorGetNodeNumber",err,error,*999)
@@ -9652,7 +9652,7 @@ CONTAINS
     REAL(DP), INTENT(OUT) :: VALUE !<On return, the percentage error
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_AnalyticAnalysis_PercentageErrorGetNodeNumber",err,error,*999)
@@ -9728,7 +9728,7 @@ CONTAINS
     REAL(DP), INTENT(OUT) :: VALUE !<On return, the relative error
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_AnalyticAnalysis_RelativeErrorGetNodeNumber",err,error,*999)
@@ -9801,7 +9801,7 @@ CONTAINS
     REAL(DP), INTENT(OUT) :: VALUE !<On return, the absolute error
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_AnalyticAnalysis_AbsoluteErrorGetElementNumber",err,error,*999)
@@ -9869,7 +9869,7 @@ CONTAINS
     REAL(DP), INTENT(OUT) :: VALUE !<On return, the percentage error
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_AnalyticAnalysis_PercentageErrorGetElementNumber",err,error,*999)
@@ -9938,7 +9938,7 @@ CONTAINS
     REAL(DP), INTENT(OUT) :: VALUE !<On return, the relative error
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_AnalyticAnalysis_RelativeErrorGetElementNumber",err,error,*999)
@@ -10005,7 +10005,7 @@ CONTAINS
     REAL(DP), INTENT(OUT) :: VALUE !<On return, the absolute error
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_AnalyticAnalysis_AbsoluteErrorGetConstantNumber",err,error,*999)
@@ -10071,7 +10071,7 @@ CONTAINS
     REAL(DP), INTENT(OUT) :: VALUE !<On return, the percentage error
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_AnalyticAnalysis_PercentageErrorGetConstantNumber",err,error,*999)
@@ -10138,7 +10138,7 @@ CONTAINS
     REAL(DP), INTENT(OUT) :: VALUE !<On return, the relative error
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_AnalyticAnalysis_RelativeErrorGetConstantNumber",err,error,*999)
@@ -10207,7 +10207,7 @@ CONTAINS
     REAL(DP), INTENT(OUT) :: globalValue(8) !<On return, the global error
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_AnalyticAnalysis_RMSErrorGetNodeNumber",err,error,*999)
@@ -10280,7 +10280,7 @@ CONTAINS
     REAL(DP), INTENT(OUT) :: globalValue !<On return, the global error
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_AnalyticAnalysis_RMSErrorGetElementNumber",err,error,*999)
@@ -10352,7 +10352,7 @@ CONTAINS
     REAL(DP), INTENT(OUT) :: ghostIntegralValue(2) !<On return, ghost integral value
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_AnalyticAnalysis_IntegralNumericalValueGetNumber",err,error,*999)
@@ -10423,7 +10423,7 @@ CONTAINS
     REAL(DP), INTENT(OUT) :: ghostIntegralValue(2) !<On return, ghost integral value
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_AnalyticAnalysis_IntegralAnalyticValueGetNumber",err,error,*999)
@@ -10494,7 +10494,7 @@ CONTAINS
     REAL(DP), INTENT(OUT) :: ghostIntegralValue(2) !<On return, ghost integral value
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
  
     ENTERS("cmfe_AnalyticAnalysis_IntegralPercentageErrorGetNumber",err,error,*999)
@@ -10565,7 +10565,7 @@ CONTAINS
     REAL(DP), INTENT(OUT) :: ghostIntegralValue(2) !<On return, ghost integral value
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
  
     ENTERS("cmfe_AnalyticAnalysis_IntegralAbsoluteErrorGetNumber",err,error,*999)
@@ -10636,7 +10636,7 @@ CONTAINS
     REAL(DP), INTENT(OUT) :: ghostIntegralValue(2) !<On return, ghost integral value
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_AnalyticAnalysis_IntegralRelativeErrorGetNumber",err,error,*999)
@@ -10707,7 +10707,7 @@ CONTAINS
     REAL(DP), INTENT(OUT) :: ghostIntegralValue(2) !<On return, ghost integral value
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_AnalyticAnalysis_IntegralNIDNumericalValueGetNumber",err,error,*999)
@@ -10778,7 +10778,7 @@ CONTAINS
     REAL(DP), INTENT(OUT) :: ghostIntegralValue(2) !<On return, ghost integral value
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_AnalyticAnalysis_IntegralNIDErrorGetNumber",err,error,*999)
@@ -12329,7 +12329,7 @@ CONTAINS
     TYPE(PROBLEM_TYPE), POINTER :: problem
     TYPE(SOLVER_EQUATIONS_TYPE), POINTER :: solverEquations
     TYPE(BOUNDARY_CONDITIONS_TYPE), POINTER :: boundaryConditions
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
 
     ENTERS("cmfe_BoundaryConditions_AddConstantNumber",err,error,*999)
 
@@ -12411,7 +12411,7 @@ CONTAINS
     TYPE(PROBLEM_TYPE), POINTER :: problem
     TYPE(SOLVER_EQUATIONS_TYPE), POINTER :: solverEquations
     TYPE(BOUNDARY_CONDITIONS_TYPE), POINTER :: boundaryConditions
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
 
     ENTERS("cmfe_BoundaryConditions_SetConstantNumber",err,error,*999)
 
@@ -12493,7 +12493,7 @@ CONTAINS
     TYPE(PROBLEM_TYPE), POINTER :: problem
     TYPE(SOLVER_EQUATIONS_TYPE), POINTER :: solverEquations
     TYPE(BOUNDARY_CONDITIONS_TYPE), POINTER :: boundaryConditions
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
 
     ENTERS("cmfe_BoundaryConditions_AddElementNumber",err,error,*999)
 
@@ -12577,7 +12577,7 @@ CONTAINS
     TYPE(PROBLEM_TYPE), POINTER :: problem
     TYPE(SOLVER_EQUATIONS_TYPE), POINTER :: solverEquations
     TYPE(BOUNDARY_CONDITIONS_TYPE), POINTER :: boundaryConditions
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
 
     ENTERS("cmfe_BoundaryConditions_SetElementNumber",err,error,*999)
 
@@ -12663,7 +12663,7 @@ CONTAINS
     TYPE(PROBLEM_TYPE), POINTER :: problem
     TYPE(SOLVER_EQUATIONS_TYPE), POINTER :: solverEquations
     TYPE(BOUNDARY_CONDITIONS_TYPE), POINTER :: boundaryConditions
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
 
     ENTERS("cmfe_BoundaryConditions_AddNodeNumber",err,error,*999)
 
@@ -12751,7 +12751,7 @@ CONTAINS
     TYPE(PROBLEM_TYPE), POINTER :: problem
     TYPE(SOLVER_EQUATIONS_TYPE), POINTER :: solverEquations
     TYPE(BOUNDARY_CONDITIONS_TYPE), POINTER :: boundaryConditions
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
 
     ENTERS("cmfe_BoundaryConditions_SetNodeNumber0",err,error,*999)
 
@@ -12804,7 +12804,7 @@ CONTAINS
     TYPE(PROBLEM_TYPE), POINTER :: problem
     TYPE(SOLVER_EQUATIONS_TYPE), POINTER :: solverEquations
     TYPE(BOUNDARY_CONDITIONS_TYPE), POINTER :: boundaryConditions
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
 
     ENTERS("cmfe_BoundaryConditions_SetNodeNumber1",err,error,*999)
 
@@ -12996,7 +12996,7 @@ CONTAINS
     TYPE(PROBLEM_TYPE), POINTER :: problem
     TYPE(SOLVER_EQUATIONS_TYPE), POINTER :: solverEquations
     TYPE(BOUNDARY_CONDITIONS_TYPE), POINTER :: boundaryConditions
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
 
     ENTERS("cmfe_BoundaryConditions_ConstrainNodeDofsEqualNumber",err,error,*999)
 
@@ -13650,7 +13650,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
     TYPE(CELLML_TYPE), POINTER :: cellml
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
  
     ENTERS("cmfe_CellML_CreateCellMLToFieldMapNumberC",err,error,*999)
@@ -13743,7 +13743,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
     TYPE(CELLML_TYPE), POINTER :: cellml
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_CellML_CreateCellMLToFieldMapNumberVS",err,error,*999)
@@ -13836,7 +13836,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
     TYPE(CELLML_TYPE), POINTER :: cellml
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_CellML_CreateFieldToCellMLMapNumberC",err,error,*999)
@@ -13930,7 +13930,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
     TYPE(CELLML_TYPE), POINTER :: cellml
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_CellML_CreateFieldToCellMLMapNumberVS",err,error,*999)
@@ -14634,7 +14634,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
     TYPE(CELLML_TYPE), POINTER :: cellml
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_CellML_ModelsFieldCreateStartNumber",err,error,*999)
@@ -14713,7 +14713,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
     TYPE(CELLML_TYPE), POINTER :: cellml
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_CellML_ModelsFieldGetNumber",err,error,*999)
@@ -14865,7 +14865,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
     TYPE(CELLML_TYPE), POINTER :: cellml
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_CellML_StateFieldCreateStartNumber",err,error,*999)
@@ -14943,7 +14943,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
     TYPE(CELLML_TYPE), POINTER :: cellml
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_CellML_StateFieldGetNumber",err,error,*999)
@@ -15262,7 +15262,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
     TYPE(CELLML_TYPE), POINTER :: cellml
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_CellML_IntermediateFieldCreateStartNumber",err,error,*999)
@@ -15341,7 +15341,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
     TYPE(CELLML_TYPE), POINTER :: cellml
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_CellML_IntermediateFieldGetNumber",err,error,*999)
@@ -15493,7 +15493,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
     TYPE(CELLML_TYPE), POINTER :: cellml
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_CellML_ParametersFieldCreateStartNumber",err,error,*999)
@@ -15572,7 +15572,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
     TYPE(CELLML_TYPE), POINTER :: cellml
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_CellML_ParametersFieldGetNumber",err,error,*999)
@@ -19865,7 +19865,7 @@ CONTAINS
     !Local variables
     TYPE(DataProjectionType), POINTER :: dataProjection
     TYPE(DataPointsType), POINTER :: dataPoints
-    TYPE(FIELD_TYPE), POINTER :: projectionField
+    TYPE(FieldType), POINTER :: projectionField
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_DataProjection_CreateStartNumber",err,error,*999)
@@ -20000,7 +20000,7 @@ CONTAINS
     !Local variables  
     TYPE(DataProjectionType), POINTER :: dataProjection
     TYPE(DataPointsType), POINTER :: dataPoints
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_DataProjection_DataPointsPositionEvaluateRegionNumber",err,error,*999)
@@ -20045,7 +20045,7 @@ CONTAINS
     !Local variables  
     TYPE(DataProjectionType), POINTER :: dataProjection
     TYPE(DataPointsType), POINTER :: dataPoints
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: parentRegion
     TYPE(INTERFACE_TYPE), POINTER :: interface
 
@@ -25106,7 +25106,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet
-    TYPE(FIELD_TYPE), POINTER :: derivedField
+    TYPE(FieldType), POINTER :: derivedField
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_EquationsSet_DerivedCreateStartNumber",err,error,*999)
@@ -25643,7 +25643,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet
-    TYPE(FIELD_TYPE), POINTER :: analyticField
+    TYPE(FieldType), POINTER :: analyticField
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_EquationsSet_AnalyticCreateStartNumber",err,error,*999)
@@ -26130,9 +26130,9 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: equationsSetFieldUserNumber !<The user number of the equations set field
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: equationsSetField
+    TYPE(FieldType), POINTER :: equationsSetField
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet
-    TYPE(FIELD_TYPE), POINTER :: geometryFibreField
+    TYPE(FieldType), POINTER :: geometryFibreField
     TYPE(REGION_TYPE), POINTER :: region
     TYPE(VARYING_STRING) :: localError
 
@@ -26331,7 +26331,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet
-    TYPE(FIELD_TYPE), POINTER :: dependentField
+    TYPE(FieldType), POINTER :: dependentField
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_EquationsSet_DependentCreateStartNumber",err,error,*999)
@@ -26688,7 +26688,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet
-    TYPE(FIELD_TYPE), POINTER :: independentField
+    TYPE(FieldType), POINTER :: independentField
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_EquationsSet_IndependentCreateStartNumber",err,error,*999)
@@ -27104,7 +27104,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet
-    TYPE(FIELD_TYPE), POINTER :: materialsField
+    TYPE(FieldType), POINTER :: materialsField
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_EquationsSet_MaterialsCreateStartNumber",err,error,*999)
@@ -27519,7 +27519,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet
-    TYPE(FIELD_TYPE), POINTER :: sourceField
+    TYPE(FieldType), POINTER :: sourceField
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_EquationsSet_SourceCreateStartNumber",err,error,*999)
@@ -27957,7 +27957,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: interpolationType !<On return, the interpolation type. \see OPENCMISS_FieldInterpolationTypes
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ComponentInterpolationGetNumber",err,error,*999)
@@ -28021,7 +28021,7 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: interpolationType !<The interpolation type to set. \see OPENCMISS_FieldInterpolationTypes
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ComponentInterpolationSetNumber",err,error,*999)
@@ -28084,7 +28084,7 @@ CONTAINS
     CHARACTER(LEN=*), INTENT(OUT) :: label !<On return, the field variable component label.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ComponentLabelGetCNumber",err,error,*999)
@@ -28147,7 +28147,7 @@ CONTAINS
     TYPE(VARYING_STRING), INTENT(OUT) :: label !<On return, the field variable component label.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
  
     ENTERS("cmfe_Field_ComponentLabelGetVSNumber",err,error,*999)
@@ -28210,7 +28210,7 @@ CONTAINS
     CHARACTER(LEN=*), INTENT(IN) :: label !<The field variable component label to set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ComponentLabelSetCNumber",err,error,*999)
@@ -28273,7 +28273,7 @@ CONTAINS
     TYPE(VARYING_STRING), INTENT(IN) :: label !<The field variable component label to set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ComponentLabelSetVSNumber",err,error,*999)
@@ -28337,7 +28337,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: meshComponent !<On return, the mesh component number.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
  
     ENTERS("cmfe_Field_ComponentMeshComponentGetNumber",err,error,*999)
@@ -28401,7 +28401,7 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: meshComponent !<The mesh component number to set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ComponentMeshComponentSetNumber",err,error,*999)
@@ -28466,7 +28466,7 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: value !<The value to initialise the parameter set for.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ComponentValuesInitialiseIntgNumber",err,error,*999)
@@ -28532,7 +28532,7 @@ CONTAINS
     REAL(SP), INTENT(IN) :: value !<The value to initialise the parameter set for.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ComponentValuesInitialiseSPNumber",err,error,*999)
@@ -28598,7 +28598,7 @@ CONTAINS
     REAL(DP), INTENT(IN) :: value !<The value to initialise the parameter set for.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ComponentValuesInitialiseDPNumber",err,error,*999)
@@ -28664,7 +28664,7 @@ CONTAINS
     LOGICAL, INTENT(IN) :: value !<The value to initialise the parameter set for.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
  
     ENTERS("cmfe_Field_ComponentValuesInitialiseLNumber",err,error,*999)
@@ -28727,7 +28727,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: dataType !<On return, the field variable data type. \see OPENCMISS_FieldDataTypes
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_DataTypeGetNumber",err,error,*999)
@@ -28788,7 +28788,7 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: dataType !<The field variable data type to set. \see OPENCMISS_FieldDataTypes
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_DataTypeSetNumber",err,error,*999)
@@ -28849,7 +28849,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: DOFOrderType !<On return, the field variable DOF Order type. \see OPENCMISS_FieldDOFOrderTypes
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_DOFOrderTypeGetNumber",err,error,*999)
@@ -28910,7 +28910,7 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: DOFOrderType !<The field variable DOF Order type to set. \see OPENCMISS_FieldDOFOrderTypes
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_DOFOrderTypeSetNumber",err,error,*999)
@@ -28969,7 +28969,7 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: fieldUserNumber !<The user number of the field to finish the creation of.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
  
     ENTERS("cmfe_Field_CreateFinishNumber",err,error,*999)
@@ -29034,7 +29034,7 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: regionUserNumber !<The user number of the region containing the field to start the creation of.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_CreateStartNumber",err,error,*999)
@@ -29128,7 +29128,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: dependentType !<On return, the field dependent type. \see OPENCMISS_FieldDependentTypes
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_DependentTypeGetNumber",err,error,*999)
@@ -29187,7 +29187,7 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: dependentType !<The field dependent type to set. \see OPENCMISS_FieldDependentTypes
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
  
     ENTERS("cmfe_Field_DependentTypeSetNumber",err,error,*999)
@@ -29245,7 +29245,7 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: fieldUserNumber !<The user number of the field to destroy.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_DestroyNumber",err,error,*999)
@@ -29304,7 +29304,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: dimension !<On return, the field dimension. \see OPENCMISS_FieldDimensionTypes
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_DimensionGetNumber",err,error,*999)
@@ -29365,7 +29365,7 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: Dimension !<The field dimension to set. \see OPENCMISS_FieldDimensionTypes
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
  
     ENTERS("cmfe_Field_DimensionSetNumber",err,error,*999)
@@ -29425,7 +29425,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: geometricFieldUserNumber !<On return, the field geometric field user number.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field,geometricField
+    TYPE(FieldType), POINTER :: field,geometricField
     TYPE(REGION_TYPE), POINTER :: region
  
     ENTERS("cmfe_Field_GeometricFieldGetNumber",err,error,*999)
@@ -29486,7 +29486,7 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: geometricFieldUserNumber !<The field geometric field user number to set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field,geometricField
+    TYPE(FieldType), POINTER :: field,geometricField
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_GeometricFieldSetNumber",err,error,*999)
@@ -29550,7 +29550,7 @@ CONTAINS
     REAL(DP), INTENT(OUT) :: lineLength !<The line length of the chosen element line number
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: geometricField
+    TYPE(FieldType), POINTER :: geometricField
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_GeometricParametersElementLineLengthGetNumber",err,error,*999)
@@ -29622,7 +29622,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
     TYPE(REGION_TYPE), POINTER :: region
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
 
     ENTERS("cmfe_Field_ParameterSetNodeScaleFactorGetNumber",err,error,*999)
 
@@ -29695,7 +29695,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
     TYPE(REGION_TYPE), POINTER :: region
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
 
     ENTERS("cmfe_Field_ParameterSetNodeScaleFactorsGetNumber",err,error,*999)
 
@@ -29760,7 +29760,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
     TYPE(REGION_TYPE), POINTER :: region
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
 
     ENTERS("cmfe_Field_ParameterSetNodeNumberOfScaleFactorDofsGetNumber",err,error,*999)
 
@@ -29832,7 +29832,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
     TYPE(REGION_TYPE), POINTER :: region
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
 
     ENTERS("cmfe_Field_ParameterSetNodeScaleFactorSetNumber",err,error,*999)
 
@@ -29904,7 +29904,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
     TYPE(REGION_TYPE), POINTER :: region
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
  
     ENTERS("cmfe_Field_ParameterSetNodeScaleFactorsSetNumber",err,error,*999)
 
@@ -29966,7 +29966,7 @@ CONTAINS
     CHARACTER(LEN=*), INTENT(OUT) :: label !<On return, the field label.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_LabelGetCNumber",err,error,*999)
@@ -30025,7 +30025,7 @@ CONTAINS
     TYPE(VARYING_STRING), INTENT(OUT) :: label !<On return, the field label.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_LabelGetVSNumber",err,error,*999)
@@ -30084,7 +30084,7 @@ CONTAINS
     CHARACTER(LEN=*), INTENT(IN) :: label !<The field label to set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_LabelSetCNumber",err,error,*999)
@@ -30143,7 +30143,7 @@ CONTAINS
     TYPE(VARYING_STRING), INTENT(IN) :: label !<The field label to set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_LabelSetVSNumber",err,error,*999)
@@ -30206,7 +30206,7 @@ CONTAINS
     REAL(DP), INTENT(OUT) :: position(:),normal(:),tangents(:,:) !<Actual useful outputs
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
  
     ENTERS("cmfe_Field_PositionNormalTangentCalculateNodeNumber",err,error,*999)
@@ -30276,7 +30276,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
     TYPE(DECOMPOSITION_TYPE), POINTER :: decomposition
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_MeshDecompositionGetNumber",err,error,*999)
@@ -30339,7 +30339,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
     TYPE(DECOMPOSITION_TYPE), POINTER :: decomposition
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(MESH_TYPE), POINTER :: mesh
     TYPE(REGION_TYPE), POINTER :: region
 
@@ -30406,7 +30406,7 @@ CONTAINS
     !Local variables
     TYPE(DataPointsType), POINTER :: dataPoints
     TYPE(DataProjectionType), POINTER :: dataProjection
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
  
     ENTERS("cmfe_Field_DataProjectionSetNumber",err,error,*999)
@@ -30470,7 +30470,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: numberOfComponents !<On return, the number of components in the field variable.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_NumberOfComponentsGetNumber",err,error,*999)
@@ -30531,7 +30531,7 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: numberOfComponents !<The number of components in the field variable to set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
  
     ENTERS("cmfe_Field_NumberOfComponentsSetNumber",err,error,*999)
@@ -30591,7 +30591,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: numberOfVariables !<On return, the number of variables in the field.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_NumberOfVariablesGetNumber",err,error,*999)
@@ -30650,7 +30650,7 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: numberOfVariables !<The number of variables in the field to set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_NumberOfVariablesSetNumber",err,error,*999)
@@ -30713,7 +30713,7 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: value !<The value to add to the field parameter set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetAddConstantIntgNumber",err,error,*999)
@@ -30780,7 +30780,7 @@ CONTAINS
     REAL(SP), INTENT(IN) :: value !<The value to add to the field parameter set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetAddConstantSPNumber",err,error,*999)
@@ -30846,7 +30846,7 @@ CONTAINS
     REAL(DP), INTENT(IN) :: value !<The value to add to the field parameter set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetAddConstantDPNumber",err,error,*999)
@@ -30912,7 +30912,7 @@ CONTAINS
     LOGICAL, INTENT(IN) :: value !<The value to add to the field parameter set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
  
     ENTERS("cmfe_Field_ParameterSetAddConstantLNumber",err,error,*999)
@@ -30979,7 +30979,7 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: value !<The value to add to the element in the field parameter set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetAddElementIntgNumber",err,error,*999)
@@ -31048,7 +31048,7 @@ CONTAINS
     REAL(SP), INTENT(IN) :: value !<The value to add to the element in the field parameter set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetAddElementSPNumber",err,error,*999)
@@ -31117,7 +31117,7 @@ CONTAINS
     REAL(DP), INTENT(IN) :: value !<The value to add to the element in the field parameter set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetAddElementDPNumber",err,error,*999)
@@ -31186,7 +31186,7 @@ CONTAINS
     LOGICAL, INTENT(IN) :: value !<The value to add to the element in the field parameter set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetAddElementLNumber",err,error,*999)
@@ -31256,7 +31256,7 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: value !<The value to add to the element in the field parameter set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetAddGaussPointIntgNumber",err,error,*999)
@@ -31331,7 +31331,7 @@ CONTAINS
     REAL(SP), INTENT(IN) :: value !<The value to add to the element in the field parameter set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetAddGaussPointSPNumber",err,error,*999)
@@ -31406,7 +31406,7 @@ CONTAINS
     REAL(DP), INTENT(IN) :: value !<The value to add to the element in the field parameter set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetAddGaussPointDPNumber",err,error,*999)
@@ -31481,7 +31481,7 @@ CONTAINS
     LOGICAL, INTENT(IN) :: value !<The value to add to the element in the field parameter set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetAddGaussPointLNumber",err,error,*999)
@@ -31557,7 +31557,7 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: value !<The value to add to the node in the field parameter set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetAddNodeIntgNumber",err,error,*999)
@@ -31632,7 +31632,7 @@ CONTAINS
     REAL(SP), INTENT(IN) :: value !<The value to add to the node in the field parameter set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
  
     ENTERS("cmfe_Field_ParameterSetAddNodeSPNumber",err,error,*999)
@@ -31707,7 +31707,7 @@ CONTAINS
     REAL(DP), INTENT(IN) :: value !<The value to add to the node in the field parameter set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetAddNodeDPNumber",err,error,*999)
@@ -31782,7 +31782,7 @@ CONTAINS
     LOGICAL, INTENT(IN) :: value !<The value to add to the node in the field parameter set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetAddNodeLNumber",err,error,*999)
@@ -31851,7 +31851,7 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: fieldSetType !<The parameter set type of the field to create. \see OPENCMISS_FieldParameterSetTypes
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetCreateNumber",err,error,*999)
@@ -31912,7 +31912,7 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: fieldSetType !<The parameter set type of the field to destroy. \see OPENCMISS_FieldParameterSetTypes
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetDestroyNumber",err,error,*999)
@@ -31974,7 +31974,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT), POINTER :: parameters(:) !<On return, a pointer to the parameter set data.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetDataGetIntgNumber",err,error,*999)
@@ -32037,7 +32037,7 @@ CONTAINS
     REAL(SP), INTENT(OUT), POINTER :: parameters(:) !<On return, a pointer to the parameter set data.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetDataGetSPNumber",err,error,*999)
@@ -32100,7 +32100,7 @@ CONTAINS
     REAL(DP), INTENT(OUT), POINTER :: parameters(:) !<On return, a pointer to the parameter set data.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetDataGetDPNumber",err,error,*999)
@@ -32163,7 +32163,7 @@ CONTAINS
     LOGICAL, INTENT(OUT), POINTER :: parameters(:) !<On return, a pointer to the parameter set data.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetDataGetLNumber",err,error,*999)
@@ -32226,7 +32226,7 @@ CONTAINS
     INTEGER(INTG), INTENT(INOUT), POINTER :: parameters(:) !<A pointer to the parameter set data. On return this pointer is null.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
  
     ENTERS("cmfe_Field_ParameterSetDataRestoreIntgNumber",err,error,*999)
@@ -32290,7 +32290,7 @@ CONTAINS
     REAL(SP), INTENT(INOUT), POINTER :: parameters(:) !<A pointer to the parameter set data. On return this pointer is null.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetDataRestoreSPNumber",err,error,*999)
@@ -32353,7 +32353,7 @@ CONTAINS
     REAL(DP), INTENT(INOUT), POINTER :: parameters(:) !<A pointer to the parameter set data. On return this pointer is null.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetDataRestoreDPNumber",err,error,*999)
@@ -32416,7 +32416,7 @@ CONTAINS
     LOGICAL, INTENT(INOUT), POINTER :: parameters(:) !<A pointer to the parameter set data. On return this pointer is null.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetDataRestoreLNumber",err,error,*999)
@@ -32481,7 +32481,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: value !<On return, the value from the field parameter set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetGetConstantIntgNumber",err,error,*999)
@@ -32548,7 +32548,7 @@ CONTAINS
     REAL(SP), INTENT(OUT) :: value !<On return, the value from the field parameter set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
  
     ENTERS("cmfe_Field_ParameterSetGetConstantSPNumber",err,error,*999)
@@ -32614,7 +32614,7 @@ CONTAINS
     REAL(DP), INTENT(OUT) :: value !<On return, the value from the field parameter set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetGetConstantDPNumber",err,error,*999)
@@ -32680,7 +32680,7 @@ CONTAINS
     LOGICAL, INTENT(OUT) :: value !<On return, the value from the field parameter set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
  
     ENTERS("cmfe_Field_ParameterSetGetConstantLNumber",err,error,*999)
@@ -32748,7 +32748,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: value !<On return, the value from the field parameter set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
     TYPE(INTERFACE_TYPE), POINTER :: interface
 
@@ -32791,7 +32791,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: value !<On return, the value from the field parameter set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetGetDataPointIntgNumberR",err,error,*999)
@@ -32864,7 +32864,7 @@ CONTAINS
     REAL(SP), INTENT(OUT) :: value !<On return, the value from the field parameter set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
     TYPE(INTERFACE_TYPE), POINTER :: interface
 
@@ -32907,7 +32907,7 @@ CONTAINS
     REAL(SP), INTENT(OUT) :: value !<On return, the value from the field parameter set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetGetDataPointSPNumberR",err,error,*999)
@@ -32979,7 +32979,7 @@ CONTAINS
     REAL(DP), INTENT(OUT) :: value !<On return, the value from the field parameter set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
     TYPE(INTERFACE_TYPE), POINTER :: interface
 
@@ -33022,7 +33022,7 @@ CONTAINS
     REAL(DP), INTENT(OUT) :: value !<On return, the value from the field parameter set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetGetDataPointDPNumberR",err,error,*999)
@@ -33094,7 +33094,7 @@ CONTAINS
     LOGICAL, INTENT(OUT) :: value !<On return, the value from the field parameter set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
     TYPE(INTERFACE_TYPE), POINTER :: interface
  
@@ -33136,7 +33136,7 @@ CONTAINS
     LOGICAL, INTENT(OUT) :: value !<On return, the value from the field parameter set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetGetDataPointLNumberR",err,error,*999)
@@ -33206,7 +33206,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: value !<On return, the value from the field parameter set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetGetElementIntgNumber",err,error,*999)
@@ -33275,7 +33275,7 @@ CONTAINS
     REAL(SP), INTENT(OUT) :: value !<On return, the value from the field parameter set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetGetElementSPNumber",err,error,*999)
@@ -33344,7 +33344,7 @@ CONTAINS
     REAL(DP), INTENT(OUT) :: value !<On return, the value from the field parameter set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
  
     ENTERS("cmfe_Field_ParameterSetGetElementDPNumber",err,error,*999)
@@ -33413,7 +33413,7 @@ CONTAINS
     LOGICAL, INTENT(OUT) :: value !<On return, the value from the field parameter set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
  
     ENTERS("cmfe_Field_ParameterSetGetElementLNumber",err,error,*999)
@@ -33484,7 +33484,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: value !<On return, the value from the field parameter set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetGetNodeIntgNumber",err,error,*999)
@@ -33559,7 +33559,7 @@ CONTAINS
     REAL(SP), INTENT(OUT) :: value !<On return, the value from the field parameter set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetGetNodeSPNumber",err,error,*999)
@@ -33634,7 +33634,7 @@ CONTAINS
     REAL(DP), INTENT(OUT) :: value !<On return, the value from the field parameter set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetGetNodeDPNumber",err,error,*999)
@@ -33709,7 +33709,7 @@ CONTAINS
     LOGICAL, INTENT(OUT) :: value !<On return, the value from the field parameter set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetGetNodeLNumber",err,error,*999)
@@ -33814,7 +33814,7 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: value !<The value to update the field parameter set to.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetUpdateConstantIntgNumber",err,error,*999)
@@ -33882,7 +33882,7 @@ CONTAINS
     REAL(SP), INTENT(IN) :: value !<The value to update the field parameter set to.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetUpdateConstantSPNumber",err,error,*999)
@@ -33949,7 +33949,7 @@ CONTAINS
     REAL(DP), INTENT(IN) :: value !<The value to update the field parameter set to.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
  
     ENTERS("cmfe_Field_ParameterSetUpdateConstantDPNumber",err,error,*999)
@@ -34016,7 +34016,7 @@ CONTAINS
     LOGICAL, INTENT(IN) :: value !<The value to update the field parameter set to.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetUpdateConstantLNumber",err,error,*999)
@@ -34085,7 +34085,7 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: value !<The value for the field parameter set to update
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
     TYPE(INTERFACE_TYPE), POINTER :: interface
 
@@ -34128,7 +34128,7 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: value !<The value for the field parameter set to update
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetUpdateDataPointIntgNumberR",err,error,*999)
@@ -34202,7 +34202,7 @@ CONTAINS
     REAL(SP), INTENT(IN) :: value !<The value for the field parameter set to update
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
     TYPE(INTERFACE_TYPE), POINTER :: interface
 
@@ -34245,7 +34245,7 @@ CONTAINS
     REAL(SP), INTENT(IN) :: value !<The value for the field parameter set to update
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
  
     ENTERS("cmfe_Field_ParameterSetUpdateDataPointSPNumberR",err,error,*999)
@@ -34318,7 +34318,7 @@ CONTAINS
     REAL(DP), INTENT(IN) :: value !<The value for the field parameter set to update
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
     TYPE(INTERFACE_TYPE), POINTER :: interface
 
@@ -34361,7 +34361,7 @@ CONTAINS
     REAL(DP), INTENT(IN) :: value !<The value for the field parameter set to update
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetUpdateDataPointDPNumberR",err,error,*999)
@@ -34434,7 +34434,7 @@ CONTAINS
     LOGICAL, INTENT(IN) :: value !<The value for the field parameter set to update
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
     TYPE(INTERFACE_TYPE), POINTER :: interface
 
@@ -34477,7 +34477,7 @@ CONTAINS
     LOGICAL, INTENT(IN) :: value !<The value for the field parameter set to update
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetUpdateDataPointLNumberR",err,error,*999)
@@ -34549,7 +34549,7 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: value !<The value to update the field parameter set to.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetUpdateElementIntgNumber",err,error,*999)
@@ -34621,7 +34621,7 @@ CONTAINS
     REAL(SP), INTENT(IN) :: value !<The value to update the field parameter set to.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetUpdateElementSPNumber",err,error,*999)
@@ -34693,7 +34693,7 @@ CONTAINS
     REAL(DP), INTENT(IN) :: Value !<The value to update the field parameter set to.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetUpdateElementDPNumber",err,error,*999)
@@ -34765,7 +34765,7 @@ CONTAINS
     LOGICAL, INTENT(IN) :: value !<The value to update the field parameter set to.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetUpdateElementLNumber",err,error,*999)
@@ -34866,7 +34866,7 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: fieldSetType !<The parameter set type to finish the update for. \see OPENCMISS_FieldParameterSetTypes
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetUpdateFinishNumber",err,error,*999)
@@ -34933,7 +34933,7 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: value !<The value to update the field parameter set to.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetUpdateNodeIntgNumber",err,error,*999)
@@ -35009,7 +35009,7 @@ CONTAINS
     REAL(SP), INTENT(IN) :: value !<The value to update the field parameter set to.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetUpdateNodeSPNumber",err,error,*999)
@@ -35085,7 +35085,7 @@ CONTAINS
     REAL(DP), INTENT(IN) :: value !<The value to update the field parameter set to.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetUpdateNodeDPNumber",err,error,*999)
@@ -35161,7 +35161,7 @@ CONTAINS
     LOGICAL, INTENT(IN) :: value !<The value to update the field parameter set to.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
  
     ENTERS("cmfe_Field_ParameterSetUpdateNodeLNumber",err,error,*999)
@@ -35264,7 +35264,7 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: value !<The value for the field parameter set to update.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetUpdateGaussPointIntgNumber",err,error,*999)
@@ -35341,7 +35341,7 @@ CONTAINS
     REAL(SP), INTENT(IN) :: value !<The value for the field parameter set to update.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetUpdateGaussPointSPNumber",err,error,*999)
@@ -35418,7 +35418,7 @@ CONTAINS
     REAL(DP), INTENT(IN) :: value !<The value for the field parameter set to update.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetUpdateGaussPointDPNumber",err,error,*999)
@@ -35495,7 +35495,7 @@ CONTAINS
     LOGICAL, INTENT(IN) :: value !<The value for the field parameter set to update.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetUpdateGaussPointLNumber",err,error,*999)
@@ -35571,7 +35571,7 @@ CONTAINS
     REAL(DP), INTENT(OUT) :: values(:) !<The interpolated values.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetInterpolateSingleXiDPNumber",err,error,*999)
@@ -35646,7 +35646,7 @@ CONTAINS
     REAL(DP), INTENT(OUT) :: values(:,:) !<The interpolated values.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetInterpolateMultipleXiDPNumber",err,error,*999)
@@ -35722,7 +35722,7 @@ CONTAINS
     REAL(DP), INTENT(OUT) :: values(:) !<The interpolated values.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetInterpolateSingleGaussDPNumber",err,error,*999)
@@ -35799,7 +35799,7 @@ CONTAINS
     REAL(DP), INTENT(OUT) :: values(:,:) !<The interpolated values.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetInterpolateMultipleGaussDPNumber",err,error,*999)
@@ -35870,7 +35870,7 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: fieldSetType !<The parameter set type to start the update for. \see OPENCMISS_FieldParameterSetTypes
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ParameterSetUpdateStartNumber",err,error,*999)
@@ -35941,9 +35941,9 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     !Local variables
     TYPE(REGION_TYPE), POINTER :: fromRegion
-    TYPE(FIELD_TYPE), POINTER :: fromField
+    TYPE(FieldType), POINTER :: fromField
     TYPE(REGION_TYPE), POINTER :: toRegion
-    TYPE(FIELD_TYPE), POINTER :: toField
+    TYPE(FieldType), POINTER :: toField
 
     ENTERS("cmfe_Field_ParametersToFieldParametersComponentCopyNumber",err,error,*999)
 
@@ -36017,7 +36017,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: scalingType !<On return, the field scaling type. \see OPENCMISS_FieldScalingTypes
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_ScalingTypeGetNumber",err,error,*999)
@@ -36076,7 +36076,7 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: scalingType !<The field scaling type to set. \see OPENCMISS_FieldScalingTypes
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
  
     ENTERS("cmfe_Field_ScalingTypeSetNumber",err,error,*999)
@@ -36126,16 +36126,16 @@ CONTAINS
   !
 
   !>Returns the field type for a field identified by a user number.
-  SUBROUTINE cmfe_Field_TypeGetNumber(regionUserNumber,fieldUserNumber,fieldType,err)
+  SUBROUTINE cmfe_Field_TypeGetNumber(regionUserNumber,fieldUserNumber,field_Type,err)
     !DLLEXPORT(cmfe_Field_TypeGetNumber)
 
     !Argument variables
     INTEGER(INTG), INTENT(IN) :: regionUserNumber !<The user number of the region containing the field to get the field type for.
     INTEGER(INTG), INTENT(IN) :: fieldUserNumber !<The user number of the field to get the field type for.
-    INTEGER(INTG), INTENT(OUT) :: fieldType !<On return, the field type. \see OPENCMISS_FieldTypes
+    INTEGER(INTG), INTENT(OUT) :: field_Type !<On return, the field type. \see OPENCMISS_FieldTypes
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
  
     ENTERS("cmfe_Field_TypeGetNumber",err,error,*999)
@@ -36144,7 +36144,7 @@ CONTAINS
     NULLIFY(field)
     CALL Region_Get(regionUserNumber,region,err,error,*999)
     CALL Region_FieldGet(region,fieldUserNumber,field,err,error,*999)
-    CALL FIELD_TYPE_GET(field,fieldType,err,error,*999)
+    CALL FIELD_TYPE_GET(field,field_Type,err,error,*999)
     
     EXITS("cmfe_Field_TypeGetNumber")
     RETURN
@@ -36159,18 +36159,18 @@ CONTAINS
   !
 
   !>Returns the type for a field identified by an object.
-  SUBROUTINE cmfe_Field_TypeGetObj(field,fieldType,err)
+  SUBROUTINE cmfe_Field_TypeGetObj(field,field_Type,err)
     !DLLEXPORT(cmfe_Field_TypeGetObj)
 
     !Argument variables
     TYPE(cmfe_FieldType), INTENT(IN) :: field !<The field to get the field type for.
-    INTEGER(INTG), INTENT(OUT) :: fieldType !<On return, the field type. \see OPENCMISS_FieldTypes
+    INTEGER(INTG), INTENT(OUT) :: field_Type !<On return, the field type. \see OPENCMISS_FieldTypes
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
 
     ENTERS("cmfe_Field_TypeGetObj",err,error,*999)
 
-    CALL FIELD_TYPE_GET(field%field,fieldType,err,error,*999)
+    CALL FIELD_TYPE_GET(field%field,field_Type,err,error,*999)
 
     EXITS("cmfe_Field_TypeGetObj")
     RETURN
@@ -36185,16 +36185,16 @@ CONTAINS
   !
 
   !>Sets/changes the field type for a field identified by a user number.
-  SUBROUTINE cmfe_Field_TypeSetNumber(regionUserNumber,fieldUserNumber,fieldType,err)
+  SUBROUTINE cmfe_Field_TypeSetNumber(regionUserNumber,fieldUserNumber,field_Type,err)
     !DLLEXPORT(cmfe_Field_TypeSetNumber)
 
     !Argument variables
     INTEGER(INTG), INTENT(IN) :: regionUserNumber !<The user number of the region containing the field to set the field type for.
     INTEGER(INTG), INTENT(IN) :: fieldUserNumber !<The user number of the field to set the field type for.
-    INTEGER(INTG), INTENT(IN) :: fieldType !<The field type to set. \see OPENCMISS_FieldTypes
+    INTEGER(INTG), INTENT(IN) :: field_Type !<The field type to set. \see OPENCMISS_FieldTypes
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_TypeSetNumber",err,error,*999)
@@ -36203,7 +36203,7 @@ CONTAINS
     NULLIFY(field)
     CALL Region_Get(regionUserNumber,region,err,error,*999)
     CALL Region_FieldGet(region,fieldUserNumber,field,err,error,*999)
-    CALL FIELD_TYPE_SET(field,fieldType,err,error,*999)
+    CALL FIELD_TYPE_SET(field,field_Type,err,error,*999)
     
     EXITS("cmfe_Field_TypeSetNumber")
     RETURN
@@ -36218,18 +36218,18 @@ CONTAINS
   !
 
   !>Sets/changes the type for a field identified by an object.
-  SUBROUTINE cmfe_Field_TypeSetObj(field,fieldType,err)
+  SUBROUTINE cmfe_Field_TypeSetObj(field,field_Type,err)
     !DLLEXPORT(cmfe_Field_TypeSetObj)
 
     !Argument variables
     TYPE(cmfe_FieldType), INTENT(IN) :: field !<The field to set the field type for.
-    INTEGER(INTG), INTENT(IN) :: fieldType !<The field type to set. \see OPENCMISS_FieldTypes
+    INTEGER(INTG), INTENT(IN) :: field_Type !<The field type to set. \see OPENCMISS_FieldTypes
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
 
     ENTERS("cmfe_Field_TypeSetObj",err,error,*999)
 
-    CALL FIELD_TYPE_SET(field%field,fieldType,err,error,*999)
+    CALL FIELD_TYPE_SET(field%field,field_Type,err,error,*999)
 
     EXITS("cmfe_Field_TypeSetObj")
     RETURN
@@ -36254,7 +36254,7 @@ CONTAINS
     CHARACTER(LEN=*), INTENT(OUT) :: label !<On return, the field variable label.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_VariableLabelGetCNumber",err,error,*999)
@@ -36315,7 +36315,7 @@ CONTAINS
     TYPE(VARYING_STRING), INTENT(OUT) :: label !<On return, the field variable label.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
  
     ENTERS("cmfe_Field_VariableLabelGetVSNumber",err,error,*999)
@@ -36376,7 +36376,7 @@ CONTAINS
     CHARACTER(LEN=*), INTENT(IN) :: label !<The field variable label to set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_VariableLabelSetCNumber",err,error,*999)
@@ -36437,7 +36437,7 @@ CONTAINS
     TYPE(VARYING_STRING), INTENT(IN) :: label !<The field variable label to set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_VariableLabelSetVSNumber",err,error,*999)
@@ -36497,7 +36497,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: variableTypes(:) !<variableTypes(variable_idx). On return, the field variable types for the variable_idx'th field variable. \see OPENCMISS_FieldVariableTypes
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Field_VariableTypesGetNumber",err,error,*999)
@@ -36556,7 +36556,7 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: variableTypes(:) !<variableTypes(variable_idx). The field variable types for the variable_idx'th field variable to set. \see OPENCMISS_FieldVariableTypes
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
  
     ENTERS("cmfe_Field_VariableTypesSetNumber",err,error,*999)
@@ -37881,7 +37881,7 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: fieldUserNumber !<The user number of the field to calculate the geometric parameters for.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(GENERATED_MESH_TYPE), POINTER :: generatedMesh
     TYPE(REGION_TYPE), POINTER :: region
 
@@ -40047,7 +40047,7 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: geometricFieldUserNumber !<The user number of the geometric field on the interface for the interface condition.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: geometricField
+    TYPE(FieldType), POINTER :: geometricField
     TYPE(INTERFACE_TYPE), POINTER :: INTERFACE
     TYPE(INTERFACE_CONDITION_TYPE), POINTER :: interfaceCondition
     TYPE(REGION_TYPE), POINTER :: region
@@ -40648,7 +40648,7 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: lagrangeFieldUserNumber !<The user number of the Lagrange field.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: lagrangeField
+    TYPE(FieldType), POINTER :: lagrangeField
     TYPE(INTERFACE_TYPE), POINTER :: INTERFACE
     TYPE(INTERFACE_CONDITION_TYPE), POINTER :: interfaceCondition
     TYPE(REGION_TYPE), POINTER :: region
@@ -41163,7 +41163,7 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: PenaltyFieldUserNumber !<The user number of the penalty field.
     INTEGER(INTG), INTENT(OUT) :: Err !<The error code.
     !Local variables
-    TYPE(FIELD_TYPE), POINTER :: penaltyField
+    TYPE(FieldType), POINTER :: penaltyField
     TYPE(INTERFACE_TYPE), POINTER :: INTERFACE
     TYPE(INTERFACE_CONDITION_TYPE), POINTER :: interfaceCondition
     TYPE(REGION_TYPE), POINTER :: region
@@ -50719,7 +50719,7 @@ CONTAINS
     !Local variables
     TYPE(PROBLEM_TYPE), POINTER :: problem
     TYPE(SOLVER_TYPE), POINTER :: solver
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
     TYPE(REGION_TYPE), POINTER :: region
 
     ENTERS("cmfe_Solver_GeometricTransformationFieldSetNumber",err,error,*999)
@@ -58584,7 +58584,7 @@ CONTAINS
     TYPE(REGION_TYPE), POINTER :: region
     TYPE(MESH_TYPE), POINTER :: mesh
     TYPE(DECOMPOSITION_TYPE), POINTER :: decomposition
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
 
     ENTERS("cmfe_FieldML_InputFieldCreateStartNumberVS",err,error,*999)
 
@@ -58668,7 +58668,7 @@ CONTAINS
     TYPE(REGION_TYPE), POINTER :: region
     TYPE(MESH_TYPE), POINTER :: mesh
     TYPE(DECOMPOSITION_TYPE), POINTER :: decomposition
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
 
     ENTERS("cmfe_FieldML_InputFieldCreateStartNumberC",err,error,*999)
 
@@ -58752,7 +58752,7 @@ CONTAINS
 
     !Local variables
     TYPE(REGION_TYPE), POINTER :: region
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
 
     ENTERS("cmfe_FieldML_InputFieldParametersUpdateNumberVS",err,error,*999)
 
@@ -58831,7 +58831,7 @@ CONTAINS
 
     !Local variables
     TYPE(REGION_TYPE), POINTER :: region
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
 
     ENTERS("cmfe_FieldML_InputFieldParametersUpdateNumberC",err,error,*999)
 
@@ -58979,7 +58979,7 @@ CONTAINS
 
     !Locals
     TYPE(REGION_TYPE), POINTER :: region
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
 
     ENTERS("cmfe_FieldML_OutputAddFieldNoTypeNumberVS",err,error,*999)
 
@@ -59059,7 +59059,7 @@ CONTAINS
 
     !Locals
     TYPE(REGION_TYPE), POINTER :: region
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
 
     ENTERS("cmfe_FieldML_OutputAddFieldWithTypeNumberVS",err,error,*999)
 
@@ -59138,7 +59138,7 @@ CONTAINS
 
     !Locals
     TYPE(REGION_TYPE), POINTER :: region
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
 
     ENTERS("cmfe_FieldML_OutputAddFieldNoTypeNumberC",err,error,*999)
 
@@ -59219,7 +59219,7 @@ CONTAINS
 
     !Locals
     TYPE(REGION_TYPE), POINTER :: region
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
 
     ENTERS("cmfe_FieldML_OutputAddFieldWithTypeNumberC",err,error,*999)
 
@@ -59454,7 +59454,7 @@ CONTAINS
 
     !Locals
     TYPE(REGION_TYPE), POINTER :: region
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
 
     ENTERS("cmfe_FieldML_OutputAddFieldComponentsNumberVS",err,error,*999)
 
@@ -59539,7 +59539,7 @@ CONTAINS
 
     !Locals
     TYPE(REGION_TYPE), POINTER :: region
-    TYPE(FIELD_TYPE), POINTER :: field
+    TYPE(FieldType), POINTER :: field
 
     ENTERS("cmfe_FieldML_OutputAddFieldComponentsNumberC",err,error,*999)
 

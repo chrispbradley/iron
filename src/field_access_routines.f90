@@ -186,7 +186,7 @@ CONTAINS
   SUBROUTINE Field_CoordinateSystemGet(field,coordinateSystem,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to get the coordinate system for
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to get the coordinate system for
     TYPE(COORDINATE_SYSTEM_TYPE), POINTER :: coordinateSystem!<On return, the field coordinate system. Must not be associated on entry.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
@@ -244,7 +244,7 @@ CONTAINS
   SUBROUTINE Field_DecompositionGet(field,decomposition,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<The field to get the decomposition for.
+    TYPE(FieldType), POINTER :: field !<The field to get the decomposition for.
     TYPE(DECOMPOSITION_TYPE), POINTER :: decomposition !<On exit, a pointer to the decomposition for the field. Must not be associated on entry.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
@@ -281,7 +281,7 @@ CONTAINS
   SUBROUTINE Field_RegionGet(field,region,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to get the region for
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to get the region for
     TYPE(REGION_TYPE), POINTER :: region !<On return, the fields region. Must not be associated on entry.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
@@ -333,7 +333,7 @@ CONTAINS
     !Argument variables
     INTEGER(INTG), INTENT(IN) :: userNumber !<The field user number to find
     TYPE(FIELDS_TYPE), POINTER :: fields !<The list of fields containing the field
-    TYPE(FIELD_TYPE), POINTER :: field !<On return, a pointer to the field with the given user number. If no field with that user number exists in the list of fields the field is null. Must not be associated on entry.
+    TYPE(FieldType), POINTER :: field !<On return, a pointer to the field with the given user number. If no field with that user number exists in the list of fields the field is null. Must not be associated on entry.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
@@ -380,7 +380,7 @@ CONTAINS
     !Argument variables
     INTEGER(INTG), INTENT(IN) :: userNumber !<The field user number to find
     TYPE(INTERFACE_TYPE), POINTER :: interface !<A pointer to the interface containing the field
-    TYPE(FIELD_TYPE), POINTER :: field !<On exit, a pointer to the field with the given user number. If no field with that user number exists in the interface the field is null. Must not be associated on entry.
+    TYPE(FieldType), POINTER :: field !<On exit, a pointer to the field with the given user number. If no field with that user number exists in the interface the field is null. Must not be associated on entry.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
@@ -409,7 +409,7 @@ CONTAINS
     !Argument variables
     INTEGER(INTG), INTENT(IN) :: userNumber !<The field user number to find
     TYPE(REGION_TYPE), POINTER :: region !<A pointer to the region containing the field
-    TYPE(FIELD_TYPE), POINTER :: field !<On exit, a pointer to the field with the given user number. If no field with that user number exists in the region the field is null. Must not be associated on entry.
+    TYPE(FieldType), POINTER :: field !<On exit, a pointer to the field with the given user number. If no field with that user number exists in the region the field is null. Must not be associated on entry.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
@@ -437,7 +437,7 @@ CONTAINS
   SUBROUTINE Field_VariableGet(field,variableType,fieldVariable,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to get the variable for.
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to get the variable for.
     INTEGER(INTG), INTENT(IN) :: variableType !<The type of field variable to set. \see FIELD_ROUTINES_VariableTypes,FIELD_ROUTINES
     TYPE(FieldVariableType), POINTER :: fieldVariable !<On exit, a pointer to the field variable. Must not be associated on entry.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
@@ -484,7 +484,7 @@ CONTAINS
   SUBROUTINE Field_VariableNumberGet(field,variableNumber,fieldVariable,err,error,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: field !<A pointer to the field to get the variable for.
+    TYPE(FieldType), POINTER :: field !<A pointer to the field to get the variable for.
     INTEGER(INTG), INTENT(IN) :: variableNumber !<The number of field variable to get. 
     TYPE(FieldVariableType), POINTER :: fieldVariable !<On exit, a pointer to the field variable. Must not be associated on entry.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code

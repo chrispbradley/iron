@@ -1036,7 +1036,7 @@ CONTAINS
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local variables
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet
-    TYPE(FIELD_TYPE), POINTER :: derivedField
+    TYPE(FieldType), POINTER :: derivedField
     INTEGER(INTG) :: fieldVarType
     TYPE(VARYING_STRING) :: localError
 

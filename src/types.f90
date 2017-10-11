@@ -309,7 +309,7 @@ MODULE Types
     LOGICAL :: dataProjectionProjected !<Is .TRUE. if the data projection have been projected, .FALSE. if not.
     TYPE(DataPointsType), POINTER :: dataPoints !<The pointer to the data points for this data projection.
     TYPE(DataProjectionsType), POINTER :: dataProjections !<A pointer back to the data projections
-    TYPE(FIELD_TYPE), POINTER :: projectionField !<The pointer to the geometric/dependent field for this data projection.
+    TYPE(FieldType), POINTER :: projectionField !<The pointer to the geometric/dependent field for this data projection.
     INTEGER(INTG) :: projectionVariableType !<The variable type of the geometric/dependent field for this data projection.
     INTEGER(INTG) :: projectionSetType !<The parameter set type of the geometric/dependent field for this data projection. 
     TYPE(DECOMPOSITION_TYPE), POINTER :: decomposition !<The pointer to the decomposition where data points are projected
@@ -1194,7 +1194,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
   
   !>Contains the parameters required to interpolate a field variable within an element. Old CMISS name XE
   TYPE FIELD_INTERPOLATION_PARAMETERS_TYPE
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field to be interpolated.
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field to be interpolated.
     TYPE(FieldVariableType), POINTER :: FIELD_VARIABLE !<A pointer to the field VARIABLE to be interpolated.
     INTEGER(INTG) :: NUMBER_OF_XI !<The number of xi directions for the interpolation parameters.
     TYPE(BASIS_PTR_TYPE), ALLOCATABLE :: BASES(:) !<BASES(component_idx). An array to hold a pointer to the basis (if any) used for interpolating the component_idx'th component of the field variable.
@@ -1345,7 +1345,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     INTEGER(INTG) :: VARIABLE_NUMBER !<The number of the field variable
     INTEGER(INTG) :: VARIABLE_TYPE !<The type of the field variable. \see FIELD_ROUTINES_VariableTypes
     TYPE(VARYING_STRING) :: VARIABLE_LABEL !<The label for the variable
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field for this field variable.
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field for this field variable.
     TYPE(REGION_TYPE), POINTER :: REGION !<A pointer to the region for this field variable.
     INTEGER(INTG) :: DIMENSION !<The dimension of the field variable. \see FIELD_ROUTINES_DimensionTypes
     INTEGER(INTG) :: DATA_TYPE !<The data type of the field variable.  \see FIELD_ROUTINES_DataTypes,FIELD_ROUTINES
@@ -1398,7 +1398,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
   END TYPE FIELD_CREATE_VALUES_CACHE_TYPE
 
   !>Contains information for a field defined on a region. \see OPENCMISS::Iron::cmfe_FieldType
-  TYPE FIELD_TYPE
+  TYPE FieldType
     INTEGER(INTG) :: GLOBAL_NUMBER !<The global number of the field in the list of fields for a region.
     INTEGER(INTG) :: USER_NUMBER !<The user defined identifier for the field. The user number must be unique.
     TYPE(VARYING_STRING) :: LABEL !<The label for the field
@@ -1413,15 +1413,15 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     TYPE(FieldVariablePtrType), ALLOCATABLE :: VARIABLE_TYPE_MAP(:) !<VARIABLE_TYPE_MAP(variable_idx). The map from the available field variable types to the field variable types that are defined for the field. variable_idx varies from 1 to FIELD_ROUTINES::FIELD_NUMBER_OF_VARIABLE_TYPES. If the particular field variable type has not been defined on the field then the VARIABLE_TYPE_MAP will be NULL. \see FIELD_ROUTINES_VariableTypes
     TYPE(FieldVariableType), ALLOCATABLE :: VARIABLES(:) !<VARIABLES(variable_idx). The array of field variables. 
     TYPE(FIELD_SCALINGS_TYPE) :: SCALINGS !<The scaling parameters for the field
-    TYPE(FIELD_TYPE), POINTER :: GEOMETRIC_FIELD !<A pointer to the geometric field that this field uses. If the field itself is a geometric field then this will be a pointer back to itself.
+    TYPE(FieldType), POINTER :: GEOMETRIC_FIELD !<A pointer to the geometric field that this field uses. If the field itself is a geometric field then this will be a pointer back to itself.
     TYPE(FIELD_GEOMETRIC_PARAMETERS_TYPE), POINTER :: GEOMETRIC_FIELD_PARAMETERS !<If the field is a geometric field the pointer to the geometric parameters (lines, areas, volumes etc.). If the field is not a geometric field the pointer is NULL.
     TYPE(FIELD_CREATE_VALUES_CACHE_TYPE), POINTER :: CREATE_VALUES_CACHE !<The create values cache for the field.
     TYPE(DataProjectionType), POINTER :: DataProjection !<A pointer to the data projection that this field uses.
-  END TYPE FIELD_TYPE
+  END TYPE FieldType
 
-  !>A buffer type to allow for an array of pointers to a FIELD_TYPE.
+  !>A buffer type to allow for an array of pointers to a FieldType.
   TYPE FIELD_PTR_TYPE
-    TYPE(FIELD_TYPE), POINTER :: PTR !<The pointer to the field.  
+    TYPE(FieldType), POINTER :: PTR !<The pointer to the field.  
   END TYPE FIELD_PTR_TYPE
 
   !>Contains information on the fields defined on a region.
@@ -1979,12 +1979,12 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
   !>Contains information on the interpolation for the equations
   TYPE EquationsInterpolationType
     TYPE(EquationsType), POINTER :: equations !<A pointer to the equations
-    TYPE(FIELD_TYPE), POINTER :: geometricField !<A pointer to the geometric field for the equations.
-    TYPE(FIELD_TYPE), POINTER :: fibreField !<A pointer to the fibre field for the equations (if one is defined).
-    TYPE(FIELD_TYPE), POINTER :: dependentField !<A pointer to the dependent field for the equations 
-    TYPE(FIELD_TYPE), POINTER :: independentField !<A pointer to the independent field for the equations 
-    TYPE(FIELD_TYPE), POINTER :: materialsField !<A pointer to the material field for the equations (if one is defined).
-    TYPE(FIELD_TYPE), POINTER :: sourceField !<A pointer to the source field for the equations (if one is defined).
+    TYPE(FieldType), POINTER :: geometricField !<A pointer to the geometric field for the equations.
+    TYPE(FieldType), POINTER :: fibreField !<A pointer to the fibre field for the equations (if one is defined).
+    TYPE(FieldType), POINTER :: dependentField !<A pointer to the dependent field for the equations 
+    TYPE(FieldType), POINTER :: independentField !<A pointer to the independent field for the equations 
+    TYPE(FieldType), POINTER :: materialsField !<A pointer to the material field for the equations (if one is defined).
+    TYPE(FieldType), POINTER :: sourceField !<A pointer to the source field for the equations (if one is defined).
     TYPE(FIELD_INTERPOLATION_PARAMETERS_PTR_TYPE), POINTER :: geometricInterpParameters(:) !<GEOMETRIC_INTERP_PARAMETERS(variableTypeIdx). A pointer to the variableTypeIdx'th geometric interpolation parameters for the equations.
     TYPE(FIELD_INTERPOLATION_PARAMETERS_PTR_TYPE), POINTER :: fibreInterpParameters(:) !<FIBRE_INTERP_PARAMETERS(variableTypeIdx). A pointer to the fibre interpolation parameters for the equations (if a fibre field is defined). 
     TYPE(FIELD_INTERPOLATION_PARAMETERS_PTR_TYPE), POINTER :: dependentInterpParameters(:) !<DEPENDENT_INTERP_PARAMETERS(variableTypeIdx). A pointer to the variableTypeIdx'th dependent interpolation parameters for the equations. 
@@ -2166,22 +2166,22 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     INTEGER(INTG) :: SETUP_TYPE !<The setup type for the equations set setup \see EQUATIONS_SET_CONSTANTS_SetupTypes,EQUATIONS_SET_CONSTANTS
     INTEGER(INTG) :: ACTION_TYPE !<The action type for the equations set setup \see EQUATIONS_SET_CONSTANTS_SetupActionTypes,EQUATIONS_SET_CONSTANTS
     INTEGER(INTG) :: FIELD_USER_NUMBER !<The user number for the field for the equations set setup.
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field for the equations set setup.
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field for the equations set setup.
     INTEGER(INTG) :: ANALYTIC_FUNCTION_TYPE !<The analytic function type to use.
   END TYPE EQUATIONS_SET_SETUP_TYPE  
   
   !>Contains information on the geometry for an equations set
   TYPE EQUATIONS_SET_GEOMETRY_TYPE
     TYPE(EQUATIONS_SET_TYPE), POINTER :: EQUATIONS_SET !<A pointer to the equations set.
-    TYPE(FIELD_TYPE), POINTER :: GEOMETRIC_FIELD !<The geometric field for this equations set.
-    TYPE(FIELD_TYPE), POINTER :: FIBRE_FIELD !<The fibre field for this equations set if one is defined. If no fibre field is defined the pointer is NULL.
+    TYPE(FieldType), POINTER :: GEOMETRIC_FIELD !<The geometric field for this equations set.
+    TYPE(FieldType), POINTER :: FIBRE_FIELD !<The fibre field for this equations set if one is defined. If no fibre field is defined the pointer is NULL.
   END TYPE EQUATIONS_SET_GEOMETRY_TYPE
 
   TYPE EQUATIONS_SET_MATERIALS_TYPE
     TYPE(EQUATIONS_SET_TYPE), POINTER :: EQUATIONS_SET !<A pointer to the equations set.
     LOGICAL :: MATERIALS_FINISHED !<Is .TRUE. if the materials for the equations set has finished being created, .FALSE. if not.
     LOGICAL :: MATERIALS_FIELD_AUTO_CREATED !<Is .TRUE. if the materials field has been auto created, .FALSE. if not.
-    TYPE(FIELD_TYPE), POINTER :: MATERIALS_FIELD !<A pointer to the materials field for the equations set if one is defined. If no material field is defined the pointer is NULL.
+    TYPE(FieldType), POINTER :: MATERIALS_FIELD !<A pointer to the materials field for the equations set if one is defined. If no material field is defined the pointer is NULL.
   END TYPE EQUATIONS_SET_MATERIALS_TYPE
 
   !>Contains information on the dependent variables for the equations set.
@@ -2189,7 +2189,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     TYPE(EQUATIONS_SET_TYPE), POINTER :: EQUATIONS_SET !<A pointer to the equations set.
     LOGICAL :: DEPENDENT_FINISHED !<Is .TRUE. if the dependent variables for the equations set has finished being created, .FALSE. if not.
     LOGICAL :: DEPENDENT_FIELD_AUTO_CREATED !<Is .TRUE. if the dependent field has been auto created, .FALSE. if not.
-    TYPE(FIELD_TYPE), POINTER :: DEPENDENT_FIELD !<A pointer to the dependent field for the equations set.
+    TYPE(FieldType), POINTER :: DEPENDENT_FIELD !<A pointer to the dependent field for the equations set.
   END TYPE EQUATIONS_SET_DEPENDENT_TYPE
 
   !>Contains information on the derived variables for the equations set, eg. stress or strain
@@ -2197,7 +2197,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet !<A pointer back to the equations set.
     LOGICAL :: derivedFinished !<Is .TRUE. if the derived variables for the equations set have finished being created, .FALSE. if not.
     LOGICAL :: derivedFieldAutoCreated !<Is .TRUE. if the derived field has been or will be auto created by the equations set setup, .FALSE. if it was already created.
-    TYPE(FIELD_TYPE), POINTER :: derivedField !<A pointer to the derived field for the equations set.
+    TYPE(FieldType), POINTER :: derivedField !<A pointer to the derived field for the equations set.
     INTEGER(INTG) :: numberOfVariables !<The number of derived variables used.
     INTEGER(INTG), ALLOCATABLE :: variableTypes(:) !<variableTypes(DERIVED_TYPE) is zero if the derived type is not used, otherwise it is the field variable type in the derived field for the derived variable type
   END TYPE EquationsSetDerivedType
@@ -2207,7 +2207,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     TYPE(EQUATIONS_SET_TYPE), POINTER :: EQUATIONS_SET !<A pointer to the equations set.
     LOGICAL :: INDEPENDENT_FINISHED !<Is .TRUE. if the independent variables for the equations set has finished being created, .FALSE. if not.
     LOGICAL :: INDEPENDENT_FIELD_AUTO_CREATED !<Is .TRUE. if the independent field has been auto created, .FALSE. if not.
-    TYPE(FIELD_TYPE), POINTER :: INDEPENDENT_FIELD !<A pointer to the independent field for the equations set.
+    TYPE(FieldType), POINTER :: INDEPENDENT_FIELD !<A pointer to the independent field for the equations set.
   END TYPE EQUATIONS_SET_INDEPENDENT_TYPE
 
   !>Contains information on the source for the equations set.
@@ -2215,7 +2215,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     TYPE(EQUATIONS_SET_TYPE), POINTER :: EQUATIONS_SET !<A pointer to the equations set.
     LOGICAL :: SOURCE_FINISHED !<Is .TRUE. if the source for the equations set has finished being created, .FALSE. if not.
     LOGICAL :: SOURCE_FIELD_AUTO_CREATED !<Is .TRUE. if the source field has been auto created, .FALSE. if not.
-    TYPE(FIELD_TYPE), POINTER :: SOURCE_FIELD !<A pointer to the source field for the equations set if one is defined. If no source is defined the pointer is NULL.
+    TYPE(FieldType), POINTER :: SOURCE_FIELD !<A pointer to the source field for the equations set if one is defined. If no source is defined the pointer is NULL.
   END TYPE EQUATIONS_SET_SOURCE_TYPE
   
   !>Contains information on the analytic setup for the equations set.
@@ -2224,7 +2224,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     INTEGER(INTG) :: ANALYTIC_FUNCTION_TYPE !<The analytic function identifier
     LOGICAL :: ANALYTIC_FINISHED !<Is .TRUE. if the analytic setup for the problem has finished being created, .FALSE. if not.
     LOGICAL :: ANALYTIC_FIELD_AUTO_CREATED !<Is .TRUE. if the analytic field has been auto created, .FALSE. if not.
-    TYPE(FIELD_TYPE), POINTER :: ANALYTIC_FIELD !<A pointer to the analytic field for the equations set if one is defined. If no source is defined the pointer is NULL.
+    TYPE(FieldType), POINTER :: ANALYTIC_FIELD !<A pointer to the analytic field for the equations set if one is defined. If no source is defined the pointer is NULL.
     REAL(DP) :: ANALYTIC_TIME !<The time value to use for analytic evaluations.
     REAL(DP) :: ANALYTIC_USER_PARAMS(20)  !<A small array that can be used to hold various parameters often required in analytic problems. \todo should this be allocated?
   END TYPE EQUATIONS_SET_ANALYTIC_TYPE
@@ -2233,7 +2233,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     TYPE(EQUATIONS_SET_TYPE), POINTER :: EQUATIONS_SET !<A pointer to the equations set.
     LOGICAL :: EQUATIONS_SET_FIELD_FINISHED !<Is .TRUE. if the equations set field for the equations set has finished being created, .FALSE. if not.
     LOGICAL :: EQUATIONS_SET_FIELD_AUTO_CREATED !<Is .TRUE. if the equations set field has been auto created, .FALSE. if not.
-    TYPE(FIELD_TYPE), POINTER :: EQUATIONS_SET_FIELD_FIELD !<A pointer to the equations set field for the equations set.
+    TYPE(FieldType), POINTER :: EQUATIONS_SET_FIELD_FIELD !<A pointer to the equations set field for the equations set.
   END TYPE EQUATIONS_SET_EQUATIONS_SET_FIELD_TYPE
 
   !>Contains information on an equations set. \see OPENCMISS::Iron::cmfe_EquationsSetType
@@ -2391,13 +2391,13 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
   !>Contains information about the interpolation for a domain (interface or coupled mesh) in the interface equations
   TYPE INTERFACE_EQUATIONS_DOMAIN_INTERPOLATION_TYPE
     TYPE(INTERFACE_EQUATIONS_INTERPOLATION_TYPE), POINTER :: INTERPOLATION !<A pointer to the interpolation information used in the interface equations.
-    TYPE(FIELD_TYPE), POINTER :: GEOMETRIC_FIELD !<A pointer to the geometric field for the domain
+    TYPE(FieldType), POINTER :: GEOMETRIC_FIELD !<A pointer to the geometric field for the domain
     INTEGER(INTG) :: NUMBER_OF_GEOMETRIC_INTERPOLATION_SETS !<The number of geometric interpolation sets in the domain
     TYPE(INTERFACE_EQUATIONS_INTERPOLATION_SET_TYPE), ALLOCATABLE :: GEOMETRIC_INTERPOLATION(:) !<GEOMETRIC_INTERPOLATION(interpolation_set_idx). The geometric interpolation information for the interpolation_set_idx'th interpolation set.
-    TYPE(FIELD_TYPE), POINTER :: DEPENDENT_FIELD !<A pointer to the dependent field for the domain
+    TYPE(FieldType), POINTER :: DEPENDENT_FIELD !<A pointer to the dependent field for the domain
     INTEGER(INTG) :: NUMBER_OF_DEPENDENT_INTERPOLATION_SETS !<The number of dependent interpolation sets in the domain
     TYPE(INTERFACE_EQUATIONS_INTERPOLATION_SET_TYPE), ALLOCATABLE :: DEPENDENT_INTERPOLATION(:) !<DEPENDENT_INTERPOLATION(interpolation_set_idx). The dependent interpolation information for the interpolation_set_idx'th interpolation set.
-    TYPE(FIELD_TYPE), POINTER :: PENALTY_FIELD !<A pointer to the penalty field for the domain
+    TYPE(FieldType), POINTER :: PENALTY_FIELD !<A pointer to the penalty field for the domain
     INTEGER(INTG) :: NUMBER_OF_PENALTY_INTERPOLATION_SETS !<The number of penalty interpolation sets in the domain
     TYPE(INTERFACE_EQUATIONS_INTERPOLATION_SET_TYPE), ALLOCATABLE :: PENALTY_INTERPOLATION(:) !<PENALTY_INTERPOLATION(interpolation_set_idx). The penalty interpolation information for the interpolation_set_idx'th interpolation set.
   END TYPE INTERFACE_EQUATIONS_DOMAIN_INTERPOLATION_TYPE
@@ -2425,7 +2425,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
   !>Contains information on the geometry for an interface condition
   TYPE INTERFACE_GEOMETRY_TYPE
     TYPE(INTERFACE_CONDITION_TYPE), POINTER :: INTERFACE_CONDITION !<A pointer to the interface condition.
-    TYPE(FIELD_TYPE), POINTER :: GEOMETRIC_FIELD !<The geometric field for this equations set.
+    TYPE(FieldType), POINTER :: GEOMETRIC_FIELD !<The geometric field for this equations set.
   END TYPE INTERFACE_GEOMETRY_TYPE
 
   !>Contains information about the penalty field information for an interface condition. 
@@ -2433,7 +2433,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     TYPE(INTERFACE_CONDITION_TYPE), POINTER :: INTERFACE_CONDITION !<A pointer to the interface condition
     LOGICAL :: PENALTY_FINISHED !<Is .TRUE. if the interface penalty field has finished being created, .FALSE. if not.
     LOGICAL :: PENALTY_FIELD_AUTO_CREATED !<Is .TRUE. if the penalty field has been auto created, .FALSE. if not.
-    TYPE(FIELD_TYPE), POINTER :: PENALTY_FIELD !<A pointer to the penalty field.
+    TYPE(FieldType), POINTER :: PENALTY_FIELD !<A pointer to the penalty field.
   END TYPE INTERFACE_PENALTY_TYPE
 
   !>Contains information about the Lagrange field information for an interface condition. 
@@ -2441,7 +2441,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     TYPE(INTERFACE_CONDITION_TYPE), POINTER :: INTERFACE_CONDITION !<A pointer to the interface condition
     LOGICAL :: LAGRANGE_FINISHED !<Is .TRUE. if the interface Lagrange field has finished being created, .FALSE. if not.
     LOGICAL :: LAGRANGE_FIELD_AUTO_CREATED !<Is .TRUE. if the Lagrange field has been auto created, .FALSE. if not.
-    TYPE(FIELD_TYPE), POINTER :: LAGRANGE_FIELD !<A pointer to the lagrange field.
+    TYPE(FieldType), POINTER :: LAGRANGE_FIELD !<A pointer to the lagrange field.
     INTEGER(INTG) :: NUMBER_OF_COMPONENTS !<The number of components in the Lagrange field.
   END TYPE INTERFACE_LAGRANGE_TYPE
 
@@ -2592,7 +2592,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     TYPE(CELLML_TYPE), POINTER :: CELLML !<A pointer to the CellML environment 
     LOGICAL :: MODELS_FIELD_FINISHED  !<Is .TRUE. if the models field has finished being created, .FALSE. if not.
     LOGICAL :: MODELS_FIELD_AUTO_CREATED !<Is .TRUE. if the models field has been auto created, .FALSE. if not.
-    TYPE(FIELD_TYPE), POINTER :: MODELS_FIELD !<A pointer to the models field
+    TYPE(FieldType), POINTER :: MODELS_FIELD !<A pointer to the models field
     INTEGER(INTG) :: ONLY_ONE_MODEL_INDEX !<If only one model is used in the models field for the CellML environment then this will be equal to the model index. It will be zero otherwise.
   END TYPE CELLML_MODELS_FIELD_TYPE
   
@@ -2601,7 +2601,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     TYPE(CELLML_TYPE), POINTER :: CELLML !<A pointer to the CellML environment 
     LOGICAL :: STATE_FIELD_FINISHED  !<Is .TRUE. if the state field has finished being created, .FALSE. if not.
     LOGICAL :: STATE_FIELD_AUTO_CREATED !<Is .TRUE. if the state field has been auto created, .FALSE. if not.
-    TYPE(FIELD_TYPE), POINTER :: STATE_FIELD !<A pointer to the state field
+    TYPE(FieldType), POINTER :: STATE_FIELD !<A pointer to the state field
   END TYPE CELLML_STATE_FIELD_TYPE
   
   !>Contains information on the intermediate field for a CellML environment
@@ -2609,7 +2609,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     TYPE(CELLML_TYPE), POINTER :: CELLML !<A pointer to the CellML environment 
     LOGICAL :: INTERMEDIATE_FIELD_FINISHED  !<Is .TRUE. if the intermediate field has finished being created, .FALSE. if not.
     LOGICAL :: INTERMEDIATE_FIELD_AUTO_CREATED !<Is .TRUE. if the intermediate field has been auto created, .FALSE. if not.
-    TYPE(FIELD_TYPE), POINTER :: INTERMEDIATE_FIELD !<A pointer to the intermediate field
+    TYPE(FieldType), POINTER :: INTERMEDIATE_FIELD !<A pointer to the intermediate field
   END TYPE CELLML_INTERMEDIATE_FIELD_TYPE
   
   !>Contains information on the parameters field for a CellML environment
@@ -2617,7 +2617,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     TYPE(CELLML_TYPE), POINTER :: CELLML !<A pointer to the CellML environment 
     LOGICAL :: PARAMETERS_FIELD_FINISHED  !<Is .TRUE. if the parameters field has finished being created, .FALSE. if not.
     LOGICAL :: PARAMETERS_FIELD_AUTO_CREATED !<Is .TRUE. if the parameters field has been auto created, .FALSE. if not.
-    TYPE(FIELD_TYPE), POINTER :: PARAMETERS_FIELD !<A pointer to the parameters field
+    TYPE(FieldType), POINTER :: PARAMETERS_FIELD !<A pointer to the parameters field
   END TYPE CELLML_PARAMETERS_FIELD_TYPE
  
   !> Contains information on the solver, cellml, dof etc. for which cellml equations are to be evaluated by petsc
@@ -2632,7 +2632,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
   !>Contains information on the mapping between CellML fields and OpenCMISS fields and vise versa.
   TYPE CELLML_MODEL_MAP_TYPE
     INTEGER(INTG) :: CELLML_MAP_TYPE !<The direction of the mapping. \see CELLML_FieldMappingTypes,CMISS_CELLML
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to/from the field being mapped.
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to/from the field being mapped.
     INTEGER(INTG) :: VARIABLE_TYPE !<The field variable type being mapped.
     INTEGER(INTG) :: COMPONENT_NUMBER !<The field variable component number being mapped.
     INTEGER(INTG) :: FIELD_PARAMETER_SET !<The field variable parameter set being mapped.
@@ -2664,7 +2664,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
   TYPE CELLML_FIELD_MAPS_TYPE
     TYPE(CELLML_TYPE), POINTER :: CELLML !<A pointer back to the CellML environment.
     LOGICAL :: CELLML_FIELD_MAPS_FINISHED !<Is .TRUE. if the CellML maps have finished being created, .FALSE. if not.
-    TYPE(FIELD_TYPE), POINTER :: SOURCE_GEOMETRIC_FIELD !<The source geometric field for the CellML environment.
+    TYPE(FieldType), POINTER :: SOURCE_GEOMETRIC_FIELD !<The source geometric field for the CellML environment.
     TYPE(FieldVariableType), POINTER :: SOURCE_FIELD_VARIABLE !<The source field variable for the CellML environment.
     TYPE(DOMAIN_TYPE), POINTER :: SOURCE_FIELD_DOMAIN !<The source field domain for the CellML environment.
     INTEGER(INTG) :: SOURCE_FIELD_INTERPOLATION_TYPE !<The source field interpolation type for the CellML environment.
@@ -3078,7 +3078,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     INTEGER(INTG) :: numberOfIncrements !<The number of increments used to apply the transformation.
     REAL(DP), ALLOCATABLE :: scalings(:) !scaling(loadIncrementIdx), the scaling factors for each load increment, apply the full transformation in 1 load increment if unallocated. Only allocated if there are multiple load steps and if the transformation is uni-directional.
     REAL(DP), ALLOCATABLE :: transformationMatrices(:,:,:) !<transformationMatrices(spatialCoord+1,spatialCoord+1,incrementIdx). 4x4 matrices for 3D transformation, 3x3 for 2D transformation
-    TYPE(FIELD_TYPE), POINTER :: field !<fields to which the geometric transformations are applied 
+    TYPE(FieldType), POINTER :: field !<fields to which the geometric transformations are applied 
     INTEGER(INTG) :: fieldVariableType !<The field variable type index to transform
   END TYPE GeometricTransformationSolverType
 
@@ -3437,7 +3437,7 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     INTEGER(INTG) :: FILE_FORMAT !<The format of the history file \see HISTORY_ROUTINES_FileFormatTypes,HISTORY_ROUTINES
     TYPE(VARYING_STRING) :: FILENAME !<The file name of the history file
     INTEGER(INTG) :: UNIT_NUMBER !<The unit number of the history file.
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<A pointer to the field that will be read/written in the history file
+    TYPE(FieldType), POINTER :: FIELD !<A pointer to the field that will be read/written in the history file
   END TYPE HISTORY_TYPE
   
   !

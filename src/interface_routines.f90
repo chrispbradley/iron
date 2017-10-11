@@ -1452,7 +1452,7 @@ CONTAINS
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
     TYPE(InterfacePointsConnectivityType), POINTER :: interfacePointsConnectivity
-    TYPE(FIELD_TYPE), POINTER :: dependentFieldFixed,dependentFieldProjection
+    TYPE(FieldType), POINTER :: dependentFieldFixed,dependentFieldProjection
     TYPE(DataPointsType), POINTER :: dataPoints
     TYPE(DataProjectionType), POINTER :: dataProjection
     TYPE(FIELD_INTERPOLATED_POINT_PTR_TYPE), POINTER :: interpolatedPoints(:)

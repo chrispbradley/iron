@@ -114,7 +114,7 @@ CONTAINS
   SUBROUTINE AnalyticAnalysis_Output(FIELD,FILENAME,ERR,ERROR,*)
   
     !Argument variables 
-    TYPE(FIELD_TYPE), INTENT(IN), POINTER :: FIELD !<A pointer to the dependent field to calculate the analytic error analysis for
+    TYPE(FieldType), INTENT(IN), POINTER :: FIELD !<A pointer to the dependent field to calculate the analytic error analysis for
     CHARACTER(LEN=*) :: FILENAME !<If not empty, the filename to output the analytic analysis to. If empty, the analysis will be output to the standard output
     INTEGER(INTG), INTENT(OUT) :: ERR !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: ERROR !<The error string
@@ -801,7 +801,7 @@ CONTAINS
     TYPE(BASIS_TYPE), POINTER :: BASIS,DEPENDENT_BASIS,GEOMETRIC_BASIS
     TYPE(DECOMPOSITION_TYPE), POINTER :: DECOMPOSITION
     TYPE(DOMAIN_ELEMENTS_TYPE), POINTER :: DOMAIN_ELEMENTS1,DOMAIN_ELEMENTS2,DOMAIN_ELEMENTS3
-    TYPE(FIELD_TYPE), POINTER :: DEPENDENT_FIELD,GEOMETRIC_FIELD
+    TYPE(FieldType), POINTER :: DEPENDENT_FIELD,GEOMETRIC_FIELD
     TYPE(FIELD_INTERPOLATED_POINT_PTR_TYPE), POINTER :: GEOMETRIC_INTERP_POINT(:)
     TYPE(FIELD_INTERPOLATED_POINT_METRICS_PTR_TYPE), POINTER :: GEOMETRIC_INTERP_POINT_METRICS(:)
     TYPE(FIELD_INTERPOLATION_PARAMETERS_PTR_TYPE), POINTER :: ANALYTIC_INTERP_PARAMETERS(:),GEOMETRIC_INTERP_PARAMETERS(:), &
@@ -998,7 +998,7 @@ CONTAINS
     & GHOST_INTEGRAL_ERROR,ERR,ERROR,*)
 
     !Argument variables   
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<the field.
+    TYPE(FieldType), POINTER :: FIELD !<the field.
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<variable type
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<component number
     REAL(DP), INTENT(OUT) :: INTEGRAL_ERROR(2) !<On return, the integral numerical value for local elements
@@ -1041,7 +1041,7 @@ CONTAINS
     & GHOST_INTEGRAL_ERROR,ERR,ERROR,*)
   
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<the field.
+    TYPE(FieldType), POINTER :: FIELD !<the field.
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<variable type
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<component number
     REAL(DP), INTENT(OUT) :: INTEGRAL_ERROR(2) !<On return, the integral numerical value for local elements
@@ -1082,7 +1082,7 @@ CONTAINS
     & GHOST_INTEGRAL_ERROR,ERR,ERROR,*)
   
     !Argument variables   
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<the field.
+    TYPE(FieldType), POINTER :: FIELD !<the field.
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<variable type
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<component number
     REAL(DP), INTENT(OUT) :: INTEGRAL_ERROR(2) !<On return, the integral numerical value for local elements
@@ -1123,7 +1123,7 @@ CONTAINS
     & GHOST_INTEGRAL_ERROR,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<the field.
+    TYPE(FieldType), POINTER :: FIELD !<the field.
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<variable type
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<component number
     REAL(DP), INTENT(OUT) :: INTEGRAL_ERROR(2) !<On return, the integral numerical value for local elements
@@ -1165,7 +1165,7 @@ CONTAINS
     & GHOST_INTEGRAL_ERROR,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<the field.
+    TYPE(FieldType), POINTER :: FIELD !<the field.
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<variable type
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<component number
     REAL(DP), INTENT(OUT) :: INTEGRAL_ERROR(2) !<On return, the integral numerical value for local elements
@@ -1207,7 +1207,7 @@ CONTAINS
     & GHOST_INTEGRAL_ERROR,ERR,ERROR,*)
 
     !Argument variables   
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<the field.
+    TYPE(FieldType), POINTER :: FIELD !<the field.
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<variable type
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<component number
     REAL(DP), INTENT(OUT) :: INTEGRAL_ERROR(2) !<On return, the integral numerical value for local elements
@@ -1250,7 +1250,7 @@ CONTAINS
     & GHOST_INTEGRAL_ERROR,ERR,ERROR,*)
   
     !Argument variables   
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<the field.
+    TYPE(FieldType), POINTER :: FIELD !<the field.
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<variable type
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<component number
     REAL(DP), INTENT(OUT) :: INTEGRAL_ERROR(2) !<On return, the integral numerical value for local elements
@@ -1293,7 +1293,7 @@ CONTAINS
     & COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<the field.
+    TYPE(FieldType), POINTER :: FIELD !<the field.
     INTEGER(INTG), INTENT(IN) :: VERSION_NUMBER !<derivative version number
     INTEGER(INTG), INTENT(IN) :: DERIVATIVE_NUMBER !<derivative number
     INTEGER(INTG), INTENT(IN) :: USER_NODE_NUMBER !<node number
@@ -1332,7 +1332,7 @@ CONTAINS
     & COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<the field.
+    TYPE(FieldType), POINTER :: FIELD !<the field.
     INTEGER(INTG), INTENT(IN) :: VERSION_NUMBER !<derivative version number
     INTEGER(INTG), INTENT(IN) :: DERIVATIVE_NUMBER !<derivative number
     INTEGER(INTG), INTENT(IN) :: USER_NODE_NUMBER !<node number
@@ -1373,7 +1373,7 @@ CONTAINS
     & COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<the field.
+    TYPE(FieldType), POINTER :: FIELD !<the field.
     INTEGER(INTG), INTENT(IN) :: VERSION_NUMBER !<derivative version number
     INTEGER(INTG), INTENT(IN) :: DERIVATIVE_NUMBER !<derivative number
     INTEGER(INTG), INTENT(IN) :: USER_NODE_NUMBER !<node number
@@ -1412,7 +1412,7 @@ CONTAINS
     & ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<the field.
+    TYPE(FieldType), POINTER :: FIELD !<the field.
     INTEGER(INTG), INTENT(IN) :: USER_ELEMENT_NUMBER !<node number
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<component number
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<variable type
@@ -1450,7 +1450,7 @@ CONTAINS
     & USER_ELEMENT_NUMBER,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<the field.
+    TYPE(FieldType), POINTER :: FIELD !<the field.
     INTEGER(INTG), INTENT(IN) :: USER_ELEMENT_NUMBER !<node number
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<component number
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<variable type
@@ -1488,7 +1488,7 @@ CONTAINS
     & ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<the field.
+    TYPE(FieldType), POINTER :: FIELD !<the field.
     INTEGER(INTG), INTENT(IN) :: USER_ELEMENT_NUMBER !<node number
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<component number
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<variable type
@@ -1526,7 +1526,7 @@ CONTAINS
     & ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<the field.
+    TYPE(FieldType), POINTER :: FIELD !<the field.
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<component number
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<variable type
     REAL(DP), INTENT(OUT) :: VALUE !<On return, the absolute error
@@ -1562,7 +1562,7 @@ CONTAINS
   SUBROUTINE AnalyticAnalysis_PercentageErrorGetConstant(FIELD,VARIABLE_TYPE,COMPONENT_NUMBER,VALUE,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<the field.
+    TYPE(FieldType), POINTER :: FIELD !<the field.
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<component number
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<variable type
     REAL(DP), INTENT(OUT) :: VALUE !<On return, the percentage error
@@ -1600,7 +1600,7 @@ CONTAINS
     & ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<the field.
+    TYPE(FieldType), POINTER :: FIELD !<the field.
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<component number
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<variable type
     REAL(DP), INTENT(OUT) :: VALUE !<On return, the relative error
@@ -1637,7 +1637,7 @@ CONTAINS
     & GLOBAL_RMS,ERR,ERROR,*)
   
     !Argument variables   
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<the field.
+    TYPE(FieldType), POINTER :: FIELD !<the field.
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<variable type
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<component index
     INTEGER(INTG), INTENT(IN) :: ERROR_TYPE !<error type
@@ -1767,7 +1767,7 @@ CONTAINS
     & GLOBAL_RMS,ERR,ERROR,*)
 
     !Argument variables
-    TYPE(FIELD_TYPE), POINTER :: FIELD !<the field.
+    TYPE(FieldType), POINTER :: FIELD !<the field.
     INTEGER(INTG), INTENT(IN) :: VARIABLE_TYPE !<variable type
     INTEGER(INTG), INTENT(IN) :: COMPONENT_NUMBER !<component index
     INTEGER(INTG), INTENT(IN) :: ERROR_TYPE !<error type
