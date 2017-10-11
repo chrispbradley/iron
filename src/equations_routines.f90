@@ -120,9 +120,6 @@ MODULE EquationsRoutines
  
   PUBLIC EQUATIONS_SCALAR_TYPE,EQUATIONS_VECTOR_TYPE,EQUATIONS_FUNCTIONAL_TYPE
 
-  PUBLIC EQUATIONS_EQUALS_TYPE,EQUATIONS_LESS_THAN_TYPE,EQUATIONS_LESS_THAN_EQUALS_TYPE,EQUATIONS_GREATER_THAN_TYPE, &
-    & EQUATIONS_GREATER_THAN_EQUALS_TYPE
-  
   PUBLIC EQUATIONS_NO_OUTPUT,EQUATIONS_TIMING_OUTPUT,EQUATIONS_MATRIX_OUTPUT,EQUATIONS_ELEMENT_MATRIX_OUTPUT, &
     & EQUATIONS_NODAL_MATRIX_OUTPUT
 
@@ -136,8 +133,6 @@ MODULE EquationsRoutines
 
   PUBLIC Equations_Destroy
 
-  PUBLIC Equations_EqualityTypeGet,Equations_EqualityTypeSet
-  
   PUBLIC Equations_EquationTypeGet,Equations_EquationTypeSet
 
   PUBLIC Equations_LinearityTypeGet,Equations_LinearityTypeSet
@@ -338,77 +333,6 @@ CONTAINS
   !================================================================================================================================
   !
 
-  !>Gets the equality type for equations.
-  SUBROUTINE Equations_EqualityTypeGet(equations,equalityType,err,error,*)
-
-    !Argument variables
-    TYPE(EquationsType), POINTER :: equations !<A pointer to the equations to get the equality type for
-    INTEGER(INTG), INTENT(OUT) :: equalityType !<On exit, the equality type of the equations. \see EquationsRoutines_EquationEqualityTypes,EquationsRoutines
-    INTEGER(INTG), INTENT(OUT) :: err !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
-    !Local Variables
- 
-    ENTERS("Equations_EqualityTypeGet",err,error,*999)
-
-    IF(.NOT.ASSOCIATED(equations)) CALL FlagError("Equations is not associated.",err,error,*999)
-    IF(.NOT.equations%equationsFinished) CALL FlagError("Equations has not been finished.",err,error,*999)
-    
-    equalityType=equations%equalityType
-       
-    EXITS("Equations_EqualityTypeGet")
-    RETURN
-999 ERRORSEXITS("Equations_EqualityTypeGet",err,error)
-    RETURN 1
-    
-  END SUBROUTINE Equations_EqualityTypeGet
-  
-  !
-  !================================================================================================================================
-  !
-
-  !>Sets/changes the equality type for equations.
-  SUBROUTINE Equations_EqualityTypeSet(equations,equalityType,err,error,*)
-
-    !Argument variables
-    TYPE(EquationsType), POINTER :: equations !<A pointer to the equations to set the equality for
-    INTEGER(INTG), INTENT(IN) :: equalityType !<The equality type to set \see EquationsRoutines_EquationEqualityTypes,EquationsRoutines
-    INTEGER(INTG), INTENT(OUT) :: err !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
-    !Local Variables
-    TYPE(VARYING_STRING) :: localError
- 
-    ENTERS("Equations_EqualityTypeSet",err,error,*999)
-
-    IF(.NOT.ASSOCIATED(equations)) CALL FlagError("Equations is not associated.",err,error,*999)
-    IF(equations%equationsFinished) CALL FlagError("Equations has already been finished.",err,error,*999)
-
-    SELECT CASE(equalityType)
-    CASE(EQUATIONS_EQUALS_TYPE)
-      equations%equalityType=EQUATIONS_EQUALS_TYPE
-    CASE(EQUATIONS_LESS_THAN_TYPE)
-      equations%equalityType=EQUATIONS_LESS_THAN_TYPE
-    CASE(EQUATIONS_LESS_THAN_EQUALS_TYPE)
-      equations%equalityType=EQUATIONS_LESS_THAN_EQUALS_TYPE
-    CASE(EQUATIONS_GREATER_THAN_TYPE)
-      equations%equalityType=EQUATIONS_GREATER_THAN_TYPE
-    CASE(EQUATIONS_GREATER_THAN_EQUALS_TYPE)
-      equations%equalityType=EQUATIONS_GREATER_THAN_EQUALS_TYPE
-    CASE DEFAULT
-      localError="The specified equation equality type of "//TRIM(NumberToVString(equalityType,"*",err,error))//" is invalid."
-      CALL FlagError(localError,err,error,*999)
-    END SELECT
-       
-    EXITS("Equations_EqualityTypeSet")
-    RETURN
-999 ERRORSEXITS("Equations_EqualityTypeSet",err,error)
-    RETURN 1
-    
-  END SUBROUTINE Equations_EqualityTypeSet
-  
-  !
-  !================================================================================================================================
-  !
-
   !>Gets the equation type for equations.
   SUBROUTINE Equations_EquationTypeGet(equations,equationType,err,error,*)
 
@@ -550,7 +474,6 @@ CONTAINS
     equationsSet%equations%equationsSet=>equationsSet
     equationsSet%equations%equationsFinished=.FALSE.
     equationsSet%equations%equationType=EQUATIONS_VECTOR_TYPE
-    equationsSet%equations%equalityType=EQUATIONS_EQUALS_TYPE
     equationsSet%equations%linearity=EQUATIONS_LINEAR
     equationsSet%equations%timeDependence=EQUATIONS_STATIC
     equationsSet%equations%outputType=EQUATIONS_NO_OUTPUT

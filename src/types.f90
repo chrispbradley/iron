@@ -1880,13 +1880,17 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
   TYPE EquationsMappingScalarCreateValuesCacheType
     INTEGER(INTG) :: numberOfDotProducts !<The number of dot products in the scalar mapping
     REAL(DP), ALLOCATABLE :: dotProductCoefficients(:) !<dotProductCoefficients(dotProductIdx). The coefficient for the dotProductIdx'th dot product in the scalar mapping
-    INTEGER(INTG), ALLOCATABLE :: dotProductVariableTypes(:,:) !<dotProductVariableTypes(1..2,dotProductIdx). The variable types for the 1st and 2nd field variables in the dotProductIdx'th dot product in the scalar mapping.
+    TYPE(FieldVariablePtrType), ALLOCATABLE :: dotProductVariables(:,:) !<dotProductVariables(1..2,dotProductIdx). The 1st and 2nd field variables in the dotProductIdx'th dot product in the scalar mapping.
+    INTEGER(INTG) :: numberOfFunctions !<The number of functions in the scalar mapping
+    REAL(DP), ALLOCATABLE :: functionCoefficients(:) !<functionCoefficients(functionIdx). The coefficient for the functionIdx'th function in the scalar mapping
+    INTEGER(INTG), ALLOCATABLE :: numberOfFunctionVariables(:) !<numberOfFunctionVariables(functionIdx). The number of field variables mapped for the functionIdx'th function in the scalar mapping
+    TYPE(FieldVariablePtrType), ALLOCATABLE :: functionVariables(:,:) !<functionVariables(1..,functionIdx). The 1.. field variables in the functionIdx'th function in the scalar mapping.
     INTEGER(INTG) :: numberOfNorms !<The number of norms in the scalar mapping
     REAL(DP), ALLOCATABLE :: normCoefficients(:) !<normCoefficients(normIdx). The coefficient for the normIdx'th norm in the scalar mapping
-    INTEGER(INTG), ALLOCATABLE :: normVariableTypes(:)!<normVariableTypes(normIdx). The variable type for the normIdx'th norm in the scalar mapping.
+    TYPE(FieldVariablePtrType), ALLOCATABLE :: normVariables(:)!<normVariables(normIdx). The variable type for the normIdx'th norm in the scalar mapping.
     INTEGER(INTG) :: numberOfQuadraticForms !<The number of quadratic forms in the scalar mapping
     REAL(DP), ALLOCATABLE :: quadraticFormCoefficients(:) !<quadratFormCoefficients(quadraticFormIdx). The coefficient for the quadraticFormIdx'th quadratic form in the scalar mapping
-    INTEGER(INTG), ALLOCATABLE :: quadraticFormVariableTypes(:,:) !<quadraticFormVariableTypes(1..2,quadraticFormIdx). The variable types for the 1st and 2nd field variables in the quadraticFormIdx'th quadratic form in the scalar mapping.
+    TYPE(FieldVariablePtrType), ALLOCATABLE :: quadraticFormVariables(:,:) !<quadraticFormVariables(1..2,quadraticFormIdx). The 1st and 2nd field variables in the quadraticFormIdx'th quadratic form in the scalar mapping.
   END TYPE EquationsMappingScalarCreateValuesCacheType
 
   !>Contains information on the create values cache for the vector equations mapping. Because we do not want to allocate and
@@ -2029,7 +2033,6 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet !<A pointer to the equations_set
     LOGICAL :: equationsFinished !<Is .TRUE. if the equations have been finished, .FALSE. if not.
     INTEGER(INTG) :: equationType !<The equations type \see EquationsRoutines_EquationTypes,EquationsRoutines
-    INTEGER(INTG) :: equalityType !<The equations equality type \see EquationsRoutines_EquationEqualityTypes,EquationsRoutines
     INTEGER(INTG) :: linearity !<The equations linearity type \see EQUATIONS_SET_CONSTANTS_LinearityTypes,EQUATIONS_SET_CONSTANTS
     INTEGER(INTG) :: timeDependence !<The equations time dependence type \see EQUATIONS_SET_CONSTANTS_TimeDependenceTypes,EQUATIONS_SET_CONSTANTS
     INTEGER(INTG) :: outputType !<The output type for the equations \see EquationsRoutines_EquationsOutputTypes,EquationsRoutines
