@@ -164,6 +164,8 @@ MODULE EquationsMappingRoutines
 
   PUBLIC EquationsMapping_ScalarCreateFinish,EquationsMapping_ScalarCreateStart
 
+  PUBLIC EquationsMapping_ScalarDependentVariableAdd
+
   PUBLIC EquationsMapping_ScalarDestroy
 
   PUBLIC EquationsMapping_SourceCoeffSet
@@ -706,7 +708,7 @@ CONTAINS
   END SUBROUTINE EquationsMapping_DotProductsNumberSet
   
   !
-  !================================================================================================================================
+  !=================================================================================================================================
   !
 
   !>Sets the variable types for the dot products in the scalar mapping.
@@ -1322,24 +1324,47 @@ CONTAINS
   !
 
   !>Sets the variables in the equality constraint mapping
-  SUBROUTINE EquationsMapping_EqualityConstraintVariablesSet(constraintMapping,equalityVariables,err,error,*)
+  SUBROUTINE EquationsMapping_EqualityConstraintVariablesSet(constraintMapping,rowVariable,equalityVariables,err,error,*)
 
     !Argument variables
     TYPE(EquationsMappingConstraintType), POINTER :: constraintMapping !<A pointer to the constraint mapping to set the equality constraint variables
+    TYPE(FieldVariableType), POINTER :: rowVariable !<A pointer to the row field variable for the equality constraints
     TYPE(FieldVariablePtrType), INTENT(IN) :: equalityVariables(:) !<equalityVariables(variableIdx). The variables to set for equality constraints
     INTEGER(INTG), INTENT(OUT) :: err !<The error code 
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
-    INTEGER(INTG) :: dummyErr
-    TYPE(VARYING_STRING) :: dummyError
+    INTEGER(INTG) :: dummyErr,numberOfVariables,variableIdx
+    TYPE(EquationsMappingConstraintCreateValuesCacheType), POINTER :: createValuesCache
+    TYPE(VARYING_STRING) :: dummyError,localError
 
-    ENTERS("EquationsMapping_EqualityConstraintVariablesSet",err,error,*999)
+    ENTERS("EquationsMapping_EqualityConstraintVariablesSet",err,error,*998)
 
-    IF(.NOT.ASSOCIATED(constraintMapping)) CALL FlagError("Constraint mapping is not associated.",err,error,*999)
+    IF(.NOT.ASSOCIATED(constraintMapping)) CALL FlagError("Constraint mapping is not associated.",err,error,*998)
+    IF(constraintMapping%constraintMappingFinished) CALL FlagError("Constraint mapping has been finished.",err,error,*998)
+    NULLIFY(createValuesCache)
+    CALL EquationsMappingConstraint_CreateValuesCacheGet(constraintMapping,createValuesCache,err,error,*998)
+    IF(.NOT.ASSOCIATED(rowVariable)) CALL FlagError("Row variable is not associated.",err,error,*999)
+    numberOfVariables=SIZE(equalityVariables,1)
+    DO variableIdx=1,numberOfVariables
+      IF(.NOT.ASSOCIATED(equalityVariables(variableIdx)%ptr)) THEN
+        localError="The field variable for variable index "//TRIM(NumberToVString(variableIdx,"*",err,error))// &
+          & " is not associated."
+        CALL FlagError(localError,err,error,*999)
+      ENDIF
+    ENDDO !variableIdx
+
+    IF(ALLOCATED(createValuesCache%equalityVariables)) DEALLOCATE(createValuesCache%equalityVariables)
+    ALLOCATE(createValuesCache%equalityVariables(numberOfVariables),STAT=err)
+    IF(err/=0) CALL FlagError("Could not allocated new equality variables array.",err,error,*999)
+    DO variableIdx=1,numberOfVariables
+      createValuesCache%equalityVariables(variableIdx)%ptr=>equalityVariables(variableIdx)%ptr
+    ENDDO !variableIdx
+    createValuesCache%equalityRowVariable=>rowVariable
         
     EXITS("EquationsMapping_EqualityConstraintVariablesSet")
     RETURN
-999 ERRORS("EquationsMapping_EqualityConstraintVariablesSet",err,error)
+999 IF(ALLOCATED(createValuesCache%equalityVariables)) DEALLOCATE(createValuesCache%equalityVariables)
+998 ERRORS("EquationsMapping_EqualityConstraintVariablesSet",err,error)
     EXITS("EquationsMapping_EqualityConstraintVariablesSet")
     RETURN 1
     
@@ -1652,25 +1677,74 @@ CONTAINS
   !
 
   !>Sets the variables in the functions scalar mapping
-  SUBROUTINE EquationsMapping_FunctionVariablesSet1(scalarMapping,functionIdx,functionVariables,err,error,*)
+  SUBROUTINE EquationsMapping_FunctionVariablesSet1(scalarMapping,functionIndex,functionVariables,err,error,*)
 
     !Argument variables
     TYPE(EquationsMappingScalarType), POINTER :: scalarMapping !<A pointer to the scalar mapping to set the function variables for
-    INTEGER(INTG), INTENT(IN) :: functionIdx !<The function index in the scalar mapping to set the function variables for.
+    INTEGER(INTG), INTENT(IN) :: functionIndex !<The function index in the scalar mapping to set the function variables for.
     TYPE(FieldVariablePtrType), INTENT(IN) :: functionVariables(:) !<functionVariables(variableIdx). The variables to set for the function
     INTEGER(INTG), INTENT(OUT) :: err !<The error code 
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
-    INTEGER(INTG) :: dummyErr
-    TYPE(VARYING_STRING) :: dummyError
+    INTEGER(INTG) :: dummyErr,functionIdx,numberOfFunctionVariables,variableIdx
+    TYPE(EquationsMappingScalarCreateValuesCacheType), POINTER :: createValuesCache
+    TYPE(FieldVariablePtrType), ALLOCATABLE :: newFunctionVariables(:,:)
+    TYPE(VARYING_STRING) :: dummyError,localError
 
     ENTERS("EquationsMapping_FunctionVariablesSet1",err,error,*999)
 
     IF(.NOT.ASSOCIATED(scalarMapping)) CALL FlagError("Scalar mapping is not associated.",err,error,*999)
+    IF(scalarMapping%scalarMappingFinished) CALL FlagError("Scalar mapping has been finished.",err,error,*999)
+    NULLIFY(createValuesCache)
+    CALL EquationsMappingScalar_CreateValuesCacheGet(scalarMapping,createValuesCache,err,error,*999)
+    IF(functionIndex<1.OR.functionIndex>createValuesCache%numberOfFunctions) THEN
+      localError="The specified function index of "//TRIM(NumberToVString(functionIndex,"*",err,error))// &
+        & " is invalid. The index should be >= 1 and <= "// &
+        & TRIM(NumberToVString(createValuesCache%numberOfFunctions,"*",err,error))//"."
+      CALL FlagError(localError,err,error,*999)
+    ENDIF
+    numberOfFunctionVariables=SIZE(functionVariables,1)
+    IF(numberOfFunctionVariables<1) THEN
+      localError="The size of the function variables array of "//TRIM(NumberToVString(numberOfFunctionVariables,"*",err,error))// &
+        & " is invalid. The size must be > 0."
+      CALL FlagError(localError,err,error,*999)
+    ENDIF
+    DO variableIdx=1,numberOfFunctionVariables
+      IF(.NOT.ASSOCIATED(functionVariables(variableIdx)%ptr)) THEN
+        localError="The field variable for function variable index "//TRIM(NumberToVString(variableIdx,"*",err,error))// &
+          & " is not associated."
+        CALL FlagError(localError,err,error,*999)
+      ENDIF
+    ENDDO !variableIdx
+
+    IF(numberOfFunctionVariables>SIZE(createValuesCache%functionVariables,1)) THEN
+      !Reallocate the cache function variables array to accomodate the new function variables
+      ALLOCATE(newFunctionVariables(numberOfFunctionVariables,createValuesCache%numberOfFunctions),STAT=err)
+      IF(err/=0) CALL FlagError("Could not allocate new function variables.",err,error,*999)
+      DO functionIdx=1,createValuesCache%numberOfFunctions
+        IF(functionIdx/=functionIndex) THEN
+          DO variableIdx=1,createValuesCache%numberOfFunctionVariables(functionIdx)
+            newFunctionVariables(variableIdx,functionIdx)%ptr=>createValuesCache%functionVariables(variableIdx,functionIdx)%ptr
+          ENDDO !variableIdx
+          DO variableIdx=createValuesCache%numberOfFunctionVariables(functionIdx)+1,SIZE(createValuesCache%functionVariables,1)
+            NULLIFY(newFunctionVariables(variableIdx,functionIdx)%ptr)
+          ENDDO !variableIdx
+        ENDIF
+      ENDDO !functionIdx
+      CALL MOVE_ALLOC(newFunctionVariables,createValuesCache%functionVariables)
+    ENDIF
+    DO variableIdx=1,numberOfFunctionVariables
+      createValuesCache%functionVariables(variableIdx,functionIndex)%ptr=>functionVariables(variableIdx)%ptr
+    ENDDO !variableIdx
+    DO variableIdx=numberOfFunctionVariables+1,SIZE(createValuesCache%functionVariables,1)
+      NULLIFY(createValuesCache%functionVariables(variableIdx,functionIndex)%ptr)
+    ENDDO !variableIdx
+    createValuesCache%numberOfFunctionVariables(functionIndex)=numberOfFunctionVariables
         
     EXITS("EquationsMapping_FunctionVariablesSet1")
     RETURN
-999 ERRORS("EquationsMapping_FunctionVariablesSet1",err,error)
+999 IF(ALLOCATED(newFunctionVariables)) DEALLOCATE(newFunctionVariables)
+    ERRORS("EquationsMapping_FunctionVariablesSet1",err,error)
     EXITS("EquationsMapping_FunctionVariablesSet1")
     RETURN 1
     
@@ -1708,21 +1782,45 @@ CONTAINS
   !
 
   !>Sets the variables in the inequality constraint mapping
-  SUBROUTINE EquationsMapping_InequalityConstraintVariablesSet(constraintMapping,inequalityVariables,err,error,*)
+  SUBROUTINE EquationsMapping_InequalityConstraintVariablesSet(constraintMapping,rowVariable,inequalityVariables, &
+    & inequalityType,err,error,*)
 
     !Argument variables
     TYPE(EquationsMappingConstraintType), POINTER :: constraintMapping !<A pointer to the constraint mapping to set the inequality constraint variables
+    TYPE(FieldVariableType), INTENT(IN), POINTER :: rowVariable !<A pointer to the row variable for the inequality constraints.
     TYPE(FieldVariablePtrType), INTENT(IN) :: inequalityVariables(:) !<inequalityVariables(variableIdx). The variables to set for inequality constraints
+    INTEGER(INTG), INTENT(IN) :: inequalityType !<The type of inequality.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code 
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
-    INTEGER(INTG) :: dummyErr
-    TYPE(VARYING_STRING) :: dummyError
+    INTEGER(INTG) :: dummyErr,numberOfVariables,variableIdx
+    TYPE(EquationsMappingConstraintCreateValuesCacheType), POINTER :: createValuesCache
+    TYPE(VARYING_STRING) :: dummyError,localError
 
     ENTERS("EquationsMapping_InequalityConstraintVariablesSet",err,error,*999)
 
     IF(.NOT.ASSOCIATED(constraintMapping)) CALL FlagError("Constraint mapping is not associated.",err,error,*999)
-        
+    IF(constraintMapping%constraintMappingFinished) CALL FlagError("Constraint mapping has been finished.",err,error,*999)
+    NULLIFY(createValuesCache)
+    CALL EquationsMappingConstraint_CreateValuesCacheGet(constraintMapping,createValuesCache,err,error,*999)
+    IF(.NOT.ASSOCIATED(rowVariable)) CALL FlagError("Row variable is not associated.",err,error,*999)
+    numberOfVariables=SIZE(inequalityVariables,1)
+    DO variableIdx=1,numberOfVariables
+      IF(.NOT.ASSOCIATED(inequalityVariables(variableIdx)%ptr)) THEN
+        localError="The field variable for variable index "//TRIM(NumberToVString(variableIdx,"*",err,error))// &
+          & " is not associated."
+        CALL FlagError(localError,err,error,*999)
+      ENDIF
+    ENDDO !variableIdx
+
+    IF(ALLOCATED(createValuesCache%inequalityVariables)) DEALLOCATE(createValuesCache%inequalityVariables)
+    ALLOCATE(createValuesCache%inequalityVariables(numberOfVariables),STAT=err)
+    IF(err/=0) CALL FlagError("Could not allocated new inequality variables array.",err,error,*999)
+    DO variableIdx=1,numberOfVariables
+      createValuesCache%inequalityVariables(variableIdx)%ptr=>inequalityVariables(variableIdx)%ptr
+    ENDDO !variableIdx
+    createValuesCache%inequalityRowVariable=>rowVariable
+         
     EXITS("EquationsMapping_InequalityConstraintVariablesSet")
     RETURN
 999 ERRORS("EquationsMapping_InequalityConstraintVariablesSet",err,error)
@@ -2143,192 +2241,6 @@ CONTAINS
     
   END SUBROUTINE EquationsMapping_QuadraticFormVariablesSet
   
-  !
-  !================================================================================================================================
-  !
-
-  !>Calculates the scalar mapping
-  SUBROUTINE EquationsMapping_ScalarCalculate(scalarMapping,err,error,*)
-
-    !Argument variables
-    TYPE(EquationsMappingScalarType), POINTER :: scalarMapping !<A pointer to the scalar mapping to calculate
-    INTEGER(INTG), INTENT(OUT) :: err !<The error code 
-    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
-    !Local Variables
- 
-    ENTERS("EquationsMapping_ScalarCalculate",err,error,*999)
-
-    IF(.NOT.ASSOCIATED(scalarMapping)) CALL FlagError("Scalar mapping is not associated.",err,error,*999)
-       
-    EXITS("EquationsMapping_ScalarCalculate")
-    RETURN
-999 ERRORSEXITS("EquationsMapping_ScalarCalculate",err,error)
-    RETURN 1
-    
-  END SUBROUTINE EquationsMapping_ScalarCalculate
-
-  !
-  !================================================================================================================================
-  !
-
-  !>Finishes the process of creating a scalar mapping
-  SUBROUTINE EquationsMapping_ScalarCreateFinish(scalarMapping,err,error,*)
-
-    !Argument variables
-    TYPE(EquationsMappingScalarType), POINTER :: scalarMapping !<A pointer to the scalar mapping
-    INTEGER(INTG), INTENT(OUT) :: err !<The error code 
-    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
-    !Local Variables
-    INTEGER(INTG) :: matrixIdx
-    LOGICAL :: isResidualType
-    TYPE(EquationsType), POINTER :: equations
-    TYPE(EquationsMappingScalarCreateValuesCacheType), POINTER :: createValuesCache
-    TYPE(EquationsScalarType), POINTER :: scalarEquations
-    TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet
-    TYPE(VARYING_STRING) :: localError
-
-    ENTERS("EquationsMapping_ScalarCreateFinish",err,error,*999)
-
-    IF(.NOT.ASSOCIATED(scalarMapping)) CALL FlagError("Scalar mapping is not associated.",err,error,*999)
-    IF(scalarMapping%scalarMappingFinished) CALL FlagError("Scalar mapping has already been finished.",err,error,*999)
-
-    NULLIFY(createValuesCache)
-    CALL EquationsMappingScalar_CreateValuesCacheGet(scalarMapping,createValuesCache,err,error,*999)
-    NULLIFY(scalarEquations)
-    CALL EquationsMappingScalar_ScalarEquationsGet(scalarMapping,scalarEquations,err,error,*999)
-    NULLIFY(equations)
-    CALL EquationsScalar_EquationsGet(scalarEquations,equations,err,error,*999)
-    NULLIFY(equationsSet)
-    CALL Equations_EquationsSetGet(equations,equationsSet,err,error,*999)
-
-    !Check that all the variables have been mapped properly
-    !Now calculate the scalar mapping and clean up
-    CALL EquationsMapping_ScalarCalculate(scalarMapping,err,error,*999)
-    CALL EquationsMapping_ScalarCreateValuesCacheFinalise(scalarMapping%createValuesCache,err,error,*999)
-    scalarMapping%scalarMappingFinished=.TRUE.
-       
-    EXITS("EquationsMapping_ScalarCreateFinish")
-    RETURN
-999 ERRORSEXITS("EquationsMapping_ScalarCreateFinish",err,error)
-    RETURN 1
-    
-  END SUBROUTINE EquationsMapping_ScalarCreateFinish
-
-  !
-  !================================================================================================================================
-  !
-
-  !>Starts the process of creating a scalar mapping for scalar equations
-  SUBROUTINE EquationsMapping_ScalarCreateStart(scalarEquations,scalarMapping,err,error,*)
-
-    !Argument variables
-    TYPE(EquationsScalarType), POINTER :: scalarEquations !<A pointer to the scalar equations to create the scalar mapping from.
-    TYPE(EquationsMappingScalarType), POINTER :: scalarMapping !<On return, a pointer to the scalar mapping. This must not be associated on entry
-    INTEGER(INTG), INTENT(OUT) :: err !<The error code 
-    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
-    !Local Variables
-    TYPE(EquationsType), POINTER :: equations
-    TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet
-    TYPE(FieldType), POINTER :: dependentField
-    TYPE(FieldVariableType), POINTER :: lhsVariable
-    
-    ENTERS("EquationsMapping_ScalarCreateStart",err,error,*998)
-
-    IF(ASSOCIATED(scalarMapping)) CALL FlagError("Scalar mapping is already associated.",err,error,*998)
-    IF(.NOT.ASSOCIATED(scalarEquations)) CALL FlagError("Scalar equations is not associated.",err,error,*999)
-    NULLIFY(equations)
-    CALL EquationsScalar_EquationsGet(scalarEquations,equations,err,error,*999)
-    NULLIFY(equationsSet)
-    CALL Equations_EquationsSetGet(equations,equationsSet,err,error,*999)
-    NULLIFY(dependentField)
-    CALL EquationsSet_DependentFieldGet(equationsSet,dependentField,err,error,*999)
-    IF(.NOT.equations%equationsFinished) CALL FlagError("Equations has not been finished.",err,error,*999)
-
-    CALL EquationsMapping_ScalarInitialise(scalarEquations,err,error,*999)
-    CALL EquationsScalar_ScalarMappingGet(scalarEquations,scalarMapping,err,error,*999)
-  
-    EXITS("EquationsMapping_ScalarCreateStart")
-    RETURN
-999 NULLIFY(scalarMapping)
-998 ERRORSEXITS("EquationsMapping_ScalarCreateStart",err,error)
-    RETURN 1
-    
-  END SUBROUTINE EquationsMapping_ScalarCreateStart
-
-  !
-  !================================================================================================================================
-  !
-
-  !>Finalises a scalar mapping create values cache and deallocates all memory
-  SUBROUTINE EquationsMapping_ScalarCreateValuesCacheFinalise(createValuesCache,err,error,*)
-
-    !Argument variables
-    TYPE(EquationsMappingScalarCreateValuesCacheType), POINTER :: createValuesCache !<A pointer to the create values cache to finalise
-    INTEGER(INTG), INTENT(OUT) :: err !<The error code 
-    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
-    !Local Variables
-
-    ENTERS("EquationsMapping_ScalarCreateValuesCacheFinalise",err,error,*999)
-
-    IF(ASSOCIATED(createValuesCache)) THEN
-      IF(ALLOCATED(createValuesCache%dotProductCoefficients)) DEALLOCATE(createValuesCache%dotProductCoefficients)
-      IF(ALLOCATED(createValuesCache%dotProductVariables)) DEALLOCATE(createValuesCache%dotProductVariables)
-      IF(ALLOCATED(createValuesCache%functionCoefficients)) DEALLOCATE(createValuesCache%functionCoefficients)
-      IF(ALLOCATED(createValuesCache%numberOfFunctionVariables)) DEALLOCATE(createValuesCache%numberOfFunctionVariables)
-      IF(ALLOCATED(createValuesCache%functionVariables)) DEALLOCATE(createValuesCache%functionVariables)
-      IF(ALLOCATED(createValuesCache%normCoefficients)) DEALLOCATE(createValuesCache%normCoefficients)
-      IF(ALLOCATED(createValuesCache%normVariables)) DEALLOCATE(createValuesCache%normVariables)
-      IF(ALLOCATED(createValuesCache%quadraticFormCoefficients)) DEALLOCATE(createValuesCache%quadraticFormCoefficients)
-      IF(ALLOCATED(createValuesCache%quadraticFormVariables)) DEALLOCATE(createValuesCache%quadraticFormVariables)
-      DEALLOCATE(createValuesCache)
-    ENDIF
-       
-    EXITS("EquationsMapping_ScalarCreateValuesCacheFinalise")
-    RETURN
-999 ERRORS("EquationsMapping_ScalarCreateValuesCacheFinalise",err,error)
-    EXITS("EquationsMapping_ScalarCreateValuesCacheFinalise")
-    RETURN 1
-    
-  END SUBROUTINE EquationsMapping_ScalarCreateValuesCacheFinalise
-
-  !
-  !================================================================================================================================
-  !
-
-  !>Initialises a scalar mapping create values cache .
-  SUBROUTINE EquationsMapping_ScalarCreateValuesCacheInitialise(scalarMapping,err,error,*)
-
-    !Argument variables
-    TYPE(EquationsMappingScalarType), POINTER :: scalarMapping !<A pointer to the scalar mapping to initialise the create values cache for
-    INTEGER(INTG), INTENT(OUT) :: err !<The error code 
-    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
-    !Local Variables
-    INTEGER(INTG) :: dummyErr
-    TYPE(VARYING_STRING) :: dummyError
-
-    ENTERS("EquationsMapping_ScalarCreateValuesCacheInitialise",err,error,*998)
-
-    IF(.NOT.ASSOCIATED(scalarMapping)) CALL FlagError("Scalar mapping is not associated.",err,error,*998)
-    IF(ASSOCIATED(scalarMapping%createValuesCache)) &
-      & CALL FlagError("Scalar mapping create values cache is already associated.",err,error,*998)
-    
-    !Allocate and initialise the create values cache
-    ALLOCATE(scalarMapping%createValuesCache,STAT=err)
-    IF(err/=0) CALL FlagError("Could not allocate scalar mapping create values cache.",err,error,*999)
-    scalarMapping%createValuesCache%numberOfDotProducts=0
-    scalarMapping%createValuesCache%numberOfFunctions=0
-    scalarMapping%createValuesCache%numberOfNorms=0
-    scalarMapping%createValuesCache%numberOfQuadraticForms=0
-     
-    EXITS("EquationsMapping_ScalarCreateValuesCacheInitialise")
-    RETURN
-999 CALL EquationsMapping_ScalarCreateValuesCacheFinalise(scalarMapping%createValuesCache,dummyErr,dummyError,*998)
-998 ERRORS("EquationsMapping_ScalarCreateValuesCacheInitialise",err,error)
-    EXITS("EquationsMapping_ScalarCreateValuesCacheInitialise")
-    RETURN 1
-    
-  END SUBROUTINE EquationsMapping_ScalarCreateValuesCacheInitialise
-
   !
   !================================================================================================================================
   !
@@ -3559,6 +3471,265 @@ CONTAINS
   !================================================================================================================================
   !
 
+  !>Calculates the scalar mapping
+  SUBROUTINE EquationsMapping_ScalarCalculate(scalarMapping,err,error,*)
+
+    !Argument variables
+    TYPE(EquationsMappingScalarType), POINTER :: scalarMapping !<A pointer to the scalar mapping to calculate
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code 
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+ 
+    ENTERS("EquationsMapping_ScalarCalculate",err,error,*999)
+
+    IF(.NOT.ASSOCIATED(scalarMapping)) CALL FlagError("Scalar mapping is not associated.",err,error,*999)
+       
+    EXITS("EquationsMapping_ScalarCalculate")
+    RETURN
+999 ERRORSEXITS("EquationsMapping_ScalarCalculate",err,error)
+    RETURN 1
+    
+  END SUBROUTINE EquationsMapping_ScalarCalculate
+
+  !
+  !================================================================================================================================
+  !
+
+  !>Finishes the process of creating a scalar mapping
+  SUBROUTINE EquationsMapping_ScalarCreateFinish(scalarMapping,err,error,*)
+
+    !Argument variables
+    TYPE(EquationsMappingScalarType), POINTER :: scalarMapping !<A pointer to the scalar mapping
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code 
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+    INTEGER(INTG) :: matrixIdx
+    LOGICAL :: isResidualType
+    TYPE(EquationsType), POINTER :: equations
+    TYPE(EquationsMappingScalarCreateValuesCacheType), POINTER :: createValuesCache
+    TYPE(EquationsScalarType), POINTER :: scalarEquations
+    TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet
+    TYPE(VARYING_STRING) :: localError
+
+    ENTERS("EquationsMapping_ScalarCreateFinish",err,error,*999)
+
+    IF(.NOT.ASSOCIATED(scalarMapping)) CALL FlagError("Scalar mapping is not associated.",err,error,*999)
+    IF(scalarMapping%scalarMappingFinished) CALL FlagError("Scalar mapping has already been finished.",err,error,*999)
+
+    NULLIFY(createValuesCache)
+    CALL EquationsMappingScalar_CreateValuesCacheGet(scalarMapping,createValuesCache,err,error,*999)
+    NULLIFY(scalarEquations)
+    CALL EquationsMappingScalar_ScalarEquationsGet(scalarMapping,scalarEquations,err,error,*999)
+    NULLIFY(equations)
+    CALL EquationsScalar_EquationsGet(scalarEquations,equations,err,error,*999)
+    NULLIFY(equationsSet)
+    CALL Equations_EquationsSetGet(equations,equationsSet,err,error,*999)
+
+    !Check that all the variables have been mapped properly
+    !Now calculate the scalar mapping and clean up
+    CALL EquationsMapping_ScalarCalculate(scalarMapping,err,error,*999)
+    CALL EquationsMapping_ScalarCreateValuesCacheFinalise(scalarMapping%createValuesCache,err,error,*999)
+    scalarMapping%scalarMappingFinished=.TRUE.
+       
+    EXITS("EquationsMapping_ScalarCreateFinish")
+    RETURN
+999 ERRORSEXITS("EquationsMapping_ScalarCreateFinish",err,error)
+    RETURN 1
+    
+  END SUBROUTINE EquationsMapping_ScalarCreateFinish
+
+  !
+  !================================================================================================================================
+  !
+
+  !>Starts the process of creating a scalar mapping for scalar equations
+  SUBROUTINE EquationsMapping_ScalarCreateStart(scalarEquations,scalarMapping,err,error,*)
+
+    !Argument variables
+    TYPE(EquationsScalarType), POINTER :: scalarEquations !<A pointer to the scalar equations to create the scalar mapping from.
+    TYPE(EquationsMappingScalarType), POINTER :: scalarMapping !<On return, a pointer to the scalar mapping. This must not be associated on entry
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code 
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+    TYPE(EquationsType), POINTER :: equations
+    TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet
+    TYPE(FieldType), POINTER :: dependentField
+    TYPE(FieldVariableType), POINTER :: lhsVariable
+    
+    ENTERS("EquationsMapping_ScalarCreateStart",err,error,*998)
+
+    IF(ASSOCIATED(scalarMapping)) CALL FlagError("Scalar mapping is already associated.",err,error,*998)
+    IF(.NOT.ASSOCIATED(scalarEquations)) CALL FlagError("Scalar equations is not associated.",err,error,*999)
+    NULLIFY(equations)
+    CALL EquationsScalar_EquationsGet(scalarEquations,equations,err,error,*999)
+    NULLIFY(equationsSet)
+    CALL Equations_EquationsSetGet(equations,equationsSet,err,error,*999)
+    NULLIFY(dependentField)
+    CALL EquationsSet_DependentFieldGet(equationsSet,dependentField,err,error,*999)
+    IF(.NOT.equations%equationsFinished) CALL FlagError("Equations has not been finished.",err,error,*999)
+
+    CALL EquationsMapping_ScalarInitialise(scalarEquations,err,error,*999)
+    CALL EquationsScalar_ScalarMappingGet(scalarEquations,scalarMapping,err,error,*999)
+  
+    EXITS("EquationsMapping_ScalarCreateStart")
+    RETURN
+999 NULLIFY(scalarMapping)
+998 ERRORSEXITS("EquationsMapping_ScalarCreateStart",err,error)
+    RETURN 1
+    
+  END SUBROUTINE EquationsMapping_ScalarCreateStart
+
+  !
+  !================================================================================================================================
+  !
+
+  !>Finalises a scalar mapping create values cache and deallocates all memory
+  SUBROUTINE EquationsMapping_ScalarCreateValuesCacheFinalise(createValuesCache,err,error,*)
+
+    !Argument variables
+    TYPE(EquationsMappingScalarCreateValuesCacheType), POINTER :: createValuesCache !<A pointer to the create values cache to finalise
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code 
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+
+    ENTERS("EquationsMapping_ScalarCreateValuesCacheFinalise",err,error,*999)
+
+    IF(ASSOCIATED(createValuesCache)) THEN
+      IF(ALLOCATED(createValuesCache%dependentVariables)) DEALLOCATE(createValuesCache%dependentVariables)
+      IF(ALLOCATED(createValuesCache%dependentTimeDependence)) DEALLOCATE(createValuesCache%dependentTimeDependence)
+      IF(ALLOCATED(createValuesCache%dotProductCoefficients)) DEALLOCATE(createValuesCache%dotProductCoefficients)
+      IF(ALLOCATED(createValuesCache%dotProductVariables)) DEALLOCATE(createValuesCache%dotProductVariables)
+      IF(ALLOCATED(createValuesCache%functionCoefficients)) DEALLOCATE(createValuesCache%functionCoefficients)
+      IF(ALLOCATED(createValuesCache%numberOfFunctionVariables)) DEALLOCATE(createValuesCache%numberOfFunctionVariables)
+      IF(ALLOCATED(createValuesCache%functionVariables)) DEALLOCATE(createValuesCache%functionVariables)
+      IF(ALLOCATED(createValuesCache%normCoefficients)) DEALLOCATE(createValuesCache%normCoefficients)
+      IF(ALLOCATED(createValuesCache%normVariables)) DEALLOCATE(createValuesCache%normVariables)
+      IF(ALLOCATED(createValuesCache%quadraticFormCoefficients)) DEALLOCATE(createValuesCache%quadraticFormCoefficients)
+      IF(ALLOCATED(createValuesCache%quadraticFormVariables)) DEALLOCATE(createValuesCache%quadraticFormVariables)
+      DEALLOCATE(createValuesCache)
+    ENDIF
+       
+    EXITS("EquationsMapping_ScalarCreateValuesCacheFinalise")
+    RETURN
+999 ERRORS("EquationsMapping_ScalarCreateValuesCacheFinalise",err,error)
+    EXITS("EquationsMapping_ScalarCreateValuesCacheFinalise")
+    RETURN 1
+    
+  END SUBROUTINE EquationsMapping_ScalarCreateValuesCacheFinalise
+
+  !
+  !================================================================================================================================
+  !
+
+  !>Initialises a scalar mapping create values cache .
+  SUBROUTINE EquationsMapping_ScalarCreateValuesCacheInitialise(scalarMapping,err,error,*)
+
+    !Argument variables
+    TYPE(EquationsMappingScalarType), POINTER :: scalarMapping !<A pointer to the scalar mapping to initialise the create values cache for
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code 
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+    INTEGER(INTG) :: dummyErr
+    TYPE(VARYING_STRING) :: dummyError
+
+    ENTERS("EquationsMapping_ScalarCreateValuesCacheInitialise",err,error,*998)
+
+    IF(.NOT.ASSOCIATED(scalarMapping)) CALL FlagError("Scalar mapping is not associated.",err,error,*998)
+    IF(ASSOCIATED(scalarMapping%createValuesCache)) &
+      & CALL FlagError("Scalar mapping create values cache is already associated.",err,error,*998)
+    
+    !Allocate and initialise the create values cache
+    ALLOCATE(scalarMapping%createValuesCache,STAT=err)
+    IF(err/=0) CALL FlagError("Could not allocate scalar mapping create values cache.",err,error,*999)
+    scalarMapping%createValuesCache%numberOfDependentVariables=0
+    scalarMapping%createValuesCache%numberOfDotProducts=0
+    scalarMapping%createValuesCache%numberOfFunctions=0
+    scalarMapping%createValuesCache%numberOfNorms=0
+    scalarMapping%createValuesCache%numberOfQuadraticForms=0
+     
+    EXITS("EquationsMapping_ScalarCreateValuesCacheInitialise")
+    RETURN
+999 CALL EquationsMapping_ScalarCreateValuesCacheFinalise(scalarMapping%createValuesCache,dummyErr,dummyError,*998)
+998 ERRORS("EquationsMapping_ScalarCreateValuesCacheInitialise",err,error)
+    EXITS("EquationsMapping_ScalarCreateValuesCacheInitialise")
+    RETURN 1
+    
+  END SUBROUTINE EquationsMapping_ScalarCreateValuesCacheInitialise
+
+  !
+  !=================================================================================================================================
+  !
+
+  !>Adds a dependent variable for an scalar equations mapping.
+  SUBROUTINE EquationsMapping_ScalarDependentVariableAdd(scalarMapping,dependentVariable,variableTimeDependence,err,error,*)
+
+    !Argument variables
+    TYPE(EquationsMappingScalarType), POINTER :: scalarMapping !<A pointer the scalar equations mapping to add the dependent variable to
+    TYPE(FieldVariableType), POINTER, INTENT(IN) :: dependentVariable !<A pointer to the dependent variable to add
+    INTEGER(INTG), INTENT(IN) :: variableTimeDependence !<The time dependence of the variable to add
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+    INTEGER(INTG) :: variableIdx
+    INTEGER(INTG), ALLOCATABLE :: newDependentTimeDependence(:)
+    TYPE(EquationsMappingScalarCreateValuesCacheType), POINTER :: createValuesCache
+    TYPE(FieldVariablePtrType), ALLOCATABLE :: newDependentVariables(:)
+    TYPE(VARYING_STRING) :: localError
+
+    ENTERS("EquationsMapping_ScalarDependentVariableAdd",err,error,*999)
+
+    IF(.NOT.ASSOCIATED(scalarMapping)) CALL FlagError("Scalar equations mapping is not associated.",err,error,*999)
+    IF(scalarMapping%scalarMappingFinished) CALL FlagError("Scalar mapping has already been finished.",err,error,*999)
+    IF(.NOT.ASSOCIATED(dependentVariable)) CALL FlagError("Dependent variable is not associated.",err,error,*999)
+    NULLIFY(createValuesCache)
+    CALL EquationsMappingScalar_CreateValuesCacheGet(scalarMapping,createValuesCache,err,error,*999)
+    
+    !See if the dependent variable has already been added.
+    DO variableIdx=1,createValuesCache%numberOfDependentVariables
+      IF(ASSOCIATED(dependentVariable,createValuesCache%dependentVariables(variableIdx)%ptr)) THEN
+        localError="The dependent variable has already been added at position "// &
+          & TRIM(NumberToVString(variableIdx,"*",err,error))//"."
+        CALL FLagError(localError,err,error,*999)
+      ENDIF
+    ENDDO !variableIdx
+    !Check the time dependence
+    SELECT CASE(variableTimeDependence)
+    CASE(FIELD_VARIABLE_STATIC,FIELD_VARIABLE_QUASISTATIC,FIELD_VARIABLE_DYNAMIC)
+      !ok
+    CASE DEFAULT
+      localError="The specified field variable time dependence of "// &
+        & TRIM(NumberToVString(variableTimeDependence,"*",err,error))//" is invalid."
+      CALL FlagError(localError,err,error,*999)
+    END SELECT
+
+    !Add the dependent variable
+    ALLOCATE(newDependentVariables(createValuesCache%numberOfDependentVariables+1),STAT=err)
+    IF(err/=0) CALL FlagError("Could not allocate new dependent variables.",err,error,*999)
+    ALLOCATE(newDependentTimeDependence(createValuesCache%numberOfDependentVariables+1),STAT=err)
+    IF(err/=0) CALL FlagError("Could not allocate new dependent time dependence.",err,error,*999)
+    DO variableIdx=1,createValuesCache%numberOfDependentVariables
+      newDependentVariables(variableIdx)%ptr=>createValuesCache%dependentVariables(variableIdx)%ptr
+      newDependentTimeDependence(variableIdx)=createValuesCache%dependentTimeDependence(variableIdx)
+    ENDDO !variableIdx
+    newDependentVariables(createValuesCache%numberOfDependentVariables+1)%ptr=>dependentVariable
+    newDependentTimeDependence(createValuesCache%numberOfDependentVariables+1)=variableTimeDependence
+    CALL MOVE_ALLOC(newDependentVariables,createValuesCache%dependentVariables)
+    CALL MOVE_ALLOC(newDependentTimeDependence,createValuesCache%dependentTimeDependence)
+    createValuesCache%numberOfDependentVariables=createValuesCache%numberOfDependentVariables+1    
+    
+    EXITS("EquationsMapping_ScalarDependentVariableAdd")
+    RETURN
+999 IF(ALLOCATED(newDependentVariables)) DEALLOCATE(newDependentVariables)  
+    IF(ALLOCATED(newDependentTimeDependence)) DEALLOCATE(newDependentTimeDependence)  
+    ERRORSEXITS("EquationsMapping_ScalarDependentVariableAdd",err,error)    
+    RETURN 1
+   
+  END SUBROUTINE EquationsMapping_ScalarDependentVariableAdd
+
+  !
+  !================================================================================================================================
+  !
+
   !>Destroy an scalar equations mapping.
   SUBROUTINE EquationsMapping_ScalarDestroy(scalarMapping,err,error,*)
 
@@ -3581,7 +3752,7 @@ CONTAINS
    
   END SUBROUTINE EquationsMapping_ScalarDestroy
 
-  !
+   !
   !================================================================================================================================
   !
 
@@ -4881,6 +5052,8 @@ CONTAINS
     ENTERS("EquationsMapping_VectorCreateValuesCacheFinalise",err,error,*999)
 
     IF(ASSOCIATED(createValuesCache)) THEN
+      IF(ALLOCATED(createValuesCache%dependentVariables)) DEALLOCATE(createValuesCache%dependentVariables)
+      IF(ALLOCATED(createValuesCache%dependentTimeDependence)) DEALLOCATE(createValuesCache%dependentTimeDependence)
       IF(ALLOCATED(createValuesCache%dynamicMatrixCoefficients)) DEALLOCATE(createValuesCache%dynamicMatrixCoefficients)
       IF(ALLOCATED(createValuesCache%linearMatrixVariableTypes)) DEALLOCATE(createValuesCache%linearMatrixVariableTypes)
       IF(ALLOCATED(createValuesCache%linearMatrixCoefficients)) DEALLOCATE(createValuesCache%linearMatrixCoefficients)
@@ -4934,6 +5107,7 @@ CONTAINS
     !Allocate and initialise the create values cache
     ALLOCATE(vectorMapping%createValuesCache,STAT=err)
     IF(err/=0) CALL FlagError("Could not allocate equations mapping create values cache.",err,error,*999)
+    vectorMapping%createValuesCache%numberOfDependentVariables=0
     vectorMapping%createValuesCache%numberOfDynamicMatrices=0
     vectorMapping%createValuesCache%dynamicVariableType=0
     vectorMapping%createValuesCache%dynamicStiffnessMatrixNumber=0
@@ -5138,6 +5312,76 @@ CONTAINS
     RETURN 1
     
   END SUBROUTINE EquationsMapping_VectorCreateValuesCacheInitialise
+
+  !
+  !================================================================================================================================
+  !
+
+  !>Adds a dependent variable for a vector equations mapping.
+  SUBROUTINE EquationsMapping_VectorDependentVariableAdd(vectorMapping,dependentVariable,variableTimeDependence,err,error,*)
+
+    !Argument variables
+    TYPE(EquationsMappingVectorType), POINTER :: vectorMapping !<A pointer the vector mapping to add the dependent variable to
+    TYPE(FieldVariableType), POINTER, INTENT(IN) :: dependentVariable !<A pointer to the dependent variable to add
+    INTEGER(INTG), INTENT(IN) :: variableTimeDependence !<The time dependence of the variable to add
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+    INTEGER(INTG) :: variableIdx
+    INTEGER(INTG), ALLOCATABLE :: newDependentTimeDependence(:)
+    TYPE(EquationsMappingVectorCreateValuesCacheType), POINTER :: createValuesCache
+    TYPE(FieldVariablePtrType), ALLOCATABLE :: newDependentVariables(:)
+    TYPE(VARYING_STRING) :: localError
+
+    ENTERS("EquationsMapping_VectorDependentVariableAdd",err,error,*999)
+
+    IF(.NOT.ASSOCIATED(vectorMapping)) CALL FlagError("Vector equations mapping is not associated.",err,error,*999)
+    IF(vectorMapping%vectorMappingFinished) CALL FlagError("Vector mapping has already been finished.",err,error,*999)
+    IF(.NOT.ASSOCIATED(dependentVariable)) CALL FlagError("Dependent variable is not associated.",err,error,*999)
+    NULLIFY(createValuesCache)
+    CALL EquationsMappingVector_CreateValuesCacheGet(vectorMapping,createValuesCache,err,error,*999)
+    
+    !See if the dependent variable has already been added.
+    DO variableIdx=1,createValuesCache%numberOfDependentVariables
+      IF(ASSOCIATED(dependentVariable,createValuesCache%dependentVariables(variableIdx)%ptr)) THEN
+        localError="The dependent variable has already been added at position "// &
+          & TRIM(NumberToVString(variableIdx,"*",err,error))//"."
+        CALL FLagError(localError,err,error,*999)
+      ENDIF
+    ENDDO !variableIdx
+    !Check the time dependence
+    SELECT CASE(variableTimeDependence)
+    CASE(FIELD_VARIABLE_STATIC,FIELD_VARIABLE_QUASISTATIC,FIELD_VARIABLE_DYNAMIC)
+      !ok
+    CASE DEFAULT
+      localError="The specified field variable time dependence of "// &
+        & TRIM(NumberToVString(variableTimeDependence,"*",err,error))//" is invalid."
+      CALL FlagError(localError,err,error,*999)
+    END SELECT
+
+    !Add the dependent variable
+    ALLOCATE(newDependentVariables(createValuesCache%numberOfDependentVariables+1),STAT=err)
+    IF(err/=0) CALL FlagError("Could not allocate new dependent variables.",err,error,*999)
+    ALLOCATE(newDependentTimeDependence(createValuesCache%numberOfDependentVariables+1),STAT=err)
+    IF(err/=0) CALL FlagError("Could not allocate new dependent time dependence.",err,error,*999)
+    DO variableIdx=1,createValuesCache%numberOfDependentVariables
+      newDependentVariables(variableIdx)%ptr=>createValuesCache%dependentVariables(variableIdx)%ptr
+      newDependentTimeDependence(variableIdx)=createValuesCache%dependentTimeDependence(variableIdx)
+    ENDDO !variableIdx
+    newDependentVariables(createValuesCache%numberOfDependentVariables+1)%ptr=>dependentVariable
+    newDependentTimeDependence(createValuesCache%numberOfDependentVariables+1)=variableTimeDependence
+    CALL MOVE_ALLOC(newDependentVariables,createValuesCache%dependentVariables)
+    CALL MOVE_ALLOC(newDependentTimeDependence,createValuesCache%dependentTimeDependence)
+    createValuesCache%numberOfDependentVariables=createValuesCache%numberOfDependentVariables+1    
+               
+    EXITS("EquationsMapping_VectorDependentVariableAdd")
+    RETURN
+999 IF(ALLOCATED(newDependentVariables)) DEALLOCATE(newDependentVariables)  
+    IF(ALLOCATED(newDependentTimeDependence)) DEALLOCATE(newDependentTimeDependence)  
+    ERRORSEXITS("EquationsMapping_VectorDependentVariableAdd",err,error)    
+    RETURN 1
+   
+  END SUBROUTINE EquationsMapping_VectorDependentVariableAdd
 
   !
   !================================================================================================================================

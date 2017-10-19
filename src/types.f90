@@ -1870,14 +1870,22 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
   !deallocate large data structures as the equations mapping options are changed between create start and create finish we
   !cache the important information and the allocate and process the data structures at create finish.
   TYPE EquationsMappingConstraintCreateValuesCacheType
+    TYPE(FieldVariableType), POINTER :: equalityRowVariable !<The field variable for the equality constraint rows.
     INTEGER(INTG) :: numberOfEqualityVariables !<The number of equality constraint variables
+    TYPE(FieldVariablePtrType), ALLOCATABLE :: equalityVariables(:) !<equalityVariables(variableIdx). The list of variables involved in the equality constraints
+    INTEGER(INTG) :: inequalityType!<The type of inequalities. 
+    TYPE(FieldVariableType), POINTER :: inequalityRowVariable !<The field variable for the equality constraint rows.
     INTEGER(INTG) :: numberOfInequalityVariables !<The number of equality constraint variables
+    TYPE(FieldVariablePtrType), ALLOCATABLE :: inequalityVariables(:) !<inequalityVariables(variableIdx). The list of variables involved in the inequality constraints
   END TYPE EquationsMappingConstraintCreateValuesCacheType
 
   !>Contains information on the create values cache for the scalar equations mapping. Because we do not want to allocate and
   !deallocate large data structures as the equations mapping options are changed between create start and create finish we
   !cache the important information and the allocate and process the data structures at create finish.
   TYPE EquationsMappingScalarCreateValuesCacheType
+    INTEGER(INTG) :: numberOfDependentVariables !<The number of dependent field variables in the scalar mapping
+    TYPE(FieldVariablePtrType), ALLOCATABLE :: dependentVariables(:) !<dependentVariables(variableIdx). The variableIdx'th dependent variable in the scalar mapping
+    INTEGER(INTG), ALLOCATABLE :: dependentTimeDependence(:) !<dependentTimeDependence(variableIdx). The variableIdx'the dependent variable time dependence in the scalar mapping
     INTEGER(INTG) :: numberOfDotProducts !<The number of dot products in the scalar mapping
     REAL(DP), ALLOCATABLE :: dotProductCoefficients(:) !<dotProductCoefficients(dotProductIdx). The coefficient for the dotProductIdx'th dot product in the scalar mapping
     TYPE(FieldVariablePtrType), ALLOCATABLE :: dotProductVariables(:,:) !<dotProductVariables(1..2,dotProductIdx). The 1st and 2nd field variables in the dotProductIdx'th dot product in the scalar mapping.
@@ -1897,6 +1905,9 @@ END TYPE GENERATED_MESH_ELLIPSOID_TYPE
   !deallocate large data structures as the equations mapping options are changed between create start and create finish we
   !cache the important information and the allocate and process the data structures at create finish.
   TYPE EquationsMappingVectorCreateValuesCacheType
+    INTEGER(INTG) :: numberOfDependentVariables !<The number of dependent field variables in the vector mapping
+    TYPE(FieldVariablePtrType), ALLOCATABLE :: dependentVariables(:) !<dependentVariables(variableIdx). The variableIdx'th dependent variable in the vector mapping
+    INTEGER(INTG), ALLOCATABLE :: dependentTimeDependence(:) !<dependentTimeDependence(variableIdx). The variableIdx'the dependent variable time dependence in the vector mapping
     INTEGER(INTG) :: numberOfDynamicMatrices !<The number of dynamic matrices in the equations mapping
     INTEGER(INTG) :: dynamicStiffnessMatrixNumber !<The dynamic matrix number corresponding to the dynamic stiffness matrix
     INTEGER(INTG) :: dynamicDampingMatrixNumber !<The dynamic matrix number corresponding to the dynamic damping matrix

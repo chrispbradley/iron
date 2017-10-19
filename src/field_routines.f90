@@ -26,7 +26,7 @@
 !> Auckland, the University of Oxford and King's College, London.
 !> All Rights Reserved.
 !>
-!> Contributor(s):
+!> Contributor(s): Chris Bradley
 !>
 !> Alternatively, the contents of this file may be used under the terms of
 !> either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -105,7 +105,16 @@ MODULE FIELD_ROUTINES
   INTEGER(INTG), PARAMETER :: FIELD_GEOMETRIC_GENERAL_TYPE=5 !<Geometric general field \see FIELD_ROUTINES_FieldTypes,FIELD_ROUTINES
   !>@}
 
-  !> \addtogroup FIELD_ROUTINES_InterpolationTypes FIELD_ROUTINES::InterpolationTypes
+  !> \addtogroup FIELD_ROUTINES_FieldVariableTimeDependenceTypes OpenCMISS::Iron::Field::FieldVariableTimeDependenceTypes
+  !> \brief The time dependence type of control loop field variables
+  !> \see ControlLoop
+  !>@{
+  INTEGER(INTG), PARAMETER :: FIELD_VARIABLE_STATIC=1 !<The field variable is static \see FIELD_ROUTINES_FieldVariableTimeDependenceTypes,FIELD_ROUTINES
+  INTEGER(INTG), PARAMETER :: FIELD_VARIABLE_QUASISTATIC=2 !<The field variable is quasistatic \see FIELD_ROUTINES_FieldVariableTimeDependenceTypes,FIELD_ROUTINES
+  INTEGER(INTG), PARAMETER :: FIELD_VARIABLE_DYNAMIC=3 !<The field variable is dynamic \see FIELD_ROUTINES_FieldVariableTimeDependenceTypes,FIELD_ROUTINES
+  !>@}
+  
+  !> \addtogroup FIELD_ROUTINES_InterpolationTypes FIELD_ROUTINES::InterpolationTypes    
   !> \brief Field interpolation parameters
   !> \see FIELD_ROUTINES,OPENCMISS_FieldInterpolationTypes
   !>@{
@@ -1107,6 +1116,8 @@ MODULE FIELD_ROUTINES
   PUBLIC FIELD_SCALAR_DIMENSION_TYPE,FIELD_VECTOR_DIMENSION_TYPE,FIELD_TENSOR_DIMENSION_TYPE
 
   PUBLIC FIELD_GEOMETRIC_TYPE,FIELD_FIBRE_TYPE,FIELD_GENERAL_TYPE,FIELD_MATERIAL_TYPE,FIELD_GEOMETRIC_GENERAL_TYPE
+
+  PUBLIC FIELD_VARIABLE_STATIC,FIELD_VARIABLE_QUASISTATIC,FIELD_VARIABLE_DYNAMIC
 
   PUBLIC FIELD_CONSTANT_INTERPOLATION,FIELD_ELEMENT_BASED_INTERPOLATION,FIELD_NODE_BASED_INTERPOLATION, &
     & FIELD_GRID_POINT_BASED_INTERPOLATION,FIELD_GAUSS_POINT_BASED_INTERPOLATION,FIELD_DATA_POINT_BASED_INTERPOLATION
