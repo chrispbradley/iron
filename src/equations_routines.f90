@@ -50,7 +50,7 @@ MODULE EquationsRoutines
   USE EquationsMappingAccessRoutines
   USE EquationsMatricesRoutines
   USE EquationsMatricesAccessRoutines
-  USE EQUATIONS_SET_CONSTANTS
+  USE EquationsSetConstants
   USE FIELD_ROUTINES
   USE FieldAccessRoutines
   USE ISO_VARYING_STRING
@@ -58,7 +58,7 @@ MODULE EquationsRoutines
   USE Strings
   USE Types
 
-#include "macros.h"  
+#include "macros.h"
 
   IMPLICIT NONE
 
@@ -102,7 +102,7 @@ MODULE EquationsRoutines
   INTEGER(INTG), PARAMETER :: EQUATIONS_SPARSE_MATRICES=1 !<Use sparse matrices for the equations. \see EquationsRoutines_SparsityTypes,EquationsRoutines
   INTEGER(INTG), PARAMETER :: EQUATIONS_FULL_MATRICES=2 !<Use fully populated matrices for the equations. \see EquationsRoutines_SparsityTypes,EquationsRoutines
  !>@}
- 
+
   !> \addtogroup EquationsRoutines_LumpingTypes EquationsRoutines::LumpingTypes
   !> \brief Equations matrices lumping types
   !> \see EquationsRoutines,OPENCMISS_EquationsLumpingTypes
@@ -110,25 +110,25 @@ MODULE EquationsRoutines
   INTEGER(INTG), PARAMETER :: EQUATIONS_UNLUMPED_MATRICES=1 !<The equations matrices are not lumped. \see EquationsRoutines_LumpingTypes,EquationsRoutines
   INTEGER(INTG), PARAMETER :: EQUATIONS_LUMPED_MATRICES=2 !<The equations matrices are "mass" lumped. \see EquationsRoutines_LumpingTypes,EquationsRoutines
  !>@}
- 
+
   !Module types
 
   !Module variables
 
   !Interfaces
- 
+
   PUBLIC EQUATIONS_SCALAR_TYPE,EQUATIONS_VECTOR_TYPE,EQUATIONS_FUNCTIONAL_TYPE
 
   PUBLIC EQUATIONS_EQUALS_TYPE,EQUATIONS_LESS_THAN_TYPE,EQUATIONS_LESS_THAN_EQUALS_TYPE,EQUATIONS_GREATER_THAN_TYPE, &
     & EQUATIONS_GREATER_THAN_EQUALS_TYPE
-  
+
   PUBLIC EQUATIONS_NO_OUTPUT,EQUATIONS_TIMING_OUTPUT,EQUATIONS_MATRIX_OUTPUT,EQUATIONS_ELEMENT_MATRIX_OUTPUT, &
     & EQUATIONS_NODAL_MATRIX_OUTPUT
 
   PUBLIC EQUATIONS_SPARSE_MATRICES,EQUATIONS_FULL_MATRICES
 
   PUBLIC EQUATIONS_UNLUMPED_MATRICES,EQUATIONS_LUMPED_MATRICES
-  
+
   PUBLIC Equations_Initialise,Equations_Finalise
 
   PUBLIC Equations_CreateStart,Equations_CreateFinish
@@ -136,7 +136,7 @@ MODULE EquationsRoutines
   PUBLIC Equations_Destroy
 
   PUBLIC Equations_EqualityTypeGet,Equations_EqualityTypeSet
-  
+
   PUBLIC Equations_EquationTypeGet,Equations_EquationTypeSet
 
   PUBLIC Equations_LinearityTypeGet,Equations_LinearityTypeSet
@@ -196,17 +196,19 @@ CONTAINS
 
     IF(.NOT.ASSOCIATED(equations)) CALL FlagError("Equations is not associated.",err,error,*999)
     IF(equations%equationsFinished) CALL FlagError("Equations have already been finished.",err,error,*999)
-    
-    !Initialise the eqations interpolation
-    CALL Equations_InterpolationInitialise(equations,err,error,*999)
+
+    !Initialise the equations interpolation if it's not Finite Volume
+    IF(equations%equationsset%SOLUTION_METHOD/=EQUATIONS_SET_FV_SOLUTION_METHOD) THEN
+      CALL Equations_InterpolationInitialise(equations,err,error,*999)
+    ENDIF
     !Set the finished flag
     equations%equationsFinished=.TRUE.
-       
+
     EXITS("Equations_CreateFinish")
     RETURN
 999 ERRORSEXITS("Equations_CreateFinish",err,error)
     RETURN 1
-    
+
   END SUBROUTINE Equations_CreateFinish
 
   !
@@ -233,13 +235,13 @@ CONTAINS
     CALL Equations_Initialise(equationsSet,err,error,*999)
     !Return the pointer
     equations=>equationsSet%equations
-       
+
     EXITS("Equations_CreateStart")
     RETURN
 999 NULLIFY(equations)
 998 ERRORSEXITS("Equations_CreateStart",err,error)
     RETURN 1
-    
+
   END SUBROUTINE Equations_CreateStart
 
   !
@@ -258,14 +260,14 @@ CONTAINS
     ENTERS("Equations_Destroy",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equations)) CALL FlagError("Equations is not associated.",err,error,*999)
-    
+
     CALL Equations_Finalise(equations,err,error,*999)
-       
+
     EXITS("Equations_Destroy")
     RETURN
 999 ERRORSEXITS("Equations_Destroy",err,error)
     RETURN 1
-    
+
   END SUBROUTINE Equations_Destroy
 
   !
@@ -281,21 +283,21 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
- 
+
     ENTERS("Equations_EqualityTypeGet",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equations)) CALL FlagError("Equations is not associated.",err,error,*999)
     IF(.NOT.equations%equationsFinished) CALL FlagError("Equations has not been finished.",err,error,*999)
-    
+
     equalityType=equations%equalityType
-       
+
     EXITS("Equations_EqualityTypeGet")
     RETURN
 999 ERRORSEXITS("Equations_EqualityTypeGet",err,error)
     RETURN 1
-    
+
   END SUBROUTINE Equations_EqualityTypeGet
-  
+
   !
   !================================================================================================================================
   !
@@ -310,7 +312,7 @@ CONTAINS
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
     TYPE(VARYING_STRING) :: localError
- 
+
     ENTERS("Equations_EqualityTypeSet",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equations)) CALL FlagError("Equations is not associated.",err,error,*999)
@@ -331,14 +333,14 @@ CONTAINS
       localError="The specified equation equality type of "//TRIM(NumberToVString(equalityType,"*",err,error))//" is invalid."
       CALL FlagError(localError,err,error,*999)
     END SELECT
-       
+
     EXITS("Equations_EqualityTypeSet")
     RETURN
 999 ERRORSEXITS("Equations_EqualityTypeSet",err,error)
     RETURN 1
-    
+
   END SUBROUTINE Equations_EqualityTypeSet
-  
+
   !
   !================================================================================================================================
   !
@@ -352,21 +354,21 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
- 
+
     ENTERS("Equations_EquationTypeGet",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equations)) CALL FlagError("Equations is not associated.",err,error,*999)
     IF(.NOT.equations%equationsFinished) CALL FlagError("Equations has not been finished.",err,error,*999)
-    
+
     equationType=equations%equationType
-       
+
     EXITS("Equations_EquationTypeGet")
     RETURN
 999 ERRORSEXITS("Equations_EquaitonTypeGet",err,error)
     RETURN 1
-    
+
   END SUBROUTINE Equations_EquationTypeGet
-  
+
   !
   !================================================================================================================================
   !
@@ -382,7 +384,7 @@ CONTAINS
     !Local Variables
     INTEGER(INTG) :: dummyErr
     TYPE(VARYING_STRING) :: dummyError,localError
- 
+
     ENTERS("Equations_EquationTypeSet",err,error,*998)
 
     IF(.NOT.ASSOCIATED(equations)) CALL FlagError("Equations is not associated.",err,error,*998)
@@ -415,7 +417,7 @@ CONTAINS
       END SELECT
       equations%equationType=equationType
     ENDIF
-      
+
     EXITS("Equations_EquationTypeSet")
     RETURN
 999 SELECT CASE(equationType)
@@ -426,9 +428,9 @@ CONTAINS
     END SELECT
 998 ERRORSEXITS("Equations_EquationTypeSet",err,error)
     RETURN 1
-    
+
   END SUBROUTINE Equations_EquationTypeSet
-  
+
   !
   !================================================================================================================================
   !
@@ -450,12 +452,12 @@ CONTAINS
       CALL Equations_VectorFinalise(equations%vectorEquations,err,error,*999)
       DEALLOCATE(equations)
     ENDIF
-       
+
     EXITS("Equations_Finalise")
     RETURN
 999 ERRORSEXITS("Equations_Finalise",err,error)
     RETURN 1
-    
+
   END SUBROUTINE Equations_Finalise
 
   !
@@ -472,7 +474,7 @@ CONTAINS
     !Local Variables
     INTEGER(INTG) :: dummyErr
     TYPE(VARYING_STRING) :: dummyError
- 
+
     ENTERS("Equations_Initialise",err,error,*998)
 
     IF(.NOT.ASSOCIATED(equationsSet)) CALL FlagError("Equations set is not associated",err,error,*998)
@@ -493,19 +495,19 @@ CONTAINS
     NULLIFY(equationsSet%equations%scalarEquations)
     NULLIFY(equationsSet%equations%vectorEquations)
     CALL Equations_VectorInitialise(equationsSet%equations,err,error,*999)
-       
+
     EXITS("Equations_Initialise")
     RETURN
 999 CALL Equations_Finalise(equationsSet%equations,dummyErr,dummyError,*998)
 998 ERRORSEXITS("Equations_Initialise",err,error)
     RETURN 1
-    
+
   END SUBROUTINE Equations_Initialise
-  
+
   !
   !================================================================================================================================
   !
-  
+
   !>Finalises the interpolation information for equations and deallocates all memory
   SUBROUTINE Equations_InterpolationFinalise(equationsInterpolation,err,error,*)
 
@@ -540,12 +542,12 @@ CONTAINS
       CALL Field_InterpolatedPointsMetricsFinalise(equationsInterpolation%fibreInterpPointMetrics,err,error,*999)
       DEALLOCATE(equationsInterpolation)
     ENDIF
-       
+
     EXITS("Equations_InterpolationFinalise")
     RETURN
 999 ERRORSEXITS("Equations_InterpolationFinalise",err,error)
     RETURN 1
-    
+
   END SUBROUTINE Equations_InterpolationFinalise
 
   !
@@ -563,14 +565,14 @@ CONTAINS
     INTEGER(INTG) :: dummyErr
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet
     TYPE(VARYING_STRING) :: dummyError
-    
+
     ENTERS("Equations_InterpolationInitialise",err,error,*998)
 
     IF(.NOT.ASSOCIATED(equations)) CALL FlagError("Equations is not associated",err,error,*998)
     IF(ASSOCIATED(equations%interpolation)) &
       & CALL FlagError("Interpolation is already associated for these equations.",err,error,*998)
     NULLIFY(equationsSet)
-    CALL Equations_EquationsSetGet(equations,equationsSet,err,error,*999)    
+    CALL Equations_EquationsSetGet(equations,equationsSet,err,error,*999)
 
     ALLOCATE(equations%interpolation,STAT=err)
     IF(err/=0) CALL FlagError("Could not allocate equations interpolation",err,error,*999)
@@ -595,7 +597,7 @@ CONTAINS
     NULLIFY(equations%interpolation%independentInterpPointMetrics)
     NULLIFY(equations%interpolation%geometricInterpPointMetrics)
     NULLIFY(equations%interpolation%fibreInterpPointMetrics)
-    
+
     equations%interpolation%geometricField=>equationsSet%geometry%GEOMETRIC_FIELD
     equations%interpolation%fibreField=>equationsSet%geometry%FIBRE_FIELD
     equations%interpolation%dependentField=>equationsSet%dependent%DEPENDENT_FIELD
@@ -614,7 +616,7 @@ CONTAINS
     ELSE
       NULLIFY(equations%interpolation%sourceField)
     ENDIF
-    
+
     CALL Field_InterpolationParametersInitialise(equations%interpolation%geometricField, &
       & equations%interpolation%geometricInterpParameters,err,error,*999)
     CALL Field_InterpolatedPointsInitialise(equations%interpolation%geometricInterpParameters, &
@@ -677,13 +679,13 @@ CONTAINS
       CALL Field_InterpolatedPointsInitialise(equations%interpolation%sourceInterpParameters, &
         & equations%interpolation%sourceInterpPoint,err,error,*999)
     ENDIF
-       
+
     EXITS("Equations_InterpolationInitialise")
     RETURN
 999 CALL Equations_InterpolationFinalise(equations%interpolation,dummyErr,dummyError,*998)
 998 ERRORSEXITS("Equations_InterpolationInitialise",err,error)
     RETURN 1
-    
+
   END SUBROUTINE Equations_InterpolationInitialise
 
   !
@@ -695,25 +697,25 @@ CONTAINS
 
     !Argument variables
     TYPE(EquationsType), POINTER :: equations !<A pointer to the equations to get the linearity for
-    INTEGER(INTG), INTENT(OUT) :: linearityType !<On exit, the linearity type of the equations. \see EQUATIONS_SET_CONSTANTS_LinearityTypes,EQUATIONS_SET_CONSTANTS
+    INTEGER(INTG), INTENT(OUT) :: linearityType !<On exit, the linearity type of the equations. \see EquationsSetConstants_LinearityTypes,EquationsSetConstants
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
- 
+
     ENTERS("Equations_LinearityTypeGet",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equations)) CALL FlagError("Equations is not associated.",err,error,*999)
     IF(.NOT.equations%equationsFinished) CALL FlagError("Equations has not been finished.",err,error,*999)
-    
+
     linearityType=equations%linearity
-       
+
     EXITS("Equations_LinearityTypeGet")
     RETURN
 999 ERRORSEXITS("Equations_LinearityTypeGet",err,error)
     RETURN 1
-    
+
   END SUBROUTINE Equations_LinearityTypeGet
-  
+
   !
   !================================================================================================================================
   !
@@ -723,12 +725,12 @@ CONTAINS
 
     !Argument variables
     TYPE(EquationsType), POINTER :: equations !<A pointer to the equations to set the linearity for
-    INTEGER(INTG), INTENT(IN) :: linearityType !<The linearity type to set \see EQUATIONS_SET_CONSTANTS_LinearityTypes,EQUATIONS_SET_CONSTANTS
+    INTEGER(INTG), INTENT(IN) :: linearityType !<The linearity type to set \see EquationsSetConstants_LinearityTypes,EquationsSetConstants
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
     TYPE(VARYING_STRING) :: localError
- 
+
     ENTERS("Equations_LinearityTypeSet",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equations)) CALL FlagError("Equations is not associated.",err,error,*999)
@@ -745,13 +747,13 @@ CONTAINS
       localError="The specified linearity type of "//TRIM(NumberToVString(linearityType,"*",err,error))//" is invalid."
       CALL FlagError(localError,err,error,*999)
     END SELECT
-       
+
     EXITS("Equations_LinearityTypeSet")
     RETURN
 999 ERRORSEXITS("Equations_LinearityTypeSet",err,error)
     RETURN 1
   END SUBROUTINE Equations_LinearityTypeSet
-  
+
   !
   !================================================================================================================================
   !
@@ -765,21 +767,21 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
- 
+
     ENTERS("Equations_LumpingTypeGet",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equations)) CALL FlagError("Equations is not associated.",err,error,*999)
     IF(.NOT.equations%equationsFinished) CALL FlagError("Equations has not been finished.",err,error,*999)
-      
+
     lumpingType=equations%lumpingType
-       
+
     EXITS("Equations_LumpingTypeGet")
     RETURN
 999 ERRORSEXITS("Equations_LumpingTypeGet",err,error)
     RETURN 1
-    
+
   END SUBROUTINE Equations_LumpingTypeGet
-  
+
   !
   !================================================================================================================================
   !
@@ -794,7 +796,7 @@ CONTAINS
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
     TYPE(VARYING_STRING) :: localError
- 
+
     ENTERS("Equations_LumpingTypeSet",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equations)) CALL FlagError("Equations is not associated.",err,error,*999)
@@ -817,14 +819,14 @@ CONTAINS
         & " does not correspond to dynamic equations. You can only set lumping for dynamic equations."
       CALL FlagError(localError,err,error,*999)
     ENDIF
-        
+
     EXITS("Equations_LumpingTypeSet")
     RETURN
 999 ERRORSEXITS("Equations_LumpingTypeSet",err,error)
     RETURN 1
-    
+
   END SUBROUTINE Equations_LumpingTypeSet
-  
+
   !
   !================================================================================================================================
   !
@@ -838,21 +840,21 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
- 
+
     ENTERS("Equations_OutputTypeGet",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equations)) CALL FlagError("Equations is not associated.",err,error,*999)
     IF(.NOT.equations%equationsFinished) CALL FlagError("Equations has not been finished.",err,error,*999)
-    
+
     outputType=equations%outputType
-       
+
     EXITS("Equations_OutputTypeGet")
     RETURN
 999 ERRORSEXITS("Equations_OutputTypeGet",err,error)
     RETURN 1
-    
+
   END SUBROUTINE Equations_OutputTypeGet
-  
+
   !
   !================================================================================================================================
   !
@@ -867,7 +869,7 @@ CONTAINS
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
     TYPE(VARYING_STRING) :: localError
- 
+
     ENTERS("Equations_OutputTypeSet",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equations)) CALL FlagError("Equations is not associated.",err,error,*999)
@@ -888,12 +890,12 @@ CONTAINS
       localError="The specified output type of "//TRIM(NumberToVString(outputType,"*",err,error))//" is invalid."
       CALL FlagError(localError,err,error,*999)
     END SELECT
-       
+
     EXITS("Equations_OutputTypeSet")
     RETURN
 999 ERRORSEXITS("Equations_OutputTypeSet",err,error)
     RETURN 1
-    
+
   END SUBROUTINE Equations_OutputTypeSet
 
   !
@@ -909,21 +911,21 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
- 
+
     ENTERS("Equations_SparsityTypeGet",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equations)) CALL FlagError("Equations is not associated.",err,error,*999)
     IF(.NOT.equations%equationsFinished) CALL FlagError("Equations has not been finished.",err,error,*999)
-    
+
     sparsityType=equations%sparsityType
-       
+
     EXITS("Equations_SparsityTypeGet")
     RETURN
 999 ERRORSEXITS("Equations_SparsityTypeGet",err,error)
     RETURN 1
-    
+
   END SUBROUTINE Equations_SparsityTypeGet
-  
+
   !
   !================================================================================================================================
   !
@@ -938,12 +940,12 @@ CONTAINS
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
     TYPE(VARYING_STRING) :: localError
- 
+
     ENTERS("Equations_SparsityTypeSet",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equations)) CALL FlagError("Equations is not associated.",err,error,*999)
     IF(equations%equationsFinished) CALL FlagError("Equations has already been finished.",err,error,*999)
-    
+
     SELECT CASE(sparsityType)
     CASE(EQUATIONS_SPARSE_MATRICES)
       equations%sparsityType=EQUATIONS_SPARSE_MATRICES
@@ -953,14 +955,14 @@ CONTAINS
       localError="The specified sparsity type of "//TRIM(NumberToVString(sparsityType,"*",err,error))//" is invalid."
       CALL FlagError(localError,err,error,*999)
     END SELECT
-       
+
     EXITS("Equations_SparsityTypeSet")
     RETURN
 999 ERRORSEXITS("Equations_SparsityTypeSet",err,error)
     RETURN 1
-    
+
   END SUBROUTINE Equations_SparsityTypeSet
-  
+
   !
   !================================================================================================================================
   !
@@ -974,21 +976,21 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
- 
+
     ENTERS("Equations_TimeDependenceTypeGet",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equations)) CALL FlagError("Equations is not associated.",err,error,*999)
     IF(.NOT.equations%equationsFinished) CALL FlagError("Equations has not been finished.",err,error,*999)
-    
+
     timeDependenceType=equations%timeDependence
-       
+
     EXITS("Equations_TimeDependenceTypeGet")
     RETURN
 999 ERRORSEXITS("Equations_TimeDependenceTypeGet",err,error)
     RETURN 1
-    
+
   END SUBROUTINE Equations_TimeDependenceTypeGet
-  
+
   !
   !================================================================================================================================
   !
@@ -1003,7 +1005,7 @@ CONTAINS
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
     TYPE(VARYING_STRING) :: localError
- 
+
     ENTERS("Equations_TimeDependenceTypeSet",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equations)) CALL FlagError("Equations is not associated.",err,error,*999)
@@ -1022,12 +1024,12 @@ CONTAINS
       localError="The specified time dependence type of "//TRIM(NumberToVString(timeDependenceType,"*",err,error))//" is invalid."
       CALL FlagError(localError,err,error,*999)
     END SELECT
-       
+
     EXITS("Equations_TimeDependenceTypeSet")
     RETURN
 999 ERRORSEXITS("Equations_TimeDependenceTypeSet",err,error)
     RETURN 1
-    
+
   END SUBROUTINE Equations_TimeDependenceTypeSet
 
   !
@@ -1039,7 +1041,7 @@ CONTAINS
 
     !Argument variables
     TYPE(EquationsType), POINTER, INTENT(IN) :: equations !<A pointer to the equations to get the field variable for.
-    INTEGER(INTG), INTENT(IN) :: derivedType !<The derived value type to get the field variable for. \see EQUATIONS_SET_CONSTANTS_DerivedTypes.
+    INTEGER(INTG), INTENT(IN) :: derivedType !<The derived value type to get the field variable for. \see EquationsSetConstants_DerivedTypes.
     TYPE(FIELD_VARIABLE_TYPE), POINTER, INTENT(INOUT) :: fieldVariable !<On return, the field variable for the derived variable type.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
@@ -1056,9 +1058,9 @@ CONTAINS
     !Check pointers
     IF(ASSOCIATED(fieldVariable)) CALL FlagError("Derived field variable is already associated.",err,error,*999)
     IF(.NOT.ASSOCIATED(equations)) CALL FlagError("Equations are not associated.",err,error,*999)
-    IF(derivedType<0.OR.derivedType>EQUATIONS_SET_NUMBER_OF_DERIVED_TYPES)   THEN
+    IF(derivedType<0.OR.derivedType>EQUATIONS_SET_NUMBER_OF_TENSOR_TYPES)   THEN
       localError="The derived variable type of "//TRIM(NumberToVString(derivedType,"*",err,error))// &
-        & " is invalid. It should be >= 1 and <= "//TRIM(NumberToVString(EQUATIONS_SET_NUMBER_OF_DERIVED_TYPES,"*",err,error))//"."
+        & " is invalid. It should be >= 1 and <= "//TRIM(NumberToVString(EQUATIONS_SET_NUMBER_OF_TENSOR_TYPES,"*",err,error))//"."
       CALL FlagError(localError,err,error,*999)
     ENDIF
     NULLIFY(equationsSet)
@@ -1069,7 +1071,7 @@ CONTAINS
       & CALL FlagError("Equations set derived has not been finished.",err,error,*999)
     IF(.NOT.ASSOCIATED(equationsSet%derived%derivedField))  &
       & CALL FlagError("Equations set derived field is not associated.",err,error,*999)
- 
+
     fieldVariableType=equationsSet%derived%variableTypes(derivedType)
     NULLIFY(fieldVariable)
     CALL Field_VariableGet(equationsSet%derived%derivedField,fieldVariableType,fieldVariable,err,error,*999)
@@ -1096,7 +1098,7 @@ CONTAINS
     TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices
     TYPE(EquationsMatricesLinearType), POINTER :: linearMatrices
     TYPE(EquationsVectorType), POINTER :: vectorEquations
-    
+
     ENTERS("Equations_NumberOfLinearMatricesGet",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equations)) CALL FlagError("Equations is not associated.",err,error,*999)
@@ -1136,7 +1138,7 @@ CONTAINS
     TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices
     TYPE(EquationsMatricesNonlinearType), POINTER :: nonlinearMatrices
     TYPE(EquationsVectorType), POINTER :: vectorEquations
-    
+
     ENTERS("Equations_NumberOfJacobianMatricesGet",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equations)) CALL FlagError("Equations is not associated.",err,error,*999)
@@ -1152,7 +1154,7 @@ CONTAINS
     ELSE
       numberOfMatrices=0
     END IF
- 
+
     EXITS("Equations_NumberOfJacobianMatricesGet")
     RETURN
 999 ERRORSEXITS("Equations_NumberOfJacobianMatricesGet",err,error)
@@ -1176,7 +1178,7 @@ CONTAINS
     TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices
     TYPE(EquationsMatricesDynamicType), POINTER :: dynamicMatrices
     TYPE(EquationsVectorType), POINTER :: vectorEquations
-    
+
     ENTERS("Equations_NumberOfDynamicMatricesGet",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equations)) CALL FlagError("Equations is not associated.",err,error,*999)
@@ -1210,7 +1212,7 @@ CONTAINS
     !Argument variables
     TYPE(EquationsType), POINTER, INTENT(IN) :: equations !<The equations to get the linear matrix for
     INTEGER(INTG), INTENT(IN) :: matrixIndex !<The index of the linear matrix to get
-    TYPE(DISTRIBUTED_MATRIX_TYPE), POINTER, INTENT(INOUT) :: matrix !<On return, the linear matrix requested. Must not be associated on entry.
+    TYPE(DistributedMatrixType), POINTER, INTENT(INOUT) :: matrix !<On return, the linear matrix requested. Must not be associated on entry.
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error message
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     !Local variables
@@ -1218,8 +1220,7 @@ CONTAINS
     TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices
     TYPE(EquationsMatrixType), POINTER :: equationsMatrix
     TYPE(EquationsVectorType), POINTER :: vectorEquations
-    TYPE(VARYING_STRING) :: localError
-    
+
     ENTERS("Equations_LinearMatrixGet",err,error,*998)
 
     IF(ASSOCIATED(matrix)) CALL FlagError("The matrix is already associated.",err,error,*998)
@@ -1256,7 +1257,7 @@ CONTAINS
     TYPE(EquationsType), POINTER, INTENT(IN) :: equations !<The equations to get the Jacobian matrix for
     INTEGER(INTG), INTENT(IN) :: residualIndex !<The index of the residual vector to get the Jacobian matrix for
     INTEGER(INTG), INTENT(IN) :: variableType !<The field variable type that the residual is differentiated with respect to for this Jacobian
-    TYPE(DISTRIBUTED_MATRIX_TYPE), POINTER, INTENT(INOUT) :: matrix !<On return, the requested Jacobian matrix
+    TYPE(DistributedMatrixType), POINTER, INTENT(INOUT) :: matrix !<On return, the requested Jacobian matrix
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error message
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     !Local variables
@@ -1274,7 +1275,7 @@ CONTAINS
     IF(ASSOCIATED(matrix)) CALL FlagError("The matrix is already associated.",err,error,*998)
     IF(.NOT.ASSOCIATED(equations)) CALL FlagError("Equations is not associated.",err,error,*998)
     IF(residualIndex/=1) CALL FlagError("Multiple residual vectors are not yet implemented.",err,error,*998)
- 
+
     NULLIFY(vectorEquations)
     CALL Equations_VectorEquationsGet(equations,vectorEquations,err,error,*998)
     NULLIFY(vectorMatrices)
@@ -1325,7 +1326,7 @@ CONTAINS
     !Argument variables
     TYPE(EquationsType), POINTER, INTENT(IN) :: equations !<The equations to get the dynamic matrix for
     INTEGER(INTG), INTENT(IN) :: matrixIndex !<The number of the dynamic matrix to get
-    TYPE(DISTRIBUTED_MATRIX_TYPE), POINTER, INTENT(INOUT) :: matrix !<On return, the requested dynamic matrix. Must not be associated on entry.
+    TYPE(DistributedMatrixType), POINTER, INTENT(INOUT) :: matrix !<On return, the requested dynamic matrix. Must not be associated on entry.
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error message
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     !Local variables
@@ -1333,7 +1334,6 @@ CONTAINS
     TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices
     TYPE(EquationsMatrixType), POINTER :: equationsMatrix
     TYPE(EquationsVectorType), POINTER :: vectorEquations
-    TYPE(VARYING_STRING) :: localError
  
     ENTERS("Equations_DynamicMatrixGet",err,error,*999)
 
@@ -1351,7 +1351,7 @@ CONTAINS
 
     matrix=>equationsMatrix%matrix
     IF(.NOT.ASSOCIATED(matrix)) CALL FlagError("Equations matrix matrix is not associated.",err,error,*999)
- 
+
     EXITS("Equations_DynamicMatrixGet")
     RETURN
 999 NULLIFY(matrix)
@@ -1369,8 +1369,8 @@ CONTAINS
 
     !Argument variables
     TYPE(EquationsType), POINTER, INTENT(IN) :: equations !<The equations to get the dynamic matrix for
-    INTEGER(INTG), INTENT(IN) :: matrixType !<The type of the dynamic matrix to get. \see EQUATIONS_SET_CONSTANTS_DynamicMatrixTypes,EQUATIONS_SET_CONSTANTS
-    TYPE(DISTRIBUTED_MATRIX_TYPE), POINTER, INTENT(INOUT) :: matrix !<On return, the requested dynamic matrix
+    INTEGER(INTG), INTENT(IN) :: matrixType !<The type of the dynamic matrix to get. \see EquationsSetConstants_DynamicMatrixTypes,EquationsSetConstants
+    TYPE(DistributedMatrixType), POINTER, INTENT(INOUT) :: matrix !<On return, the requested dynamic matrix
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error message
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     !Local variables
@@ -1399,7 +1399,7 @@ CONTAINS
     CALL EquationsMatricesVector_DynamicMatricesGet(vectorMatrices,dynamicMatrices,err,error,*999)
     NULLIFY(dynamicMapping)
     CALL EquationsMappingVector_DynamicMappingGet(vectorMapping,dynamicMapping,err,error,*999)
- 
+
     !Find matrix index using the equations mapping
     SELECT CASE(matrixType)
     CASE(EQUATIONS_MATRIX_STIFFNESS)
@@ -1417,7 +1417,7 @@ CONTAINS
         & TRIM(NumberToVstring(matrixType,"*",err,error))//"."
       CALL FlagError(localError,err,error,*999)
     ENDIF
-     
+
     NULLIFY(equationsMatrix)
     CALL EquationsMatricesDynamic_EquationsMatrixGet(dynamicMatrices,matrixIndex,equationsMatrix,err,error,*999)
 
@@ -1447,7 +1447,6 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     !Local variables
     TYPE(EquationsMappingDynamicType), POINTER :: dynamicMapping
-    TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices
     TYPE(EquationsMappingVectorType), POINTER :: vectorMapping
     TYPE(EquationsVectorType), POINTER :: vectorEquations
     TYPE(VARYING_STRING) :: localError
@@ -1455,7 +1454,7 @@ CONTAINS
     ENTERS("Equations_DynamicMatrixTypeGet",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equations)) CALL FlagError("Equations is not associated.",err,error,*999)
-    
+
     NULLIFY(vectorEquations)
     CALL Equations_VectorEquationsGet(equations,vectorEquations,err,error,*999)
     NULLIFY(vectorMapping)
@@ -1497,14 +1496,14 @@ CONTAINS
 
     !Argument variables
     TYPE(EquationsType), POINTER, INTENT(IN) :: equations !<The equations to get the right hand side vector for
-    TYPE(DISTRIBUTED_VECTOR_TYPE), POINTER, INTENT(INOUT) :: vector !<On return, the right hand side vector for the equations. Must not be associated on entry.
+    TYPE(DistributedVectorType), POINTER, INTENT(INOUT) :: vector !<On return, the right hand side vector for the equations. Must not be associated on entry.
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error message
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     !Local variables
     TYPE(EquationsMatricesRHSType), POINTER :: rhsVector
     TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices
     TYPE(EquationsVectorType), POINTER :: vectorEquations
- 
+
     ENTERS("Equations_RhsVectorGet",err,error,*998)
 
     IF(ASSOCIATED(vector)) CALL FlagError("Vector is already associated.",err,error,*998)
@@ -1516,7 +1515,7 @@ CONTAINS
     CALL EquationsVector_VectorMatricesGet(vectorEquations,vectorMatrices,err,error,*998)
     NULLIFY(rhsVector)
     CALL EquationsMatricesVector_RHSVectorGet(vectorMatrices,rhsVector,err,error,*998)
-    
+
     vector=>rhsVector%vector
     IF(.NOT.ASSOCIATED(vector)) CALL FlagError("The RHS vector vector is not associated.",err,error,*999)
 
@@ -1538,7 +1537,7 @@ CONTAINS
     !Argument variables
     TYPE(EquationsType), POINTER, INTENT(IN) :: equations !<The equations to get the residual vector for
     INTEGER(INTG), INTENT(IN) :: residualIndex !<The index of the residual vector to get
-    TYPE(DISTRIBUTED_VECTOR_TYPE), POINTER, INTENT(INOUT) :: vector !<On return, the residual vector for the equations
+    TYPE(DistributedVectorType), POINTER, INTENT(INOUT) :: vector !<On return, the residual vector for the equations
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error message
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     !Local variables
@@ -1551,14 +1550,14 @@ CONTAINS
     IF(ASSOCIATED(vector)) CALL FlagError("Vector is already associated.",err,error,*998)
     IF(.NOT.ASSOCIATED(equations)) CALL FlagError("Equations are not associated.",err,error,*998)
     IF(residualIndex/=1) CALL FlagError("Multiple residual vectors are not yet implemented.",err,error,*998)
-   
+
     NULLIFY(vectorEquations)
     CALL Equations_VectorEquationsGet(equations,vectorEquations,err,error,*998)
     NULLIFY(vectorMatrices)
     CALL EquationsVector_VectorMatricesGet(vectorEquations,vectorMatrices,err,error,*998)
     NULLIFY(nonlinearMatrices)
     CALL EquationsMatricesVector_NonlinearMatricesGet(vectorMatrices,nonlinearMatrices,err,error,*998)
- 
+
     vector=>nonlinearMatrices%residual
     IF(.NOT.ASSOCIATED(vector)) CALL FlagError("The residual vector vector is not associated.",err,error,*999)
 
@@ -1593,14 +1592,14 @@ CONTAINS
     !Check for pointer associations
     IF(.NOT.ASSOCIATED(equations)) CALL FlagError("Equations are not associated.",err,error,*999)
     IF(residualIndex/=1) CALL FlagError("Multiple residual vectors are not yet implemented.",err,error,*999)
-    
+
     NULLIFY(vectorEquations)
     CALL Equations_VectorEquationsGet(equations,vectorEquations,err,error,*999)
     NULLIFY(vectorMapping)
     CALL EquationsVector_VectorMappingGet(vectorEquations,vectorMapping,err,error,*999)
     NULLIFY(nonlinearMapping)
     CALL EquationsMappingVector_NonlinearMappingGet(vectorMapping,nonlinearMapping,err,error,*999)
-    
+
     numberOfVariables=nonlinearMapping%numberOfResidualVariables
 
     EXITS("Equations_ResidualNumberOfVariablesGet")
@@ -1649,7 +1648,7 @@ CONTAINS
         & TRIM(numberToVstring(numberOfVariables,"*",err,error))//"."
       CALL FlagError(localError,err,error,*999)
     ENDIF
-      
+
     DO variableIdx=1,numberOfVariables
       IF(.NOT.ASSOCIATED(nonlinearMapping%residualVariables(variableIdx)%ptr)) THEN
         localError="The residual variable is not associated for variable index "// &
@@ -1658,7 +1657,7 @@ CONTAINS
       ENDIF
       residualVariables(variableIdx)=nonlinearMapping%residualVariables(variableIdx)%ptr%VARIABLE_TYPE
     END DO
- 
+
     EXITS("Equations_ResidualVariablesGet")
     RETURN
 999 ERRORSEXITS("Equations_ResidualVariablesGet",err,error)
@@ -1688,12 +1687,12 @@ CONTAINS
         & CALL EquationsMatrices_ScalarDestroy(scalarEquations%scalarMatrices,err,error,*999)
       DEALLOCATE(scalarEquations)
     ENDIF
-       
+
     EXITS("Equations_ScalarFinalise")
     RETURN
 999 ERRORSEXITS("Equations_ScalarFinalise",err,error)
     RETURN 1
-    
+
   END SUBROUTINE Equations_ScalarFinalise
 
   !
@@ -1721,13 +1720,13 @@ CONTAINS
     equations%scalarEquations%equations=>equations
     NULLIFY(equations%scalarEquations%scalarMapping)
     NULLIFY(equations%scalarEquations%scalarMatrices)
-        
+
     EXITS("Equations_ScalarInitialise")
     RETURN
 999 CALL Equations_ScalarFinalise(equations%scalarEquations,dummyErr,dummyError,*998)
 998 ERRORSEXITS("Equations_ScalarInitialise",err,error)
     RETURN 1
-    
+
   END SUBROUTINE Equations_ScalarInitialise
 
   !
@@ -1739,7 +1738,7 @@ CONTAINS
 
     !Argument variables
     TYPE(EquationsType), POINTER, INTENT(IN) :: equations !<The equations to get the source vector for
-    TYPE(DISTRIBUTED_VECTOR_TYPE), POINTER, INTENT(INOUT) :: vector !<On return, the source vector for the equations. Must not be associated on entry.
+    TYPE(DistributedVectorType), POINTER, INTENT(INOUT) :: vector !<On return, the source vector for the equations. Must not be associated on entry.
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error message
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     !Local variables
@@ -1758,7 +1757,7 @@ CONTAINS
     CALL EquationsVector_VectorMatricesGet(vectorEquations,vectorMatrices,err,error,*998)
     NULLIFY(sourceVector)
     CALL EquationsMatricesVector_SourceVectorGet(vectorMatrices,sourceVector,err,error,*998)
-    
+
     vector=>sourceVector%vector
     IF(.NOT.ASSOCIATED(vector)) CALL FlagError("The source vector vector is not associated.",err,error,*999)
 
@@ -1792,12 +1791,12 @@ CONTAINS
         & CALL EquationsMatrices_VectorDestroy(vectorEquations%vectorMatrices,err,error,*999)
       DEALLOCATE(vectorEquations)
     ENDIF
-       
+
     EXITS("Equations_VectorFinalise")
     RETURN
 999 ERRORSEXITS("Equations_VectorFinalise",err,error)
     RETURN 1
-    
+
   END SUBROUTINE Equations_VectorFinalise
 
   !
@@ -1825,13 +1824,13 @@ CONTAINS
     equations%vectorEquations%equations=>equations
     NULLIFY(equations%vectorEquations%vectorMapping)
     NULLIFY(equations%vectorEquations%vectorMatrices)
-        
+
     EXITS("Equations_VectorInitialise")
     RETURN
 999 CALL Equations_VectorFinalise(equations%vectorEquations,dummyErr,dummyError,*998)
 998 ERRORSEXITS("Equations_VectorInitialise",err,error)
     RETURN 1
-    
+
   END SUBROUTINE Equations_VectorInitialise
 
   !

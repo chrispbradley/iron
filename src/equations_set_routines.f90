@@ -45,7 +45,8 @@
 MODULE EQUATIONS_SET_ROUTINES
 
   USE BaseRoutines
-  USE BASIS_ROUTINES
+  USE BasisRoutines
+  USE BasisAccessRoutines
   USE BIOELECTRIC_ROUTINES
   USE BOUNDARY_CONDITIONS_ROUTINES
   USE CLASSICAL_FIELD_ROUTINES
@@ -53,7 +54,7 @@ MODULE EQUATIONS_SET_ROUTINES
   USE ComputationEnvironment
   USE Constants
   USE COORDINATE_ROUTINES
-  USE DISTRIBUTED_MATRIX_VECTOR
+  USE DistributedMatrixVector
   USE DOMAIN_MAPPINGS
   USE ELASTICITY_ROUTINES
   USE EquationsRoutines
@@ -62,7 +63,7 @@ MODULE EQUATIONS_SET_ROUTINES
   USE EquationsMatricesRoutines
   USE EquationsMatricesAccessRoutines
   USE EquationsSetAccessRoutines
-  USE EQUATIONS_SET_CONSTANTS
+  USE EquationsSetConstants
   USE FIELD_ROUTINES
   USE FieldAccessRoutines
   USE FittingRoutines
@@ -71,7 +72,7 @@ MODULE EQUATIONS_SET_ROUTINES
   USE ISO_VARYING_STRING
   USE Kinds
   USE Lists
-  USE MATRIX_VECTOR
+  USE MatrixVector
   USE MONODOMAIN_EQUATIONS_ROUTINES
 #ifndef NOMPIMOD
   USE MPI
@@ -83,7 +84,7 @@ MODULE EQUATIONS_SET_ROUTINES
   USE Timer
   USE Types
 
-#include "macros.h"  
+#include "macros.h"
 
   IMPLICIT NONE
 
@@ -107,12 +108,10 @@ MODULE EQUATIONS_SET_ROUTINES
 
   PUBLIC EQUATIONS_SET_ANALYTIC_EVALUATE
 
-  PUBLIC EQUATIONS_SET_ANALYTIC_TIME_GET,EQUATIONS_SET_ANALYTIC_TIME_SET
-  
   PUBLIC EQUATIONS_SET_ASSEMBLE
-  
+
   PUBLIC EQUATIONS_SET_BACKSUBSTITUTE,EQUATIONS_SET_NONLINEAR_RHS_UPDATE
-  
+
   PUBLIC EQUATIONS_SET_BOUNDARY_CONDITIONS_ANALYTIC
 
   PUBLIC EQUATIONS_SET_CREATE_START,EQUATIONS_SET_CREATE_FINISH
@@ -124,11 +123,11 @@ MODULE EQUATIONS_SET_ROUTINES
   PUBLIC EQUATIONS_SET_EQUATIONS_CREATE_FINISH,EQUATIONS_SET_EQUATIONS_CREATE_START
 
   PUBLIC EQUATIONS_SET_EQUATIONS_DESTROY
-  
+
   PUBLIC EQUATIONS_SET_MATERIALS_CREATE_START,EQUATIONS_SET_MATERIALS_CREATE_FINISH
 
   PUBLIC EQUATIONS_SET_MATERIALS_DESTROY
-  
+
   PUBLIC EQUATIONS_SET_DEPENDENT_CREATE_START,EQUATIONS_SET_DEPENDENT_CREATE_FINISH
 
   PUBLIC EQUATIONS_SET_DEPENDENT_DESTROY
@@ -136,29 +135,31 @@ MODULE EQUATIONS_SET_ROUTINES
   PUBLIC EquationsSet_DerivedCreateStart,EquationsSet_DerivedCreateFinish
 
   PUBLIC EquationsSet_DerivedDestroy
-  
+
   PUBLIC EQUATIONS_SET_INDEPENDENT_CREATE_START,EQUATIONS_SET_INDEPENDENT_CREATE_FINISH
 
   PUBLIC EQUATIONS_SET_INDEPENDENT_DESTROY
-  
+
   PUBLIC EquationsSet_JacobianEvaluate,EquationsSet_ResidualEvaluate
 
   PUBLIC EquationsSet_OutputTypeGet,EquationsSet_OutputTypeSet
-  
+
   PUBLIC EQUATIONS_SET_SOLUTION_METHOD_GET,EQUATIONS_SET_SOLUTION_METHOD_SET
-  
+
   PUBLIC EQUATIONS_SET_SOURCE_CREATE_START,EQUATIONS_SET_SOURCE_CREATE_FINISH
 
   PUBLIC EQUATIONS_SET_SOURCE_DESTROY
 
   PUBLIC EquationsSet_SpecificationGet,EquationsSet_SpecificationSizeGet
 
+  PUBLIC EquationsSet_TensorInterpolateGaussPoint
+
   PUBLIC EquationsSet_TensorInterpolateXi
 
   PUBLIC EquationsSet_DerivedVariableCalculate,EquationsSet_DerivedVariableSet
 
   PUBLIC EQUATIONS_SET_LOAD_INCREMENT_APPLY
-  
+
   PUBLIC EQUATIONS_SET_ANALYTIC_USER_PARAM_SET,EQUATIONS_SET_ANALYTIC_USER_PARAM_GET
 
   PUBLIC EquationsSet_TimesGet,EquationsSet_TimesSet
@@ -168,8 +169,8 @@ CONTAINS
   !
   !================================================================================================================================
   !
-      
-  !>Finish the creation of a analytic solution for equations set. \see OPENCMISS::CMISSEquationsSetAnalyticCreateFinish
+
+  !>Finish the creation of a analytic solution for equations set. \see OpenCMISS::cmfe_EquationsSet_AnalyticCreateFinish
   SUBROUTINE EQUATIONS_SET_ANALYTIC_CREATE_FINISH(EQUATIONS_SET,err,error,*)
 
     !Argument variables
@@ -209,7 +210,7 @@ CONTAINS
     ELSE
       CALL FlagError("Equations set is not associated.",err,error,*999)
     ENDIF
-       
+
     EXITS("EQUATIONS_SET_ANALYTIC_CREATE_FINISH")
     RETURN
 999 ERRORSEXITS("EQUATIONS_SET_ANALYTIC_CREATE_FINISH",err,error)
@@ -220,13 +221,13 @@ CONTAINS
   !================================================================================================================================
   !
 
-  !>Start the creation of a analytic solution for a equations set. \see OPENCMISS::CMISSEquationsSetAnalyticCreateStart
+  !>Start the creation of a analytic solution for a equations set. \see OpenCMISS::cmfe_EquationsSet_AnalyticCreateStart
   SUBROUTINE EQUATIONS_SET_ANALYTIC_CREATE_START(EQUATIONS_SET,ANALYTIC_FUNCTION_TYPE,ANALYTIC_FIELD_USER_NUMBER,ANALYTIC_FIELD, &
     & err,error,*)
 
     !Argument variables
     TYPE(EQUATIONS_SET_TYPE), POINTER :: EQUATIONS_SET !<A pointer to the equations set to start the creation of an analytic for.
-    INTEGER(INTG), INTENT(IN) :: ANALYTIC_FUNCTION_TYPE !<The analytic function type to setup \see EQUATIONS_SET_CONSTANTS_AnalyticFunctionTypes,EQUATIONS_SET_CONSTANTS
+    INTEGER(INTG), INTENT(IN) :: ANALYTIC_FUNCTION_TYPE !<The analytic function type to setup \see EquationsSetConstants_AnalyticFunctionTypes,EquationsSetConstants
     INTEGER(INTG), INTENT(IN) :: ANALYTIC_FIELD_USER_NUMBER !<The user specified analytic field number
     TYPE(FIELD_TYPE), POINTER :: ANALYTIC_FIELD !<If associated on entry, a pointer to the user created analytic field which has the same user number as the specified analytic field user number. If not associated on entry, on exit, a pointer to the created analytic field for the equations set.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
@@ -258,7 +259,7 @@ CONTAINS
                 CALL FlagError(localError,err,error,*999)
               ENDIF
               ANALYTIC_FIELD_REGION=>ANALYTIC_FIELD%REGION
-              IF(ASSOCIATED(ANALYTIC_FIELD_REGION)) THEN                
+              IF(ASSOCIATED(ANALYTIC_FIELD_REGION)) THEN
                 !Check the field is defined on the same region as the equations set
                 IF(ANALYTIC_FIELD_REGION%USER_NUMBER/=REGION%USER_NUMBER) THEN
                   localError="Invalid region setup. The specified analytic field has been created on region number "// &
@@ -322,19 +323,19 @@ CONTAINS
     ELSE
       CALL FlagError("Equations set is not associated.",err,error,*998)
     ENDIF
-       
+
     EXITS("EQUATIONS_SET_ANALYTIC_CREATE_START")
     RETURN
 999 CALL EQUATIONS_SET_ANALYTIC_FINALISE(EQUATIONS_SET%ANALYTIC,dummyErr,dummyError,*998)
 998 ERRORSEXITS("EQUATIONS_SET_ANALYTIC_CREATE_START",err,error)
     RETURN 1
   END SUBROUTINE EQUATIONS_SET_ANALYTIC_CREATE_START
-  
+
   !
   !================================================================================================================================
   !
 
-  !>Destroy the analytic solution for an equations set. \see OPENCMISS::CMISSEquationsSetAnalyticDestroy
+  !>Destroy the analytic solution for an equations set. \see OpenCMISS::cmfe_EquationsSet_AnalyticDestroy
   SUBROUTINE EQUATIONS_SET_ANALYTIC_DESTROY(EQUATIONS_SET,err,error,*)
 
     !Argument variables
@@ -346,7 +347,7 @@ CONTAINS
     ENTERS("EQUATIONS_SET_ANALYTIC_DESTROY",err,error,*999)
 
     IF(ASSOCIATED(EQUATIONS_SET)) THEN
-      IF(ASSOCIATED(EQUATIONS_SET%ANALYTIC)) THEN        
+      IF(ASSOCIATED(EQUATIONS_SET%ANALYTIC)) THEN
         CALL EQUATIONS_SET_ANALYTIC_FINALISE(EQUATIONS_SET%ANALYTIC,err,error,*999)
       ELSE
         CALL FlagError("Equations set analytic is not associated.",err,error,*999)
@@ -354,7 +355,7 @@ CONTAINS
     ELSE
       CALL FlagError("Equations set is not associated.",err,error,*999)
     ENDIF
-       
+
     EXITS("EQUATIONS_SET_ANALYTIC_DESTROY")
     RETURN
 999 ERRORSEXITS("EQUATIONS_SET_ANALYTIC_DESTROY",err,error)
@@ -365,7 +366,7 @@ CONTAINS
   !================================================================================================================================
   !
 
-  !>Evaluates the current analytic solution for an equations set. \see OPENCMISS::CMISSEquationsSetAnalyticEvaluate
+  !>Evaluates the current analytic solution for an equations set. \see OpenCMISS::cmfe_EquationsSet_AnalyticEvaluate
   SUBROUTINE EQUATIONS_SET_ANALYTIC_EVALUATE(EQUATIONS_SET,err,error,*)
 
     !Argument variables
@@ -402,7 +403,7 @@ CONTAINS
           dependentField=>EQUATIONS_SET%DEPENDENT%DEPENDENT_FIELD
           IF(ASSOCIATED(dependentField)) THEN
             GEOMETRIC_FIELD=>EQUATIONS_SET%GEOMETRY%GEOMETRIC_FIELD
-            IF(ASSOCIATED(GEOMETRIC_FIELD)) THEN            
+            IF(ASSOCIATED(GEOMETRIC_FIELD)) THEN
               CALL Field_NumberOfComponentsGet(GEOMETRIC_FIELD,FIELD_U_VARIABLE_TYPE,NUMBER_OF_DIMENSIONS,err,error,*999)
               CALL Field_InterpolationParametersInitialise(GEOMETRIC_FIELD,GEOMETRIC_INTERP_PARAMETERS,err,error,*999)
               CALL Field_InterpolatedPointsInitialise(GEOMETRIC_INTERP_PARAMETERS,GEOMETRIC_INTERP_POINT,err,error,*999)
@@ -526,7 +527,7 @@ CONTAINS
                                   & FIELD_U_VARIABLE_TYPE)%ptr,err,error,*999)
                               ENDIF
                               !Loop over the derivatives
-                              DO derivative_idx=1,DOMAIN_NODES%NODES(node_idx)%NUMBER_OF_DERIVATIVES                                
+                              DO derivative_idx=1,DOMAIN_NODES%NODES(node_idx)%NUMBER_OF_DERIVATIVES
                                 GLOBAL_DERIV_INDEX=DOMAIN_NODES%NODES(node_idx)%DERIVATIVES(derivative_idx)% &
                                   & GLOBAL_DERIVATIVE_INDEX
 !! \todo Maybe do this with optional arguments?
@@ -679,7 +680,7 @@ CONTAINS
               CALL Field_InterpolatedPointsMetricsFinalise(GEOMETRIC_INTERPOLATED_POINT_METRICS,err,error,*999)
               CALL Field_InterpolatedPointsFinalise(GEOMETRIC_INTERP_POINT,err,error,*999)
               CALL Field_InterpolationParametersFinalise(GEOMETRIC_INTERP_PARAMETERS,err,error,*999)
-              
+
             ELSE
               CALL FlagError("Equations set geometric field is not associated.",err,error,*999)
             ENDIF
@@ -695,12 +696,12 @@ CONTAINS
     ELSE
       CALL FlagError("Equations set is not associated.",err,error,*999)
     ENDIF
-       
+
     EXITS("EQUATIONS_SET_ANALYTIC_EVALUATE")
     RETURN
 999 ERRORSEXITS("EQUATIONS_SET_ANALYTIC_EVALUATE",err,error)
     RETURN 1
-    
+
   END SUBROUTINE EQUATIONS_SET_ANALYTIC_EVALUATE
 
   !
@@ -718,10 +719,10 @@ CONTAINS
 
     ENTERS("EQUATIONS_SET_ANALYTIC_FINALISE",err,error,*999)
 
-    IF(ASSOCIATED(EQUATIONS_SET_ANALYTIC)) THEN        
+    IF(ASSOCIATED(EQUATIONS_SET_ANALYTIC)) THEN
       DEALLOCATE(EQUATIONS_SET_ANALYTIC)
     ENDIF
-       
+
     EXITS("EQUATIONS_SET_ANALYTIC_FINALISE")
     RETURN
 999 ERRORSEXITS("EQUATIONS_SET_ANALYTIC_FINALISE",err,error)
@@ -793,12 +794,12 @@ CONTAINS
     ELSE
       CALL FlagError("Equations set is not associated.",err,error,*999)
     ENDIF
-       
+
     EXITS("EQUATIONS_SET_ANALYTIC_FUNCTIONS_EVALUATE")
     RETURN
 999 ERRORSEXITS("EQUATIONS_SET_ANALYTIC_FUNCTIONS_EVALUATE",err,error)
     RETURN 1
-    
+
   END SUBROUTINE EQUATIONS_SET_ANALYTIC_FUNCTIONS_EVALUATE
 
   !
@@ -815,7 +816,7 @@ CONTAINS
     !Local Variables
     INTEGER(INTG) :: dummyErr
     TYPE(VARYING_STRING) :: dummyError
- 
+
     ENTERS("EQUATIONS_SET_ANALYTIC_INITIALISE",err,error,*998)
 
     IF(ASSOCIATED(EQUATIONS_SET)) THEN
@@ -833,80 +834,14 @@ CONTAINS
     ELSE
       CALL FlagError("Equations set is not associated.",err,error,*998)
     ENDIF
-       
+
     EXITS("EQUATIONS_SET_ANALYTIC_INITIALISE")
     RETURN
 999 CALL EQUATIONS_SET_ANALYTIC_FINALISE(EQUATIONS_SET%ANALYTIC,dummyErr,dummyError,*998)
 998 ERRORSEXITS("EQUATIONS_SET_ANALYTIC_INITIALISE",err,error)
     RETURN 1
-    
+
   END SUBROUTINE EQUATIONS_SET_ANALYTIC_INITIALISE
-
-  !
-  !================================================================================================================================
-  !
-
-  !>Returns the analytic time for an equations set. \see OPENCMISS::CMISSEquationsSetAnalyticTimeGet
-  SUBROUTINE EQUATIONS_SET_ANALYTIC_TIME_GET(EQUATIONS_SET,TIME,err,error,*)
-
-    !Argument variables
-    TYPE(EQUATIONS_SET_TYPE), POINTER :: EQUATIONS_SET !<A pointer to the equations set to get the time for.
-    REAL(DP), INTENT(OUT) :: TIME !<On return, the analytic time value .
-    INTEGER(INTG), INTENT(OUT) :: err !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
-    !Local Variables
-
-    ENTERS("EQUATIONS_SET_ANALYTIC_TIME_GET",err,error,*999)
-
-    IF(ASSOCIATED(EQUATIONS_SET)) THEN
-      IF(ASSOCIATED(EQUATIONS_SET%ANALYTIC)) THEN
-        TIME=EQUATIONS_SET%ANALYTIC%ANALYTIC_TIME
-      ELSE
-        CALL FlagError("Equations set analytic is not associated.",err,error,*999)
-      ENDIF
-    ELSE
-      CALL FlagError("Equations set is not associated.",err,error,*999)
-    ENDIF
-       
-    EXITS("EQUATIONS_SET_ANALYTIC_TIME_GET")
-    RETURN
-999 ERRORSEXITS("EQUATIONS_SET_ANALYTIC_TIME_GET",err,error)
-    RETURN 1
-    
-  END SUBROUTINE EQUATIONS_SET_ANALYTIC_TIME_GET
-
-  !
-  !================================================================================================================================
-  !
-
-  !>Sets/changes the analytic time for an equations set. \see OPENCMISS::CMISSEquationsSetAnalyticTimeSet
-  SUBROUTINE EQUATIONS_SET_ANALYTIC_TIME_SET(EQUATIONS_SET,TIME,err,error,*)
-
-    !Argument variables
-    TYPE(EQUATIONS_SET_TYPE), POINTER :: EQUATIONS_SET !<A pointer to the equations set to set the time for.
-    REAL(DP), INTENT(IN) :: TIME !<The time value to set.
-    INTEGER(INTG), INTENT(OUT) :: err !<The error code
-    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
-    !Local Variables
-
-    ENTERS("EQUATIONS_SET_ANALYTIC_TIME_SET",err,error,*999)
-
-    IF(ASSOCIATED(EQUATIONS_SET)) THEN
-      IF(ASSOCIATED(EQUATIONS_SET%ANALYTIC)) THEN
-        EQUATIONS_SET%ANALYTIC%ANALYTIC_TIME=TIME
-      ELSE
-        CALL FlagError("Equations set analytic is not associated.",err,error,*999)
-      ENDIF
-    ELSE
-      CALL FlagError("Equations set is not associated.",err,error,*999)
-    ENDIF
-       
-    EXITS("EQUATIONS_SET_ANALYTIC_TIME_SET")
-    RETURN
-999 ERRORSEXITS("EQUATIONS_SET_ANALYTIC_TIME_SET",err,error)
-    RETURN 1
-    
-  END SUBROUTINE EQUATIONS_SET_ANALYTIC_TIME_SET
 
   !
   !================================================================================================================================
@@ -924,7 +859,7 @@ CONTAINS
     TYPE(EQUATIONS_SET_ANALYTIC_TYPE), POINTER :: ANALYTIC
 
     ENTERS("EQUATIONS_SET_ANALYTIC_USER_PARAM_SET",err,error,*999)
-    
+
     IF(ASSOCIATED(EQUATIONS_SET)) THEN
       ANALYTIC=>EQUATIONS_SET%ANALYTIC
       IF(ASSOCIATED(ANALYTIC)) THEN
@@ -936,8 +871,8 @@ CONTAINS
         ENDIF
       ELSE
         CALL FlagError("Equations set analytic is not associated.",err,error,*999)
-      ENDIF    
-    ELSE 
+      ENDIF
+    ELSE
       CALL FlagError("Equations set is not associated.",err,error,*999)
     ENDIF
 
@@ -963,7 +898,7 @@ CONTAINS
     TYPE(EQUATIONS_SET_ANALYTIC_TYPE), POINTER :: ANALYTIC
 
     ENTERS("EQUATIONS_SET_ANALYTIC_USER_PARAM_GET",err,error,*999)
-    
+
     IF(ASSOCIATED(EQUATIONS_SET)) THEN
       ANALYTIC=>EQUATIONS_SET%ANALYTIC
       IF(ASSOCIATED(ANALYTIC)) THEN
@@ -975,8 +910,8 @@ CONTAINS
         ENDIF
       ELSE
         CALL FlagError("Equations set analytic is not associated.",err,error,*999)
-      ENDIF    
-    ELSE 
+      ENDIF
+    ELSE
       CALL FlagError("Equations set is not associated.",err,error,*999)
     ENDIF
 
@@ -1000,20 +935,20 @@ CONTAINS
     !Local Variables
     TYPE(EquationsType), POINTER :: equations
     TYPE(VARYING_STRING) :: localError
- 
+
     ENTERS("EQUATIONS_SET_ASSEMBLE",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equationsSet)) CALL FlagError("Equations set is not associated.",err,error,*999)
     NULLIFY(equations)
     CALL EquationsSet_EquationsGet(equationsSet,equations,err,error,*999)
-   
+
     IF(.NOT.equations%equationsFinished) CALL FlagError("Equations have not been finished.",err,error,*999)
-    
+
     IF(equationsSet%outputType>=EQUATIONS_SET_PROGRESS_OUTPUT) THEN
       CALL WriteString(GENERAL_OUTPUT_TYPE,"",err,error,*999)
       CALL WriteStringValue(GENERAL_OUTPUT_TYPE,"Equations set assemble: ",equationsSet%label,err,error,*999)
     ENDIF
-    
+
     SELECT CASE(equations%timeDependence)
     CASE(EQUATIONS_STATIC)
       SELECT CASE(equations%linearity)
@@ -1028,7 +963,7 @@ CONTAINS
         CASE(EQUATIONS_SET_FD_SOLUTION_METHOD)
           CALL FlagError("Not implemented.",err,error,*999)
         CASE(EQUATIONS_SET_FV_SOLUTION_METHOD)
-          CALL FlagError("Not implemented.",err,error,*999)
+          CALL EquationsSet_AssembleStaticLinearFEM(equationsSet,err,error,*999)!change this to FV
         CASE(EQUATIONS_SET_GFEM_SOLUTION_METHOD)
           CALL FlagError("Not implemented.",err,error,*999)
         CASE(EQUATIONS_SET_GFV_SOLUTION_METHOD)
@@ -1131,18 +1066,18 @@ CONTAINS
         & " is invalid."
       CALL FlagError(localError,err,error,*999)
     END SELECT
-    
+
     EXITS("EQUATIONS_SET_ASSEMBLE")
     RETURN
 999 ERRORSEXITS("EQUATIONS_SET_ASSEMBLE",err,error)
     RETURN 1
-    
+
   END SUBROUTINE EQUATIONS_SET_ASSEMBLE
 
   !
   !================================================================================================================================
   !
-  
+
   !>Assembles the equations stiffness matrix and rhs for a dynamic linear equations set using the finite element method.
   SUBROUTINE EquationsSet_AssembleDynamicLinearFEM(equationsSet,err,error,*)
 
@@ -1160,7 +1095,7 @@ CONTAINS
     TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices
     TYPE(EquationsVectorType), POINTER :: vectorEquations
     TYPE(FIELD_TYPE), POINTER :: dependentField
-    
+
     ENTERS("EquationsSet_AssembleDynamicLinearFEM",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equationsSet)) CALL FlagError("Equations set is not associated.",err,error,*999)
@@ -1173,7 +1108,7 @@ CONTAINS
     CALL Equations_VectorEquationsGet(equations,vectorEquations,err,error,*999)
     NULLIFY(vectorMatrices)
     CALL EquationsVector_VectorMatricesGet(vectorEquations,vectorMatrices,err,error,*999)
-    
+
     IF(equations%outputType>=EQUATIONS_TIMING_OUTPUT) THEN
       CALL CPUTimer(USER_CPU,userTime1,err,error,*999)
       CALL CPUTimer(SYSTEM_CPU,systemTime1,err,error,*999)
@@ -1181,7 +1116,7 @@ CONTAINS
     !Initialise the matrices and rhs vector
     CALL EquationsMatrices_VectorValuesInitialise(vectorMatrices,EQUATIONS_MATRICES_LINEAR_ONLY,0.0_DP,err,error,*999)
     !Assemble the elements
-    !Allocate the element matrices 
+    !Allocate the element matrices
     CALL EquationsMatrices_ElementInitialise(vectorMatrices,err,error,*999)
     elementsMapping=>dependentField%decomposition%domain(dependentField%decomposition%MESH_COMPONENT_NUMBER)%ptr% &
       & mappings%elements
@@ -1253,18 +1188,18 @@ CONTAINS
     IF(equations%outputType>=EQUATIONS_MATRIX_OUTPUT) THEN
       CALL EquationsMatrices_VectorOutput(GENERAL_OUTPUT_TYPE,vectorMatrices,err,error,*999)
     ENDIF
-       
+
     EXITS("EquationsSet_AssembleDynamicLinearFEM")
     RETURN
 999 ERRORSEXITS("EquationsSet_AssembleDynamicLinearFEM",err,error)
     RETURN 1
-    
+
   END SUBROUTINE EquationsSet_AssembleDynamicLinearFEM
 
   !
   !================================================================================================================================
   !
-  
+
   !>Assembles the equations stiffness matrix and rhs for a linear static equations set using the finite element method.
   SUBROUTINE EquationsSet_AssembleStaticLinearFEM(equationsSet,err,error,*)
 
@@ -1282,7 +1217,7 @@ CONTAINS
     TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices
     TYPE(EquationsVectorType), POINTER :: vectorEquations
     TYPE(FIELD_TYPE), POINTER :: dependentField
-    
+
 !#ifdef TAUPROF
 !    CHARACTER(28) :: CVAR
 !    INTEGER :: PHASE(2)= [ 0, 0 ]
@@ -1315,7 +1250,7 @@ CONTAINS
     CALL TAU_STATIC_PHASE_STOP("EquationsMatrices_VectorValuesInitialise()")
 #endif
     !Assemble the elements
-    !Allocate the element matrices 
+    !Allocate the element matrices
 #ifdef TAUPROF
     CALL TAU_STATIC_PHASE_START("EquationsMatrices_ElementInitialise()")
 #endif
@@ -1338,7 +1273,7 @@ CONTAINS
     ENDIF
     numberOfTimes=0
     !Loop over the internal elements
-    
+
 #ifdef TAUPROF
     CALL TAU_STATIC_PHASE_START("Internal Elements Loop")
 #endif
@@ -1360,7 +1295,7 @@ CONTAINS
 #ifdef TAUPROF
     CALL TAU_STATIC_PHASE_STOP("Internal Elements Loop")
 #endif
-    
+
     !Output timing information if required
     IF(equations%outputType>=EQUATIONS_TIMING_OUTPUT) THEN
       CALL CPUTimer(USER_CPU,userTime3,err,error,*999)
@@ -1421,18 +1356,18 @@ CONTAINS
     IF(equations%outputType>=EQUATIONS_MATRIX_OUTPUT) THEN
       CALL EquationsMatrices_VectorOutput(GENERAL_OUTPUT_TYPE,vectorMatrices,err,error,*999)
     ENDIF
-       
+
     EXITS("EquationsSet_AssembleStaticLinearFEM")
     RETURN
 999 ERRORSEXITS("EquationsSet_AssembleStaticLinearFEM",err,error)
     RETURN 1
-    
+
   END SUBROUTINE EquationsSet_AssembleStaticLinearFEM
 
   !
   !================================================================================================================================
   !
-  
+
   !>Assembles the equations stiffness matrix, residuals and rhs for a nonlinear static equations set using the finite element method.
   SUBROUTINE EquationsSet_AssembleStaticNonlinearFEM(equationsSet,err,error,*)
 
@@ -1450,7 +1385,7 @@ CONTAINS
     TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices
     TYPE(EquationsVectorType), POINTER :: vectorEquations
     TYPE(FIELD_TYPE), POINTER :: dependentField
-    
+
     ENTERS("EquationsSet_AssembleStaticNonlinearFEM",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equationsSet)) CALL FlagError("Equations set is not associated.",err,error,*999)
@@ -1471,7 +1406,7 @@ CONTAINS
     !Initialise the matrices and rhs vector
     CALL EquationsMatrices_VectorValuesInitialise(vectorMatrices,EQUATIONS_MATRICES_NONLINEAR_ONLY,0.0_DP,err,error,*999)
     !Assemble the elements
-    !Allocate the element matrices 
+    !Allocate the element matrices
     CALL EquationsMatrices_ElementInitialise(vectorMatrices,err,error,*999)
     elementsMapping=>dependentField%decomposition%domain(dependentField%decomposition%MESH_COMPONENT_NUMBER)%ptr% &
       & mappings%elements
@@ -1543,12 +1478,12 @@ CONTAINS
     IF(equations%outputType>=EQUATIONS_MATRIX_OUTPUT) THEN
       CALL EquationsMatrices_VectorOutput(GENERAL_OUTPUT_TYPE,vectorMatrices,err,error,*999)
     ENDIF
-       
+
     EXITS("EquationsSet_AssembleStaticNonlinearFEM")
     RETURN
 999 ERRORSEXITS("EquationsSet_AssembleStaticNonlinearFEM",err,error)
     RETURN 1
-    
+
   END SUBROUTINE EquationsSet_AssembleStaticNonlinearFEM
 
   !
@@ -1567,13 +1502,13 @@ CONTAINS
 
     ! currently no difference
     CALL EquationsSet_AssembleStaticNonlinearFEM(equationsSet,err,error,*999)
-    
+
     EXITS("EquationsSet_AssembleQuasistaticNonlinearFEM")
     RETURN
 999 ERRORS("EquationsSet_AssembleQuasistaticNonlinearFEM",err,error)
     EXITS("EquationsSet_AssembleQuasistaticNonlinearFEM")
     RETURN 1
-    
+
   END  SUBROUTINE EquationsSet_AssembleQuasistaticNonlinearFEM
 
   !
@@ -1597,7 +1532,7 @@ CONTAINS
     TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices
     TYPE(EquationsVectorType), POINTER :: vectorEquations
     TYPE(FIELD_TYPE), POINTER :: dependentField
-    
+
     ENTERS("EquationsSet_AssembleQuasistaticLinearFEM",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equationsSet)) CALL FlagError("Equations set is not associated.",err,error,*999)
@@ -1610,7 +1545,7 @@ CONTAINS
     CALL Equations_VectorEquationsGet(equations,vectorEquations,err,error,*999)
     NULLIFY(vectorMatrices)
     CALL EquationsVector_VectorMatricesGet(vectorEquations,vectorMatrices,err,error,*999)
-    
+
     IF(equations%outputType>=EQUATIONS_TIMING_OUTPUT) THEN
       CALL CPUTimer(USER_CPU,userTime1,err,error,*999)
       CALL CPUTimer(SYSTEM_CPU,systemTime1,err,error,*999)
@@ -1618,7 +1553,7 @@ CONTAINS
     !Initialise the matrices and rhs vector
     CALL EquationsMatrices_VectorValuesInitialise(vectorMatrices,EQUATIONS_MATRICES_LINEAR_ONLY,0.0_DP,err,error,*999)
     !Assemble the elements
-    !Allocate the element matrices 
+    !Allocate the element matrices
     CALL EquationsMatrices_ElementInitialise(vectorMatrices,err,error,*999)
     elementsMapping=>dependentField%decomposition%domain(dependentField%decomposition%MESH_COMPONENT_NUMBER)%ptr% &
       & mappings%elements
@@ -1690,12 +1625,12 @@ CONTAINS
     IF(equations%outputType>=EQUATIONS_MATRIX_OUTPUT) THEN
       CALL EquationsMatrices_VectorOutput(GENERAL_OUTPUT_TYPE,vectorMatrices,err,error,*999)
     ENDIF
-       
+
     EXITS("EquationsSet_AssembleQuasistaticLinearFEM")
     RETURN
 999 ERRORSEXITS("EquationsSet_AssembleQuasistaticLinearFEM",err,error)
     RETURN 1
-    
+
   END SUBROUTINE EquationsSet_AssembleQuasistaticLinearFEM
 
   !
@@ -1718,8 +1653,8 @@ CONTAINS
     REAL(DP), POINTER :: DEPENDENT_PARAMETERS(:),equationsMatrixData(:),sourceVectorData(:)
     TYPE(BOUNDARY_CONDITIONS_VARIABLE_TYPE), POINTER :: RHS_BOUNDARY_CONDITIONS
     TYPE(DOMAIN_MAPPING_TYPE), POINTER :: COLUMN_DOMAIN_MAPPING,RHS_DOMAIN_MAPPING
-    TYPE(DISTRIBUTED_MATRIX_TYPE), POINTER :: EQUATIONS_DISTRIBUTED_MATRIX
-    TYPE(DISTRIBUTED_VECTOR_TYPE), POINTER :: SOURCE_DISTRIBUTED_VECTOR
+    TYPE(DistributedMatrixType), POINTER :: EQUATIONS_DISTRIBUTED_MATRIX
+    TYPE(DistributedVectorType), POINTER :: SOURCE_DISTRIBUTED_VECTOR
     TYPE(EquationsType), POINTER :: equations
     TYPE(EquationsMappingVectorType), POINTER :: vectorMapping
     TYPE(EquationsMappingLinearType), POINTER :: linearMapping
@@ -1963,20 +1898,20 @@ CONTAINS
         ELSE
           CALL FlagError("Dependent field is not associated.",err,error,*999)
         ENDIF
-      ELSE            
+      ELSE
         CALL FlagError("Equations set has not been finished.",err,error,*999)
       ENDIF
     ELSE
       CALL FlagError("Equations set is not associated",err,error,*999)
     ENDIF
-          
+
     EXITS("EQUATIONS_SET_BACKSUBSTITUTE")
     RETURN
 999 ERRORSEXITS("EQUATIONS_SET_BACKSUBSTITUTE",err,error)
     RETURN 1
-   
+
   END SUBROUTINE EQUATIONS_SET_BACKSUBSTITUTE
-  
+
   !
   !================================================================================================================================
   !
@@ -1999,7 +1934,7 @@ CONTAINS
     TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices
     TYPE(EquationsMatricesNonlinearType), POINTER :: nonlinearMatrices
     TYPE(EquationsVectorType), POINTER :: vectorEquations
-    TYPE(DISTRIBUTED_VECTOR_TYPE), POINTER :: residualVector
+    TYPE(DistributedVectorType), POINTER :: residualVector
     TYPE(FIELD_TYPE), POINTER :: RHS_FIELD
     TYPE(FIELD_VARIABLE_TYPE), POINTER :: rhsVariable,residualVariable
     TYPE(BOUNDARY_CONDITIONS_VARIABLE_TYPE), POINTER :: RHS_BOUNDARY_CONDITIONS
@@ -2121,7 +2056,7 @@ CONTAINS
   !================================================================================================================================
   !
 
-  !>Set boundary conditions for an equation set according to the analytic equations. \see OPENCMISS::CMISSEquationsSetBoundaryConditionsAnalytic
+  !>Set boundary conditions for an equation set according to the analytic equations. \see OpenCMISS::cmfe_EquationsSet_BoundaryConditionsAnalytic
   SUBROUTINE EQUATIONS_SET_BOUNDARY_CONDITIONS_ANALYTIC(equationsSet,BOUNDARY_CONDITIONS,err,error,*)
 
     !Argument variables
@@ -2186,7 +2121,7 @@ CONTAINS
   !================================================================================================================================
   !
 
-  !>Finishes the process of creating an equation set on a region. \see OPENCMISS::CMISSEquationsSetCreateStart
+  !>Finishes the process of creating an equation set on a region. \see OpenCMISS::cmfe_EquationsSet_CreateStart
   SUBROUTINE EQUATIONS_SET_CREATE_FINISH(equationsSet,err,error,*)
 
     !Argument variables
@@ -2195,13 +2130,13 @@ CONTAINS
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
     TYPE(EQUATIONS_SET_SETUP_TYPE) :: EQUATIONS_SET_SETUP_INFO
-    
+
     ENTERS("EQUATIONS_SET_CREATE_FINISH",err,error,*999)
 
     IF(ASSOCIATED(equationsSet)) THEN
       IF(equationsSet%EQUATIONS_SET_FINISHED) THEN
         CALL FlagError("Equations set has already been finished.",err,error,*999)
-      ELSE            
+      ELSE
         EQUATIONS_SET_SETUP_INFO%SETUP_TYPE=EQUATIONS_SET_SETUP_INITIAL_TYPE
         EQUATIONS_SET_SETUP_INFO%ACTION_TYPE=EQUATIONS_SET_SETUP_FINISH_ACTION
         !Finish the equations set specific setup
@@ -2218,30 +2153,30 @@ CONTAINS
     ELSE
       CALL FlagError("Equations set is not associated.",err,error,*999)
     ENDIF
-       
+
     EXITS("EQUATIONS_SET_CREATE_FINISH")
     RETURN
 999 ERRORSEXITS("EQUATIONS_SET_CREATE_FINISH",err,error)
     RETURN 1
-   
+
   END SUBROUTINE EQUATIONS_SET_CREATE_FINISH
-        
+
   !
   !================================================================================================================================
   !
 
-  !>Starts the process of creating an equations set defined by USER_NUMBER in the region identified by REGION. \see OPENCMISS::CMISSEquationsSetCreateStart
+  !>Starts the process of creating an equations set defined by USER_NUMBER in the region identified by REGION. \see OpenCMISS::cmfe_EquationsSet_CreateStart
   !>Default values set for the EQUATIONS_SET's attributes are:
   !>- LINEARITY: 1 (EQUATIONS_SET_LINEAR)
   !>- TIME_DEPENDENCE: 1 (EQUATIONS_SET_STATIC)
   !>- SOLUTION_METHOD: 1 (EQUATIONS_SET_FEM_SOLUTION_METHOD)
-  !>- GEOMETRY 
-  !>- MATERIALS 
-  !>- SOURCE 
+  !>- GEOMETRY
+  !>- MATERIALS
+  !>- SOURCE
   !>- DEPENDENT
   !>- ANALYTIC
-  !>- FIXED_CONDITIONS 
-  !>- EQUATIONS 
+  !>- FIXED_CONDITIONS
+  !>- EQUATIONS
   SUBROUTINE EQUATIONS_SET_CREATE_START(USER_NUMBER,REGION,GEOM_FIBRE_FIELD,EQUATIONS_SET_SPECIFICATION,&
       & EQUATIONS_SET_FIELD_USER_NUMBER,EQUATIONS_SET_FIELD_FIELD,EQUATIONS_SET,err,error,*)
 
@@ -2298,7 +2233,7 @@ CONTAINS
                             CALL FlagError(localError,err,error,*999)
                           ENDIF
                           EQUATIONS_SET_FIELD_REGION=>EQUATIONS_SET_FIELD_FIELD%REGION
-                          IF(ASSOCIATED(EQUATIONS_SET_FIELD_REGION)) THEN                
+                          IF(ASSOCIATED(EQUATIONS_SET_FIELD_REGION)) THEN
                             !Check the field is defined on the same region as the equations set
                             IF(EQUATIONS_SET_FIELD_REGION%USER_NUMBER/=REGION%USER_NUMBER) THEN
                               localError="Invalid region setup. The specified equations set field was created on region no. "// &
@@ -2316,7 +2251,7 @@ CONTAINS
                             ELSE
                               CALL FlagError("The geom. field is not associated for the specified equations set.",err,error,*999)
                             ENDIF
-                              
+
                           ELSE
                             CALL FlagError("The specified equations set field region is not associated.",err,error,*999)
                           ENDIF
@@ -2420,20 +2355,20 @@ CONTAINS
     ELSE
       CALL FlagError("Region is not associated.",err,error,*997)
     ENDIF
-    
+
     EXITS("EQUATIONS_SET_CREATE_START")
     RETURN
 999 IF(ASSOCIATED(NEW_EQUATIONS_SET))CALL EQUATIONS_SET_FINALISE(NEW_EQUATIONS_SET,dummyErr,dummyError,*998)
 998 IF(ASSOCIATED(NEW_EQUATIONS_SETS)) DEALLOCATE(NEW_EQUATIONS_SETS)
 997 ERRORSEXITS("EQUATIONS_SET_CREATE_START",err,error)
-    RETURN 1   
+    RETURN 1
   END SUBROUTINE EQUATIONS_SET_CREATE_START
-  
+
   !
   !================================================================================================================================
   !
 
-  !>Destroys an equations set identified by a user number on the give region and deallocates all memory. \see OPENCMISS::CMISSEquationsSetDestroy
+  !>Destroys an equations set identified by a user number on the give region and deallocates all memory. \see OpenCMISS::cmfe_EquationsSet_Destroy
   SUBROUTINE EQUATIONS_SET_DESTROY_NUMBER(USER_NUMBER,REGION,err,error,*)
 
     !Argument variables
@@ -2454,7 +2389,7 @@ CONTAINS
 
     IF(ASSOCIATED(REGION)) THEN
       IF(ASSOCIATED(REGION%EQUATIONS_SETS)) THEN
-        
+
         !Find the equations set identified by the user number
         FOUND=.FALSE.
         equations_set_position=0
@@ -2462,14 +2397,14 @@ CONTAINS
           equations_set_position=equations_set_position+1
           IF(REGION%EQUATIONS_SETS%EQUATIONS_SETS(equations_set_position)%ptr%USER_NUMBER==USER_NUMBER)FOUND=.TRUE.
         ENDDO
-        
+
         IF(FOUND) THEN
-          
+
           EQUATIONS_SET=>REGION%EQUATIONS_SETS%EQUATIONS_SETS(equations_set_position)%ptr
-          
+
           !Destroy all the equations set components
           CALL EQUATIONS_SET_FINALISE(EQUATIONS_SET,err,error,*999)
-          
+
           !Remove the equations set from the list of equations set
           IF(REGION%EQUATIONS_SETS%NUMBER_OF_EQUATIONS_SETS>1) THEN
             ALLOCATE(NEW_EQUATIONS_SETS(REGION%EQUATIONS_SETS%NUMBER_OF_EQUATIONS_SETS-1),STAT=ERR)
@@ -2490,7 +2425,7 @@ CONTAINS
             DEALLOCATE(REGION%EQUATIONS_SETS%EQUATIONS_SETS)
             REGION%EQUATIONS_SETS%NUMBER_OF_EQUATIONS_SETS=0
           ENDIF
-          
+
         ELSE
           localError="Equations set number "//TRIM(NumberToVString(USER_NUMBER,"*",err,error))// &
             & " has not been created on region number "//TRIM(NumberToVString(REGION%USER_NUMBER,"*",err,error))//"."
@@ -2503,20 +2438,20 @@ CONTAINS
       ENDIF
     ELSE
       CALL FlagError("Region is not associated.",err,error,*998)
-    ENDIF    
+    ENDIF
 
     EXITS("EQUATIONS_SET_DESTROY_NUMBER")
     RETURN
 999 IF(ASSOCIATED(NEW_EQUATIONS_SETS)) DEALLOCATE(NEW_EQUATIONS_SETS)
 998 ERRORSEXITS("EQUATIONS_SET_DESTROY_NUMBER",err,error)
-    RETURN 1   
+    RETURN 1
   END SUBROUTINE EQUATIONS_SET_DESTROY_NUMBER
-  
+
   !
   !================================================================================================================================
   !
 
-  !>Destroys an equations set identified by a pointer and deallocates all memory. \see OPENCMISS::CMISSEquationsSetDestroy
+  !>Destroys an equations set identified by a pointer and deallocates all memory. \see OpenCMISS::cmfe_EquationsSet_Destroy
   SUBROUTINE EQUATIONS_SET_DESTROY(EQUATIONS_SET,err,error,*)
 
     !Argument variables
@@ -2539,7 +2474,7 @@ CONTAINS
 
         !Destroy all the equations set components
         CALL EQUATIONS_SET_FINALISE(EQUATIONS_SET,err,error,*999)
-        
+
         !Remove the equations set from the list of equations set
         IF(EQUATIONS_SETS%NUMBER_OF_EQUATIONS_SETS>1) THEN
           ALLOCATE(NEW_EQUATIONS_SETS(EQUATIONS_SETS%NUMBER_OF_EQUATIONS_SETS-1),STAT=ERR)
@@ -2560,22 +2495,22 @@ CONTAINS
           DEALLOCATE(EQUATIONS_SETS%EQUATIONS_SETS)
           EQUATIONS_SETS%NUMBER_OF_EQUATIONS_SETS=0
         ENDIF
-        
+
       ELSE
         CALL FlagError("Equations set equations set is not associated.",err,error,*999)
       ENDIF
     ELSE
       CALL FlagError("Equations set is not associated.",err,error,*998)
-    ENDIF    
+    ENDIF
 
     EXITS("EQUATIONS_SET_DESTROY")
     RETURN
 999 IF(ASSOCIATED(NEW_EQUATIONS_SETS)) DEALLOCATE(NEW_EQUATIONS_SETS)
 998 ERRORSEXITS("EQUATIONS_SET_DESTROY",err,error)
     RETURN 1
-    
+
   END SUBROUTINE EQUATIONS_SET_DESTROY
-  
+
   !
   !================================================================================================================================
   !
@@ -2605,12 +2540,12 @@ CONTAINS
       EQUATIONS_SET%label=""
       DEALLOCATE(EQUATIONS_SET)
     ENDIF
-       
+
     EXITS("EQUATIONS_SET_FINALISE")
     RETURN
 999 ERRORSEXITS("EQUATIONS_SET_FINALISE",err,error)
     RETURN 1
-    
+
   END SUBROUTINE EQUATIONS_SET_FINALISE
 
   !
@@ -2623,7 +2558,7 @@ CONTAINS
     !Argument variables
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet !<A pointer to the equations set
     INTEGER(INTG), INTENT(IN) :: elementNumber !<The element number to calcualte
-    INTEGER(INTG), INTENT(OUT) :: err !<The error code 
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
     INTEGER(INTG) :: matrixIdx
@@ -2637,7 +2572,7 @@ CONTAINS
     TYPE(EquationsMatricesSourceType), POINTER :: sourceVector
     TYPE(EquationsVectorType), POINTER :: vectorEquations
     TYPE(VARYING_STRING) :: localError
-    
+
 #ifdef TAUPROF
     CALL TAU_STATIC_PHASE_START("EquationsSet_FiniteElementCalculate()")
 #endif
@@ -2647,7 +2582,7 @@ CONTAINS
     IF(.NOT.ASSOCIATED(equationsSet)) CALL FlagError("Equations set is not associated.",err,error,*999)
     NULLIFY(equations)
     CALL EquationsSet_EquationsGet(equationsSet,equations,err,error,*999)
-    
+
     IF(.NOT.ALLOCATED(equationsSet%specification)) &
       & CALL FlagError("Equations set specification is not allocated.",err,error,*999)
     IF(SIZE(equationsSet%specification,1)<1) &
@@ -2774,16 +2709,16 @@ CONTAINS
         ENDIF
       ENDIF
     ENDIF
- 
+
 #ifdef TAUPROF
     CALL TAU_STATIC_PHASE_STOP("EquationsSet_FiniteElementCalculate()")
 #endif
-       
+
     EXITS("EquationsSet_FiniteElementCalculate")
     RETURN
 999 ERRORSEXITS("EquationsSet_FiniteElementCalculate",err,error)
     RETURN 1
-    
+
   END SUBROUTINE EquationsSet_FiniteElementCalculate
 
   !
@@ -2796,7 +2731,7 @@ CONTAINS
     !Argument variables
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet !<A pointer to the equations set
     INTEGER(INTG), INTENT(IN) :: elementNumber !<The element number to evaluate the Jacobian for
-    INTEGER(INTG), INTENT(OUT) :: err !<The error code 
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
     INTEGER(INTG) :: matrixIdx
@@ -2806,7 +2741,7 @@ CONTAINS
     TYPE(EquationsMatricesNonlinearType), POINTER :: nonlinearMatrices
     TYPE(EquationsVectorType), POINTER :: vectorEquations
     TYPE(VARYING_STRING) :: localError
-    
+
     ENTERS("EquationsSet_FiniteElementJacobianEvaluate",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equationsSet)) CALL FlagError("Equations set is not associated.",err,error,*999)
@@ -2818,7 +2753,7 @@ CONTAINS
     CALL EquationsVector_VectorMatricesGet(vectorEquations,vectorMatrices,err,error,*999)
     NULLIFY(nonlinearMatrices)
     CALL EquationsMatricesVector_NonlinearMatricesGet(vectorMatrices,nonlinearMatrices,err,error,*999)
-    
+
     IF(.NOT.ALLOCATED(equationsSet%specification)) CALL FlagError("Equations set specification is not allocated.",err,error,*999)
     IF(SIZE(equationsSet%specification,1)<1) &
       & CALL FlagError("Equations set specification must have at least one entry.",err,error,*999)
@@ -2889,7 +2824,7 @@ CONTAINS
         END IF
       END DO !matrixIdx
     ENDIF
-      
+
     EXITS("EquationsSet_FiniteElementJacobianEvaluate")
     RETURN
 999 ERRORSEXITS("EquationsSet_FiniteElementJacobianEvaluate",err,error)
@@ -2913,7 +2848,7 @@ CONTAINS
     !Local Variables
     TYPE(BASIS_TYPE), POINTER :: basis
     TYPE(DOMAIN_ELEMENTS_TYPE), POINTER :: elementsTopology
-    TYPE(DISTRIBUTED_VECTOR_TYPE), POINTER :: parameters
+    TYPE(DistributedVectorType), POINTER :: parameters
     TYPE(EquationsType), POINTER :: equations
     TYPE(EquationsMappingVectorType), POINTER :: vectorMapping
     TYPE(EquationsMappingNonlinearType), POINTER :: nonlinearMapping
@@ -2930,7 +2865,7 @@ CONTAINS
     ENTERS("EquationsSet_FiniteElementJacobianEvaluateFD",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equationsSet)) CALL FlagError("Equations set is not associated.",err,error,*999)
-    
+
     NULLIFY(equations)
     CALL EquationsSet_EquationsGet(equationsSet,equations,err,error,*999)
     NULLIFY(vectorEquations)
@@ -2943,7 +2878,7 @@ CONTAINS
     CALL EquationsMatricesVector_NonlinearMatricesGet(vectorMatrices,nonlinearMatrices,err,error,*999)
     NULLIFY(nonlinearMapping)
     CALL EquationsMappingVector_NonlinearMappingGet(vectorMapping,nonlinearMapping,err,error,*999)
-    
+
     ! The first residual variable is always the row variable, which is the variable the
     ! residual is calculated for
     rowVariable=>nonlinearMapping%residualVariables(1)%ptr
@@ -2960,7 +2895,7 @@ CONTAINS
       ! while pertubing parameters from the column variable.
       ! For non coupled problems these two variables will be the same
       columnVariable=>nonlinearMapping%residualVariables(jacobianNumber)%ptr
-      parameters=>columnVariable%PARAMETER_SETS%PARAMETER_SETS(FIELD_VALUES_SET_TYPE)%ptr%PARAMETERS  
+      parameters=>columnVariable%PARAMETER_SETS%PARAMETER_SETS(FIELD_VALUES_SET_TYPE)%ptr%PARAMETERS
       numberOfRows=nonlinearMatrices%jacobians(jacobianNumber)%ptr%elementJacobian%numberOfRows
       IF(numberOfRows/=nonlinearMatrices%elementResidual%numberOfRows) &
         & CALL FlagError("Element matrix number of rows does not match element residual vector size.",err,error,*999)
@@ -3023,7 +2958,7 @@ CONTAINS
 999 ERRORS("EquationsSet_FiniteElementJacobianEvaluateFD",err,error)
     EXITS("EquationsSet_FiniteElementJacobianEvaluateFD")
     RETURN 1
-    
+
   END SUBROUTINE EquationsSet_FiniteElementJacobianEvaluateFD
 
   !
@@ -3036,7 +2971,7 @@ CONTAINS
     !Argument variables
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet !<A pointer to the equations set
     INTEGER(INTG), INTENT(IN) :: elementNumber !<The element number to evaluate the residual for
-    INTEGER(INTG), INTENT(OUT) :: err !<The error code 
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
     INTEGER(INTG) :: matrixIdx
@@ -3051,7 +2986,7 @@ CONTAINS
     TYPE(EquationsMatricesSourceType), POINTER :: sourceVector
     TYPE(EquationsVectorType), POINTER :: vectorEquations
     TYPE(VARYING_STRING) :: localError
-    
+
     ENTERS("EquationsSet_FiniteElementResidualEvaluate",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equationsSet)) CALL FlagError("Equations set is not associated.",err,error,*999)
@@ -3063,7 +2998,7 @@ CONTAINS
     CALL EquationsVector_VectorMatricesGet(vectorEquations,vectorMatrices,err,error,*999)
     NULLIFY(nonlinearMatrices)
     CALL EquationsMatricesVector_NonlinearMatricesGet(vectorMatrices,nonlinearMatrices,err,error,*999)
-    
+
     IF(.NOT.ALLOCATED(equationsSet%specification)) CALL FlagError("Equations set specification is not allocated.",err,error,*999)
     IF(SIZE(equationsSet%specification,1)<1) &
       & CALL FlagError("Equations set specification must have at least one entry.",err,error,*999)
@@ -3193,19 +3128,19 @@ CONTAINS
         ENDIF
       ENDIF
     ENDIF
-       
+
     EXITS("EquationsSet_FiniteElementResidualEvaluate")
     RETURN
 999 ERRORSEXITS("EquationsSet_FiniteElementResidualEvaluate",err,error)
     RETURN 1
-    
+
   END SUBROUTINE EquationsSet_FiniteElementResidualEvaluate
 
   !
   !================================================================================================================================
   !
 
-  !>Finish the creation of independent variables for an equations set. \see OPENCMISS::CMISSEquationsSetIndependentCreateFinish
+  !>Finish the creation of independent variables for an equations set. \see OpenCMISS::cmfe_EquationsSet_IndependentCreateFinish
   SUBROUTINE EQUATIONS_SET_INDEPENDENT_CREATE_FINISH(EQUATIONS_SET,err,error,*)
 
     !Argument variables
@@ -3247,7 +3182,7 @@ CONTAINS
     ELSE
       CALL FlagError("Equations set is not associated",err,error,*999)
     ENDIF
-       
+
     EXITS("EQUATIONS_SET_INDEPENDENT_CREATE_FINISH")
     RETURN
 999 ERRORSEXITS("EQUATIONS_SET_INDEPENDENT_CREATE_FINISH",err,error)
@@ -3258,7 +3193,7 @@ CONTAINS
   !================================================================================================================================
   !
 
-  !>Start the creation of independent variables for an equations set. \see OPENCMISS::CMISSEquationsSetIndependentCreateStart
+  !>Start the creation of independent variables for an equations set. \see OpenCMISS::cmfe_EquationsSet_IndependentCreateStart
   SUBROUTINE EQUATIONS_SET_INDEPENDENT_CREATE_START(EQUATIONS_SET,INDEPENDENT_FIELD_USER_NUMBER,independentField,err,error,*)
 
     !Argument variables
@@ -3294,7 +3229,7 @@ CONTAINS
                 CALL FlagError(localError,err,error,*999)
               ENDIF
               INDEPENDENT_FIELD_REGION=>independentField%REGION
-              IF(ASSOCIATED(INDEPENDENT_FIELD_REGION)) THEN                
+              IF(ASSOCIATED(INDEPENDENT_FIELD_REGION)) THEN
                 !Check the field is defined on the same region as the equations set
                 IF(INDEPENDENT_FIELD_REGION%USER_NUMBER/=REGION%USER_NUMBER) THEN
                   localError="Invalid region setup. The specified independent field has been created on region number "// &
@@ -3345,7 +3280,7 @@ CONTAINS
           !Finalise the setup
           CALL EQUATIONS_SET_SETUP_FINALISE(EQUATIONS_SET_SETUP_INFO,err,error,*999)
           !Set pointers
-          IF(EQUATIONS_SET%INDEPENDENT%INDEPENDENT_FIELD_AUTO_CREATED) THEN            
+          IF(EQUATIONS_SET%INDEPENDENT%INDEPENDENT_FIELD_AUTO_CREATED) THEN
             independentField=>EQUATIONS_SET%INDEPENDENT%INDEPENDENT_FIELD
           ELSE
             EQUATIONS_SET%INDEPENDENT%INDEPENDENT_FIELD=>independentField
@@ -3357,7 +3292,7 @@ CONTAINS
     ELSE
       CALL FlagError("Equations set is not associated",err,error,*998)
     ENDIF
-       
+
     EXITS("EQUATIONS_SET_INDEPENDENT_CREATE_START")
     RETURN
 999 CALL EQUATIONS_SET_INDEPENDENT_FINALISE(EQUATIONS_SET%INDEPENDENT,dummyErr,dummyError,*998)
@@ -3369,7 +3304,7 @@ CONTAINS
   !================================================================================================================================
   !
 
-  !>Destroy the independent field for an equations set. \see OPENCMISS::CMISSEquationsSetIndependentDestroy
+  !>Destroy the independent field for an equations set. \see OpenCMISS::cmfe_EquationsSet_IndependentDestroy
   SUBROUTINE EQUATIONS_SET_INDEPENDENT_DESTROY(EQUATIONS_SET,err,error,*)
 
     !Argument variables
@@ -3389,7 +3324,7 @@ CONTAINS
     ELSE
       CALL FlagError("Equations set is not associated.",err,error,*999)
     ENDIF
-       
+
     EXITS("EQUATIONS_SET_INDEPENDENT_DESTROY")
     RETURN
 999 ERRORSEXITS("EQUATIONS_SET_INDEPENDENT_DESTROY",err,error)
@@ -3414,7 +3349,7 @@ CONTAINS
     IF(ASSOCIATED(EQUATIONS_SET_INDEPENDENT)) THEN
       DEALLOCATE(EQUATIONS_SET_INDEPENDENT)
     ENDIF
-       
+
     EXITS("EQUATIONS_SET_INDEPENDENT_FINALISE")
     RETURN
 999 ERRORSEXITS("EQUATIONS_SET_INDEPENDENT_FINALISE",err,error)
@@ -3435,7 +3370,7 @@ CONTAINS
     !Local Variables
     INTEGER(INTG) :: dummyErr
     TYPE(VARYING_STRING) :: dummyError
-    
+
     ENTERS("EQUATIONS_SET_INDEPENDENT_INITIALISE",err,error,*998)
 
     IF(ASSOCIATED(EQUATIONS_SET)) THEN
@@ -3452,7 +3387,7 @@ CONTAINS
     ELSE
       CALL FlagError("Equations set is not associated.",err,error,*998)
     ENDIF
-       
+
     EXITS("EQUATIONS_SET_INDEPENDENT_INITIALISE")
     RETURN
 999 CALL EQUATIONS_SET_INDEPENDENT_FINALISE(EQUATIONS_SET%INDEPENDENT,dummyErr,dummyError,*998)
@@ -3474,7 +3409,7 @@ CONTAINS
     !Local Variables
     INTEGER(INTG) :: dummyErr
     TYPE(VARYING_STRING) :: dummyError
- 
+
     ENTERS("EQUATIONS_SET_INITIALISE",err,error,*998)
 
     IF(ASSOCIATED(EQUATIONS_SET)) THEN
@@ -3503,7 +3438,7 @@ CONTAINS
       NULLIFY(EQUATIONS_SET%EQUATIONS)
       NULLIFY(EQUATIONS_SET%BOUNDARY_CONDITIONS)
     ENDIF
-       
+
     EXITS("EQUATIONS_SET_INITIALISE")
     RETURN
 999 CALL EQUATIONS_SET_FINALISE(EQUATIONS_SET,dummyErr,dummyError,*998)
@@ -3525,10 +3460,10 @@ CONTAINS
     !Local Variables
 
     ENTERS("EQUATIONS_SET_GEOMETRY_FINALISE",err,error,*999)
-    
+
     NULLIFY(EQUATIONS_SET_GEOMETRY%GEOMETRIC_FIELD)
     NULLIFY(EQUATIONS_SET_GEOMETRY%FIBRE_FIELD)
-       
+
     EXITS("EQUATIONS_SET_GEOMETRY_FINALISE")
     RETURN
 999 ERRORSEXITS("EQUATIONS_SET_GEOMETRY_FINALISE",err,error)
@@ -3547,7 +3482,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
- 
+
     ENTERS("EQUATIONS_SET_GEOMETRY_INITIALISE",err,error,*999)
 
     IF(ASSOCIATED(EQUATIONS_SET)) THEN
@@ -3557,18 +3492,18 @@ CONTAINS
     ELSE
       CALL FlagError("Equations set is not associated.",err,error,*999)
     ENDIF
-       
+
     EXITS("EQUATIONS_SET_GEOMETRY_INITIALISE")
     RETURN
 999 ERRORSEXITS("EQUATIONS_SET_GEOMETRY_INITIALISE",err,error)
     RETURN 1
   END SUBROUTINE EQUATIONS_SET_GEOMETRY_INITIALISE
-  
+
   !
   !================================================================================================================================
   !
 
-  !>Finish the creation of materials for an equations set. \see OPENCMISS::CMISSEquationsSetMaterialsCreateFinish
+  !>Finish the creation of materials for an equations set. \see OpenCMISS::cmfe_EquationsSet_MaterialsCreateFinish
   SUBROUTINE EQUATIONS_SET_MATERIALS_CREATE_FINISH(EQUATIONS_SET,err,error,*)
 
     !Argument variables
@@ -3610,7 +3545,7 @@ CONTAINS
     ELSE
       CALL FlagError("Equations set is not associated",err,error,*999)
     ENDIF
-       
+
     EXITS("EQUATIONS_SET_MATERIALS_CREATE_FINISH")
     RETURN
 999 ERRORSEXITS("EQUATIONS_SET_MATERIALS_CREATE_FINISH",err,error)
@@ -3621,7 +3556,7 @@ CONTAINS
   !================================================================================================================================
   !
 
-  !>Start the creation of materials for a problem. \see OPENCMISS::CMISSEquationsSetMaterialsCreateStart
+  !>Start the creation of materials for a problem. \see OpenCMISS::cmfe_EquationsSet_MaterialsCreateStart
   SUBROUTINE EQUATIONS_SET_MATERIALS_CREATE_START(EQUATIONS_SET,MATERIALS_FIELD_USER_NUMBER,MATERIALS_FIELD,err,error,*)
 
     !Argument variables
@@ -3657,7 +3592,7 @@ CONTAINS
                 CALL FlagError(localError,err,error,*999)
               ENDIF
               MATERIALS_FIELD_REGION=>MATERIALS_FIELD%REGION
-              IF(ASSOCIATED(MATERIALS_FIELD_REGION)) THEN                
+              IF(ASSOCIATED(MATERIALS_FIELD_REGION)) THEN
                 !Check the field is defined on the same region as the equations set
                 IF(MATERIALS_FIELD_REGION%USER_NUMBER/=REGION%USER_NUMBER) THEN
                   localError="Invalid region setup. The specified materials field has been created on region number "// &
@@ -3708,7 +3643,7 @@ CONTAINS
           !Finalise the setup
           CALL EQUATIONS_SET_SETUP_FINALISE(EQUATIONS_SET_SETUP_INFO,err,error,*999)
           !Set pointers
-          IF(EQUATIONS_SET%MATERIALS%MATERIALS_FIELD_AUTO_CREATED) THEN            
+          IF(EQUATIONS_SET%MATERIALS%MATERIALS_FIELD_AUTO_CREATED) THEN
             MATERIALS_FIELD=>EQUATIONS_SET%MATERIALS%MATERIALS_FIELD
           ELSE
             EQUATIONS_SET%MATERIALS%MATERIALS_FIELD=>MATERIALS_FIELD
@@ -3720,7 +3655,7 @@ CONTAINS
     ELSE
       CALL FlagError("Equations set is not associated",err,error,*998)
     ENDIF
-       
+
     EXITS("EQUATIONS_SET_MATERIALS_CREATE_START")
     RETURN
 999 CALL EQUATIONS_SET_MATERIALS_FINALISE(EQUATIONS_SET%MATERIALS,dummyErr,dummyError,*998)
@@ -3732,7 +3667,7 @@ CONTAINS
   !================================================================================================================================
   !
 
-  !>Destroy the materials for an equations set. \see OPENCMISS::CMISSEquationsSetMaterialsDestroy
+  !>Destroy the materials for an equations set. \see OpenCMISS::cmfe_EquationsSet_MaterialsDestroy
   SUBROUTINE EQUATIONS_SET_MATERIALS_DESTROY(EQUATIONS_SET,err,error,*)
 
     !Argument variables
@@ -3752,7 +3687,7 @@ CONTAINS
     ELSE
       CALL FlagError("Equations set is not associated.",err,error,*999)
     ENDIF
-       
+
     EXITS("EQUATIONS_SET_MATERIALS_DESTROY")
     RETURN
 999 ERRORSEXITS("EQUATIONS_SET_MATERIALS_DESTROY",err,error)
@@ -3777,7 +3712,7 @@ CONTAINS
     IF(ASSOCIATED(EQUATIONS_SET_MATERIALS)) THEN
       DEALLOCATE(EQUATIONS_SET_MATERIALS)
     ENDIF
-       
+
     EXITS("EQUATIONS_SET_MATERIALS_FINALISE")
     RETURN
 999 ERRORSEXITS("EQUATIONS_SET_MATERIALS_FINALISE",err,error)
@@ -3798,7 +3733,7 @@ CONTAINS
     !Local Variables
     INTEGER(INTG) :: dummyErr
     TYPE(VARYING_STRING) :: dummyError
-    
+
     ENTERS("EQUATIONS_SET_MATERIALS_INITIALISE",err,error,*998)
 
     IF(ASSOCIATED(EQUATIONS_SET)) THEN
@@ -3815,7 +3750,7 @@ CONTAINS
     ELSE
       CALL FlagError("Equations set is not associated",err,error,*998)
     ENDIF
-       
+
     EXITS("EQUATIONS_SET_MATERIALS_INITIALISE")
     RETURN
 999 CALL EQUATIONS_SET_MATERIALS_FINALISE(EQUATIONS_SET%MATERIALS,dummyErr,dummyError,*998)
@@ -3828,9 +3763,9 @@ CONTAINS
   !================================================================================================================================
   !
 
-  !>Finish the creation of a dependent variables for an equations set. \see OPENCMISS::CMISSEquationsSetDependentCreateFinish
+  !>Finish the creation of a dependent variables for an equations set. \see OpenCMISS::cmfe_EquationsSet_DependentCreateFinish
   SUBROUTINE EQUATIONS_SET_DEPENDENT_CREATE_FINISH(EQUATIONS_SET,err,error,*)
-    
+
     !Argument variables
     TYPE(EQUATIONS_SET_TYPE), POINTER :: EQUATIONS_SET !<A pointer to the equations set to finish the creation of
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
@@ -3866,7 +3801,7 @@ CONTAINS
     ELSE
       CALL FlagError("Equations set is not associated",err,error,*999)
     ENDIF
-       
+
     EXITS("EQUATIONS_SET_DEPENDENT_CREATE_FINISH")
     RETURN
 999 ERRORSEXITS("EQUATIONS_SET_DEPENDENT_CREATE_FINISH",err,error)
@@ -3877,7 +3812,7 @@ CONTAINS
   !================================================================================================================================
   !
 
-  !>Start the creation of dependent variables for an equations set. \see OPENCMISS::CMISSEquationsSetDependentCreateStart
+  !>Start the creation of dependent variables for an equations set. \see OpenCMISS::cmfe_EquationsSet_DependentCreateStart
   SUBROUTINE EQUATIONS_SET_DEPENDENT_CREATE_START(EQUATIONS_SET,DEPENDENT_FIELD_USER_NUMBER,dependentField,err,error,*)
 
     !Argument variables
@@ -3892,7 +3827,7 @@ CONTAINS
     TYPE(FIELD_TYPE), POINTER :: FIELD,GEOMETRIC_FIELD
     TYPE(REGION_TYPE), POINTER :: REGION,DEPENDENT_FIELD_REGION
     TYPE(VARYING_STRING) :: dummyError,localError
-    
+
     ENTERS("EQUATIONS_SET_DEPENDENT_CREATE_START",err,error,*998)
 
     IF(ASSOCIATED(EQUATIONS_SET)) THEN
@@ -3913,7 +3848,7 @@ CONTAINS
                 CALL FlagError(localError,err,error,*999)
               ENDIF
               DEPENDENT_FIELD_REGION=>dependentField%REGION
-              IF(ASSOCIATED(DEPENDENT_FIELD_REGION)) THEN                
+              IF(ASSOCIATED(DEPENDENT_FIELD_REGION)) THEN
                 !Check the field is defined on the same region as the equations set
                 IF(DEPENDENT_FIELD_REGION%USER_NUMBER/=REGION%USER_NUMBER) THEN
                   localError="Invalid region setup. The specified dependent field has been created on region number "// &
@@ -3974,7 +3909,7 @@ CONTAINS
     ELSE
       CALL FlagError("Equations_set is not associated.",err,error,*998)
     ENDIF
-       
+
     EXITS("EQUATIONS_SET_DEPENDENT_CREATE_START")
     RETURN
 999 CALL EQUATIONS_SET_DEPENDENT_FINALISE(EQUATIONS_SET%DEPENDENT,dummyErr,dummyError,*998)
@@ -3985,8 +3920,8 @@ CONTAINS
   !
   !================================================================================================================================
   !
-  
-  !>Destroy the dependent variables for an equations set. \see OPENCMISS::CMISSEquationsSetDependentDestroy
+
+  !>Destroy the dependent variables for an equations set. \see OpenCMISS::cmfe_EquationsSet_DependentDestroy
   SUBROUTINE EQUATIONS_SET_DEPENDENT_DESTROY(EQUATIONS_SET,err,error,*)
 
     !Argument variables
@@ -4002,13 +3937,13 @@ CONTAINS
     ELSE
       CALL FlagError("Equations set is not associated",err,error,*999)
     ENDIF
-    
+
     EXITS("EQUATIONS_SET_DEPENDENT_DESTROY")
     RETURN
 999 ERRORSEXITS("EQUATIONS_SET_DEPENDENT_DESTROY",err,error)
     RETURN 1
   END SUBROUTINE EQUATIONS_SET_DEPENDENT_DESTROY
-  
+
   !
   !================================================================================================================================
   !
@@ -4028,13 +3963,13 @@ CONTAINS
     EQUATIONS_SET_DEPENDENT%DEPENDENT_FINISHED=.FALSE.
     EQUATIONS_SET_DEPENDENT%DEPENDENT_FIELD_AUTO_CREATED=.FALSE.
     NULLIFY(EQUATIONS_SET_DEPENDENT%DEPENDENT_FIELD)
-    
+
     EXITS("EQUATIONS_SET_DEPENDENT_FINALISE")
     RETURN
 999 ERRORSEXITS("EQUATIONS_SET_DEPENDENT_FINALISE",err,error)
     RETURN 1
   END SUBROUTINE EQUATIONS_SET_DEPENDENT_FINALISE
-  
+
   !
   !================================================================================================================================
   !
@@ -4047,7 +3982,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
- 
+
     ENTERS("EQUATIONS_SET_DEPENDENT_INITIALISE",err,error,*999)
 
     IF(ASSOCIATED(EQUATIONS_SET)) THEN
@@ -4058,7 +3993,7 @@ CONTAINS
     ELSE
       CALL FlagError("Equations set is not associated.",err,error,*999)
     ENDIF
-       
+
     EXITS("EQUATIONS_SET_DEPENDENT_INITIALISE")
     RETURN
 999 ERRORSEXITS("EQUATIONS_SET_DEPENDENT_INITIALISE",err,error)
@@ -4069,7 +4004,7 @@ CONTAINS
   !================================================================================================================================
   !
 
-  !>Finish the creation of a derived variables field for an equations set. \see OPENCMISS::CMISSEquationsSet_DerivedCreateFinish
+  !>Finish the creation of a derived variables field for an equations set. \see OpenCMISS::cmfe_EquationsSet_DerivedCreateFinish
   SUBROUTINE EquationsSet_DerivedCreateFinish(equationsSet,err,error,*)
 
     !Argument variables
@@ -4122,7 +4057,7 @@ CONTAINS
   !================================================================================================================================
   !
 
-  !>Start the creation of derived variables field for an equations set. \see OPENCMISS::CMISSEquationsSet_DerivedCreateStart
+  !>Start the creation of derived variables field for an equations set. \see OpenCMISS::cmfe_EquationsSet_DerivedCreateStart
   SUBROUTINE EquationsSet_DerivedCreateStart(equationsSet,derivedFieldUserNumber,derivedField,err,error,*)
 
     !Argument variables
@@ -4230,7 +4165,7 @@ CONTAINS
   !================================================================================================================================
   !
 
-  !>Destroy the derived variables for an equations set. \see OPENCMISS::CMISSEquationsSet_DerivedDestroy
+  !>Destroy the derived variables for an equations set. \see OpenCMISS::cmfe_EquationsSet_DerivedDestroy
   SUBROUTINE EquationsSet_DerivedDestroy(equationsSet,err,error,*)
 
     !Argument variables
@@ -4298,7 +4233,7 @@ CONTAINS
       ELSE
         ALLOCATE(equationsSet%derived,stat=err)
         IF(err/=0) CALL FlagError("Could not allocate equations set derived information.",err,error,*998)
-        ALLOCATE(equationsSet%derived%variableTypes(EQUATIONS_SET_NUMBER_OF_DERIVED_TYPES),stat=err)
+        ALLOCATE(equationsSet%derived%variableTypes(EQUATIONS_SET_NUMBER_OF_TENSOR_TYPES),stat=err)
         IF(err/=0) CALL FlagError("Could not allocate equations set derived variable types.",err,error,*999)
         equationsSet%derived%variableTypes=0
         equationsSet%derived%numberOfVariables=0
@@ -4337,13 +4272,13 @@ CONTAINS
     EQUATIONS_SET_FIELD%EQUATIONS_SET_FIELD_FINISHED=.FALSE.
     EQUATIONS_SET_FIELD%EQUATIONS_SET_FIELD_AUTO_CREATED=.FALSE.
     NULLIFY(EQUATIONS_SET_FIELD%EQUATIONS_SET_FIELD_FIELD)
-    
+
     EXITS("EQUATIONS_SET_EQUATIONS_SET_FIELD_FINALISE")
     RETURN
 999 ERRORSEXITS("EQUATIONS_SET_EQUATIONS_SET_FIELD_FINALISE",err,error)
     RETURN 1
   END SUBROUTINE EQUATIONS_SET_EQUATIONS_SET_FIELD_FINALISE
-  
+
   !
   !================================================================================================================================
   !
@@ -4355,7 +4290,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
- 
+
     ENTERS("EquationsSet_EquationsSetFieldInitialise",err,error,*999)
 
     IF(ASSOCIATED(EQUATIONS_SET)) THEN
@@ -4366,12 +4301,12 @@ CONTAINS
     ELSE
       CALL FlagError("Equations set is not associated.",err,error,*999)
     ENDIF
-       
+
     EXITS("EquationsSet_EquationsSetFieldInitialise")
     RETURN
 999 ERRORSEXITS("EquationsSet_EquationsSetFieldInitialise",err,error)
     RETURN 1
-    
+
   END SUBROUTINE EquationsSet_EquationsSetFieldInitialise
 
   !
@@ -4432,7 +4367,7 @@ CONTAINS
     ELSE
       CALL FlagError("Equations set is not associated.",err,error,*999)
     ENDIF
-       
+
     EXITS("EQUATIONS_SET_SETUP")
     RETURN
 999 ERRORSEXITS("EQUATIONS_SET_SETUP",err,error)
@@ -4443,7 +4378,7 @@ CONTAINS
   !================================================================================================================================
   !
 
- !>Finish the creation of equations for the equations set. \see OPENCMISS::CMISSEquationsSetEquationsCreateFinish
+ !>Finish the creation of equations for the equations set. \see OpenCMISS::cmfe_EquationsSet_EquationsCreateFinish
   SUBROUTINE EQUATIONS_SET_EQUATIONS_CREATE_FINISH(EQUATIONS_SET,err,error,*)
 
     !Argument variables
@@ -4452,7 +4387,7 @@ CONTAINS
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
     TYPE(EQUATIONS_SET_SETUP_TYPE) :: EQUATIONS_SET_SETUP_INFO
-    
+
     ENTERS("EQUATIONS_SET_EQUATIONS_CREATE_FINISH",err,error,*999)
 
     IF(ASSOCIATED(EQUATIONS_SET)) THEN
@@ -4467,7 +4402,7 @@ CONTAINS
     ELSE
       CALL FlagError("Equations set is not associated.",err,error,*999)
     ENDIF
-       
+
     EXITS("EQUATIONS_SET_EQUATIONS_CREATE_FINISH")
     RETURN
 999 ERRORSEXITS("EQUATIONS_SET_EQUATIONS_CREATE_FINISH",err,error)
@@ -4484,11 +4419,11 @@ CONTAINS
   !>- SPARSITY_TYPE: 1 (EQUATIONS_SET_SPARSE_MATRICES)
   !>- NONLINEAR_JACOBIAN_TYPE: 0
   !>- INTERPOLATION: null
-  !>- LINEAR_DATA: null 
+  !>- LINEAR_DATA: null
   !>- NONLINEAR_DATA: null
   !>- TIME_DATA: null
-  !>- vectorMapping:  
-  !>- vectorMatrices:  
+  !>- vectorMapping:
+  !>- vectorMatrices:
   SUBROUTINE EQUATIONS_SET_EQUATIONS_CREATE_START(EQUATIONS_SET,equations,err,error,*)
 
     !Argument variables
@@ -4519,19 +4454,19 @@ CONTAINS
     ELSE
       CALL FlagError("Equations set is not associated.",err,error,*999)
     ENDIF
-       
+
     EXITS("EQUATIONS_SET_EQUATIONS_CREATE_START")
     RETURN
 999 ERRORSEXITS("EQUATIONS_SET_EQUATIONS_CREATE_START",err,error)
     RETURN 1
-    
+
   END SUBROUTINE EQUATIONS_SET_EQUATIONS_CREATE_START
 
   !
   !================================================================================================================================
   !
 
-  !>Destroy the equations for an equations set. \see OPENCMISS::CMISSEquationsSetEquationsDestroy
+  !>Destroy the equations for an equations set. \see OpenCMISS::cmfe_EquationsSet_EquationsDestroy
   SUBROUTINE EQUATIONS_SET_EQUATIONS_DESTROY(EQUATIONS_SET,err,error,*)
 
     !Argument variables
@@ -4551,7 +4486,7 @@ CONTAINS
     ELSE
       CALL FlagError("Equations set is not associated.",err,error,*999)
     ENDIF
-       
+
     EXITS("EQUATIONS_SET_EQUATIONS_DESTROY")
     RETURN
 999 ERRORSEXITS("EQUATIONS_SET_EQUATIONS_DESTROY",err,error)
@@ -4572,11 +4507,11 @@ CONTAINS
     !Local Variables
     TYPE(EquationsType), POINTER :: equations
     TYPE(VARYING_STRING) :: localError
- 
+
     ENTERS("EquationsSet_JacobianEvaluate",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equationsSet)) CALL FlagError("Equations set is not associated.",err,error,*999)
-    
+
     NULLIFY(equations)
     CALL EquationsSet_EquationsGet(equationsSet,equations,err,error,*999)
 
@@ -4584,7 +4519,7 @@ CONTAINS
       CALL WriteString(GENERAL_OUTPUT_TYPE,"",err,error,*999)
       CALL WriteStringValue(GENERAL_OUTPUT_TYPE,"Equations set Jacobian evaluate: ",equationsSet%label,err,error,*999)
     ENDIF
-    
+
     SELECT CASE(equations%linearity)
     CASE(EQUATIONS_LINEAR)
       SELECT CASE(equations%timeDependence)
@@ -4726,12 +4661,12 @@ CONTAINS
       localError="The equations linearity of "//TRIM(NumberToVString(equations%linearity,"*",err,error))//" is invalid."
       CALL FlagError(localError,err,error,*999)
     END SELECT
-       
+
     EXITS("EquationsSet_JacobianEvaluate")
     RETURN
 999 ERRORSEXITS("EquationsSet_JacobianEvaluate",err,error)
     RETURN 1
-    
+
   END SUBROUTINE EquationsSet_JacobianEvaluate
 
   !
@@ -4755,11 +4690,11 @@ CONTAINS
     TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices
     TYPE(EquationsVectorType), POINTER :: vectorEquations
     TYPE(FIELD_TYPE), POINTER :: dependentField
-  
+
     ENTERS("EquationsSet_JacobianEvaluateStaticFEM",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equationsSet)) CALL FlagError("Equations set is not associated.",err,error,*999)
-    
+
     NULLIFY(equations)
     CALL EquationsSet_EquationsGet(equationsSet,equations,err,error,*999)
     NULLIFY(vectorEquations)
@@ -4777,7 +4712,7 @@ CONTAINS
     !Initialise the matrices and rhs vector
     CALL EquationsMatrices_VectorValuesInitialise(vectorMatrices,EQUATIONS_MATRICES_JACOBIAN_ONLY,0.0_DP,err,error,*999)
     !Assemble the elements
-    !Allocate the element matrices 
+    !Allocate the element matrices
     CALL EquationsMatrices_ElementInitialise(vectorMatrices,err,error,*999)
     elementsMapping=>dependentField%decomposition%domain(dependentField%decomposition%MESH_COMPONENT_NUMBER)%ptr%mappings%elements
     !Output timing information if required
@@ -4799,7 +4734,7 @@ CONTAINS
       CALL EquationsMatrices_ElementCalculate(vectorMatrices,element,err,error,*999)
       CALL EquationsSet_FiniteElementJacobianEvaluate(equationsSet,element,err,error,*999)
       CALL EquationsMatrices_JacobianElementAdd(vectorMatrices,err,error,*999)
-    ENDDO !elementIdx                  
+    ENDDO !elementIdx
     !Output timing information if required
     IF(equations%outputType>=EQUATIONS_TIMING_OUTPUT) THEN
       CALL CPUTimer(USER_CPU,userTime3,err,error,*999)
@@ -4848,7 +4783,7 @@ CONTAINS
     IF(equations%outputType>=EQUATIONS_MATRIX_OUTPUT) THEN
       CALL EquationsMatrices_JacobianOutput(GENERAL_OUTPUT_TYPE,vectorMatrices,err,error,*999)
     ENDIF
-       
+
     EXITS("EquationsSet_JacobianEvaluateStaticFEM")
     RETURN
 999 ERRORSEXITS("EquationsSet_JacobianEvaluateStaticFEM",err,error)
@@ -4876,11 +4811,11 @@ CONTAINS
     TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices
     TYPE(EquationsVectorType), POINTER :: vectorEquations
     TYPE(FIELD_TYPE), POINTER :: dependentField
-  
+
     ENTERS("EquationsSet_JacobianEvaluateDynamicFEM",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equationsSet)) CALL FlagError("Equations set is not associated.",err,error,*999)
-    
+
     NULLIFY(equations)
     CALL EquationsSet_EquationsGet(equationsSet,equations,err,error,*999)
     NULLIFY(vectorEquations)
@@ -4898,7 +4833,7 @@ CONTAINS
     !Initialise the matrices and rhs vector
     CALL EquationsMatrices_VectorValuesInitialise(vectorMatrices,EQUATIONS_MATRICES_JACOBIAN_ONLY,0.0_DP,err,error,*999)
     !Assemble the elements
-    !Allocate the element matrices 
+    !Allocate the element matrices
     CALL EquationsMatrices_ElementInitialise(vectorMatrices,err,error,*999)
     elementsMapping=>dependentField%decomposition%domain(dependentField%decomposition%MESH_COMPONENT_NUMBER)%ptr%mappings%elements
     !Output timing information if required
@@ -4969,12 +4904,12 @@ CONTAINS
     IF(equations%outputType>=EQUATIONS_MATRIX_OUTPUT) THEN
       CALL EquationsMatrices_JacobianOutput(GENERAL_OUTPUT_TYPE,vectorMatrices,err,error,*999)
     ENDIF
-      
+
     EXITS("EquationsSet_JacobianEvaluateDynamicFEM")
     RETURN
 999 ERRORSEXITS("EquationsSet_JacobianEvaluateDynamicFEM",err,error)
     RETURN 1
-    
+
   END SUBROUTINE EquationsSet_JacobianEvaluateDynamicFEM
 
   !
@@ -4999,7 +4934,7 @@ CONTAINS
     TYPE(FIELD_PARAMETER_SET_TYPE), POINTER :: residualParameterSet
     TYPE(FIELD_VARIABLE_TYPE), POINTER :: residualVariable
     TYPE(VARYING_STRING) :: localError
- 
+
     ENTERS("EquationsSet_ResidualEvaluate",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equationsSet)) CALL FlagError("Equations set is not associated.",err,error,*999)
@@ -5015,12 +4950,12 @@ CONTAINS
     CALL EquationsVector_VectorMatricesGet(vectorEquations,vectorMatrices,err,error,*999)
     NULLIFY(nonlinearMatrices)
     CALL EquationsMatricesVector_NonlinearMatricesGet(vectorMatrices,nonlinearMatrices,err,error,*999)
-        
+
     IF(equationsSet%outputType>=EQUATIONS_SET_PROGRESS_OUTPUT) THEN
       CALL WriteString(GENERAL_OUTPUT_TYPE,"",err,error,*999)
       CALL WriteStringValue(GENERAL_OUTPUT_TYPE,"Equations set residual evaluate: ",equationsSet%label,err,error,*999)
     ENDIF
-    
+
     SELECT CASE(equations%linearity)
     CASE(EQUATIONS_LINEAR)
       CALL FlagError("Can not evaluate a residual for linear equations.",err,error,*999)
@@ -5077,7 +5012,7 @@ CONTAINS
       localError="The equations linearity of "//TRIM(NumberToVString(equations%linearity,"*",err,error))//" is invalid."
       CALL FlagError(localError,err,error,*999)
     END SELECT
-    
+
     !Update the residual parameter set if it exists
     DO residualVariableIdx=1,nonlinearMapping%numberOfResidualVariables
       residualVariable=>nonlinearMapping%residualVariables(residualVariableIdx)%ptr
@@ -5092,12 +5027,12 @@ CONTAINS
         CALL DistributedVector_Copy(nonlinearMatrices%residual,residualParameterSet%parameters,1.0_DP,err,error,*999)
       ENDIF
     ENDDO !residualVariableIdx
-       
+
     EXITS("EquationsSet_ResidualEvaluate")
     RETURN
 999 ERRORSEXITS("EquationsSet_ResidualEvaluate",err,error)
     RETURN 1
-    
+
   END SUBROUTINE EquationsSet_ResidualEvaluate
 
   !
@@ -5121,11 +5056,11 @@ CONTAINS
     TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices
     TYPE(EquationsVectorType), POINTER :: vectorEquations
     TYPE(FIELD_TYPE), POINTER :: dependentField
- 
+
     ENTERS("EquationsSet_ResidualEvaluateDynamicFEM",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equationsSet)) CALL FlagError("Equations set is not associated.",err,error,*999)
-    
+
     NULLIFY(equations)
     CALL EquationsSet_EquationsGet(equationsSet,equations,err,error,*999)
     NULLIFY(vectorEquations)
@@ -5143,7 +5078,7 @@ CONTAINS
     !Initialise the matrices and rhs vector
     CALL EquationsMatrices_VectorValuesInitialise(vectorMatrices,EQUATIONS_MATRICES_NONLINEAR_ONLY,0.0_DP,err,error,*999)
     !Assemble the elements
-    !Allocate the element matrices 
+    !Allocate the element matrices
     CALL EquationsMatrices_ElementInitialise(vectorMatrices,err,error,*999)
     elementsMapping=>dependentField%decomposition%domain(dependentField%decomposition%MESH_COMPONENT_NUMBER)%ptr%mappings%elements
     !Output timing information if required
@@ -5165,7 +5100,7 @@ CONTAINS
       CALL EquationsMatrices_ElementCalculate(vectorMatrices,element,err,error,*999)
       CALL EquationsSet_FiniteElementResidualEvaluate(equationsSet,element,err,error,*999)
       CALL EquationsMatrices_ElementAdd(vectorMatrices,err,error,*999)
-    ENDDO !elementIdx                  
+    ENDDO !elementIdx
     !Output timing information if required
     IF(equations%outputType>=EQUATIONS_TIMING_OUTPUT) THEN
       CALL CPUTimer(USER_CPU,userTime3,err,error,*999)
@@ -5214,7 +5149,7 @@ CONTAINS
     IF(equations%outputType>=EQUATIONS_MATRIX_OUTPUT) THEN
       CALL EquationsMatrices_VectorOutput(GENERAL_OUTPUT_TYPE,vectorMatrices,err,error,*999)
     ENDIF
-      
+
     EXITS("EquationsSet_ResidualEvaluateDynamicFEM")
     RETURN
 999 ERRORSEXITS("EquationsSet_ResidualEvaluateDynamicFEM",err,error)
@@ -5242,11 +5177,11 @@ CONTAINS
     TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices
     TYPE(EquationsVectorType), POINTER :: vectorEquations
     TYPE(FIELD_TYPE), POINTER :: dependentField
- 
+
     ENTERS("EquationsSet_ResidualEvaluateStaticFEM",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equationsSet)) CALL FlagError("Equations set is not associated.",err,error,*999)
-    
+
     NULLIFY(equations)
     CALL EquationsSet_EquationsGet(equationsSet,equations,err,error,*999)
     NULLIFY(vectorEquations)
@@ -5264,7 +5199,7 @@ CONTAINS
     !Initialise the matrices and rhs vector
     CALL EquationsMatrices_VectorValuesInitialise(vectorMatrices,EQUATIONS_MATRICES_NONLINEAR_ONLY,0.0_DP,err,error,*999)
     !Assemble the elements
-    !Allocate the element matrices 
+    !Allocate the element matrices
     CALL EquationsMatrices_ElementInitialise(vectorMatrices,err,error,*999)
     elementsMapping=>dependentField%decomposition%domain(dependentField%decomposition%MESH_COMPONENT_NUMBER)%ptr% &
       & mappings%elements
@@ -5336,7 +5271,7 @@ CONTAINS
     IF(equations%outputType>=EQUATIONS_MATRIX_OUTPUT) THEN
       CALL EquationsMatrices_VectorOutput(GENERAL_OUTPUT_TYPE,vectorMatrices,err,error,*999)
     ENDIF
-       
+
     EXITS("EquationsSet_ResidualEvaluateStaticFEM")
     RETURN
 999 ERRORSEXITS("EquationsSet_ResidualEvaluateStaticFEM",err,error)
@@ -5363,13 +5298,13 @@ CONTAINS
     EQUATIONS_SET_SETUP_INFO%FIELD_USER_NUMBER=0
     NULLIFY(EQUATIONS_SET_SETUP_INFO%FIELD)
     EQUATIONS_SET_SETUP_INFO%ANALYTIC_FUNCTION_TYPE=0
-    
+
     EXITS("EQUATIONS_SET_SETUP_FINALISE")
     RETURN
 999 ERRORSEXITS("EQUATIONS_SET_SETUP_FINALISE",err,error)
     RETURN 1
   END SUBROUTINE EQUATIONS_SET_SETUP_FINALISE
-  
+
   !
   !================================================================================================================================
   !
@@ -5390,13 +5325,13 @@ CONTAINS
     EQUATIONS_SET_SETUP_INFO%FIELD_USER_NUMBER=0
     NULLIFY(EQUATIONS_SET_SETUP_INFO%FIELD)
     EQUATIONS_SET_SETUP_INFO%ANALYTIC_FUNCTION_TYPE=0
-    
+
     EXITS("EQUATIONS_SET_SETUP_INITIALISE")
     RETURN
 999 ERRORSEXITS("EQUATIONS_SET_SETUP_INITIALISE",err,error)
     RETURN 1
   END SUBROUTINE EQUATIONS_SET_SETUP_INITIALISE
-  
+
   !
   !================================================================================================================================
   !
@@ -5406,25 +5341,25 @@ CONTAINS
 
     !Argument variables
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet !<A pointer to the equations set to get the output type for
-    INTEGER(INTG), INTENT(OUT) :: outputType !<On exit, the output type of the equations set \see EQUATIONS_SET_CONSTANTS_OutputTypes,EQUATIONS_SET_CONSTANTS
+    INTEGER(INTG), INTENT(OUT) :: outputType !<On exit, the output type of the equations set \see EquationsSetConstants_OutputTypes,EquationsSetConstants
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
- 
+
     ENTERS("EquationsSet_OutputTypeGet",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equationsSet)) CALL FlagError("Equations set is not associated.",err,error,*999)
     IF(.NOT.equationsSet%EQUATIONS_SET_FINISHED) CALL FlagError("Equations set has not been finished.",err,error,*999)
-    
+
     outputType=equationsSet%outputType
-       
+
     EXITS("EquationsSet_OutputTypeGet")
     RETURN
 999 ERRORSEXITS("EquationsSet_OutputTypeGet",err,error)
     RETURN 1
-    
+
   END SUBROUTINE EquationsSet_OutputTypeGet
-  
+
   !
   !================================================================================================================================
   !
@@ -5434,12 +5369,12 @@ CONTAINS
 
     !Argument variables
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet !<A pointer to the equations set to set the output type for
-    INTEGER(INTG), INTENT(IN) :: outputType !<The output type to set \see EQUATIONS_SET_CONSTANTS_OutputTypes,EQUATIONS_SET_CONSTANTS
+    INTEGER(INTG), INTENT(IN) :: outputType !<The output type to set \see EquationsSetConstants_OutputTypes,EquationsSetConstants
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
     TYPE(VARYING_STRING) :: localError
- 
+
     ENTERS("EquationsSet_OutputTypeSet",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equationsSet)) CALL FlagError("Equations set is not associated.",err,error,*999)
@@ -5454,12 +5389,12 @@ CONTAINS
       localError="The specified output type of "//TRIM(NumberToVString(outputType,"*",err,error))//" is invalid."
       CALL FlagError(localError,err,error,*999)
     END SELECT
-       
+
     EXITS("EquationsSet_OutputTypeSet")
     RETURN
 999 ERRORSEXITS("EquationsSet_OutputTypeSet",err,error)
     RETURN 1
-    
+
   END SUBROUTINE EquationsSet_OutputTypeSet
 
   !
@@ -5471,7 +5406,7 @@ CONTAINS
 
     !Argument variables
     TYPE(EQUATIONS_SET_TYPE), POINTER :: EQUATIONS_SET !<A pointer to the equations set to set the solution method for
-    INTEGER(INTG), INTENT(IN) :: SOLUTION_METHOD !<The equations set solution method to set \see EQUATIONS_SET_CONSTANTS_SolutionMethods,EQUATIONS_SET_CONSTANTS
+    INTEGER(INTG), INTENT(IN) :: SOLUTION_METHOD !<The equations set solution method to set \see EquationsSetConstants_SolutionMethods,EquationsSetConstants
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
@@ -5520,14 +5455,14 @@ CONTAINS
     ELSE
       CALL FlagError("Equations set is not associated.",err,error,*999)
     ENDIF
-    
+
     EXITS("EQUATIONS_SET_SOLUTION_METHOD_SET")
     RETURN
 999 ERRORSEXITS("EQUATIONS_SET_SOLUTION_METHOD_SET",err,error)
     RETURN 1
-    
+
   END SUBROUTINE EQUATIONS_SET_SOLUTION_METHOD_SET
-  
+
   !
   !================================================================================================================================
   !
@@ -5537,7 +5472,7 @@ CONTAINS
 
     !Argument variables
     TYPE(EQUATIONS_SET_TYPE), POINTER :: EQUATIONS_SET !<A pointer to the equations set to get the solution method for
-    INTEGER(INTG), INTENT(OUT) :: SOLUTION_METHOD !<On return, the equations set solution method \see EQUATIONS_SET_CONSTANTS_SolutionMethods,EQUATIONS_SET_CONSTANTS
+    INTEGER(INTG), INTENT(OUT) :: SOLUTION_METHOD !<On return, the equations set solution method \see EquationsSetConstants_SolutionMethods,EquationsSetConstants
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
@@ -5553,18 +5488,18 @@ CONTAINS
     ELSE
       CALL FlagError("Equations set is not associated.",err,error,*999)
     ENDIF
-    
+
     EXITS("EQUATIONS_SET_SOLUTION_METHOD_GET")
     RETURN
 999 ERRORSEXITS("EQUATIONS_SET_SOLUTION_METHOD_GET",err,error)
     RETURN 1
   END SUBROUTINE EQUATIONS_SET_SOLUTION_METHOD_GET
-  
+
   !
   !================================================================================================================================
   !
 
-  !>Finish the creation of a source for an equation set. \see OPENCMISS::CMISSEquationsSetSourceCreateFinish
+  !>Finish the creation of a source for an equation set. \see OpenCMISS::cmfe_EquationsSet_SourceCreateFinish
   SUBROUTINE EQUATIONS_SET_SOURCE_CREATE_FINISH(EQUATIONS_SET,err,error,*)
 
     !Argument variables
@@ -5606,7 +5541,7 @@ CONTAINS
     ELSE
       CALL FlagError("Equations set is not associated.",err,error,*999)
     ENDIF
-       
+
     EXITS("EQUATIONS_SET_SOURCE_CREATE_FINISH")
     RETURN
 999 ERRORSEXITS("EQUATIONS_SET_SOURCE_CREATE_FINISH",err,error)
@@ -5617,7 +5552,7 @@ CONTAINS
   !================================================================================================================================
   !
 
-  !>Start the creation of a source for an equations set. \see OPENCMISS::CMISSEquationsSetSourceCreateStart
+  !>Start the creation of a source for an equations set. \see OpenCMISS::cmfe_EquationsSet_SourceCreateStart
   SUBROUTINE EQUATIONS_SET_SOURCE_CREATE_START(EQUATIONS_SET,SOURCE_FIELD_USER_NUMBER,SOURCE_FIELD,err,error,*)
 
     !Argument variables
@@ -5653,7 +5588,7 @@ CONTAINS
                 CALL FlagError(localError,err,error,*999)
               ENDIF
               SOURCE_FIELD_REGION=>SOURCE_FIELD%REGION
-              IF(ASSOCIATED(SOURCE_FIELD_REGION)) THEN                
+              IF(ASSOCIATED(SOURCE_FIELD_REGION)) THEN
                 !Check the field is defined on the same region as the equations set
                 IF(SOURCE_FIELD_REGION%USER_NUMBER/=REGION%USER_NUMBER) THEN
                   localError="Invalid region setup. The specified source field has been created on region number "// &
@@ -5704,7 +5639,7 @@ CONTAINS
           !Finalise the setup
           CALL EQUATIONS_SET_SETUP_FINALISE(EQUATIONS_SET_SETUP_INFO,err,error,*999)
           !Set pointers
-          IF(EQUATIONS_SET%SOURCE%SOURCE_FIELD_AUTO_CREATED) THEN            
+          IF(EQUATIONS_SET%SOURCE%SOURCE_FIELD_AUTO_CREATED) THEN
             SOURCE_FIELD=>EQUATIONS_SET%SOURCE%SOURCE_FIELD
           ELSE
             EQUATIONS_SET%SOURCE%SOURCE_FIELD=>SOURCE_FIELD
@@ -5716,7 +5651,7 @@ CONTAINS
     ELSE
       CALL FlagError("Equations set is not associated.",err,error,*998)
     ENDIF
-       
+
     EXITS("EQUATIONS_SET_SOURCE_CREATE_START")
     RETURN
 999 CALL EQUATIONS_SET_SOURCE_FINALISE(EQUATIONS_SET%SOURCE,dummyErr,dummyError,*998)
@@ -5728,7 +5663,7 @@ CONTAINS
   !================================================================================================================================
   !
 
-  !>Destroy the source for an equations set. \see OPENCMISS::CMISSEquationsSetSourceDestroy
+  !>Destroy the source for an equations set. \see OpenCMISS::cmfe_EquationsSet_SourceDestroy
   SUBROUTINE EQUATIONS_SET_SOURCE_DESTROY(EQUATIONS_SET,err,error,*)
 
     !Argument variables
@@ -5748,7 +5683,7 @@ CONTAINS
     ELSE
       CALL FlagError("Equations set is not associated",err,error,*999)
     ENDIF
-       
+
     EXITS("EQUATIONS_SET_SOURCE_DESTROY")
     RETURN
 999 ERRORSEXITS("EQUATIONS_SET_SOURCE_DESTROY",err,error)
@@ -5773,7 +5708,7 @@ CONTAINS
     IF(ASSOCIATED(EQUATIONS_SET_SOURCE)) THEN
        DEALLOCATE(EQUATIONS_SET_SOURCE)
     ENDIF
-       
+
     EXITS("EQUATIONS_SET_SOURCE_FINALISE")
     RETURN
 999 ERRORSEXITS("EQUATIONS_SET_SOURCE_FINALISE",err,error)
@@ -5794,7 +5729,7 @@ CONTAINS
     !Local Variables
     INTEGER(INTG) :: dummyErr
     TYPE(VARYING_STRING) :: dummyError
-    
+
     ENTERS("EQUATIONS_SET_SOURCE_INITIALISE",err,error,*998)
 
     IF(ASSOCIATED(EQUATIONS_SET)) THEN
@@ -5811,20 +5746,20 @@ CONTAINS
     ELSE
       CALL FlagError("Equations set is not associated.",err,error,*998)
     ENDIF
-       
+
     EXITS("EQUATIONS_SET_SOURCE_INITIALISE")
     RETURN
 999 CALL EQUATIONS_SET_SOURCE_FINALISE(EQUATIONS_SET%SOURCE,dummyErr,dummyError,*998)
 998 ERRORSEXITS("EQUATIONS_SET_SOURCE_INITIALISE",err,error)
     RETURN 1
-    
+
   END SUBROUTINE EQUATIONS_SET_SOURCE_INITIALISE
 
   !
   !================================================================================================================================
   !
 
-  !>Returns the equations set specification i.e., equations set class, type and subtype for an equations set. \see OPENCMISS::CMISSEquationsSetSpecificationGet
+  !>Returns the equations set specification i.e., equations set class, type and subtype for an equations set. \see OpenCMISS::cmfe_EquationsSet_SpecificationGet
   SUBROUTINE EquationsSet_SpecificationGet(equationsSet,equationsSetSpecification,err,error,*)
 
     !Argument variables
@@ -5865,14 +5800,14 @@ CONTAINS
 999 ERRORS("EquationsSet_SpecificationGet",err,error)
     EXITS("EquationsSet_SpecificationGet")
     RETURN 1
-    
+
   END SUBROUTINE EquationsSet_SpecificationGet
 
   !
   !================================================================================================================================
   !
 
-  !>Gets the size of the equations set specification array for a problem identified by a pointer. \see OPENCMISS::cmfe_EquationsSetSpecificationSizeGet
+  !>Gets the size of the equations set specification array for a problem identified by a pointer. \see OpenCMISS::cmfe_EquationsSet_SpecificationSizeGet
   SUBROUTINE EquationsSet_SpecificationSizeGet(equationsSet,specificationSize,err,error,*)
 
     !Argument variables
@@ -5902,14 +5837,14 @@ CONTAINS
     RETURN
 999 ERRORSEXITS("EquationsSet_SpecificationSizeGet",err,error)
     RETURN 1
-    
+
   END SUBROUTINE EquationsSet_SpecificationSizeGet
 
   !
   !================================================================================================================================
   !
 
-  !>Gets the current times for an equations set. \see OPENCMISS::cmfe_EquationsSet_TimesGet
+  !>Gets the current times for an equations set. \see OpenCMISS::cmfe_EquationsSet_TimesGet
   SUBROUTINE EquationsSet_TimesGet(equationsSet,currentTime,deltaTime,err,error,*)
 
     !Argument variables
@@ -5921,26 +5856,26 @@ CONTAINS
     !Local Variables
     TYPE(VARYING_STRING) :: localError
 
-    ENTERS("EquationsSet_TimesGet",err,error,*999) 
+    ENTERS("EquationsSet_TimesGet",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equationsSet)) CALL FlagError("Equations set is not associated.",err,error,*999)
     IF(.NOT.equationsSet%EQUATIONS_SET_FINISHED) CALL FlagError("Equations set has not been finished.",err,error,*999)
 
     currentTime=equationsSet%currentTime
     deltaTime=equationsSet%deltaTime
-      
+
     EXITS("EquationsSet_TimesGet")
     RETURN
 999 ERRORSEXITS("EquationsSet_TimesGet",err,error)
     RETURN 1
-    
+
   END SUBROUTINE EquationsSet_TimesGet
-  
+
   !
   !================================================================================================================================
   !
 
-  !>Sets/changes the current times for an equations set. \see OPENCMISS::cmfe_EquationsSet_TimesSet
+  !>Sets/changes the current times for an equations set. \see OpenCMISS::cmfe_EquationsSet_TimesSet
   SUBROUTINE EquationsSet_TimesSet(equationsSet,currentTime,deltaTime,err,error,*)
 
     !Argument variables
@@ -5952,7 +5887,7 @@ CONTAINS
     !Local Variables
     TYPE(VARYING_STRING) :: localError
 
-    ENTERS("EquationsSet_TimesSet",err,error,*999) 
+    ENTERS("EquationsSet_TimesSet",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equationsSet)) CALL FlagError("Equations set is not associated.",err,error,*999)
     IF(.NOT.equationsSet%EQUATIONS_SET_FINISHED) CALL FlagError("Equations set has not been finished.",err,error,*999)
@@ -5960,134 +5895,118 @@ CONTAINS
 
     equationsSet%currentTime=currentTime
     equationsSet%deltaTime=deltaTime
-      
+
     EXITS("EquationsSet_TimesSet")
     RETURN
 999 ERRORSEXITS("EquationsSet_TimesSet",err,error)
     RETURN 1
-    
+
   END SUBROUTINE EquationsSet_TimesSet
-  
-  !
-  !================================================================================================================================
-  !
+
   !
   !================================================================================================================================
   !
 
-  !>Calculates a derived variable value for the equations set. \see OPENCMISS::CMISSEquationsSet_DerivedVariableCalculate
+  !>Calculates a derived variable value for the equations set. \see OpenCMISS::cmfe_EquationsSet_DerivedVariableCalculate
   SUBROUTINE EquationsSet_DerivedVariableCalculate(equationsSet,derivedType,err,error,*)
 
     !Argument variables
     TYPE(EQUATIONS_SET_TYPE), POINTER, INTENT(IN) :: equationsSet !<A pointer to the equations set to calculate output for
-    INTEGER(INTG), INTENT(IN) :: derivedType !<The derived value type to calculate. \see EQUATIONS_SET_CONSTANTS_DerivedTypes.
+    INTEGER(INTG), INTENT(IN) :: derivedType !<The derived value type to calculate. \see EquationsSetConstants_DerivedTypes.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+    TYPE(VARYING_STRING) :: localError
 
     ENTERS("EquationsSet_DerivedVariableCalculate",err,error,*999)
 
-    IF(ASSOCIATED(equationsSet)) THEN
-      IF(.NOT.equationsSet%EQUATIONS_SET_FINISHED) THEN
-        CALL FlagError("Equations set has not been finished.",err,error,*999)
-      ELSE
-        IF(.NOT.ALLOCATED(equationsSet%specification)) THEN
-          CALL FlagError("Equations set specification is not allocated.",err,error,*999)
-        ELSE IF(SIZE(equationsSet%specification,1)<1) THEN
-          CALL FlagError("Equations set specification must have at least one entry.",err,error,*999)
-        END IF
-        SELECT CASE(equationsSet%specification(1))
-        CASE(EQUATIONS_SET_ELASTICITY_CLASS)
-          CALL Elasticity_EquationsSetDerivedVariableCalculate(equationsSet,derivedType,err,error,*999)
-        CASE(EQUATIONS_SET_FLUID_MECHANICS_CLASS)
-          CALL FlagError("Not implemented.",err,error,*999)
-        CASE(EQUATIONS_SET_ELECTROMAGNETICS_CLASS)
-          CALL FlagError("Not implemented.",err,error,*999)
-        CASE(EQUATIONS_SET_CLASSICAL_FIELD_CLASS)
-          CALL FlagError("Not implemented.",err,error,*999)
-        CASE(EQUATIONS_SET_FITTING_CLASS)
-          CALL FlagError("Not implemented.",err,error,*999)
-        CASE(EQUATIONS_SET_BIOELECTRICS_CLASS)
-          CALL FlagError("Not implemented.",err,error,*999)
-        CASE(EQUATIONS_SET_MODAL_CLASS)
-          CALL FlagError("Not implemented.",err,error,*999)
-        CASE(EQUATIONS_SET_MULTI_PHYSICS_CLASS)
-          CALL FlagError("Not implemented.",err,error,*999)
-        CASE DEFAULT
-          CALL FlagError("The first equations set specification of "// &
-            & TRIM(NumberToVString(equationsSet%specification(1),"*",err,error))// &
-            & " is not valid.",err,error,*999)
-        END SELECT
-      ENDIF
-    ELSE
-      CALL FlagError("Equations set is not associated.",err,error,*999)
-    ENDIF
+    IF(.NOT.ASSOCIATED(equationsSet)) CALL FlagError("Equations set is not associated.",err,error,*999)
+    IF(.NOT.equationsSet%EQUATIONS_SET_FINISHED) CALL FlagError("Equations set has not been finished.",err,error,*999)
+    IF(.NOT.ALLOCATED(equationsSet%specification)) CALL FlagError("Equations set specification is not allocated.",err,error,*999)
+    IF(SIZE(equationsSet%specification,1)<1) &
+      & CALL FlagError("Equations set specification must have at least one entry.",err,error,*999)
+
+    SELECT CASE(equationsSet%specification(1))
+    CASE(EQUATIONS_SET_ELASTICITY_CLASS)
+      CALL Elasticity_EquationsSetDerivedVariableCalculate(equationsSet,derivedType,err,error,*999)
+    CASE(EQUATIONS_SET_FLUID_MECHANICS_CLASS)
+      CALL FlagError("Not implemented.",err,error,*999)
+    CASE(EQUATIONS_SET_ELECTROMAGNETICS_CLASS)
+      CALL FlagError("Not implemented.",err,error,*999)
+    CASE(EQUATIONS_SET_CLASSICAL_FIELD_CLASS)
+      CALL FlagError("Not implemented.",err,error,*999)
+    CASE(EQUATIONS_SET_FITTING_CLASS)
+      CALL FlagError("Not implemented.",err,error,*999)
+    CASE(EQUATIONS_SET_BIOELECTRICS_CLASS)
+      CALL FlagError("Not implemented.",err,error,*999)
+    CASE(EQUATIONS_SET_MODAL_CLASS)
+      CALL FlagError("Not implemented.",err,error,*999)
+    CASE(EQUATIONS_SET_MULTI_PHYSICS_CLASS)
+      CALL FlagError("Not implemented.",err,error,*999)
+    CASE DEFAULT
+      localError="The first equations set specification of "//TRIM(NumberToVString(equationsSet%specification(1),"*",err,error))// &
+        & " is not valid."
+      CALL FlagError(localError,err,error,*999)
+    END SELECT
 
     EXITS("EquationsSet_DerivedVariableCalculate")
     RETURN
 999 ERRORSEXITS("EquationsSet_DerivedVariableCalculate",err,error)
     RETURN 1
+
   END SUBROUTINE EquationsSet_DerivedVariableCalculate
 
   !
   !================================================================================================================================
   !
 
-  !>Sets the field variable type of the derived field to be used to store a derived variable. \see OPENCMISS::CMISSEquationsSet_DerivedVariableSet
+  !>Sets the field variable type of the derived field to be used to store a derived variable. \see OpenCMISS::cmfe_EquationsSet_DerivedVariableSet
   SUBROUTINE EquationsSet_DerivedVariableSet(equationsSet,derivedType,fieldVariableType,err,error,*)
 
     !Argument variables
     TYPE(EQUATIONS_SET_TYPE), POINTER, INTENT(IN) :: equationsSet !<A pointer to the equations set to calculate a derived field for
-    INTEGER(INTG), INTENT(IN) :: derivedType !<The derived value type to calculate. \see EQUATIONS_SET_CONSTANTS_DerivedTypes.
+    INTEGER(INTG), INTENT(IN) :: derivedType !<The derived value type to calculate. \see EquationsSetConstants_DerivedTypes.
     INTEGER(INTG), INTENT(IN) :: fieldVariableType !<The field variable type used to store the calculated derived value
     INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+    TYPE(FIELD_TYPE), POINTER :: derivedField
+    TYPE(FIELD_VARIABLE_TYPE), POINTER :: fieldVariable
+    TYPE(VARYING_STRING) :: localError
 
     ENTERS("EquationsSet_DerivedVariableSet",err,error,*999)
 
     !Check pointers and finished state
-    IF(ASSOCIATED(equationsSet)) THEN
-      IF(equationsSet%EQUATIONS_SET_FINISHED) THEN
-        IF(ASSOCIATED(equationsSet%derived)) THEN
-          IF(equationsSet%derived%derivedFinished) THEN
-            CALL FlagError("Equations set derived information is already finished.",err,error,*999)
-          END IF
-        ELSE
-          CALL FlagError("Equations set derived information is not associated.",err,error,*999)
-        END IF
-      ELSE
-        CALL FlagError("Equations set has not been finished.",err,error,*999)
-      END IF
-    ELSE
-      CALL FlagError("Equations set is not associated.",err,error,*999)
+    IF(.NOT.ASSOCIATED(equationsSet)) CALL FlagError("Equations set is not associated.",err,error,*999)
+    IF(.NOT.equationsSet%EQUATIONS_SET_FINISHED) CALL FlagError("Equations set has not been finished.",err,error,*999)
+    NULLIFY(derivedField)
+    CALL EquationsSet_DerivedFieldGet(equationsSet,derivedField,err,error,*999)
+    IF(equationsSet%derived%derivedFinished) CALL FlagError("Equations set derived information is already finished.",err,error,*999)
+    IF(derivedType<1.OR.derivedType>EQUATIONS_SET_NUMBER_OF_TENSOR_TYPES) THEN
+      localError="The specified derived variable type of "//TRIM(NumberToVString(derivedType,"*",err,error))// &
+        & " is invalid. It should be between >= 1 and <= "//TRIM(NumberToVString(EQUATIONS_SET_NUMBER_OF_TENSOR_TYPES,"*", &
+        & err,error))//"."
+      CALL FlagError(localError,err,error,*999)
     ENDIF
+    NULLIFY(fieldVariable)
+    CALL Field_VariableGet(derivedField,fieldVariableType,fieldVariable,err,error,*999)
 
-    IF(derivedType>0.AND.derivedType<=EQUATIONS_SET_NUMBER_OF_DERIVED_TYPES) THEN
-      IF(fieldVariableType>0.AND.fieldVariableType<=FIELD_NUMBER_OF_VARIABLE_TYPES) THEN
-        IF(equationsSet%derived%variableTypes(derivedType)==0) THEN
-          equationsSet%derived%numberOfVariables=equationsSet%derived%numberOfVariables+1
-        END IF
-        equationsSet%derived%variableTypes(derivedType)=fieldVariableType
-      ELSE
-        CALL FlagError("The field variable type of "//TRIM(NumberToVString(fieldVariableType,"*",err,error))// &
-          & " is invalid. It should be between 1 and "//TRIM(NumberToVString(FIELD_NUMBER_OF_VARIABLE_TYPES,"*", &
-          & err,error))//" inclusive.",err,error,*999)
-      END IF
-    ELSE
-      CALL FlagError("The derived variable type of "//TRIM(NumberToVString(derivedType,"*",err,error))// &
-        & " is invalid. It should be between 1 and "//TRIM(NumberToVString(EQUATIONS_SET_NUMBER_OF_DERIVED_TYPES,"*", &
-        & err,error))//" inclusive.",err,error,*999)
-    END IF
+    IF(equationsSet%derived%variableTypes(derivedType)==0) &
+      & equationsSet%derived%numberOfVariables=equationsSet%derived%numberOfVariables+1
+    equationsSet%derived%variableTypes(derivedType)=fieldVariableType
 
     EXITS("EquationsSet_DerivedVariableSet")
     RETURN
 999 ERRORSEXITS("EquationsSet_DerivedVariableSet",err,error)
     RETURN 1
+
   END SUBROUTINE EquationsSet_DerivedVariableSet
+
   !
   !================================================================================================================================
   !
 
-  !>Sets/changes the equations set specification i.e., equations set class, type and subtype for an equations set. \see OPENCMISS::CMISSEquationsSetSpecificationSet
+  !>Sets/changes the equations set specification i.e., equations set class, type and subtype for an equations set. \see OpenCMISS::cmfe_EquationsSet_SpecificationSet
   SUBROUTINE EquationsSet_SpecificationSet(equationsSet,specification,err,error,*)
 
     !Argument variables
@@ -6149,9 +6068,68 @@ CONTAINS
 999 ERRORS("EquationsSet_SpecificationSet",err,error)
     EXITS("EquationsSet_SpecificationSet")
     RETURN 1
-    
+
   END SUBROUTINE EquationsSet_SpecificationSet
-  
+
+  !
+  !================================================================================================================================
+  !
+
+  !>Evaluate a tensor at a given element Gauss point.
+  SUBROUTINE EquationsSet_TensorInterpolateGaussPoint(equationsSet,tensorEvaluateType,gaussPointNumber,userElementNumber,values, &
+    & err,error,*)
+
+    !Argument variables
+    TYPE(EQUATIONS_SET_TYPE), POINTER, INTENT(IN) :: equationsSet !<A pointer to the equations set to interpolate the tensor for.
+    INTEGER(INTG), INTENT(IN) :: tensorEvaluateType !<The type of tensor to evaluate.
+    INTEGER(INTG), INTENT(IN) :: gaussPointNumber !<The Gauss point number of the field to interpolate.
+    INTEGER(INTG), INTENT(IN) :: userElementNumber !<The user element number of the field to interpolate.
+    REAL(DP), INTENT(OUT) :: values(:,:) !<On exit, the interpolated tensor values.
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code.
+    TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
+    !Local Variables
+    TYPE(VARYING_STRING) :: localError
+
+    ENTERS("EquationsSet_TensorInterpolateGaussPoint",err,error,*999)
+
+    IF(.NOT.ASSOCIATED(equationsSet)) CALL FlagError("Equations set is not associated.",err,error,*999)
+    IF(.NOT.equationsSet%equations_set_finished) CALL FlagError("Equations set has not been finished.",err,error,*999)
+    IF(.NOT.ALLOCATED(equationsSet%specification)) CALL FlagError("Equations set specification is not allocated.",err,error,*999)
+    IF(SIZE(equationsSet%specification,1)<1) CALL FlagError("Equations set specification must have at least one entry.", &
+      & err,error,*999)
+
+    SELECT CASE(equationsSet%specification(1))
+    CASE(EQUATIONS_SET_ELASTICITY_CLASS)
+      CALL Elasticity_TensorInterpolateGaussPoint(equationsSet,tensorEvaluateType,gaussPointNumber,userElementNumber,values, &
+        & err,error,*999)
+    CASE(EQUATIONS_SET_FLUID_MECHANICS_CLASS)
+      CALL FlagError("Not implemented.",err,error,*999)
+    CASE(EQUATIONS_SET_ELECTROMAGNETICS_CLASS)
+      CALL FlagError("Not implemented.",err,error,*999)
+    CASE(EQUATIONS_SET_CLASSICAL_FIELD_CLASS)
+      CALL FlagError("Not implemented.",err,error,*999)
+    CASE(EQUATIONS_SET_MODAL_CLASS)
+      CALL FlagError("Not implemented.",err,error,*999)
+    CASE(EQUATIONS_SET_MULTI_PHYSICS_CLASS)
+      CALL FlagError("Not implemented.",err,error,*999)
+    CASE(EQUATIONS_SET_FITTING_CLASS)
+      CALL FlagError("Not implemented.",err,error,*999)
+    CASE(EQUATIONS_SET_OPTIMISATION_CLASS)
+      CALL FlagError("Not implemented.",err,error,*999)
+    CASE DEFAULT
+      localError="The first equations set specification of "// &
+        & TRIM(NumberToVstring(equationsSet%specification(1),"*",err,error))// &
+        & " is not valid."
+      CALL FlagError(localError,err,error,*999)
+    END SELECT
+
+    EXITS("EquationsSet_TensorInterpolateGaussPoint")
+    RETURN
+999 ERRORSEXITS("EquationsSet_TensorInterpolateGaussPoint",err,error)
+    RETURN 1
+
+  END SUBROUTINE EquationsSet_TensorInterpolateGaussPoint
+
   !
   !================================================================================================================================
   !
@@ -6164,23 +6142,17 @@ CONTAINS
     INTEGER(INTG), INTENT(IN) :: tensorEvaluateType !<The type of tensor to evaluate.
     INTEGER(INTG), INTENT(IN) :: userElementNumber !<The user element number of the field to interpolate.
     REAL(DP), INTENT(IN) :: xi(:) !<The element xi to interpolate the field at.
-    REAL(DP), INTENT(OUT) :: values(3,3) !<The interpolated tensor values.
+    REAL(DP), INTENT(OUT) :: values(:,:) !<On exit, the interpolated tensor values.
     INTEGER(INTG), INTENT(OUT) :: err !<The error code.
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
 
     ENTERS("EquationsSet_TensorInterpolateXi",err,error,*999)
 
-    IF(.NOT.ASSOCIATED(equationsSet)) THEN
-      CALL FlagError("Equations set is not associated.",err,error,*999)
-    END IF
-    IF(.NOT.equationsSet%equations_set_finished) THEN
-      CALL FlagError("Equations set has not been finished.",err,error,*999)
-    END IF
-    IF(.NOT.ALLOCATED(equationsSet%specification)) THEN
-      CALL FlagError("Equations set specification is not allocated.",err,error,*999)
-    ELSE IF(SIZE(equationsSet%specification,1)<1) THEN
-      CALL FlagError("Equations set specification must have at least one entry.",err,error,*999)
-    END IF
+    IF(.NOT.ASSOCIATED(equationsSet)) CALL FlagError("Equations set is not associated.",err,error,*999)
+    IF(.NOT.equationsSet%equations_set_finished) CALL FlagError("Equations set has not been finished.",err,error,*999)
+    IF(.NOT.ALLOCATED(equationsSet%specification)) CALL FlagError("Equations set specification is not allocated.",err,error,*999)
+    IF(SIZE(equationsSet%specification,1)<1) CALL FlagError("Equations set specification must have at least one entry.", &
+      & err,error,*999)
 
     SELECT CASE(equationsSet%specification(1))
     CASE(EQUATIONS_SET_ELASTICITY_CLASS)
@@ -6209,7 +6181,7 @@ CONTAINS
     RETURN
 999 ERRORSEXITS("EquationsSet_TensorInterpolateXi",err,error)
     RETURN 1
-    
+
   END SUBROUTINE EquationsSet_TensorInterpolateXi
 
   !
@@ -6241,7 +6213,7 @@ CONTAINS
     EXITS("EQUATIONS_SETS_FINALISE")
     RETURN
 999 ERRORSEXITS("EQUATIONS_SETS_FINALISE",err,error)
-    RETURN 1   
+    RETURN 1
   END SUBROUTINE EQUATIONS_SETS_FINALISE
 
   !
@@ -6280,7 +6252,7 @@ CONTAINS
 998 ERRORSEXITS("EQUATIONS_SETS_INITIALISE",err,error)
     RETURN 1
   END SUBROUTINE EQUATIONS_SETS_INITIALISE
-  
+
   !
   !================================================================================================================================
   !
@@ -6321,7 +6293,7 @@ CONTAINS
     NULLIFY(CURRENT_LOADS)
 
     myComputationalNodeNumber=ComputationalEnvironment_NodeNumberGet(err,error)
-    
+
     !Take the stored load, scale it down appropriately then apply to the unknown variables
     IF(ASSOCIATED(EQUATIONS_SET)) THEN
       IF(DIAGNOSTICS1) THEN
@@ -6648,11 +6620,11 @@ CONTAINS
     TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices
     TYPE(EquationsVectorType), POINTER :: vectorEquations
     TYPE(FIELD_TYPE), POINTER :: dependentField
-    
+
     ENTERS("EquationsSet_AssembleStaticNonlinearNodal",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equationsSet)) CALL FlagError("Equations set is not associated.",err,error,*999)
-    
+
     NULLIFY(equations)
     CALL EquationsSet_EquationsGet(equationsSet,equations,err,error,*999)
     NULLIFY(vectorEquations)
@@ -6668,7 +6640,7 @@ CONTAINS
     ENDIF
     !Initialise the matrices and rhs vector
     CALL EquationsMatrices_VectorValuesInitialise(vectorMatrices,EQUATIONS_MATRICES_NONLINEAR_ONLY,0.0_DP,err,error,*999)
-    !Allocate the nodal matrices 
+    !Allocate the nodal matrices
     CALL EquationsMatrices_NodalInitialise(vectorMatrices,err,error,*999)
     nodalMapping=>dependentField%decomposition%domain(dependentField%decomposition%MESH_COMPONENT_NUMBER)%ptr%mappings%nodes
     !Output timing information if required
@@ -6739,12 +6711,12 @@ CONTAINS
     IF(equations%outputType>=EQUATIONS_MATRIX_OUTPUT) THEN
       CALL EquationsMatrices_VectorOutput(GENERAL_OUTPUT_TYPE,vectorMatrices,err,error,*999)
     ENDIF
-       
+
     EXITS("EquationsSet_AssembleStaticNonlinearNodal")
     RETURN
 999 ERRORSEXITS("EquationsSet_AssembleStaticNonlinearNodal",err,error)
     RETURN 1
-    
+
   END SUBROUTINE EquationsSet_AssembleStaticNonlinearNodal
 
   !
@@ -6757,7 +6729,7 @@ CONTAINS
     !Argument variables
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet !<A pointer to the equations set
     INTEGER(INTG), INTENT(IN) :: nodeNumber !<The node number to evaluate the Jacobian for
-    INTEGER(INTG), INTENT(OUT) :: err !<The error code 
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
     INTEGER(INTG) :: matrixIdx
@@ -6767,7 +6739,7 @@ CONTAINS
     TYPE(EquationsVectorType), POINTER :: vectorEquations
     TYPE(NodalMatrixType), POINTER :: nodalMatrix
     TYPE(VARYING_STRING) :: localError
-    
+
     ENTERS("EquationsSet_NodalJacobianEvaluate",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equationsSet)) CALL FlagError("Equations set is not associated.",err,error,*999)
@@ -6779,11 +6751,11 @@ CONTAINS
     CALL EquationsVector_VectorMatricesGet(vectorEquations,vectorMatrices,err,error,*999)
     NULLIFY(nonlinearMatrices)
     CALL EquationsMatricesVector_NonlinearMatricesGet(vectorMatrices,nonlinearMatrices,err,error,*999)
-    
+
     IF(.NOT.ALLOCATED(equationsSet%specification)) CALL FlagError("Equations set specification is not allocated.",err,error,*999)
     IF(SIZE(equationsSet%specification,1)<1) &
       & CALL FlagError("Equations set specification must have at least one entry.",err,error,*999)
-    
+
     DO matrixIdx=1,nonlinearMatrices%numberOfJacobians
       SELECT CASE(nonlinearMatrices%jacobians(matrixIdx)%ptr%jacobianCalculationType)
       CASE(EQUATIONS_JACOBIAN_ANALYTIC_CALCULATED)
@@ -6863,7 +6835,7 @@ CONTAINS
     !Argument variables
     TYPE(EQUATIONS_SET_TYPE), POINTER :: equationsSet !<A pointer to the equations set
     INTEGER(INTG), INTENT(IN) :: nodeNumber !<The nodal number to evaluate the residual for
-    INTEGER(INTG), INTENT(OUT) :: err !<The error code 
+    INTEGER(INTG), INTENT(OUT) :: err !<The error code
     TYPE(VARYING_STRING), INTENT(OUT) :: error !<The error string
     !Local Variables
     INTEGER(INTG) :: matrixIdx
@@ -6877,11 +6849,11 @@ CONTAINS
     TYPE(NodalMatrixType), POINTER :: nodalMatrix
     TYPE(NodalVectorType), POINTER :: nodalVector
     TYPE(VARYING_STRING) :: localError
-    
+
     ENTERS("EquationsSet_NodalResidualEvaluate",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equationsSet)) CALL FlagError("Equations set is not associated.",err,error,*999)
-    
+
     NULLIFY(equations)
     CALL EquationsSet_EquationsGet(equationsSet,equations,err,error,*999)
     NULLIFY(vectorEquations)
@@ -6894,7 +6866,7 @@ CONTAINS
     IF(.NOT.ALLOCATED(equationsSet%specification)) CALL FlagError("Equations set specification is not allocated.",err,error,*999)
     IF(SIZE(equationsSet%specification,1)<1) &
       & CALL FlagError("Equations set specification must have at least one entry.",err,error,*999)
-    
+
     SELECT CASE(equationsSet%specification(1))
     CASE(EQUATIONS_SET_ELASTICITY_CLASS)
       CALL FlagError("Not implemented.",err,error,*999)
@@ -6916,7 +6888,7 @@ CONTAINS
       CALL FlagError(localError,err,error,*999)
     END SELECT
     nonlinearMatrices%nodalResidualCalculated=nodeNumber
-    
+
     IF(equations%outputType>=EQUATIONS_NODAL_MATRIX_OUTPUT) THEN
       CALL WriteString(GENERAL_OUTPUT_TYPE,"",err,error,*999)
       CALL WriteString(GENERAL_OUTPUT_TYPE,"Nodal residual matrices and vectors:",err,error,*999)
@@ -6987,12 +6959,12 @@ CONTAINS
         ENDIF
       ENDIF
     ENDIF
-       
+
     EXITS("EquationsSet_NodalResidualEvaluate")
     RETURN
 999 ERRORSEXITS("EquationsSet_NodalResidualEvaluate",err,error)
     RETURN 1
-    
+
   END SUBROUTINE EquationsSet_NodalResidualEvaluate
 
 
@@ -7018,11 +6990,11 @@ CONTAINS
     TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices
     TYPE(EquationsVectorType), POINTER :: vectorEquations
     TYPE(FIELD_TYPE), POINTER :: dependentField
-  
+
     ENTERS("EquationsSet_JacobianEvaluateStaticNodal",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equationsSet)) CALL FlagError("Equations set is not associated.",err,error,*999)
-    
+
     NULLIFY(equations)
     CALL EquationsSet_EquationsGet(equationsSet,equations,err,error,*999)
     NULLIFY(vectorEquations)
@@ -7031,7 +7003,7 @@ CONTAINS
     CALL EquationsVector_VectorMatricesGet(vectorEquations,vectorMatrices,err,error,*999)
     NULLIFY(dependentField)
     CALL EquationsSet_DependentFieldGet(equationsSet,dependentField,err,error,*999)
-    
+
     IF(equations%outputType>=EQUATIONS_TIMING_OUTPUT) THEN
       CALL CPUTimer(USER_CPU,userTime1,err,error,*999)
       CALL CPUTimer(SYSTEM_CPU,systemTime1,err,error,*999)
@@ -7039,7 +7011,7 @@ CONTAINS
     !Initialise the matrices and rhs vector
     CALL EquationsMatrices_VectorValuesInitialise(vectorMatrices,EQUATIONS_MATRICES_JACOBIAN_ONLY,0.0_DP,err,error,*999)
     !Assemble the nodes
-    !Allocate the nodal matrices 
+    !Allocate the nodal matrices
     CALL EquationsMatrices_NodalInitialise(vectorMatrices,err,error,*999)
     nodalMapping=>dependentField%decomposition%domain(dependentField%decomposition%MESH_COMPONENT_NUMBER)%ptr%mappings%nodes
     !Output timing information if required
@@ -7107,12 +7079,12 @@ CONTAINS
     !Output equations Jacobian if required
     IF(equations%outputType>=EQUATIONS_MATRIX_OUTPUT) &
       & CALL EquationsMatrices_JacobianOutput(GENERAL_OUTPUT_TYPE,vectorMatrices,err,error,*999)
-       
+
     EXITS("EquationsSet_JacobianEvaluateStaticNodal")
     RETURN
 999 ERRORSEXITS("EquationsSet_JacobianEvaluateStaticNodal",err,error)
     RETURN 1
-    
+
   END SUBROUTINE EquationsSet_JacobianEvaluateStaticNodal
 
   !
@@ -7137,11 +7109,11 @@ CONTAINS
     TYPE(EquationsMatricesVectorType), POINTER :: vectorMatrices
     TYPE(EquationsVectorType), POINTER :: vectorEquations
     TYPE(FIELD_TYPE), POINTER :: dependentField,geometricField
- 
+
     ENTERS("EquationsSet_ResidualEvaluateStaticNodal",err,error,*999)
 
     IF(.NOT.ASSOCIATED(equationsSet)) CALL FlagError("Equations set is not associated.",err,error,*999)
-    
+
     NULLIFY(equations)
     CALL EquationsSet_EquationsGet(equationsSet,equations,err,error,*999)
     NULLIFY(vectorEquations)
@@ -7152,14 +7124,14 @@ CONTAINS
     CALL EquationsSet_DependentFieldGet(equationsSet,dependentField,err,error,*999)
     NULLIFY(geometricField)
     CALL EquationsSet_GeometricFieldGet(equationsSet,geometricField,err,error,*999)
-    
+
     IF(equations%outputType>=EQUATIONS_TIMING_OUTPUT) THEN
       CALL CPUTimer(USER_CPU,userTime1,err,error,*999)
       CALL CPUTimer(SYSTEM_CPU,systemTime1,err,error,*999)
     ENDIF
     !Initialise the matrices and rhs vector
     CALL EquationsMatrices_VectorValuesInitialise(vectorMatrices,EQUATIONS_MATRICES_NONLINEAR_ONLY,0.0_DP,err,error,*999)
-    !Allocate the nodal matrices 
+    !Allocate the nodal matrices
     CALL EquationsMatrices_NodalInitialise(vectorMatrices,err,error,*999)
     nodalMapping=>dependentField%decomposition%domain(dependentField%decomposition%MESH_COMPONENT_NUMBER)%ptr%mappings%nodes
     !Output timing information if required
@@ -7230,12 +7202,12 @@ CONTAINS
     IF(equations%outputType>=EQUATIONS_MATRIX_OUTPUT) THEN
       CALL EquationsMatrices_VectorOutput(GENERAL_OUTPUT_TYPE,vectorMatrices,err,error,*999)
     ENDIF
-       
+
     EXITS("EquationsSet_ResidualEvaluateStaticNodal")
     RETURN
 999 ERRORSEXITS("EquationsSet_ResidualEvaluateStaticNodal",err,error)
     RETURN 1
-    
+
   END SUBROUTINE EquationsSet_ResidualEvaluateStaticNodal
 
   !
